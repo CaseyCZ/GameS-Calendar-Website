@@ -727,24 +727,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="filter-section">
-            <div class="filter-row">
-                <details style="display: inline-block;">
-                    <summary class="filter-btn" style="cursor: pointer; background: rgba(255, 71, 155, 0.15); border-color: rgba(255, 71, 155, 0.3); color: var(--accent-pink);">
-                        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor; display: inline; vertical-align: middle; margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        <span data-i18n="addAllBtn">Přidat VŠE</span>
-                    </summary>
-                    <div style="position: absolute; background: #160d24; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 10; min-width: 180px; margin-top: 0.5rem;">
-                        <button onclick="downloadAllIcs()" style="display: block; width: 100%; text-align: left; padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; background: none; border: none; border-radius: 4px; cursor: pointer; font-family: inherit;" data-i18n="downloadIcs">📥 Stáhnout .ics</button>
-                        <button onclick="showCalendarShareLink()" style="display: block; width: 100%; text-align: left; padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; background: none; border: none; border-radius: 4px; cursor: pointer; font-family: inherit;" data-i18n="shareLink">🔗 Sdílet odkaz</button>
-                    </div>
-                </details>
-            </div>
-        </div>
     </div>
-
     <!-- MAIN CONTAINER -->
     <div class="main-container">
         <div class="content-wrapper">
@@ -803,12 +786,17 @@
                 viewGrid: "Mřížka",
                 viewCompact: "Kompakt",
                 viewList: "Seznam",
+                days7: '7 dní',
+        days30: '30 dní',
+        days90: '90 dní',
+        allYear: 'Celý rok',
                 months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
                 platforms: {
                     PC: "PC",
                     Nintendo: "Nintendo",
                     PlayStation: "PlayStation",
                     Xbox: "Xbox"
+                    
                 }
             },
             en: {
@@ -835,6 +823,10 @@
                 viewGrid: "Grid",
                 viewCompact: "Compact",
                 viewList: "List",
+                days7: '7 days',
+        days30: '30 days',
+        days90: '90 days',
+        allYear: 'Whole year',
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                 platforms: {
                     PC: "PC",
@@ -857,7 +849,7 @@
         };
 
         // Initialize
-   async function init() {
+            async function init() {
             try {
                 const response = await fetch('games.json');
                 const rawGames = await response.json();
@@ -896,7 +888,7 @@
                 document.getElementById('games-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><h3>Chyba při načítání dat</h3></div>';
             }
         }
-        function initFilters() {
+function initFilters() {
             const platforms = ['PC', 'Nintendo', 'PlayStation', 'Xbox'];
             const container = document.getElementById('platform-filters');
             container.innerHTML = platforms.map(p => `
@@ -905,13 +897,39 @@
                 </button>
             `).join('');
 
+            renderDateFilterButtons();
+        }
+
+        // Pomocná funkce pro vykreslení tlačítek s podporou jazyka
+        function renderDateFilterButtons(activeDays = 30) {
             const dateContainer = document.getElementById('date-filter-buttons');
-            dateContainer.innerHTML = `
-                <button class="filter-btn" onclick="setPresetDays(7)">7 dní</button>
-                <button class="filter-btn active" onclick="setPresetDays(30)">30 dní</button>
-                <button class="filter-btn" onclick="setPresetDays(90)">90 dní</button>
-                <button class="filter-btn" onclick="setPresetDays(365)">Celý rok</button>
-            `;
+            const t = translations[currentLang]; // Načtení překladů pro aktuální jazyk
+
+            const presets = [
+                { days: 7, label: t.days7 || '7 dní' },
+                { days: 30, label: t.days30 || '30 dní' },
+                { days: 90, label: t.days90 || '90 dní' },
+                { days: 365, label: t.allYear || 'Celý rok' }
+            ];
+
+            dateContainer.innerHTML = presets.map(p => `
+                <button class="filter-btn ${activeDays === p.days ? 'active' : ''}" onclick="setPresetDays(${p.days})" data-days="${p.days}">
+                    ${p.label}
+                </button>
+            `).join('');
+        }
+
+        function setPresetDays(days) {
+            const today = new Date();
+            const future = new Date();
+            future.setDate(today.getDate() + days);
+
+            document.getElementById('date-from').value = toDateStr(today);
+            document.getElementById('date-to').value = toDateStr(future);
+            
+            // Okamžitě aktualizuje vzhled tlačítek (správné svítící tlačítko)
+            renderDateFilterButtons(days);
+            renderGames();
         }
 
         function initDateDefaults() {
@@ -925,16 +943,6 @@
 
         function toDateStr(date) {
             return date.toISOString().split('T')[0];
-        }
-
-        function setPresetDays(days) {
-            const today = new Date();
-            const future = new Date();
-            future.setDate(today.getDate() + days);
-
-            document.getElementById('date-from').value = toDateStr(today);
-            document.getElementById('date-to').value = toDateStr(future);
-            renderGames();
         }
 
         function togglePlatform(platform) {
@@ -963,131 +971,172 @@
             return 'PC';
         }
 
-// 1. Tuto funkci vlož někam nahoru ke svým pomocným funkcím
-function normalizeGameItem(item) {
-    const game = item.game || {};
-    return {
-        id: item.id,
-        gameId: game.id || null,
-        name: game.name || 'Neznámá hra',
-        cover: game.cover || null,
-        platforms: item.platforms || [],
-        date: item.date,
-        gameType: game.game_type ?? 0
-    };
-}
+        function normalizeGameItem(item) {
+            const game = item.game || {};
+            // Podpora pro případ, že platforms jsou u položky nebo uvnitř game objektu
+            const platforms = item.platforms || game.platforms || [];
+            return {
+                id: item.id,
+                gameId: game.id || null,
+                name: game.name || 'Neznámá hra',
+                cover: game.cover || null,
+                platforms: platforms,
+                date: item.date,
+                gameType: game.game_type ?? 0
+            };
+        }
 
-// 2. Tímto přepiš tvou starou funkci renderGames()
-function renderGames() {
-    const container = document.getElementById('games-grid');
-    const dateFrom = document.getElementById('date-from').value;
-    const dateTo = document.getElementById('date-to').value;
-    const search = document.getElementById('search').value.toLowerCase();
-    const sort = document.getElementById('sort').value;
+        function renderGames() {
+            const container = document.getElementById('games-grid');
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const search = document.getElementById('search').value.toLowerCase();
+            const sort = document.getElementById('sort').value;
 
-    const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
-    const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
+            const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
+            const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
 
-    let filtered = allGames.map(normalizeGameItem).filter(item => {
-        if (!item.platforms || !item.name) return false;
-        if (timeFrom && item.date < timeFrom) return false;
-        if (timeTo && item.date > timeTo) return false;
-        if (!item.platforms.some(p => currentFilters.platforms.includes(getPlatformClass(p)))) return false;
-        if (search && !item.name.toLowerCase().includes(search)) return false;
-        return true;
-    });
+            let filtered = allGames.map(normalizeGameItem).filter(item => {
+                if (!item.platforms || !item.name) return false;
+                if (timeFrom && item.date < timeFrom) return false;
+                if (timeTo && item.date > timeTo) return false;
+                if (!item.platforms.some(p => {
+                    const pName = typeof p === 'string' ? p : (p.name || '');
+                    return currentFilters.platforms.includes(getPlatformClass(pName));
+                })) return false;
+                if (search && !item.name.toLowerCase().includes(search)) return false;
+                return true;
+            });
 
-    if (sort === 'date-asc') filtered.sort((a, b) => a.date - b.date);
-    else if (sort === 'date-desc') filtered.sort((a, b) => b.date - a.date);
-    else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sort === 'name-desc') filtered.sort((a, b) => b.name.localeCompare(a.name));
+            if (sort === 'date-asc') filtered.sort((a, b) => a.date - b.date);
+            else if (sort === 'date-desc') filtered.sort((a, b) => b.date - a.date);
+            else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sort === 'name-desc') filtered.sort((a, b) => b.name.localeCompare(a.name));
 
-    if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">🔍</div><h3>${translations[currentLang].noGames}</h3></div>`;
-        updateStats();
-        return;
-    }
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">🔍</div><h3>${translations[currentLang].noGames}</h3></div>`;
+                updateStats();
+                return;
+            }
 
-    container.className = 'games-grid';
-    if (currentViewMode === 'compact') container.classList.add('compact');
-    if (currentViewMode === 'list') container.classList.add('list');
+            container.className = 'games-grid';
+            if (currentViewMode === 'compact') container.classList.add('compact');
+            if (currentViewMode === 'list') container.classList.add('list');
 
-    container.innerHTML = filtered.map(game => {
-        const date = new Date(game.date * 1000);
-        const dateStr = date.toLocaleDateString(currentLang === 'cs' ? 'cs-CZ' : 'en-US');
-        const year = date.getUTCFullYear();
-        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(date.getUTCDate()).padStart(2, '0');
-        const dateICS = `${year}${month}${day}`;
-        
-        const isFav = favorites.some(f => f.id === game.id);
-        const coverUrl = game.cover?.url || '';
-        const cardClass = currentViewMode === 'list' ? 'game-card list-view' : 'game-card';
+            container.innerHTML = filtered.map(game => {
+                const date = new Date(game.date * 1000);
+                const dateStr = date.toLocaleDateString(currentLang === 'cs' ? 'cs-CZ' : 'en-US');
+                const year = date.getUTCFullYear();
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const dateICS = `${year}${month}${day}`;
+                
+                const isFav = favorites.some(f => f.id === game.id);
+                const coverUrl = game.cover?.url || '';
+                const cardClass = currentViewMode === 'list' ? 'game-card list-view' : 'game-card';
 
-        return `
-            <div class="${cardClass}">
-                <div class="game-cover">
-                    ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}">` : ''}
-                    <div class="game-cover-overlay">
-                        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="card-badge">▶️ Trailer</a>
+                const platformTags = game.platforms.map(p => {
+                    const pName = typeof p === 'string' ? p : (p.name || '');
+                    return `<span class="platform-tag">${getPlatformEmoji(getPlatformClass(pName))} ${pName}</span>`;
+                }).join('');
+
+                const firstPlatform = game.platforms.length > 0 ? (typeof game.platforms[0] === 'string' ? game.platforms[0] : (game.platforms[0].name || 'Multi')) : 'Multi';
+
+                return `
+                    <div class="${cardClass}">
+                        <div class="game-cover">
+                            ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}">` : ''}
+                            <div class="game-cover-overlay">
+                                <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="card-badge">▶️ Trailer</a>
+                            </div>
+                        </div>
+                        <div class="game-info">
+                            <div class="game-title">${game.name}</div>
+                            <div class="game-meta">
+                                <div class="release-date">${dateStr}</div>
+                            </div>
+                            <div class="platforms-tags">
+                                ${platformTags}
+                            </div>
+                            <div class="card-actions">
+                                <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="Přidat do oblíbených" style="flex: 0 0 auto; padding: 0.4rem;">
+                                    ${isFav ? '❤️' : '🤍'}
+                                </button>
+                                <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="Přidat do kalendáře" style="flex: 0 0 auto;">
+                                    📅
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="game-info">
-                    <div class="game-title">${game.name}</div>
-                    <div class="game-meta">
-                        <div class="release-date">${dateStr}</div>
-                    </div>
-                    <div class="platforms-tags">
-                        ${game.platforms.map(p => `<span class="platform-tag">${getPlatformEmoji(getPlatformClass(p))} ${p}</span>`).join('')}
-                    </div>
-                    <div class="card-actions">
-                        <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="Přidat do oblíbených" style="flex: 0 0 auto; padding: 0.4rem;">
-                            ${isFav ? '❤️' : '🤍'}
-                        </button>
-                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${game.platforms[0] || 'Multi'}', ${game.date})" title="Přidat do kalendáře" style="flex: 0 0 auto;">
-                            📅
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
+                `;
+            }).join('');
 
-    updateStats();
-    updateMonthStats();
-}
+            updateStats();
+            updateMonthStats();
+        }
 
-// 3. Tímto přepiš starou funkci downloadAllIcs()
-function downloadAllIcs() {
-    const dateFrom = document.getElementById('date-from').value;
-    const dateTo = document.getElementById('date-to').value;
-    const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
-    const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
+        function downloadAllIcs() {
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
+            const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
 
-    let filtered = allGames.map(normalizeGameItem).filter(item => {
-        if (timeFrom && item.date < timeFrom) return false;
-        if (timeTo && item.date > timeTo) return false;
-        return item.platforms.some(p => currentFilters.platforms.includes(getPlatformClass(p)));
-    });
+            let filtered = allGames.map(normalizeGameItem).filter(item => {
+                if (timeFrom && item.date < timeFrom) return false;
+                if (timeTo && item.date > timeTo) return false;
+                return item.platforms.some(p => {
+                    const pName = typeof p === 'string' ? p : (p.name || '');
+                    return currentFilters.platforms.includes(getPlatformClass(pName));
+                });
+            });
 
-    let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Game Calendar//EN", "CALSCALE:GREGORIAN"];
-    filtered.forEach(e => {
-        const d = new Date(e.date * 1000);
-        const y = d.getUTCFullYear();
-        const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-        const dy = String(d.getUTCDate()).padStart(2, '0');
-        icsContent.push("BEGIN:VEVENT", `UID:game-${e.id}-${e.date}@local`, `DTSTART;VALUE=DATE:${y}${m}${dy}`, `DTEND;VALUE=DATE:${y}${m}${dy}`, `SUMMARY:${e.name}`, "END:VEVENT");
-    });
-    icsContent.push("END:VCALENDAR");
+            let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Game Calendar//EN", "CALSCALE:GREGORIAN"];
+            filtered.forEach(e => {
+                const d = new Date(e.date * 1000);
+                const y = d.getUTCFullYear();
+                const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+                const dy = String(d.getUTCDate()).padStart(2, '0');
+                icsContent.push("BEGIN:VEVENT", `UID:game-${e.id}-${e.date}@local`, `DTSTART;VALUE=DATE:${y}${m}${dy}`, `DTEND;VALUE=DATE:${y}${m}${dy}`, `SUMMARY:${e.name}`, "END:VEVENT");
+            });
+            icsContent.push("END:VCALENDAR");
 
-    const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `game-calendar-${new Date().toISOString().split('T')[0]}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
+            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `game-calendar-${new Date().toISOString().split('T')[0]}.ics`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadIcs(gameName, platformName, timestamp) {
+            const d = new Date(timestamp * 1000);
+            const y = d.getUTCFullYear();
+            const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dy = String(d.getUTCDate()).padStart(2, '0');
+            
+            const icsContent = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//Game Calendar//EN",
+                "CALSCALE:GREGORIAN",
+                "BEGIN:VEVENT",
+                `UID:game-${gameName.replace(/\s+/g, '-')}-${timestamp}@local`,
+                `DTSTART;VALUE=DATE:${y}${m}${dy}`,
+                `DTEND;VALUE=DATE:${y}${m}${dy}`,
+                `SUMMARY:${gameName} (${platformName})`,
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ];
+
+            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
         function showCalendarMenu(event, gameName, dateICS, dateStr, platformName, timestamp) {
             event.stopPropagation();
@@ -1171,8 +1220,9 @@ function downloadAllIcs() {
             const todayTime = today.getTime() / 1000;
 
             const total = allGames.length;
-            const in30 = allGames.filter(g => g.date >= todayTime && g.date <= next30Time).length;
-            const inNextMonth = allGames.filter(g => {
+            const normalizedGames = allGames.map(normalizeGameItem);
+            const in30 = normalizedGames.filter(g => g.date >= todayTime && g.date <= next30Time).length;
+            const inNextMonth = normalizedGames.filter(g => {
                 const d = new Date(g.date * 1000);
                 const y = d.getUTCFullYear();
                 const m = d.getUTCMonth();
@@ -1187,7 +1237,7 @@ function downloadAllIcs() {
 
         function updateMonthStats() {
             const monthCounts = {};
-            allGames.forEach(game => {
+            allGames.map(normalizeGameItem).forEach(game => {
                 const date = new Date(game.date * 1000);
                 const key = `${date.getUTCFullYear()}-${date.getUTCMonth()}`;
                 monthCounts[key] = (monthCounts[key] || 0) + 1;
@@ -1229,67 +1279,10 @@ function downloadAllIcs() {
                 }
             });
 
-            document.getElementById('search').placeholder = translations[currentLang].searchPlaceholder;
-        }
-
-        function downloadAllIcs() {
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
-            const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
-            const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
-
-            let filtered = allGames.filter(item => {
-                if (timeFrom && item.date < timeFrom) return false;
-                if (timeTo && item.date > timeTo) return false;
-                return item.platforms.some(p => currentFilters.platforms.includes(getPlatformClass(p.name)));
-            });
-
-            let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Game Calendar//EN", "CALSCALE:GREGORIAN"];
-            filtered.forEach(e => {
-                const d = new Date(e.date * 1000);
-                const y = d.getUTCFullYear();
-                const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-                const dy = String(d.getUTCDate()).padStart(2, '0');
-                icsContent.push("BEGIN:VEVENT", `UID:game-${e.game.id}-${e.date}@local`, `DTSTART;VALUE=DATE:${y}${m}${dy}`, `DTEND;VALUE=DATE:${y}${m}${dy}`, `SUMMARY:${e.game.name}`, "END:VEVENT");
-            });
-            icsContent.push("END:VCALENDAR");
-
-            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `game-calendar-${new Date().toISOString().split('T')[0]}.ics`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function downloadIcs(gameName, platformName, timestamp) {
-            const d = new Date(timestamp * 1000);
-            const y = d.getUTCFullYear();
-            const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-            const dy = String(d.getUTCDate()).padStart(2, '0');
-            
-            const icsContent = [
-                "BEGIN:VCALENDAR",
-                "VERSION:2.0",
-                "PRODID:-//Game Calendar//EN",
-                "CALSCALE:GREGORIAN",
-                "BEGIN:VEVENT",
-                `UID:game-${gameName.replace(/\s+/g, '-')}-${timestamp}@local`,
-                `DTSTART;VALUE=DATE:${y}${m}${dy}`,
-                `DTEND;VALUE=DATE:${y}${m}${dy}`,
-                `SUMMARY:${gameName} (${platformName})`,
-                "END:VEVENT",
-                "END:VCALENDAR"
-            ];
-
-            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const searchEl = document.getElementById('search');
+            if (searchEl && translations[currentLang].searchPlaceholder) {
+                searchEl.placeholder = translations[currentLang].searchPlaceholder;
+            }
         }
         
         function showCalendarShareLink() {
@@ -1301,7 +1294,32 @@ function downloadAllIcs() {
             navigator.clipboard.writeText(url).catch(() => {});
             alert(`🔗 Odkaz zkopírován!\n\n${url}`);
         }
+function updateTexts() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
 
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    el.placeholder = translations[currentLang][key];
+                }
+            });
+
+            const searchEl = document.getElementById('search');
+            if (searchEl && translations[currentLang].searchPlaceholder) {
+                searchEl.placeholder = translations[currentLang].searchPlaceholder;
+            }
+
+            // TENTO ŘÁDEK ZAJISTÍ PŘEKLAD TLAČÍTEK OBDOBÍ PŘI ZMĚNĚ JAZYKA
+            // Zjistíme, které tlačítko je zrovna aktivní (podle toho, které svítí)
+            const activeBtn = document.querySelector('#date-filter-buttons .filter-btn.active');
+            const activeDays = activeBtn ? parseInt(activeBtn.getAttribute('data-days')) || 30 : 30;
+            renderDateFilterButtons(activeDays);
+        }
         // Event Listeners
         document.getElementById('search').addEventListener('input', renderGames);
         document.getElementById('sort').addEventListener('change', renderGames);
