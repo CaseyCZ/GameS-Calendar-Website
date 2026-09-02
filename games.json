@@ -1542,22 +1542,6 @@
     ]
   },
   {
-    "id": 928718,
-    "date": 1788307200,
-    "game": {
-      "id": 406508,
-      "cover": {
-        "id": 571391,
-        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coc8vz.jpg"
-      },
-      "name": "Stuck in the Sewers",
-      "game_type": 0
-    },
-    "platforms": [
-      "PC (Microsoft Windows)"
-    ]
-  },
-  {
     "id": 950349,
     "date": 1788307200,
     "game": {
@@ -3024,22 +3008,6 @@
     ]
   },
   {
-    "id": 949494,
-    "date": 1788739200,
-    "game": {
-      "id": 347748,
-      "cover": {
-        "id": 485067,
-        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coaea3.jpg"
-      },
-      "name": "Replay Value: Second Hand Games",
-      "game_type": 0
-    },
-    "platforms": [
-      "PC (Microsoft Windows)"
-    ]
-  },
-  {
     "id": 949577,
     "date": 1788739200,
     "game": {
@@ -4453,22 +4421,6 @@
         "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cocsjw.jpg"
       },
       "name": "Put Back Stuff",
-      "game_type": 0
-    },
-    "platforms": [
-      "PC (Microsoft Windows)"
-    ]
-  },
-  {
-    "id": 929072,
-    "date": 1789344000,
-    "game": {
-      "id": 406684,
-      "cover": {
-        "id": 572196,
-        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coc9ic.jpg"
-      },
-      "name": "Galactic Bounty",
       "game_type": 0
     },
     "platforms": [
@@ -7185,6 +7137,102 @@
     ]
   },
   {
+    "id": 960350,
+    "date": 1790294400,
+    "game": {
+      "id": 333701,
+      "cover": {
+        "id": 441679,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co9gsv.jpg"
+      },
+      "name": "Lunar Drifter",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960352,
+    "date": 1790294400,
+    "game": {
+      "id": 298096,
+      "cover": {
+        "id": 432222,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co99i6.jpg"
+      },
+      "name": "Tomboy Adventure 2",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960353,
+    "date": 1790294400,
+    "game": {
+      "id": 306029,
+      "cover": {
+        "id": 390385,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d81.jpg"
+      },
+      "name": "Department of Collections",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960358,
+    "date": 1790294400,
+    "game": {
+      "id": 341034,
+      "cover": {
+        "id": 452642,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co9p9e.jpg"
+      },
+      "name": "Wild West Pioneers",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960360,
+    "date": 1790294400,
+    "game": {
+      "id": 343594,
+      "cover": {
+        "id": 457489,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co9t01.jpg"
+      },
+      "name": "Luminescence",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960361,
+    "date": 1790294400,
+    "game": {
+      "id": 349982,
+      "cover": {
+        "id": 518155,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cob3t7.jpg"
+      },
+      "name": "Lobstar: Arcade Version",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
     "id": 955735,
     "date": 1790380800,
     "game": {
@@ -7214,6 +7262,38 @@
     },
     "platforms": [
       "Nintendo Switch"
+    ]
+  },
+  {
+    "id": 960348,
+    "date": 1790380800,
+    "game": {
+      "id": 389969,
+      "cover": {
+        "id": 544528,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cobo5s.jpg"
+      },
+      "name": "Stranded With You",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960338,
+    "date": 1790467200,
+    "game": {
+      "id": 407445,
+      "cover": {
+        "id": 573884,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cocat8.jpg"
+      },
+      "name": "Billion Egg Farm",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
     ]
   },
   {
@@ -7354,6 +7434,102 @@
         "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cobgu1.jpg"
       },
       "name": "Space Cat Solitaire",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960328,
+    "date": 1790553600,
+    "game": {
+      "id": 347748,
+      "cover": {
+        "id": 485067,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coaea3.jpg"
+      },
+      "name": "Replay Value: Second Hand Games",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960329,
+    "date": 1790553600,
+    "game": {
+      "id": 372806,
+      "cover": {
+        "id": 497460,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coanuc.jpg"
+      },
+      "name": "The Hero Is Too Powerful so Let's Pleeeease Settle This Peacefully!",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960330,
+    "date": 1790553600,
+    "game": {
+      "id": 381023,
+      "cover": {
+        "id": 554177,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cobvlt.jpg"
+      },
+      "name": "Flashbound",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960333,
+    "date": 1790553600,
+    "game": {
+      "id": 392040,
+      "cover": {
+        "id": 584084,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cociok.jpg"
+      },
+      "name": "Radiotext",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960336,
+    "date": 1790553600,
+    "game": {
+      "id": 406684,
+      "cover": {
+        "id": 572196,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/coc9ic.jpg"
+      },
+      "name": "Galactic Bounty",
+      "game_type": 0
+    },
+    "platforms": [
+      "PC (Microsoft Windows)"
+    ]
+  },
+  {
+    "id": 960337,
+    "date": 1790553600,
+    "game": {
+      "id": 414714,
+      "cover": {
+        "id": 594907,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cocr17.jpg"
+      },
+      "name": "Armory Keeper",
       "game_type": 0
     },
     "platforms": [
@@ -8663,22 +8839,6 @@
         "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cobm19.jpg"
       },
       "name": "Villain: Path of the Necromancer",
-      "game_type": 0
-    },
-    "platforms": [
-      "PC (Microsoft Windows)"
-    ]
-  },
-  {
-    "id": 879293,
-    "date": 1790726400,
-    "game": {
-      "id": 392040,
-      "cover": {
-        "id": 584084,
-        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/cociok.jpg"
-      },
-      "name": "Radiotext",
       "game_type": 0
     },
     "platforms": [
@@ -32112,22 +32272,6 @@
         "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co9snq.jpg"
       },
       "name": "Vikings Dynasty",
-      "game_type": 0
-    },
-    "platforms": [
-      "PC (Microsoft Windows)"
-    ]
-  },
-  {
-    "id": 844962,
-    "date": 1798675200,
-    "game": {
-      "id": 341034,
-      "cover": {
-        "id": 452642,
-        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co9p9e.jpg"
-      },
-      "name": "Wild West Pioneers",
       "game_type": 0
     },
     "platforms": [

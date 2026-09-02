@@ -1,7 +1,8 @@
 const fs = require('fs');
+require('dotenv').config();
 
-const CLIENT_ID = 'r5sr40kapta9eorzmr4zlmtqyepa1b';
-const CLIENT_SECRET = 'cdwhzrnwgypkkxxg6pk7coe961m8xl';
+const CLIENT_ID = process.env.TWITCH_CLIENT_ID;
+const CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
 
 // Seznam slov, která identifikují edice, DLC nebo nechtěné verze v názvu hry
 const EXCLUDED_KEYWORDS = [
