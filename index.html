@@ -18,7 +18,7 @@
             --accent-purple: #c084fc;
             --accent-green: #10b981;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
@@ -389,7 +389,18 @@
             position: relative;
             overflow: hidden;
         }
-
+        /* Specificky pro tlačítka ikon (Srdce, Kalendář) */
+.card-actions .action-btn:not(:first-child) {
+    flex: 0 0 auto; /* Pevná velikost pro ikonková tlačítka */
+    padding: 0.5rem; 
+}
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;     /* Povolí zalamování tlačítek na další řádek, pokud se nevejdou */
+    gap: 0.4rem;         /* Mezery mezi tlačítky */
+    margin-top: 1rem;    /* Odsazení od textu nad tlačítky */
+    width: 100%;         /* Zajistí, že kontejner bere celou šířku game-info */
+}
         .game-cover img {
             width: 100%;
             height: 100%;
@@ -491,18 +502,23 @@
         }
 
         .action-btn {
-            flex: 1;
-            padding: 0.4rem 0.6rem;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--text-main);
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-            min-height: auto;
-        }
+    box-sizing: border-box; /* Důležité: padding se připočítává dovnitř šířky */
+    /* Základní styly pro všechna tlačítka a odkazy v akcích */
+    padding: 0.5rem 1rem; 
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent; /* nebo jiný rámeček, pokud používáte */
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Tlačítka se nesmí zmenšovat pod svou velikost */
+    
+    /* Zajištění, aby ikonová tlačítka nebyla příliš malá */
+    min-height: 36px;
+    min-width: 36px; 
+}
 
         .action-btn:hover {
             background: rgba(56, 189, 248, 0.1);
@@ -1121,12 +1137,12 @@ function renderGames() {
                         ${platformTags}
                     </div>
                     <div class="card-actions">
-                        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; gap: 0.3rem;">▶️ Trailer</a>
+                        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; gap: 0.3rem;">▶️</a>
                         <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
-                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="flex: 0 0 auto;">
-                            📅
+                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
+                        📅
                         </button>
                     </div>
                 </div>
@@ -1372,4 +1388,5 @@ function renderGames() {
     </script>
 </body>
 </html>
+
 
