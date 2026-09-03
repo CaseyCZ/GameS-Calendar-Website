@@ -293,25 +293,32 @@
             border-color: var(--accent-pink);
         }
 
-        /* CONTAINER */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem 2rem;
-        }
+        /* CONTAINER - rozšířeno na celou šířku */
+.main-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+}
 
-        .content-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 2rem;
-        }
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+}
 
-        @media (max-width: 1024px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-            }
-        }
+@media (max-width: 1024px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
 
+        .platform-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+}
         /* GAMES GRID */
         .games-grid {
             display: grid;
@@ -957,10 +964,28 @@ function initFilters() {
             renderGames();
         }
 
-        function getPlatformEmoji(platform) {
-            const emojis = { PC: '🖥️', Nintendo: '🎮', PlayStation: '🎯', Xbox: '❌' };
-            return emojis[platform] || '🎮';
-        }
+function getPlatformEmoji(platform) {
+    const p = (platform || '').toLowerCase();
+
+    // Modrá pro Windows / PC
+    const pcLogo = `<svg class="platform-icon" viewBox="0 0 24 24" fill="#0078D4"><path d="M0 3.449L9.75 2.1v9.451H0m0 1.01h9.75V22L0 20.551M10.65 1.95L24 0v11.325h-13.35m0 1.2h13.35V24L10.65 22.05"/></svg>`;
+    
+    // Modrá pro PlayStation
+    const psLogo = `<img src="https://cdn.simpleicons.org/playstation/0070D1" class="platform-icon" alt="PlayStation" />`;
+    
+    // Zelená pro Xbox
+    const xboxLogo = `<svg class="platform-icon" role="img" viewBox="0 0 512 512" fill="#107C41" aria-hidden="true"><path d="M369.9 318.2c44.3 54.3 64.7 98.8 54.4 118.7-7.9 15.1-56.7 44.6-92.6 55.9-29.6 9.3-68.4 13.3-100.4 10.2-38.2-3.7-76.9-17.4-110.1-39-27.9-18.2-34.2-25.7-34.2-40.6 0-29.9 32.9-82.3 89.2-142.1 32-33.9 76.5-73.7 81.4-72.6 9.4 2.1 84.3 75.1 112.3 109.5zM188.6 143.8c-29.7-26.9-58.1-53.9-86.4-63.4-15.2-5.1-16.3-4.8-28.7 8.1-29.2 30.4-53.5 79.7-60.3 122.4-5.4 34.2-6.1 43.8-4.2 60.5 5.6 50.5 17.3 85.4 40.5 120.9 9.5 14.6 12.1 17.3 9.3 9.9-4.2-11-.3-37.5 9.5-64 14.3-39 53.9-112.9 120.3-194.4zm311.6 63.5c-16.9-80-67.5-130.3-74.6-130.3-7.3 0-24.2 6.5-36 13.9-23.3 14.5-41 31.4-64.3 52.8 42.4 53.3 102.2 139.4 122.9 202.3 6.8 20.7 9.7 41.1 7.4 52.3-1.7 8.5-1.7 8.5 1.4 4.6 6.1-7.7 19.9-31.3 25.4-43.5 7.4-16.2 15-40.2 18.6-58.7 4.3-22.5 3.9-70.8-.8-93.4zM141.3 43c47.7-2.5 109.7 34.5 114.3 35.4 .7 .1 10.4-4.2 21.6-9.7 63.9-31.1 94-25.8 107.4-25.2-63.9-39.3-152.7-50-233.9-11.7-23.4 11.1-24 11.9-9.4 11.2z"/></svg>`;
+    
+    // Červená pro Nintendo
+    const nintendoLogo = `<svg class="platform-icon" viewBox="0 0 384 512" fill="#E60012"><path d="M21.1 33.9c12.7-4.6 26.9-.7 35.5 9.6L320 359.6 320 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 384c0 13.5-8.4 25.5-21.1 30.1s-26.9 .7-35.5-9.6L64 152.4 64 448c0 17.7-14.3 32-32 32S0 465.7 0 448L0 64C0 50.5 8.4 38.5 21.1 33.9z"/></svg>`;
+
+    if (p.includes('pc') || p.includes('windows')) return pcLogo;
+    if (p.includes('playstation') || p.includes('ps')) return psLogo;
+    if (p.includes('xbox')) return xboxLogo;
+    if (p.includes('nintendo') || p.includes('switch')) return nintendoLogo;
+
+    return '🎮';
+}
 
         function getPlatformClass(platformName) {
             const name = platformName.toLowerCase();
@@ -1033,7 +1058,9 @@ function initFilters() {
                 
                 const isFav = favorites.some(f => f.id === game.id);
                 const coverUrl = game.cover?.url || '';
-                const cardClass = currentViewMode === 'list' ? 'game-card list-view' : 'game-card';
+                const cardClass = currentViewMode === 'list' 
+    ? 'game-card list-view' 
+    : (currentViewMode === 'compact' ? 'game-card compact-view' : 'game-card');
 
                 const platformTags = game.platforms.map(p => {
                     const pName = typeof p === 'string' ? p : (p.name || '');
