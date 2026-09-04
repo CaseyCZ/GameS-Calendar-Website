@@ -461,7 +461,32 @@
             font-size: 0.85rem;
             color: var(--text-muted);
         }
+/* Základní stav karty v mřížce - skryté info */
+.game-card.grid-hover-card {
+    position: relative;
+    overflow: hidden;
+}
 
+.game-card.grid-hover-card .grid-overlay-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(18, 18, 18, 0.92); /* Tmavé poloprůhledné pozadí přes obálku */
+    backdrop-filter: blur(4px);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transform: translateY(100%); /* Schová se pod spodní okraj karty */
+    transition: transform 0.3s ease-in-out;
+    z-index: 2;
+}
+
+/* Po najetí myší na kartu v mřížce vyskočí informace nahoru */
+.game-card.grid-hover-card:hover .grid-overlay-info {
+    transform: translateY(0);
+}
         .release-date {
             background: rgba(255, 71, 155, 0.1);
             padding: 0.4rem 0.8rem;
@@ -1085,7 +1110,7 @@ function renderGames() {
     if (currentViewMode === 'compact') container.classList.add('compact');
     if (currentViewMode === 'list') container.classList.add('list');
 
-    container.innerHTML = filtered.map(game => {
+container.innerHTML = filtered.map(game => {
         const date = new Date((game.date || 0) * 1000);
         const dateStr = date.toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-US');
         const year = date.getUTCFullYear();
@@ -1102,24 +1127,12 @@ function renderGames() {
         if (viewMode === 'list') cardClass += ' list-view';
         if (viewMode === 'compact') cardClass += ' compact-view';
 
-        // 1. REŽIM MŘÍŽKY (GRID) - POUZE ČISTÁ OBÁLKA
-        if (viewMode === 'grid') {
-            return `
-                <div class="${cardClass}" title="${game.name}" style="padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: transparent; border: none;">
-                    <div class="game-cover" style="width: 100%; height: 100%;">
-                        ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}" style="width: 100%; height: 100%; object-fit: cover; display: block;">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 10px; font-size: 0.85rem;">${game.name}</div>`}
-                    </div>
-                </div>
-            `;
-        }
-
-// 2. OSTATNÍ REŽIMY (LIST, COMPACT) - PLNÝ DETAIL
+        // Generování platformových tlačítek (sdílené pro mřížku i ostatní režimy)
         const platformTags = (game.platforms || []).map(p => {
             const pName = typeof p === 'string' ? p : (p.name || '');
             const pClass = typeof getPlatformClass === 'function' ? getPlatformClass(pName) : '';
             const emoji = typeof getPlatformEmoji === 'function' ? getPlatformEmoji(pClass) : '🎮';
             
-            // Přímé URL do oficiálních obchodů
             const pLower = pName.toLowerCase();
             const query = encodeURIComponent(game.name);
             let storeUrl = `https://www.google.com/search?q=${query}+game`;
@@ -1139,6 +1152,36 @@ function renderGames() {
 
         const firstPlatform = game.platforms.length > 0 ? (typeof game.platforms[0] === 'string' ? game.platforms[0] : (game.platforms[0].name || 'Multi')) : 'Multi';
 
+        // 1. REŽIM MŘÍŽKY (GRID) - OBÁLKA + HOVER DETAIL
+        if (viewMode === 'grid') {
+            return `
+                <div class="${cardClass} grid-hover-card" title="${game.name}">
+                    <div class="game-cover">
+                        ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 10px; font-size: 0.85rem;">${game.name}</div>`}
+                    </div>
+                    <div class="grid-overlay-info">
+                        <div class="game-title">${game.name}</div>
+                        <div class="game-meta">
+                            <div class="release-date">${dateStr}</div>
+                        </div>
+                        <div class="platforms-tags">
+                            ${platformTags}
+                        </div>
+                        <div class="card-actions">
+                            <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; gap: 0.3rem;">▶️</a>
+                            <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
+                                ${isFav ? '❤️' : '🤍'}
+                            </button>
+                            <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
+                            📅
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2. OSTATNÍ REŽIMY (LIST, COMPACT) - PLNÝ DETAIL
         return `
             <div class="${cardClass}">
                 <div class="game-cover">
