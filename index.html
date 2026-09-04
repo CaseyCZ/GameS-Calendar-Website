@@ -469,14 +469,9 @@
 /* Hlavní kontejner pro hry v režimu seznamu - 3 sloupce vedle sebe */
 #container.list-view-active, 
 #container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-#container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .game-card.grid-hover-card .grid-overlay-info {
@@ -1194,35 +1189,49 @@ container.innerHTML = filtered.map(game => {
         }
 
 if (viewMode === 'list') {
-            return `
-                <div class="${cardClass}" style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; box-sizing: border-box; width: 100%;">
-                    <!-- Malá obálka -->
-                    <div class="game-cover" style="width: 34px; height: 46px; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
-                        ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}" style="width: 100%; height: 100%; object-fit: cover;">` : ''}
-                    </div>
+    return `
+        <div class="grid gap-[4px] w-full h-full p-2 text-[14px] grid-cols-3 sm:grid-cols-5 lg:grid-cols-[1fr_auto_1fr_1fr_1fr_1fr] pb-[4px] items-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[8px]" id="${game.id || 'game-' + Math.random()}">
+            <!-- Datum -->
+            <p class="w-[170px] col-span-full lg:col-span-1 font-bold lg:font-normal text-[16px] lg:[font-size:inherit] text-nowrap">
+                <time datetime="${year}-${month}-${day}">${dateStr}</time>
+            </p>
 
-                    <!-- Trailer tlačítko -->
-                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 4px; background: rgba(255,255,255,0.08); text-decoration: none; flex-shrink: 0; font-size: 0.7rem;">▶️</a>
+            <!-- Obálka hry -->
+            <div class="w-[90px] sm:w-[60px] flex-shrink-0">
+                <a href="${coverUrl || '#'}" target="_blank">
+                    <img src="${coverUrl}" height="85" width="60" alt="${game.name} cover art" class="block min-[350px]:hidden sm:block object-contain object-top border border-[#ededed]">
+                    <img src="${coverUrl}" height="128" width="90" alt="${game.name} cover art" class="hidden min-[350px]:block sm:hidden object-contain object-top border border-[#ededed]">
+                </a>
+            </div>
 
-                    <!-- Název a datum -->
-                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
-                        <div class="game-title" style="font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${game.name}">${game.name}</div>
-                        <div style="font-size: 0.7rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${dateStr}</div>
-                    </div>
+            <!-- Název hry -->
+            <div class="min-w-0 col-span-2 sm:col-span-1 flex items-center">
+                <p class="overflow-hidden text-ellipsis whitespace-normal break-normal font-bold sm:font-normal text-[18px] min-[350px]:text-[24px] sm:text-[18px] lg:[font-size:inherit]" title="${game.name}">${game.name}</p>
+            </div>
 
-                    <!-- Platformy -->
-                    <div class="platforms-tags" style="display: flex; gap: 3px; flex-shrink: 0; font-size: 0.75rem; opacity: 0.8;">
-                        ${platformTags}
-                    </div>
+            <!-- Platformy -->
+            <div class="flex flex-col max-w-[165px] justify-center">
+                ${platformTags}
+            </div>
 
-                    <!-- Akční tlačítka (Oblíbené, Kalendář) -->
-                    <div class="card-actions" style="display: flex; gap: 2px; flex-shrink: 0; margin-left: 2px;">
-                        <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="background: none; border: none; cursor: pointer; font-size: 0.8rem; padding: 2px;">${isFav ? '❤️' : '🤍'}</button>
-                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="background: none; border: none; cursor: pointer; font-size: 0.8rem; padding: 2px;">📅</button>
-                    </div>
-                </div>
-            `;
-        }
+            <!-- Trailer -->
+            <div class="h-full w-full flex justify-center items-center">
+                <a href="https://youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="flex flex-col sm:flex-row items-center gap-0 sm:gap-[3px] text-[14px] sm:[font-size:inherit] h-full sm:h-auto">
+                    <span class="relative group inline-flex">
+                        <svg data-prefix="fab" data-icon="youtube" class="svg-inline--fa fa-youtube h-full w-auto text-[30px] min-[350px]:text-[40px] sm:text-[16px] text-youtube" role="img" viewBox="0 0 576 512" aria-hidden="true"><path fill="currentColor" d="M549.7 124.1C543.5 100.4 524.9 81.8 501.4 75.5 458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5C51.2 81.8 32.7 100.4 26.4 124.1 15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8 42.6 11.5 213.4 11.5 213.4 11.5s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6l0-162.4 142.7 81.2-142.7 81.2z"></path></svg>
+                    </span>
+                    <span>Trailer ▶️</span>
+                </a>
+            </div>
+
+            <!-- Akční tlačítka (Oblíbené, Kalendář) -->
+            <div class="flex sm:flex-col gap-[5px] sm:gap-1 w-full justify-center items-center">
+                <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">${isFav ? '❤️' : '🤍'}</button>
+                <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">📅</button>
+            </div>
+        </div>
+    `;
+}
 
         // 3. REŽIM KOMPAKTNÍ (COMPACT-VIEW) - PŮVODNÍ
         return `
