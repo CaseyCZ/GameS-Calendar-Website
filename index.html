@@ -1113,12 +1113,28 @@ function renderGames() {
             `;
         }
 
-        // 2. OSTATNÍ REŽIMY (LIST, COMPACT) - PLNÝ DETAIL
+// 2. OSTATNÍ REŽIMY (LIST, COMPACT) - PLNÝ DETAIL
         const platformTags = (game.platforms || []).map(p => {
             const pName = typeof p === 'string' ? p : (p.name || '');
             const pClass = typeof getPlatformClass === 'function' ? getPlatformClass(pName) : '';
             const emoji = typeof getPlatformEmoji === 'function' ? getPlatformEmoji(pClass) : '🎮';
-            return `<span class="platform-tag">${emoji} ${pName}</span>`;
+            
+            // Přímé URL do oficiálních obchodů
+            const pLower = pName.toLowerCase();
+            const query = encodeURIComponent(game.name);
+            let storeUrl = `https://www.google.com/search?q=${query}+game`;
+
+            if (pLower.includes('pc') || pLower.includes('windows') || pLower.includes('steam')) {
+                storeUrl = `https://store.steampowered.com/search/?term=${query}`;
+            } else if (pLower.includes('playstation') || pLower.includes('ps')) {
+                storeUrl = `https://store.playstation.com/en-cz/search/${query}`;
+            } else if (pLower.includes('xbox')) {
+                storeUrl = `https://www.xbox.com/en-US/search?q=${query}`;
+            } else if (pLower.includes('nintendo') || pLower.includes('switch')) {
+                storeUrl = `https://www.nintendo.com/us/search/#q=${query}`;
+            }
+
+            return `<a href="${storeUrl}" target="_blank" class="platform-tag platform-btn" title="Otevřít v obchodě">${emoji} <span>${pName}</span></a>`;
         }).join('');
 
         const firstPlatform = game.platforms.length > 0 ? (typeof game.platforms[0] === 'string' ? game.platforms[0] : (game.platforms[0].name || 'Multi')) : 'Multi';
