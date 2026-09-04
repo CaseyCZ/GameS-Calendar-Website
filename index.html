@@ -466,6 +466,18 @@
     position: relative;
     overflow: hidden;
 }
+/* Hlavní kontejner pro hry v režimu seznamu - 3 sloupce vedle sebe */
+#container.list-view-active, 
+#container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+#container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
 
 .game-card.grid-hover-card .grid-overlay-info {
     position: absolute;
@@ -1127,7 +1139,7 @@ container.innerHTML = filtered.map(game => {
         if (viewMode === 'list') cardClass += ' list-view';
         if (viewMode === 'compact') cardClass += ' compact-view';
 
-        // Generování platformových tlačítek (sdílené pro mřížku i ostatní režimy)
+        // Generování platformových tlačítek
         const platformTags = (game.platforms || []).map(p => {
             const pName = typeof p === 'string' ? p : (p.name || '');
             const pClass = typeof getPlatformClass === 'function' ? getPlatformClass(pName) : '';
@@ -1152,7 +1164,7 @@ container.innerHTML = filtered.map(game => {
 
         const firstPlatform = game.platforms.length > 0 ? (typeof game.platforms[0] === 'string' ? game.platforms[0] : (game.platforms[0].name || 'Multi')) : 'Multi';
 
-        // 1. REŽIM MŘÍŽKY (GRID) - OBÁLKA + HOVER DETAIL
+        // 1. REŽIM MŘÍŽKY (GRID)
         if (viewMode === 'grid') {
             return `
                 <div class="${cardClass} grid-hover-card" title="${game.name}">
@@ -1181,7 +1193,38 @@ container.innerHTML = filtered.map(game => {
             `;
         }
 
-        // 2. OSTATNÍ REŽIMY (LIST, COMPACT) - PLNÝ DETAIL
+if (viewMode === 'list') {
+            return `
+                <div class="${cardClass}" style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; box-sizing: border-box; width: 100%;">
+                    <!-- Malá obálka -->
+                    <div class="game-cover" style="width: 34px; height: 46px; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                        ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}" style="width: 100%; height: 100%; object-fit: cover;">` : ''}
+                    </div>
+
+                    <!-- Trailer tlačítko -->
+                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 4px; background: rgba(255,255,255,0.08); text-decoration: none; flex-shrink: 0; font-size: 0.7rem;">▶️</a>
+
+                    <!-- Název a datum -->
+                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+                        <div class="game-title" style="font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${game.name}">${game.name}</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${dateStr}</div>
+                    </div>
+
+                    <!-- Platformy -->
+                    <div class="platforms-tags" style="display: flex; gap: 3px; flex-shrink: 0; font-size: 0.75rem; opacity: 0.8;">
+                        ${platformTags}
+                    </div>
+
+                    <!-- Akční tlačítka (Oblíbené, Kalendář) -->
+                    <div class="card-actions" style="display: flex; gap: 2px; flex-shrink: 0; margin-left: 2px;">
+                        <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="background: none; border: none; cursor: pointer; font-size: 0.8rem; padding: 2px;">${isFav ? '❤️' : '🤍'}</button>
+                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="background: none; border: none; cursor: pointer; font-size: 0.8rem; padding: 2px;">📅</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 3. REŽIM KOMPAKTNÍ (COMPACT-VIEW) - PŮVODNÍ
         return `
             <div class="${cardClass}">
                 <div class="game-cover">
