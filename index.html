@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
@@ -711,38 +711,212 @@
                 min-width: auto;
             }
         }
+
+/* Kompaktní horní lišta – navazuje na původní vzhled */
+body { line-height: 1.5; }
+.header {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+}
+.header-content { max-width: none; }
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 0;
+}
+.brand { gap: 10px; min-width: 0; }
+.brand img { width: 40px; height: 40px; border-radius: 10px; }
+.brand h1 { font-size: 1.45rem; line-height: 1.2; }
+.brand .subtitle { font-size: 11px; margin-top: 2px; }
+.header-actions { gap: 7px; }
+.stats { gap: 20px; margin-left: auto; }
+.stat { min-width: 84px; gap: 2px; text-align: center; }
+.stat-value { font-size: 1.4rem; line-height: 1.15; }
+.stat-label { font-size: 10px; }
+.add-all-top { padding: 8px 13px; font-size: 13px; }
+.view-modes { gap: 2px; padding: 3px; }
+.view-mode-btn { padding: 6px 9px; }
+.lang-btn { padding: 7px 10px; }
+.header .share-btn {
+    background: rgba(255,255,255,.04);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 7px 10px;
+}
+.header .share-btn:hover { border-color: var(--accent-pink); }
+
+.controls {
+    max-width: none;
+    margin: 0 20px 10px;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+.controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.controls-bar > * { flex-shrink: 0; }
+.toolbar-search { width: clamp(170px, 13vw, 240px); flex: 0 1 240px; min-width: 170px; }
+.toolbar-search input, .toolbar-sort { width: 100%; }
+.toolbar-sort-wrap { width: 150px; }
+.toolbar-field {
+    background: #160d24;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-main);
+    padding: 7px 10px;
+    height: 36px;
+    min-height: 36px;
+    font-size: 13px;
+    font-family: inherit;
+}
+.toolbar-field:focus { outline: 1px solid var(--accent-pink); }
+.toolbar-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.toolbar-group .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px 9px;
+    font-size: 12px;
+}
+.toolbar-group .filter-btn[aria-pressed="true"] {
+    background: var(--accent-pink);
+    border-color: var(--accent-pink);
+    color: #fff;
+}
+.toolbar-platforms .filter-btn[aria-pressed="true"] { background: rgba(255,71,155,.2); color: var(--text-main); }
+.toolbar-platforms .filter-btn[data-platform="all"][aria-pressed="true"] { background: rgba(255,71,155,.2); }
+.toolbar-platforms .platform-icon { width: 15px; height: 15px; margin: 0; flex-shrink: 0; }
+.toolbar-platforms .platform-label { white-space: nowrap; }
+.toolbar-month select { max-width: 112px; }
+.toolbar-month .year-select { width: 76px; }
+.toolbar-month .filter-btn { min-width: 30px; padding: 5px 7px; font-size: 18px; }
+.toolbar-custom { position: relative; flex-shrink: 0; }
+.toolbar-custom > .filter-btn { height: 36px; font-size: 12px; }
+.toolbar-custom > .filter-btn[aria-expanded="true"] { border-color: var(--accent-pink); }
+.date-panel {
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    z-index: 50;
+    width: min(350px, calc(100vw - 32px));
+    background: #21152b;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.4);
+}
+.date-panel label { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+.date-panel .toolbar-field { display: block; width: 100%; margin-top: 4px; color-scheme: dark; }
+.date-panel-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.date-panel-actions .filter-btn { padding: 7px 12px; }
+.filter-note { color: var(--text-muted); font-size: 12px; margin-top: 7px; }
+.filter-note[hidden], .date-panel[hidden] { display: none !important; }
+.main-container { padding: 0 20px 30px; }
+.content-wrapper { grid-template-columns: minmax(0,1fr) 290px; gap: 18px; align-items: start; }
+.content-wrapper > * { min-width: 0; }
+.results-bar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 9px; font-size:12px; color:var(--text-muted); }
+.results-bar strong { color: var(--text-main); }
+.month-stat { width: 100%; color: var(--text-main); cursor: pointer; text-align: left; font: inherit; }
+.month-stat:hover, .month-stat.active { border-color: var(--accent-pink); background: rgba(255,71,155,.1); }
+.month-total { display:flex; justify-content:space-between; border-top:1px solid var(--border-color); margin-top:12px; padding-top:10px; font-weight:700; }
+.month-total strong { color:var(--accent-pink); }
+.monthly-note { font-size:11px; color:var(--text-muted); margin-bottom:10px; }
+.favorite-remove { border:0; background:transparent; padding:4px; font-size:17px; }
+.empty-state { padding:35px 12px; }
+.empty-state p { margin-top:5px; }
+.platform-tag { text-decoration:none; }
+.platform-tag:hover { border-color:var(--accent-purple); }
+.game-card .card-actions { opacity:1; visibility:visible; }
+.game-card.grid-hover-card .card-actions { opacity:1; visibility:visible; }
+.game-card.grid-hover-card:focus-within .grid-overlay-info { transform:translateY(0); }
+.game-card.grid-hover-card:focus-within { outline:1px solid var(--accent-pink); }
+.game-cover img { display:block; }
+@media (hover:hover) and (pointer:fine) {
+    .game-card.grid-hover-card:not(:hover):not(:focus-within) .grid-overlay-info { transform:translateY(100%); }
+}
+@media (max-width: 1350px) {
+    .toolbar-search { width:180px; min-width:160px; }
+    .toolbar-platforms .platform-label { display:none; }
+    .toolbar-platforms .filter-btn { min-width:36px; }
+}
+@media (max-width: 1024px) {
+    .header-top { flex-wrap:wrap; }
+    .stats { order:3; width:100%; margin-left:0; justify-content:flex-start; }
+    .controls-bar { flex-wrap:wrap; overflow:visible; }
+    .toolbar-search { flex:1 1 230px; width:auto; max-width:none; }
+    .toolbar-sort-wrap { flex:0 0 165px; }
+    .toolbar-platforms .platform-label { display:inline; }
+    .content-wrapper { grid-template-columns:1fr; }
+}
+@media (max-width: 768px) {
+    .header { padding:10px 12px; }
+    .header-top { flex-direction:row; align-items:center; }
+    .header-actions { width:auto; }
+    .stats { gap:15px; }
+    .controls { margin:0 10px 10px; padding:10px; }
+    .toolbar-search { flex:1 1 100%; }
+    .toolbar-sort-wrap { flex:1 1 100%; width:auto; }
+    .toolbar-platforms { flex-wrap:wrap; }
+    .toolbar-presets { flex-wrap:wrap; }
+    .main-container { padding:0 10px 24px; }
+    .games-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:9px; }
+    .games-grid.compact { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+    .game-card.grid-hover-card .grid-overlay-info { position:static; transform:none; }
+    .game-card.grid-hover-card .game-cover { aspect-ratio:3/4; }
+}
+@media (max-width: 480px) {
+    .brand h1 { font-size:1.2rem; }
+    .brand img { width:34px; height:34px; }
+    .stat { min-width:0; }
+    .stat-value { font-size:1.2rem; }
+    .stat-label { font-size:9px; }
+    .header-actions { gap:4px; }
+    .view-mode-btn { padding:5px 7px; }
+    .toolbar-month { flex-wrap:wrap; }
+    .toolbar-month select { max-width:105px; }
+    .date-panel { left:0; right:auto; }
+    .games-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .games-grid.compact { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+
+.controls{position:relative}
+.date-panel{right:12px}
+@media(max-width:480px){.date-panel{left:auto;right:0}}
+@media (hover:none) {
+    .game-card.grid-hover-card .grid-overlay-info { position:static; transform:none; }
+}
     </style>
 </head>
 <body>
-    <!-- HEADER -->
+    <!-- HEADER: původní ovládání, pouze kompaktnější rozložení -->
     <header class="header">
         <div class="header-content">
             <div class="header-top">
                 <div class="brand">
-                    <img src="CaseyCZ.png" alt="Logo">
-                    <h1 data-i18n="mainTitle">Herní Kalendář</h1>
-                </div>
-                <div class="header-actions">
-                    <button class="add-all-top" onclick="downloadAllIcs()" title="Stáhnout všechny filtrované hry">
-                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor; display: inline; vertical-align: middle; margin-right: 6px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        <span data-i18n="addAllBtn">Přidat VŠE</span>
-                    </button>
-                    <div class="view-modes">
-                        <button class="view-mode-btn active" onclick="switchViewMode('grid')" data-i18n="viewGrid" title="Mřížka">⊞</button>
-                        <button class="view-mode-btn" onclick="switchViewMode('compact')" data-i18n="viewCompact" title="Kompakt">≣</button>
-                        <button class="view-mode-btn" onclick="switchViewMode('list')" data-i18n="viewList" title="Seznam">☰</button>
+                    <img src="CaseyCZ.png" alt="Logo" onerror="this.style.display='none'">
+                    <div>
+                        <h1 data-i18n="mainTitle">Herní Kalendář</h1>
+                        <p class="subtitle" data-i18n="subtitle">Živá data z IGDB API. Plán herních vydání.</p>
                     </div>
-                    <button class="lang-btn" onclick="toggleLanguage()">EN / CZ</button>
-                </div>
-            </div>
-            <div class="header-bottom">
-                <div>
-                    <p class="subtitle" data-i18n="subtitle">Živá data z IGDB API. Plán nových herních vydání na celý rok.</p>
                 </div>
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-value" id="stat-total">0</div>
-                        <div class="stat-label" data-i18n="statTotal">Her celkem</div>
+                        <div class="stat-label" data-i18n="statTotal">V období</div>
                     </div>
                     <div class="stat">
                         <div class="stat-value" id="stat-30days">0</div>
@@ -753,52 +927,66 @@
                         <div class="stat-label" data-i18n="statUpcoming">Příští měsíc</div>
                     </div>
                 </div>
+                <div class="header-actions">
+                    <button class="add-all-top" onclick="downloadAllIcs()" title="Stáhnout všechny filtrované hry">
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;display:inline;vertical-align:middle;margin-right:6px"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span data-i18n="addAllBtn">Přidat VŠE</span>
+                    </button>
+                    <div class="view-modes">
+                        <button class="view-mode-btn active" onclick="switchViewMode('grid')" data-i18n="viewGrid" title="Mřížka">⊞</button>
+                        <button class="view-mode-btn" onclick="switchViewMode('compact')" data-i18n="viewCompact" title="Kompakt">≣</button>
+                        <button class="view-mode-btn" onclick="switchViewMode('list')" data-i18n="viewList" title="Seznam">☰</button>
+                    </div>
+                    <button class="share-btn" id="share-btn" onclick="showCalendarShareLink()" title="Sdílet vybrané filtry" aria-label="Sdílet vybrané filtry">↗</button>
+                    <button class="lang-btn" onclick="toggleLanguage()">EN / CZ</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- CONTROLS -->
-    <div class="controls">
-        <!-- Search & Sort -->
-        <div class="filter-section">
-            <div class="filter-row">
-                <div class="search-box">
-                    <input type="text" id="search" placeholder="🔍 Hledat hry..." data-i18n-placeholder="searchPlaceholder">
-                </div>
-                <select id="sort" class="sort-select">
+    <!-- Jediná horní lišta filtrů; vlastní rozsah je v rozbalovacím panelu. -->
+    <section class="controls" aria-label="Filtry">
+        <div class="controls-bar">
+            <div class="toolbar-search">
+                <input class="toolbar-field" type="search" id="search" placeholder="🔍 Hledat hry..." data-i18n-placeholder="searchPlaceholder" aria-label="Hledat hry">
+            </div>
+            <div class="toolbar-sort-wrap">
+                <select class="toolbar-field toolbar-sort" id="sort" aria-label="Řazení">
                     <option value="date-asc" data-i18n="sortDateAsc">Nejdřív vydané</option>
-                    <option value="date-desc">Nejpozději vydané</option>
-                    <option value="name-asc">Abecedně (A-Z)</option>
-                    <option value="name-desc">Abecedně (Z-A)</option>
+                    <option value="date-desc" data-i18n="sortDateDesc">Nejpozději vydané</option>
+                    <option value="name-asc" data-i18n="sortNameAsc">Abecedně (A-Z)</option>
+                    <option value="name-desc" data-i18n="sortNameDesc">Abecedně (Z-A)</option>
                 </select>
             </div>
-        </div>
-
-        <!-- Platform Filters -->
-        <div class="filter-section">
-            <div class="filter-row">
-                <div class="filter-label" data-i18n="filterPlatform">Platformy:</div>
-                <div class="filter-group" id="platform-filters"></div>
+            <div class="toolbar-group toolbar-platforms" id="platform-filters" aria-label="Platformy"></div>
+            <div class="toolbar-group toolbar-presets" id="period-presets" aria-label="Období"></div>
+            <div class="toolbar-group toolbar-month">
+                <button class="filter-btn" id="prev-month" title="Předchozí měsíc" aria-label="Předchozí měsíc">‹</button>
+                <select class="toolbar-field" id="month-select" aria-label="Měsíc"></select>
+                <select class="toolbar-field year-select" id="year-select" aria-label="Rok"></select>
+                <button class="filter-btn" id="next-month" title="Následující měsíc" aria-label="Následující měsíc">›</button>
+            </div>
+            <div class="toolbar-custom" id="custom-control">
+                <button class="filter-btn" id="custom-toggle" type="button" aria-expanded="false" aria-controls="custom-panel" data-i18n="customRange">📅 Vlastní</button>
             </div>
         </div>
-
-        <!-- Date Filters -->
-        <div class="filter-section">
-            <div class="filter-row">
-                <div class="filter-label" data-i18n="filterDate">Období:</div>
-                <div class="filter-group" id="date-filter-buttons"></div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <input type="date" id="date-from" style="padding: 0.5rem 0.8rem; background: #160d24; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 0.85rem;">
-                    <input type="date" id="date-to" style="padding: 0.5rem 0.8rem; background: #160d24; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 0.85rem;">
-                </div>
-            </div>
-        </div>
-    </div>
+        <form class="date-panel" id="custom-panel" hidden>
+                    <label><span data-i18n="from">Od</span><input class="toolbar-field" type="date" id="date-from" required></label>
+                    <label><span data-i18n="to">Do</span><input class="toolbar-field" type="date" id="date-to" required></label>
+                    <p class="filter-note" data-i18n="inclusiveNote">Rozsah včetně obou zvolených dní.</p>
+                    <div class="date-panel-actions">
+                        <button type="button" class="filter-btn" id="custom-cancel" data-i18n="cancel">Zrušit</button>
+                        <button type="submit" class="filter-btn active" data-i18n="apply">Použít</button>
+                    </div>
+        </form>
+        <p class="filter-note" id="period-note" role="status" hidden></p>
+    </section>
     <!-- MAIN CONTAINER -->
     <div class="main-container">
         <div class="content-wrapper">
             <!-- Games Grid -->
             <div>
+                <div class="results-bar"><strong id="results-count" aria-live="polite"></strong><span id="range-label"></span></div>
                 <div id="games-grid" class="games-grid">
                     <div class="empty-state" style="grid-column: 1 / -1;">
                         <div class="empty-state-icon">⏳</div>
@@ -812,7 +1000,9 @@
                 <!-- Monthly Stats -->
                 <div class="sidebar-card">
                     <div class="sidebar-title">📅 <span data-i18n="monthlyStats">Hry po měsících</span></div>
+                    <p class="monthly-note" data-i18n="monthlyNote">Počty odpovídají vybranému období a filtrům. Kliknutím otevřete celý měsíc.</p>
                     <div class="month-stats" id="month-stats"></div>
+                    <div class="month-total"><span data-i18n="total">Celkem</span><strong id="month-total">0</strong></div>
                 </div>
 
                 <!-- Favorites -->
@@ -826,12 +1016,47 @@
         </div>
     </div>
 
+    <script id="calendar-core">
+/* Date-only values from IGDB are UTC calendar days. All comparisons use YYYY-MM-DD. */
+const CalendarCore = (() => {
+  const pad = n => String(n).padStart(2, '0');
+  const localDay = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const utcDay = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
+  function validDay(s){ if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return false;const d=new Date(s+'T00:00:00Z');return !isNaN(d)&&utcDay(d)===s; }
+  function addDays(day,n){const d=new Date(day+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return utcDay(d);}
+  function monthRange(year,month){
+    const start=new Date(0),end=new Date(0);
+    start.setUTCFullYear(year,month,1);start.setUTCHours(0,0,0,0);
+    end.setUTCFullYear(year,month+1,0);end.setUTCHours(0,0,0,0);
+    return {from:utcDay(start),to:utcDay(end)};
+  }
+  function periodRange(kind,today,coverage){const d=new Date(today+'T00:00:00Z'),y=d.getUTCFullYear(),m=d.getUTCMonth();if(kind==='month')return monthRange(y,m);if(kind==='next')return monthRange(y,m+1);if(kind==='year')return {from:`${y}-01-01`,to:`${y}-12-31`};if(kind==='all')return coverage&&coverage.from?{...coverage}:monthRange(y,m);const n=Number(kind);if([7,30,90].includes(n))return {from:today,to:addDays(today,n-1)};return monthRange(y,m);}
+  function dateFromValue(value){let ms;if(typeof value==='number')ms=value>1e12?value:value*1000;else if(typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value))ms=Date.parse(value+'T00:00:00Z');else if(typeof value==='string'&&/^\d+(?:\.\d+)?$/.test(value)){const n=Number(value);ms=n>1e12?n:n*1000;}else ms=Date.parse(value);if(!Number.isFinite(ms))return null;const d=new Date(ms);return isNaN(d)?null:{day:utcDay(d),timestamp:Math.floor(ms/1000)};}
+  function platformName(p){if(typeof p==='string')return p;if(typeof p==='number')return String(p);return p?.name||String(p?.id||'');}
+  function platformClass(name){
+    const n=String(name).toLowerCase();
+    if(['6','pc','windows','3','14'].includes(n)||n.includes('windows')||n.includes('steam')||n.includes('mac'))return 'PC';
+    if(['130','5','20','37','41','137','159'].includes(n)||n.includes('nintendo')||n.includes('switch')||n.includes('wii')||n.includes('game boy')||n.includes('gamecube'))return 'Nintendo';
+    if(['7','8','9','38','46','48','165','167'].includes(n)||n.includes('playstation')||/^ps[1-5]$/.test(n))return 'PlayStation';
+    if(['11','12','49','169'].includes(n)||n.includes('xbox'))return 'Xbox';
+    return 'Other';
+  }
+  function normalizeReleases(raw){const map=new Map();for(const item of raw){const info=dateFromValue(item.date??item.first_release_date);const game=item.game||item;const name=game?.name;if(!info||!name)continue;const gameId=game.id??item.game_id??name.toLowerCase();const key=String(gameId)+'|'+info.day;const ps=item.platforms??game.platforms??(item.platform?[item.platform]:[]);const platforms=(Array.isArray(ps)?ps:[ps]).map(platformName).filter(Boolean);const cover=game.cover?.url??(typeof game.cover==='string'?game.cover:'');if(!map.has(key))map.set(key,{id:item.id??key,gameId,name,day:info.day,date:info.timestamp,cover,platforms:[],gameType:game.game_type??0});const result=map.get(key);if(!result.cover&&cover)result.cover=cover;for(const p of platforms)if(!result.platforms.includes(p))result.platforms.push(p);}return [...map.values()].sort((a,b)=>a.day.localeCompare(b.day)||a.name.localeCompare(b.name));}
+  function filterGames(games,filters,ignoreRange=false){const search=(filters.search||'').toLocaleLowerCase().trim();const selected=filters.platforms;return games.filter(g=>(!search||g.name.toLocaleLowerCase().includes(search))&&(ignoreRange||(!filters.from||g.day>=filters.from)&&(!filters.to||g.day<=filters.to))&&(!selected||g.platforms.some(p=>selected.includes(platformClass(p)))));}
+  function monthCounts(games,range){const counts=new Map();for(const g of games){const key=g.day.slice(0,7);counts.set(key,(counts.get(key)||0)+1);}if(!range?.from||!range?.to)return [...counts].sort().map(([key,count])=>({key,count}));const result=[];let y=Number(range.from.slice(0,4)),m=Number(range.from.slice(5,7))-1;const end=range.to.slice(0,7);while(`${String(y).padStart(4,'0')}-${pad(m+1)}`<=end){const key=`${String(y).padStart(4,'0')}-${pad(m+1)}`;result.push({key,count:counts.get(key)||0});m++;if(m===12){m=0;y++;}}return result;}
+  function summaries(games,filters,today){const visible=filterGames(games,filters);const base=filterGames(games,filters,true);const next30={from:today,to:addDays(today,29)};const d=new Date(today+'T00:00:00Z');const next=monthRange(d.getUTCFullYear(),d.getUTCMonth()+1);const count=r=>base.filter(g=>g.day>=r.from&&g.day<=r.to).length;return {total:visible.length,in30:count(next30),nextMonth:count(next),months:monthCounts(visible,{from:filters.from,to:filters.to})};}
+  function coverage(games){if(!games.length)return null;let from=games[0].day,to=from;for(const g of games){if(g.day<from)from=g.day;if(g.day>to)to=g.day;}return {from,to};}
+  return {localDay,utcDay,validDay,addDays,monthRange,periodRange,dateFromValue,platformName,platformClass,normalizeReleases,filterGames,monthCounts,summaries,coverage};
+})();
+window.CalendarCore=CalendarCore;
+    </script>
+
     <script>
         const translations = {
             cs: {
                 mainTitle: "Herní Kalendář",
-                subtitle: "Živá data z IGDB API. Plán nových herních vydání na celý rok.",
-                statTotal: "Her celkem",
+                subtitle: "Aktualizovaná data z IGDB. Kalendář herních vydání.",
+                statTotal: "V období",
                 stat30Days: "Příštích 30 dní",
                 statUpcoming: "Příští měsíc",
                 searchPlaceholder: "🔍 Hledat hry...",
@@ -859,6 +1084,25 @@
         days30: '30 dní',
         days90: '90 dní',
         allYear: 'Celý rok',
+                thisMonth: 'Tento měsíc',
+                nextMonth: 'Příští měsíc',
+                allData: 'Vše',
+                allPlatforms: 'Vše',
+                other: 'Ostatní',
+                customRange: '📅 Vlastní',
+                from: 'Od',
+                to: 'Do',
+                cancel: 'Zrušit',
+                apply: 'Použít',
+                inclusiveNote: 'Rozsah včetně obou zvolených dní.',
+                invalidRange: 'Zadejte platné období. Datum Od musí být nejpozději datum Do.',
+                monthlyNote: 'Počty odpovídají vybranému období, hledání a platformám. Kliknutím otevřete celý měsíc.',
+                total: 'Celkem',
+                noGamesHint: 'Zkuste jiné období nebo platformy.',
+                downloadEmpty: 'Ve vybraném období nejsou žádné hry.',
+                shareCopied: 'Odkaz zkopírován.',
+                shareFallback: 'Zkopírujte odkaz:',
+                removeFavorite: 'Odebrat z oblíbených',
                 months: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
                 platforms: {
                     PC: "PC",
@@ -870,8 +1114,8 @@
             },
             en: {
                 mainTitle: "Game Calendar",
-                subtitle: "Live data from IGDB API. Plan new game releases for the whole year.",
-                statTotal: "Total Games",
+                subtitle: "Updated IGDB data. Game release calendar.",
+                statTotal: "In selected period",
                 stat30Days: "Next 30 days",
                 statUpcoming: "Next Month",
                 searchPlaceholder: "🔍 Search games...",
@@ -899,6 +1143,25 @@
         days30: '30 days',
         days90: '90 days',
         allYear: 'Whole year',
+                thisMonth: 'This month',
+                nextMonth: 'Next month',
+                allData: 'All',
+                allPlatforms: 'All',
+                other: 'Other',
+                customRange: '📅 Custom',
+                from: 'From',
+                to: 'To',
+                cancel: 'Cancel',
+                apply: 'Apply',
+                inclusiveNote: 'The range includes both selected dates.',
+                invalidRange: 'Enter a valid range. From must be on or before To.',
+                monthlyNote: 'Counts match the selected period, search and platforms. Click to open a full month.',
+                total: 'Total',
+                noGamesHint: 'Try another period or platform.',
+                downloadEmpty: 'There are no games in the selected period.',
+                shareCopied: 'Link copied.',
+                shareFallback: 'Copy the link:',
+                removeFavorite: 'Remove from favorites',
                 months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                 platforms: {
                     PC: "PC",
@@ -911,121 +1174,341 @@
 
         let currentLang = 'cs';
         let allGames = [];
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let favorites = (() => {
+            try {
+                const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
+                return Array.isArray(stored) ? stored : [];
+            } catch { return []; }
+        })();
         let currentViewMode = 'grid';
         let currentFilters = {
-            platforms: ['PC', 'Nintendo', 'PlayStation', 'Xbox'],
+            platforms: ['PC', 'Nintendo', 'PlayStation', 'Xbox', 'Other'],
             dateFrom: null,
             dateTo: null,
             search: ''
         };
 
-        // Initialize
-            async function init() {
-            try {
-                const response = await fetch('games.json');
-                const rawGames = await response.json();
-                
-                // Sjednocení formátu her z IGDB API (podpora pro /games i /release_dates)
-                allGames = rawGames.map(item => {
-                    const date = item.date || item.first_release_date;
-                    const gameObj = item.game || {
-                        id: item.id,
-                        name: item.name,
-                        cover: item.cover,
-                        game_type: item.game_type
-                    };
-                    
-                    let platformsList = [];
-                    if (item.platforms) {
-                        platformsList = Array.isArray(item.platforms) ? item.platforms : [item.platforms];
-                    } else if (item.platform) {
-                        platformsList = [item.platform];
-                    }
 
-                    return {
-                        id: item.id,
-                        date: date,
-                        game: gameObj,
-                        platforms: platformsList
-                    };
-                }).filter(item => item.date && item.game && item.game.name);
-                
-                initFilters();
-                initDateDefaults();
-                renderGames();
-                updateStats();
-            } catch (error) {
-                console.error('Chyba:', error);
-                document.getElementById('games-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><h3>Chyba při načítání dat</h3></div>';
-            }
+        // Jediný zdroj pro filtrování, období a statistiky.
+        const C = CalendarCore;
+        const PLATFORM_ORDER = ['PC', 'Nintendo', 'PlayStation', 'Xbox', 'Other'];
+        let normalizedGames = [];
+        let activePeriod = 'month';
+        let dataLoaded = false;
+        const el = id => document.getElementById(id);
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[char]));
         }
-function initFilters() {
-            const platforms = ['PC', 'Nintendo', 'PlayStation', 'Xbox'];
-            const container = document.getElementById('platform-filters');
-            container.innerHTML = platforms.map(p => `
-                <button class="filter-btn active" onclick="togglePlatform('${p}')" data-platform="${p}">
-                    ${getPlatformEmoji(p)} ${p}
-                </button>
-            `).join('');
 
+        function formatDay(day) {
+            if (!C.validDay(day)) return day;
+            const [year, month, date] = day.split('-');
+            return currentLang === 'cs'
+                ? `${Number(date)}. ${Number(month)}. ${year}`
+                : `${translations.en.months[Number(month) - 1]} ${Number(date)}, ${year}`;
+        }
+
+        function getFilteredGames(ignoreRange = false) {
+            return C.filterGames(normalizedGames, {
+                search: currentFilters.search,
+                platforms: currentFilters.platforms,
+                from: currentFilters.dateFrom,
+                to: currentFilters.dateTo
+            }, ignoreRange);
+        }
+
+        function getSummary() {
+            return C.summaries(normalizedGames, {
+                search: currentFilters.search,
+                platforms: currentFilters.platforms,
+                from: currentFilters.dateFrom,
+                to: currentFilters.dateTo
+            }, toDateStr(new Date()));
+        }
+
+        function getDataCoverage() {
+            return C.coverage(normalizedGames);
+        }
+
+        function setRange(range, period) {
+            if (!range || !C.validDay(range.from) || !C.validDay(range.to)) return;
+            currentFilters.dateFrom = range.from;
+            currentFilters.dateTo = range.to;
+            activePeriod = period;
+            showPeriodNote('');
+            el('date-from').value = range.from;
+            el('date-to').value = range.to;
             renderDateFilterButtons();
-        }
-
-        // Pomocná funkce pro vykreslení tlačítek s podporou jazyka
-        function renderDateFilterButtons(activeDays = 30) {
-            const dateContainer = document.getElementById('date-filter-buttons');
-            const t = translations[currentLang]; // Načtení překladů pro aktuální jazyk
-
-            const presets = [
-                { days: 7, label: t.days7 || '7 dní' },
-                { days: 30, label: t.days30 || '30 dní' },
-                { days: 90, label: t.days90 || '90 dní' },
-                { days: 365, label: t.allYear || 'Celý rok' }
-            ];
-
-            dateContainer.innerHTML = presets.map(p => `
-                <button class="filter-btn ${activeDays === p.days ? 'active' : ''}" onclick="setPresetDays(${p.days})" data-days="${p.days}">
-                    ${p.label}
-                </button>
-            `).join('');
-        }
-
-        function setPresetDays(days) {
-            const today = new Date();
-            const future = new Date();
-            future.setDate(today.getDate() + days);
-
-            document.getElementById('date-from').value = toDateStr(today);
-            document.getElementById('date-to').value = toDateStr(future);
-            
-            // Okamžitě aktualizuje vzhled tlačítek (správné svítící tlačítko)
-            renderDateFilterButtons(days);
             renderGames();
         }
 
-        function initDateDefaults() {
-            const today = new Date();
-            const future = new Date();
-            future.setDate(today.getDate() + 30);
-
-            document.getElementById('date-from').value = toDateStr(today);
-            document.getElementById('date-to').value = toDateStr(future);
+        function setPeriod(period) {
+            const range = C.periodRange(period, toDateStr(new Date()), getDataCoverage());
+            closeCustomPanel();
+            setRange(range, period);
         }
+
+        function selectMonth(year, month) {
+            const y = Number(year), m = Number(month);
+            if (!Number.isInteger(y) || !Number.isInteger(m) || y < 1 || y > 9999 || m < 0 || m > 11) return;
+            closeCustomPanel();
+            setRange(C.monthRange(y, m), 'month');
+        }
+
+        function changeMonth(offset) {
+            const [year, month] = currentFilters.dateFrom.split('-').map(Number);
+            const next = new Date(Date.UTC(year, month - 1 + offset, 1));
+            selectMonth(next.getUTCFullYear(), next.getUTCMonth());
+        }
+
+        function showPeriodNote(message) {
+            el('period-note').textContent = message;
+            el('period-note').hidden = !message;
+        }
+
+        function openCustomPanel() {
+            el('date-from').value = currentFilters.dateFrom;
+            el('date-to').value = currentFilters.dateTo;
+            el('custom-panel').hidden = false;
+            el('custom-toggle').setAttribute('aria-expanded', 'true');
+            showPeriodNote('');
+        }
+
+        function closeCustomPanel() {
+            el('custom-panel').hidden = true;
+            el('custom-toggle').setAttribute('aria-expanded', 'false');
+        }
+
+        function applyCustomDate() {
+            const from = el('date-from').value;
+            const to = el('date-to').value;
+            if (!C.validDay(from) || !C.validDay(to) || from > to) {
+                showPeriodNote(translations[currentLang].invalidRange);
+                return;
+            }
+            closeCustomPanel();
+            showPeriodNote('');
+            setRange({from, to}, 'custom');
+        }
+
+        function applyQuery() {
+            const q = new URLSearchParams(location.search);
+            const from = q.get('dateFrom') || q.get('from');
+            const to = q.get('dateTo') || q.get('to');
+            if (C.validDay(from) && C.validDay(to) && from <= to) {
+                currentFilters.dateFrom = from;
+                currentFilters.dateTo = to;
+                activePeriod = 'custom';
+            }
+            if (q.has('platforms')) {
+                currentFilters.platforms = q.get('platforms').split(',').filter(p => PLATFORM_ORDER.includes(p));
+            }
+            if (q.has('search')) currentFilters.search = q.get('search') || '';
+            el('search').value = currentFilters.search;
+            if (['date-asc','date-desc','name-asc','name-desc'].includes(q.get('sort'))) el('sort').value = q.get('sort');
+            if (['grid','compact','list'].includes(q.get('view'))) currentViewMode = q.get('view');
+            el('date-from').value = currentFilters.dateFrom;
+            el('date-to').value = currentFilters.dateTo;
+        }
+
+        function renderPlatformControls() {
+            const available = new Set(normalizedGames.flatMap(g => g.platforms.map(getPlatformClass)));
+            const platforms = PLATFORM_ORDER.filter(p => p !== 'Other' || available.has('Other'));
+            const allSelected = platforms.every(p => currentFilters.platforms.includes(p));
+            el('platform-filters').innerHTML = `
+                <button class="filter-btn" type="button" data-platform="all"
+                    aria-pressed="${allSelected}" title="${escapeHtml(translations[currentLang].allPlatforms)}">
+                    <span aria-hidden="true">🎮</span><span class="platform-label">${escapeHtml(translations[currentLang].allPlatforms)}</span>
+                </button>` + platforms.map(p => `
+                <button class="filter-btn" type="button" data-platform="${p}"
+                    aria-pressed="${currentFilters.platforms.includes(p)}" title="${escapeHtml(p === 'Other' ? translations[currentLang].other : p)}">
+                    ${getPlatformEmoji(p)}<span class="platform-label">${escapeHtml(p === 'Other' ? translations[currentLang].other : p)}</span>
+                </button>`).join('');
+        }
+
+        function updateResultsInfo(count) {
+            const total = count.toLocaleString(currentLang === 'cs' ? 'cs-CZ' : 'en-US');
+            el('results-count').textContent = currentLang === 'cs' ? `${total} vydání` : `${total} releases`;
+            el('range-label').textContent = `${formatDay(currentFilters.dateFrom)} – ${formatDay(currentFilters.dateTo)}`;
+        }
+
+
+        // Stejný export pro jednu hru i pro celý aktuální výběr.
+        function escapeIcs(value) {
+            return String(value ?? '').replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n')
+                .replace(/;/g, '\\;').replace(/,/g, '\\,');
+        }
+
+        function foldIcs(line) {
+            let result = '', part = '', bytes = 0;
+            for (const char of line) {
+                const size = new TextEncoder().encode(char).length;
+                if (bytes + size > 75) {
+                    result += part + '\r\n ';
+                    part = '';
+                    bytes = 1;
+                }
+                part += char;
+                bytes += size;
+            }
+            return result + part;
+        }
+
+        function buildIcs(games) {
+            const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+            const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//GameS Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+            for (const game of games) {
+                const day = game.day;
+                if (!C.validDay(day)) continue;
+                const start = day.replace(/-/g, '');
+                const end = C.addDays(day, 1).replace(/-/g, '');
+                const id = String(game.id ?? game.gameId ?? game.name).replace(/[^a-zA-Z0-9_-]/g, '_');
+                lines.push('BEGIN:VEVENT',
+                    `UID:game-${id}-${start}@games-calendar`,
+                    `DTSTAMP:${stamp}`,
+                    `DTSTART;VALUE=DATE:${start}`,
+                    `DTEND;VALUE=DATE:${end}`,
+                    `SUMMARY:${escapeIcs(game.name)}`,
+                    `DESCRIPTION:${escapeIcs((game.platforms || []).join(', '))}`,
+                    'END:VEVENT');
+            }
+            lines.push('END:VCALENDAR');
+            return lines.map(foldIcs).join('\r\n') + '\r\n';
+        }
+
+        function saveIcs(games, filename) {
+            if (!games.length) {
+                alert(translations[currentLang].downloadEmpty);
+                return;
+            }
+            const blob = new Blob([buildIcs(games)], {type:'text/calendar;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function getGameById(id) {
+            return normalizedGames.find(game => String(game.id) === String(id));
+        }
+
+        function safeHttpUrl(value) {
+            if (!value) return '';
+            try {
+                const url = new URL(String(value).startsWith('//') ? 'https:' + value : value, location.href);
+                return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+            } catch {
+                return '';
+            }
+        }
+
+        // Initialize
+
+        async function init() {
+            dataLoaded = false;
+            el('games-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Načítám hry...</h3></div>';
+            try {
+                const response = await fetch('games.json', {cache: 'no-store'});
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const rawGames = await response.json();
+                if (!Array.isArray(rawGames)) throw new Error('games.json neobsahuje pole vydání.');
+
+                // Původní datový soubor zůstává zdrojem. Deduplikace je pouze pro zobrazení.
+                allGames = rawGames;
+                normalizedGames = C.normalizeReleases(rawGames);
+                dataLoaded = true;
+                initDateDefaults();
+                applyQuery();
+                initFilters();
+                updateTexts();
+                updateFavorites();
+            } catch (error) {
+                console.error('Chyba při načítání her:', error);
+                allGames = [];
+                normalizedGames = [];
+                dataLoaded = false;
+                el('games-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><h3>Chyba při načítání games.json</h3><p>' + escapeHtml(error.message) + '</p><button class="filter-btn" type="button" id="retry-load">Zkusit znovu</button></div>';
+                el('retry-load').addEventListener('click', init);
+                updateStats();
+                updateMonthStats();
+                updateResultsInfo(0);
+            }
+        }
+
+
+        function initFilters() {
+            renderPlatformControls();
+            renderDateFilterButtons();
+        }
+
+
+        function renderDateFilterButtons() {
+            const t = translations[currentLang];
+            const presets = [
+                ['7', t.days7], ['30', t.days30], ['90', t.days90],
+                ['month', t.thisMonth], ['next', t.nextMonth],
+                ['year', t.allYear], ['all', t.allData]
+            ];
+            el('period-presets').innerHTML = presets.map(([key, label]) => `
+                <button type="button" class="filter-btn ${activePeriod === key ? 'active' : ''}"
+                    data-period="${key}" aria-pressed="${activePeriod === key}">${escapeHtml(label)}</button>
+            `).join('');
+
+            const [year, month] = currentFilters.dateFrom.split('-').map(Number);
+            el('month-select').innerHTML = t.months.map((name, index) =>
+                `<option value="${index}" ${index === month - 1 ? 'selected' : ''}>${escapeHtml(name)}</option>`
+            ).join('');
+
+            const coverage = getDataCoverage();
+            const nowYear = new Date().getFullYear();
+            const min = Math.max(1, Math.min(year - 1, nowYear - 1, Number(coverage?.from.slice(0, 4) || year) - 1));
+            const max = Math.min(9999, Math.max(year + 1, nowYear + 2, Number(coverage?.to.slice(0, 4) || year) + 1));
+            el('year-select').innerHTML = Array.from({length: max - min + 1}, (_, i) =>
+                `<option value="${min + i}" ${min + i === year ? 'selected' : ''}>${min + i}</option>`
+            ).join('');
+
+            el('date-from').value = currentFilters.dateFrom;
+            el('date-to').value = currentFilters.dateTo;
+            el('custom-toggle').classList.toggle('active', activePeriod === 'custom');
+        }
+
+
+        function setPresetDays(days) {
+            setPeriod(Number(days) === 365 ? 'year' : String(days));
+        }
+
+
+        function initDateDefaults() {
+            activePeriod = 'month';
+            const range = C.periodRange('month', toDateStr(new Date()));
+            currentFilters.dateFrom = range.from;
+            currentFilters.dateTo = range.to;
+            el('date-from').value = range.from;
+            el('date-to').value = range.to;
+        }
+
 
         function toDateStr(date) {
-            return date.toISOString().split('T')[0];
+            return C.localDay(date);
         }
 
+
         function togglePlatform(platform) {
-            if (currentFilters.platforms.includes(platform)) {
+            if (platform === 'all') {
+                currentFilters.platforms = [...PLATFORM_ORDER];
+            } else if (currentFilters.platforms.includes(platform)) {
                 currentFilters.platforms = currentFilters.platforms.filter(p => p !== platform);
-            } else {
+            } else if (PLATFORM_ORDER.includes(platform)) {
                 currentFilters.platforms.push(platform);
             }
-            document.querySelectorAll(`[data-platform]`).forEach(btn => {
-                btn.classList.toggle('active', currentFilters.platforms.includes(btn.dataset.platform));
-            });
+            renderPlatformControls();
             renderGames();
         }
 
@@ -1052,82 +1535,52 @@ function getPlatformEmoji(platform) {
     return '🎮';
 }
 
+
         function getPlatformClass(platformName) {
-            const name = platformName.toLowerCase();
-            if (name.includes('pc') || name.includes('windows') || name.includes('mac')) return 'PC';
-            if (name.includes('switch') || name.includes('nintendo')) return 'Nintendo';
-            if (name.includes('playstation') || name.includes('ps')) return 'PlayStation';
-            if (name.includes('xbox')) return 'Xbox';
-            return 'PC';
+            return C.platformClass(typeof platformName === 'object' ? C.platformName(platformName) : platformName);
         }
+
 
         function normalizeGameItem(item) {
-            const game = item.game || {};
-            // Podpora pro případ, že platforms jsou u položky nebo uvnitř game objektu
-            const platforms = item.platforms || game.platforms || [];
-            return {
-                id: item.id,
-                gameId: game.id || null,
-                name: game.name || 'Neznámá hra',
-                cover: game.cover || null,
-                platforms: platforms,
-                date: item.date,
-                gameType: game.game_type ?? 0
-            };
+            // Kompatibilita pro původní funkce, které očekávají jednotlivé vydání.
+            return C.normalizeReleases([item])[0] || null;
         }
+
+
 function renderGames() {
     const container = document.getElementById('games-grid');
-    if (!container) return;
+    if (!container || !dataLoaded) return;
 
-    const dateFrom = document.getElementById('date-from').value;
-    const dateTo = document.getElementById('date-to').value;
-    const search = document.getElementById('search').value.toLowerCase().trim();
+    const search = currentFilters.search.toLowerCase().trim();
     const sort = document.getElementById('sort').value;
+    const lang = currentLang;
+    const t = translations[lang];
 
-    const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
-    const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
-
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'cs';
-    const t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : { noGames: 'Žádné hry', playTrailer: 'Trailer', favTooltip: 'Oblíbené', calendarTooltip: 'Kalendář' };
-
-    let filtered = allGames.map(normalizeGameItem).filter(item => {
-        if (!item.platforms || !item.name) return false;
-        if (search && !item.name.toLowerCase().includes(search)) return false;
-        if (timeFrom && item.date < timeFrom) return false;
-        if (timeTo && item.date > timeTo) return false;
-        if (!item.platforms.some(p => {
-            const pName = typeof p === 'string' ? p : (p.name || '');
-            return currentFilters.platforms.includes(getPlatformClass(pName));
-        })) return false;
-        return true;
-    });
-
-    if (sort === 'date-asc') filtered.sort((a, b) => a.date - b.date);
-    else if (sort === 'date-desc') filtered.sort((a, b) => b.date - a.date);
-    else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sort === 'name-desc') filtered.sort((a, b) => b.name.localeCompare(a.name));
-
-    if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">🔍</div><h3>${t.noGames}</h3></div>`;
-        updateStats();
-        return;
-    }
+    let filtered = getFilteredGames();
+    if (sort === 'date-asc') filtered.sort((a, b) => a.day.localeCompare(b.day) || a.name.localeCompare(b.name));
+    else if (sort === 'date-desc') filtered.sort((a, b) => b.day.localeCompare(a.day) || a.name.localeCompare(b.name));
+    else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name, lang === 'cs' ? 'cs' : 'en'));
+    else if (sort === 'name-desc') filtered.sort((a, b) => b.name.localeCompare(a.name, lang === 'cs' ? 'cs' : 'en'));
 
     container.className = 'games-grid';
     if (currentViewMode === 'compact') container.classList.add('compact');
     if (currentViewMode === 'list') container.classList.add('list');
 
-container.innerHTML = filtered.map(game => {
+    // Původní vykreslování GRID / LIST / COMPACT je zachováno.
+    container.innerHTML = filtered.map(game => {
+
         const date = new Date((game.date || 0) * 1000);
-        const dateStr = date.toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-US');
+        const dateStr = formatDay(game.day);
         const year = date.getUTCFullYear();
         const month = String(date.getUTCMonth() + 1).padStart(2, '0');
         const day = String(date.getUTCDate()).padStart(2, '0');
         const dateICS = `${year}${month}${day}`;
 
         const favs = typeof favorites !== 'undefined' ? favorites : [];
-        const isFav = favs.some(f => f.id === game.id);
-        const coverUrl = game.cover?.url || '';
+        const isFav = favs.some(f => String(f.id) === String(game.id));
+        const coverUrl = safeHttpUrl(game.cover || '');
+        const safeName = escapeHtml(game.name);
+        const safeCover = escapeHtml(coverUrl);
         
         const viewMode = typeof currentViewMode !== 'undefined' ? currentViewMode : 'grid';
         let cardClass = 'game-card';
@@ -1154,7 +1607,7 @@ container.innerHTML = filtered.map(game => {
                 storeUrl = `https://www.nintendo.com/us/search/#q=${query}`;
             }
 
-            return `<a href="${storeUrl}" target="_blank" class="platform-tag platform-btn" title="Otevřít v obchodě">${emoji} <span>${pName}</span></a>`;
+            return `<a href="${storeUrl}" target="_blank" class="platform-tag platform-btn" title="Otevřít v obchodě">${emoji} <span>${escapeHtml(pName)}</span></a>`;
         }).join('');
 
         const firstPlatform = game.platforms.length > 0 ? (typeof game.platforms[0] === 'string' ? game.platforms[0] : (game.platforms[0].name || 'Multi')) : 'Multi';
@@ -1162,12 +1615,12 @@ container.innerHTML = filtered.map(game => {
         // 1. REŽIM MŘÍŽKY (GRID)
         if (viewMode === 'grid') {
             return `
-                <div class="${cardClass} grid-hover-card" title="${game.name}">
+                <div class="${cardClass} grid-hover-card" title="${safeName}">
                     <div class="game-cover">
-                        ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 10px; font-size: 0.85rem;">${game.name}</div>`}
+                        ${coverUrl ? `<img src="${safeCover}" alt="${safeName}">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 10px; font-size: 0.85rem;">${safeName}</div>`}
                     </div>
                     <div class="grid-overlay-info">
-                        <div class="game-title">${game.name}</div>
+                        <div class="game-title">${safeName}</div>
                         <div class="game-meta">
                             <div class="release-date">${dateStr}</div>
                         </div>
@@ -1176,10 +1629,10 @@ container.innerHTML = filtered.map(game => {
                         </div>
                         <div class="card-actions">
                             <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; gap: 0.3rem;">▶️</a>
-                            <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
+                            <button class="action-btn fav-btn" data-favorite="${escapeHtml(game.id)}" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
                                 ${isFav ? '❤️' : '🤍'}
                             </button>
-                            <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
+                            <button class="action-btn" data-calendar="${escapeHtml(game.id)}" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
                             📅
                             </button>
                         </div>
@@ -1190,7 +1643,7 @@ container.innerHTML = filtered.map(game => {
 
 if (viewMode === 'list') {
     return `
-        <div class="grid gap-[4px] w-full h-full p-2 text-[14px] grid-cols-3 sm:grid-cols-5 lg:grid-cols-[1fr_auto_1fr_1fr_1fr_1fr] pb-[4px] items-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[8px]" id="${game.id || 'game-' + Math.random()}">
+        <div class="grid gap-[4px] w-full h-full p-2 text-[14px] grid-cols-3 sm:grid-cols-5 lg:grid-cols-[1fr_auto_1fr_1fr_1fr_1fr] pb-[4px] items-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-[8px]" id="game-${escapeHtml(game.id)}">
             <!-- Datum -->
             <p class="w-[170px] col-span-full lg:col-span-1 font-bold lg:font-normal text-[16px] lg:[font-size:inherit] text-nowrap">
                 <time datetime="${year}-${month}-${day}">${dateStr}</time>
@@ -1198,15 +1651,15 @@ if (viewMode === 'list') {
 
             <!-- Obálka hry -->
             <div class="w-[90px] sm:w-[60px] flex-shrink-0">
-                <a href="${coverUrl || '#'}" target="_blank">
-                    <img src="${coverUrl}" height="85" width="60" alt="${game.name} cover art" class="block min-[350px]:hidden sm:block object-contain object-top border border-[#ededed]">
-                    <img src="${coverUrl}" height="128" width="90" alt="${game.name} cover art" class="hidden min-[350px]:block sm:hidden object-contain object-top border border-[#ededed]">
+                <a href="${safeCover || '#'}" target="_blank">
+                    <img src="${safeCover}" height="85" width="60" alt="${safeName} cover art" class="block min-[350px]:hidden sm:block object-contain object-top border border-[#ededed]">
+                    <img src="${safeCover}" height="128" width="90" alt="${safeName} cover art" class="hidden min-[350px]:block sm:hidden object-contain object-top border border-[#ededed]">
                 </a>
             </div>
 
             <!-- Název hry -->
             <div class="min-w-0 col-span-2 sm:col-span-1 flex items-center">
-                <p class="overflow-hidden text-ellipsis whitespace-normal break-normal font-bold sm:font-normal text-[18px] min-[350px]:text-[24px] sm:text-[18px] lg:[font-size:inherit]" title="${game.name}">${game.name}</p>
+                <p class="overflow-hidden text-ellipsis whitespace-normal break-normal font-bold sm:font-normal text-[18px] min-[350px]:text-[24px] sm:text-[18px] lg:[font-size:inherit]" title="${safeName}">${safeName}</p>
             </div>
 
             <!-- Platformy -->
@@ -1226,8 +1679,8 @@ if (viewMode === 'list') {
 
             <!-- Akční tlačítka (Oblíbené, Kalendář) -->
             <div class="flex sm:flex-col gap-[5px] sm:gap-1 w-full justify-center items-center">
-                <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">${isFav ? '❤️' : '🤍'}</button>
-                <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">📅</button>
+                <button class="action-btn fav-btn" data-favorite="${escapeHtml(game.id)}" title="${t.favTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">${isFav ? '❤️' : '🤍'}</button>
+                <button class="action-btn" data-calendar="${escapeHtml(game.id)}" title="${t.calendarTooltip}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 2px;">📅</button>
             </div>
         </div>
     `;
@@ -1237,10 +1690,10 @@ if (viewMode === 'list') {
         return `
             <div class="${cardClass}">
                 <div class="game-cover">
-                    ${coverUrl ? `<img src="${coverUrl}" alt="${game.name}">` : ''}
+                    ${coverUrl ? `<img src="${safeCover}" alt="${safeName}">` : ''}
                 </div>
                 <div class="game-info">
-                    <div class="game-title">${game.name}</div>
+                    <div class="game-title">${safeName}</div>
                     <div class="game-meta">
                         <div class="release-date">${dateStr}</div>
                     </div>
@@ -1249,10 +1702,10 @@ if (viewMode === 'list') {
                     </div>
                     <div class="card-actions">
                         <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' trailer')}" target="_blank" class="action-btn" title="${t.playTrailer}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; gap: 0.3rem;">▶️</a>
-                        <button class="action-btn fav-btn" onclick="toggleFavorite(${game.id}, '${game.name.replace(/'/g, "\\'")}', event)" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
+                        <button class="action-btn fav-btn" data-favorite="${escapeHtml(game.id)}" title="${t.favTooltip}" style="flex: 0 0 auto; padding: 0.4rem;">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
-                        <button class="action-btn" onclick="showCalendarMenu(event, '${game.name.replace(/'/g, "\\'")}', '${dateICS}', '${year}-${month}-${day}', '${firstPlatform}', ${game.date})" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
+                        <button class="action-btn" data-calendar="${escapeHtml(game.id)}" title="${t.calendarTooltip}" style="flex: 0 0 auto; padding: 0.4rem; min-width: 32px;">
                         📅
                         </button>
                     </div>
@@ -1261,102 +1714,97 @@ if (viewMode === 'list') {
         `;
     }).join('');
 
+    if (!filtered.length) {
+        container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-state-icon">🔍</div>
+            <h3>${escapeHtml(t.noGames)}</h3>
+            <p>${escapeHtml(t.noGamesHint)}</p>
+        </div>`;
+    }
+
+    updateResultsInfo(filtered.length);
     updateStats();
     updateMonthStats();
 }
+
+
         function downloadAllIcs() {
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
-            const timeFrom = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() / 1000 : null;
-            const timeTo = dateTo ? new Date(dateTo + 'T23:59:59').getTime() / 1000 : null;
-
-            let filtered = allGames.map(normalizeGameItem).filter(item => {
-                if (timeFrom && item.date < timeFrom) return false;
-                if (timeTo && item.date > timeTo) return false;
-                return item.platforms.some(p => {
-                    const pName = typeof p === 'string' ? p : (p.name || '');
-                    return currentFilters.platforms.includes(getPlatformClass(pName));
-                });
-            });
-
-            let icsContent = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Game Calendar//EN", "CALSCALE:GREGORIAN"];
-            filtered.forEach(e => {
-                const d = new Date(e.date * 1000);
-                const y = d.getUTCFullYear();
-                const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-                const dy = String(d.getUTCDate()).padStart(2, '0');
-                icsContent.push("BEGIN:VEVENT", `UID:game-${e.id}-${e.date}@local`, `DTSTART;VALUE=DATE:${y}${m}${dy}`, `DTEND;VALUE=DATE:${y}${m}${dy}`, `SUMMARY:${e.name}`, "END:VEVENT");
-            });
-            icsContent.push("END:VCALENDAR");
-
-            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `game-calendar-${new Date().toISOString().split('T')[0]}.ics`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const games = getFilteredGames();
+            saveIcs(games, `game-calendar-${currentFilters.dateFrom}-${currentFilters.dateTo}.ics`);
         }
+
 
         function downloadIcs(gameName, platformName, timestamp) {
-            const d = new Date(timestamp * 1000);
-            const y = d.getUTCFullYear();
-            const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-            const dy = String(d.getUTCDate()).padStart(2, '0');
-            
-            const icsContent = [
-                "BEGIN:VCALENDAR",
-                "VERSION:2.0",
-                "PRODID:-//Game Calendar//EN",
-                "CALSCALE:GREGORIAN",
-                "BEGIN:VEVENT",
-                `UID:game-${gameName.replace(/\s+/g, '-')}-${timestamp}@local`,
-                `DTSTART;VALUE=DATE:${y}${m}${dy}`,
-                `DTEND;VALUE=DATE:${y}${m}${dy}`,
-                `SUMMARY:${gameName} (${platformName})`,
-                "END:VEVENT",
-                "END:VCALENDAR"
-            ];
-
-            const blob = new Blob([icsContent.join("\r\n")], { type: 'text/calendar' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const info = C.dateFromValue(timestamp);
+            if (!info) return;
+            saveIcs([{
+                id: `${gameName}-${info.day}`,
+                name: gameName,
+                day: info.day,
+                platforms: platformName ? [platformName] : []
+            }], `${gameName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'game'}.ics`);
         }
 
+
         function showCalendarMenu(event, gameName, dateICS, dateStr, platformName, timestamp) {
-            event.stopPropagation();
-            const year = dateICS.substring(0, 4);
-            const month = dateICS.substring(4, 6);
-            const day = dateICS.substring(6, 8);
+            event?.stopPropagation();
+            document.getElementById('calendar-menu')?.remove();
+            const info = C.dateFromValue(timestamp);
+            if (!info) return;
+            const day = info.day;
+            const start = day.replace(/-/g, '');
+            const endDay = C.addDays(day, 1);
+            const end = endDay.replace(/-/g, '');
 
             const menu = document.createElement('div');
-            menu.style.cssText = `
-                position: fixed;
-                background: #160d24;
-                border: 1px solid rgba(255,255,255,0.15);
-                border-radius: 8px;
-                padding: 0.4rem;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-                z-index: 1000;
-                min-width: 150px;
-                top: ${event.clientY}px;
-                left: ${event.clientX}px;
-            `;
+            menu.id = 'calendar-menu';
+            menu.style.cssText = 'position:fixed;background:#160d24;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:1000;min-width:155px;display:flex;flex-direction:column;gap:3px';
+            const linkStyle = 'display:block;padding:8px 10px;color:var(--text-main);font-size:13px;text-decoration:none;background:transparent;border:0;text-align:left;border-radius:4px;font-family:inherit;cursor:pointer';
 
-            menu.innerHTML = `
-                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(gameName)}&dates=${dateICS}/${dateICS}" target="_blank" style="display: block; padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; text-decoration: none; cursor: pointer; border-radius: 4px; font-family: inherit;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Google</a>
-                <a href="https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(gameName)}&startdt=${year}-${month}-${day}&enddt=${year}-${month}-${day}" target="_blank" style="display: block; padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; text-decoration: none; cursor: pointer; border-radius: 4px; font-family: inherit;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Outlook</a>
-                <button onclick="downloadIcs('${gameName.replace(/'/g, "\\'")}', '${platformName}', ${timestamp})" style="display: block; width: 100%; text-align: left; padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; background: none; border: none; cursor: pointer; font-family: inherit; border-radius: 4px;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Apple</button>
-            `;
+            const google = document.createElement('a');
+            google.textContent = 'Google Calendar';
+            google.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(gameName)}&dates=${start}/${end}`;
+            google.target = '_blank';
+            google.rel = 'noopener noreferrer';
+            google.style.cssText = linkStyle;
 
+            const outlook = document.createElement('a');
+            outlook.textContent = 'Outlook';
+            outlook.href = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(gameName)}&startdt=${day}&enddt=${endDay}&allday=true`;
+            outlook.target = '_blank';
+            outlook.rel = 'noopener noreferrer';
+            outlook.style.cssText = linkStyle;
+
+            const apple = document.createElement('button');
+            apple.type = 'button';
+            apple.textContent = 'Apple / .ics';
+            apple.style.cssText = linkStyle;
+            apple.addEventListener('click', () => {
+                downloadIcs(gameName, platformName, timestamp);
+                close();
+            });
+            menu.append(google, outlook, apple);
             document.body.appendChild(menu);
-            setTimeout(() => menu.remove(), 5000);
-            
-            document.addEventListener('click', () => menu.remove(), { once: true });
+
+            const rect = menu.getBoundingClientRect();
+            menu.style.left = Math.max(8, Math.min(event?.clientX ?? 8, window.innerWidth - rect.width - 8)) + 'px';
+            menu.style.top = Math.max(8, Math.min(event?.clientY ?? 8, window.innerHeight - rect.height - 8)) + 'px';
+
+            const controller = new AbortController();
+            function close() {
+                menu.remove();
+                controller.abort();
+            }
+            document.addEventListener('pointerdown', e => {
+                if (!menu.contains(e.target)) close();
+            }, {signal: controller.signal});
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') close();
+            }, {signal: controller.signal});
+            menu.addEventListener('click', e => {
+                if (e.target.closest('a')) close();
+            });
+            google.focus();
         }
 
         function switchViewMode(mode) {
@@ -1367,137 +1815,183 @@ if (viewMode === 'list') {
             renderGames();
         }
 
+
         function toggleFavorite(gameId, gameName, event) {
-            event.stopPropagation();
-            const idx = favorites.findIndex(f => f.id === gameId);
+            event?.stopPropagation();
+            const idx = favorites.findIndex(f => String(f.id) === String(gameId));
             if (idx !== -1) {
                 favorites.splice(idx, 1);
             } else {
-                favorites.push({ id: gameId, name: gameName });
+                const game = getGameById(gameId);
+                if (!game && !gameName) return;
+                favorites.push({id: game?.id ?? gameId, name: game?.name ?? gameName});
             }
-            localStorage.setItem('favorites', JSON.stringify(favorites));
+            try { localStorage.setItem('favorites', JSON.stringify(favorites)); } catch {}
             renderGames();
             updateFavorites();
         }
+
 
         function updateFavorites() {
             const list = document.getElementById('favorites-list');
-            if (favorites.length === 0) {
-                list.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">${translations[currentLang].noFavorites}</p>`;
-            } else {
-                list.innerHTML = favorites.map(f => `
-                    <div class="favorite-item">
-                        <span>${f.name}</span>
-                        <span class="favorite-remove" onclick="removeFavorite(${f.id})">✕</span>
-                    </div>
-                `).join('');
+            if (!favorites.length) {
+                list.innerHTML = `<p style="color:var(--text-muted);font-size:.85rem">${escapeHtml(translations[currentLang].noFavorites)}</p>`;
+                return;
             }
+            list.innerHTML = favorites.map(f => `
+                <div class="favorite-item">
+                    <span>${escapeHtml(f.name)}</span>
+                    <button class="favorite-remove" type="button" data-remove-favorite="${escapeHtml(f.id)}"
+                        title="${escapeHtml(translations[currentLang].removeFavorite)}" aria-label="${escapeHtml(translations[currentLang].removeFavorite)}">✕</button>
+                </div>
+            `).join('');
         }
 
+
         function removeFavorite(gameId) {
-            favorites = favorites.filter(f => f.id !== gameId);
-            localStorage.setItem('favorites', JSON.stringify(favorites));
+            favorites = favorites.filter(f => String(f.id) !== String(gameId));
+            try { localStorage.setItem('favorites', JSON.stringify(favorites)); } catch {}
             renderGames();
             updateFavorites();
         }
 
+
         function updateStats() {
-            const today = new Date();
-            const next30 = new Date();
-            next30.setDate(today.getDate() + 30);
-            const next30Time = next30.getTime() / 1000;
-            const todayTime = today.getTime() / 1000;
-
-            const total = allGames.length;
-            const normalizedGames = allGames.map(normalizeGameItem);
-            const in30 = normalizedGames.filter(g => g.date >= todayTime && g.date <= next30Time).length;
-            const inNextMonth = normalizedGames.filter(g => {
-                const d = new Date(g.date * 1000);
-                const y = d.getUTCFullYear();
-                const m = d.getUTCMonth();
-                const now = new Date();
-                return (y > now.getFullYear() || (y === now.getFullYear() && m > now.getMonth()));
-            }).length;
-
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-30days').textContent = in30;
-            document.getElementById('stat-upcoming').textContent = inNextMonth;
+            const summary = getSummary();
+            const locale = currentLang === 'cs' ? 'cs-CZ' : 'en-US';
+            document.getElementById('stat-total').textContent = summary.total.toLocaleString(locale);
+            document.getElementById('stat-30days').textContent = summary.in30.toLocaleString(locale);
+            document.getElementById('stat-upcoming').textContent = summary.nextMonth.toLocaleString(locale);
         }
+
 
         function updateMonthStats() {
-            const monthCounts = {};
-            allGames.map(normalizeGameItem).forEach(game => {
-                const date = new Date(game.date * 1000);
-                const key = `${date.getUTCFullYear()}-${date.getUTCMonth()}`;
-                monthCounts[key] = (monthCounts[key] || 0) + 1;
-            });
-
+            const summary = getSummary();
+            const locale = currentLang === 'cs' ? 'cs-CZ' : 'en-US';
             const container = document.getElementById('month-stats');
-            container.innerHTML = Object.entries(monthCounts)
-                .slice(0, 6)
-                .map(([key, count]) => {
-                    const [year, month] = key.split('-');
-                    const monthName = translations[currentLang].months[parseInt(month)];
-                    return `
-                        <div class="month-stat">
-                            <span class="month-stat-name">${monthName} ${year}</span>
-                            <span class="month-stat-count">${count}</span>
-                        </div>
-                    `;
-                }).join('');
+            container.innerHTML = summary.months.map(({key, count}) => {
+                const [year, month] = key.split('-').map(Number);
+                const monthName = translations[currentLang].months[month - 1];
+                const active = activePeriod === 'month' && currentFilters.dateFrom === key + '-01';
+                return `<button type="button" class="month-stat ${active ? 'active' : ''}" data-month="${key}">
+                    <span class="month-stat-name">${escapeHtml(monthName)} ${year}</span>
+                    <span class="month-stat-count">${count.toLocaleString(locale)}</span>
+                </button>`;
+            }).join('');
+            document.getElementById('month-total').textContent = summary.total.toLocaleString(locale);
         }
+
 
         function toggleLanguage() {
             currentLang = currentLang === 'cs' ? 'en' : 'cs';
             updateTexts();
-            renderGames();
         }
-    
-        function showCalendarShareLink() {
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
-            const platforms = currentFilters.platforms.join(',');
-            const url = window.location.href.split('?')[0] + `?platforms=${platforms}&dateFrom=${dateFrom}&dateTo=${dateTo}`;
-            
-            navigator.clipboard.writeText(url).catch(() => {});
-            alert(`🔗 Odkaz zkopírován!\n\n${url}`);
-        }
-        function updateTexts() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
 
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if (translations[currentLang][key]) {
-                    el.placeholder = translations[currentLang][key];
-                }
+        async function showCalendarShareLink() {
+            const q = new URLSearchParams({
+                platforms: currentFilters.platforms.join(','),
+                dateFrom: currentFilters.dateFrom,
+                dateTo: currentFilters.dateTo
             });
-
-            const searchEl = document.getElementById('search');
-            if (searchEl && translations[currentLang].searchPlaceholder) {
-                searchEl.placeholder = translations[currentLang].searchPlaceholder;
+            if (currentFilters.search) q.set('search', currentFilters.search);
+            if (currentViewMode !== 'grid') q.set('view', currentViewMode);
+            if (el('sort').value !== 'date-asc') q.set('sort', el('sort').value);
+            const url = location.href.split('?')[0].split('#')[0] + '?' + q.toString();
+            try {
+                await navigator.clipboard.writeText(url);
+                alert(translations[currentLang].shareCopied);
+            } catch {
+                prompt(translations[currentLang].shareFallback, url);
             }
-
-            // TENTO ŘÁDEK ZAJISTÍ PŘEKLAD TLAČÍTEK OBDOBÍ PŘI ZMĚNĚ JAZYKA
-            // Zjistíme, které tlačítko je zrovna aktivní (podle toho, které svítí)
-            const activeBtn = document.querySelector('#date-filter-buttons .filter-btn.active');
-            const activeDays = activeBtn ? parseInt(activeBtn.getAttribute('data-days')) || 30 : 30;
-            renderDateFilterButtons(activeDays);
         }
+
+
+        function updateTexts() {
+            document.documentElement.lang = currentLang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const value = translations[currentLang][el.dataset.i18n];
+                if (typeof value === 'string') el.textContent = value;
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const value = translations[currentLang][el.dataset.i18nPlaceholder];
+                if (typeof value === 'string') el.placeholder = value;
+            });
+            document.querySelectorAll('.view-mode-btn').forEach(btn => {
+                const mode = btn.getAttribute('onclick').match(/'(grid|compact|list)'/)?.[1];
+                btn.classList.toggle('active', mode === currentViewMode);
+            });
+            renderDateFilterButtons();
+            renderPlatformControls();
+            if (dataLoaded) renderGames();
+            updateFavorites();
+        }
+
+
         // Event Listeners
-        document.getElementById('search').addEventListener('input', renderGames);
-        document.getElementById('sort').addEventListener('change', renderGames);
-        document.getElementById('date-from').addEventListener('change', renderGames);
-        document.getElementById('date-to').addEventListener('change', renderGames);
+        el('search').addEventListener('input', event => {
+            currentFilters.search = event.target.value;
+            renderGames();
+        });
+        el('sort').addEventListener('change', renderGames);
+
+        el('period-presets').addEventListener('click', event => {
+            const button = event.target.closest('[data-period]');
+            if (button) setPeriod(button.dataset.period);
+        });
+        el('prev-month').addEventListener('click', () => changeMonth(-1));
+        el('next-month').addEventListener('click', () => changeMonth(1));
+        el('month-select').addEventListener('change', () => selectMonth(el('year-select').value, el('month-select').value));
+        el('year-select').addEventListener('change', () => selectMonth(el('year-select').value, el('month-select').value));
+
+        el('custom-toggle').addEventListener('click', () => {
+            if (el('custom-panel').hidden) openCustomPanel();
+            else closeCustomPanel();
+        });
+        el('custom-cancel').addEventListener('click', closeCustomPanel);
+        el('custom-panel').addEventListener('submit', event => {
+            event.preventDefault();
+            applyCustomDate();
+        });
+        document.addEventListener('pointerdown', event => {
+            if (!el('custom-panel').hidden &&
+                !el('custom-panel').contains(event.target) &&
+                !el('custom-control').contains(event.target)) closeCustomPanel();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') closeCustomPanel();
+        });
+
+        el('platform-filters').addEventListener('click', event => {
+            const button = event.target.closest('[data-platform]');
+            if (button) togglePlatform(button.dataset.platform);
+        });
+        el('games-grid').addEventListener('click', event => {
+            const favorite = event.target.closest('[data-favorite]');
+            if (favorite) {
+                const game = getGameById(favorite.dataset.favorite);
+                if (game) toggleFavorite(game.id, game.name, event);
+                return;
+            }
+            const calendar = event.target.closest('[data-calendar]');
+            if (calendar) {
+                const game = getGameById(calendar.dataset.calendar);
+                if (game) showCalendarMenu(event, game.name, game.day.replace(/-/g, ''), game.day, game.platforms[0] || 'Multi', game.date);
+            }
+        });
+        el('favorites-list').addEventListener('click', event => {
+            const button = event.target.closest('[data-remove-favorite]');
+            if (button) removeFavorite(button.dataset.removeFavorite);
+        });
+        el('month-stats').addEventListener('click', event => {
+            const button = event.target.closest('[data-month]');
+            if (!button) return;
+            const [year, month] = button.dataset.month.split('-').map(Number);
+            selectMonth(year, month - 1);
+            window.scrollTo({top:0, behavior:'smooth'});
+        });
 
         // Init
         init();
     </script>
 </body>
 </html>
-
-
