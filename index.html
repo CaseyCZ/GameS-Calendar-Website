@@ -1452,10 +1452,10 @@ window.CalendarCore=CalendarCore;
         function renderDateFilterButtons() {
             const t = translations[currentLang];
             const presets = [
-                ['7', t.days7], ['30', t.days30], ['90', t.days90],
-                ['month', t.thisMonth], ['next', t.nextMonth],
-                ['year', t.allYear], ['all', t.allData]
-            ];
+    ['month', t.thisMonth],
+    ['next', t.nextMonth],
+    ['all', t.allData]
+];
             el('period-presets').innerHTML = presets.map(([key, label]) => `
                 <button type="button" class="filter-btn ${activePeriod === key ? 'active' : ''}"
                     data-period="${key}" aria-pressed="${activePeriod === key}">${escapeHtml(label)}</button>
