@@ -8,19 +8,33 @@
   }
 }
 
-/* Keep the mobile filter sheet fully inside the visible viewport. */
+/*
+ * Mobile Safari creates a containing block for position:fixed descendants
+ * when an ancestor uses backdrop-filter. The filter sheet lives inside the
+ * sticky topbar, so disable that blur on phones and use an opaque-enough
+ * background instead. This makes the sheet use the real viewport height.
+ */
 @media (max-width: 760px) {
+  .topbar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(8, 4, 13, .97);
+  }
+
   .filter-panel {
-    position: fixed;
-    top: max(72px, calc(env(safe-area-inset-top) + 8px));
-    left: 8px;
-    right: 8px;
-    bottom: max(8px, env(safe-area-inset-bottom));
-    width: auto;
-    max-height: none;
+    position: fixed !important;
+    inset: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)) 8px !important;
+    z-index: 1000;
+    width: auto !important;
+    height: auto;
+    max-height: none !important;
+    min-height: 0;
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 12px;
+    border-radius: 18px;
   }
 
   .filter-panel .genre-filter-wrap {
@@ -28,10 +42,12 @@
   }
 
   .filter-panel .genre-filter-list {
-    max-height: 110px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    display: flex;
     flex-wrap: wrap;
+    max-height: min(28dvh, 190px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .filter-controls-row {
@@ -42,6 +58,7 @@
   .filter-panel-footer {
     position: sticky;
     bottom: -12px;
+    z-index: 3;
     margin: 9px -12px -12px;
     padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
     background: rgba(18,9,26,.985);
@@ -51,7 +68,7 @@
 
 @media (max-width: 560px) {
   .filter-panel .genre-filter-list {
-    max-height: 92px;
+    max-height: min(24dvh, 150px);
   }
 
   .filter-controls-row > .control {
@@ -67,13 +84,126 @@
   }
 }
 
+/* Extra compact filter sheet on short / landscape phone viewports. */
 @media (max-width: 760px) and (max-height: 560px) {
   .filter-panel {
-    top: max(8px, env(safe-area-inset-top));
+    padding: 9px 10px;
+    border-radius: 14px;
   }
 
   .filter-panel .genre-filter-list {
-    max-height: 72px;
+    max-height: 78px;
+  }
+
+  .genre-filter-heading {
+    margin-bottom: 5px;
+  }
+
+  .genre-filter-chip {
+    min-height: 27px;
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .filter-controls-row {
+    padding-top: 7px;
+    gap: 5px;
+  }
+
+  .filter-panel-footer {
+    bottom: -9px;
+    margin: 7px -10px -9px;
+    padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+  }
+}
+
+/*
+ * Game detail in landscape used almost the whole iPhone screen. Keep it
+ * deliberately narrower and reduce the large hero dimensions so it feels
+ * like a dialog rather than a full-screen page.
+ */
+@media (orientation: landscape) and (max-height: 620px) {
+  .game-dialog {
+    width: min(700px, calc(100vw - 56px));
+    max-width: 700px;
+    max-height: calc(100dvh - 28px);
+    border-radius: 15px;
+  }
+
+  .detail-hero {
+    grid-template-columns: minmax(150px, 27%) minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .detail-cover {
+    min-height: 0;
+    background: #1a0e24;
+  }
+
+  .detail-main {
+    min-width: 0;
+    padding: 17px 19px 20px;
+  }
+
+  .detail-kicker {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+
+  .detail-main h2 {
+    font-size: clamp(21px, 4vw, 30px);
+    line-height: 1.05;
+  }
+
+  .detail-meta {
+    gap: 5px;
+    margin: 9px 0;
+  }
+
+  .detail-meta .badge {
+    min-height: 20px;
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+
+  .detail-summary {
+    margin-block: 9px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .detail-genres {
+    margin: 11px 0 3px;
+  }
+
+  .genre-chip {
+    min-height: 25px;
+    padding: 3px 8px;
+    font-size: 9px;
+  }
+
+  .detail-facts {
+    gap: 7px;
+    margin: 11px 0;
+  }
+
+  .fact {
+    padding: 7px 9px;
+  }
+
+  .detail-actions,
+  .detail-subsection,
+  .detail-media-section,
+  .detail-link-section {
+    margin-top: 12px;
+  }
+
+  .dialog-close {
+    top: 6px;
+    margin: 6px 6px -42px 0;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
   }
 }
 
@@ -152,7 +282,7 @@ html[data-theme="light"] body {
 }
 
 html[data-theme="light"] .topbar {
-  background: rgba(250,247,251,.9);
+  background: rgba(250,247,251,.97);
   border-bottom-color: var(--border);
 }
 
