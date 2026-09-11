@@ -86,7 +86,11 @@ export function fallbackLinks(game) {
     reddit: game.links?.reddit || `https://www.reddit.com/search/?q=${q}`,
     youtube: game.links?.youtube || `https://www.youtube.com/results?search_query=${q}+trailer`,
     igdb: game.links?.igdb || game.igdbUrl || `https://www.igdb.com/search?type=1&q=${q}`,
-    official: game.links?.official || ''
+    official: game.links?.official || '',
+    playstation: `https://store.playstation.com/en-cz/search/${q}`,
+    xbox: `https://www.xbox.com/cs-CZ/Search/Results?q=${q}`,
+    nintendo: `https://www.nintendo.com/us/search/#q=${q}`,
+    meta: `https://www.meta.com/experiences/search/?q=${q}`
   };
 }
 
@@ -95,14 +99,56 @@ function linkButton(label, url) {
   return safe ? `<a class="store-link" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>` : '';
 }
 
+function platformStoreLinks(row, links) {
+  const groups = new Set(row.platforms.map(platform => platform.group).filter(Boolean));
+  const names = row.platforms.map(platform => String(platform.name || '').toLowerCase());
+  const items = [];
+  const add = (label, url) => {
+    const button = linkButton(label, url);
+    if (button && !items.includes(button)) items.push(button);
+  };
+
+  if (groups.has('PC')) {
+    add(links.steam && row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam);
+    add(links.epic && row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic);
+  }
+  if (groups.has('PS5')) add('PlayStation Store', links.playstation);
+  if (groups.has('Xbox Series')) add('Xbox Store', links.xbox);
+  if (groups.has('Switch') || groups.has('Switch 2')) add('Nintendo Store', links.nintendo);
+  if (groups.has('VR')) {
+    let matched = false;
+    if (names.some(name => /quest|rift/.test(name))) { add('Meta Quest Store', links.meta); matched = true; }
+    if (names.some(name => /playstation vr|ps vr/.test(name))) { add('PlayStation Store', links.playstation); matched = true; }
+    if (names.some(name => /steamvr|windows|pc/.test(name))) { add('Steam', links.steam); matched = true; }
+    if (!matched) add('Meta Quest Store', links.meta);
+  }
+
+  return items.join('');
+}
+
+function factMarkup(label, value) {
+  if (!value) return '';
+  return `<div class="fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+}
+
 export function gameDialogHtml(row, watched) {
   const game = row.game;
   const links = fallbackLinks(game);
   const countdown = releaseCountdown(row.day);
-  const devs = game.developers.join(', ') || '—';
-  const publishers = game.publishers.join(', ') || '—';
-  const genres = game.genres.join(', ') || '—';
   const cover = safeUrl(game.cover);
+  const summary = game.summary || game.storyline || '';
+  const genres = game.genres.join(', ');
+  const devs = game.developers.join(', ');
+  const publishers = game.publishers.join(', ');
+  const rating = game.rating ? `${Math.round(game.rating)} %${game.ratingCount ? ` (${formatter.format(game.ratingCount)})` : ''}` : '';
+  const facts = [
+    factMarkup('Žánry', genres),
+    factMarkup('Vývojář', devs),
+    factMarkup('Vydavatel', publishers),
+    factMarkup('Hodnocení IGDB', rating)
+  ].filter(Boolean).join('');
+  const storeLinks = platformStoreLinks(row, links);
+
   return `<div class="detail-hero">
     <div class="detail-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" decoding="async">` : ''}</div>
     <div class="detail-main">
@@ -113,22 +159,16 @@ export function gameDialogHtml(row, watched) {
         ${row.platforms.map(p => `<span class="badge">${escapeHtml(p.name)}</span>`).join('')}
         ${game.rating ? `<span class="badge">★ ${Math.round(game.rating)} %</span>` : ''}
       </div>
-      <p class="detail-summary">${escapeHtml(game.summary || game.storyline || 'Podrobnější popis zatím IGDB neposkytuje.')}</p>
-      <div class="detail-facts">
-        <div class="fact"><span>Žánry</span><strong>${escapeHtml(genres)}</strong></div>
-        <div class="fact"><span>Vývojář</span><strong>${escapeHtml(devs)}</strong></div>
-        <div class="fact"><span>Vydavatel</span><strong>${escapeHtml(publishers)}</strong></div>
-        <div class="fact"><span>Hodnocení IGDB</span><strong>${game.rating ? `${Math.round(game.rating)} % (${formatter.format(game.ratingCount || 0)})` : '—'}</strong></div>
-      </div>
+      ${summary ? `<p class="detail-summary">${escapeHtml(summary)}</p>` : '<p class="detail-summary">Další informace k této hře zatím nejsou k dispozici.</p>'}
+      ${facts ? `<div class="detail-facts">${facts}</div>` : ''}
       <div class="detail-actions">
         <button class="primary-btn" type="button" data-dialog-calendar="${escapeHtml(row.key)}">📅 Přidat do kalendáře</button>
         <button class="secondary-btn" type="button" data-dialog-watch="${escapeHtml(String(game.id))}">${watched ? '♥ Sledováno' : '♡ Sledovat'}</button>
         ${game.trailerId ? `<button class="secondary-btn" type="button" data-trailer="${escapeHtml(game.trailerId)}">▶ Trailer</button>` : linkButton('▶ YouTube', links.youtube)}
       </div>
-      <div class="detail-links">
+      ${storeLinks ? `<div class="detail-links" aria-label="Obchody pro toto vydání">${storeLinks}</div>` : ''}
+      <div class="detail-links" aria-label="Další odkazy">
         ${linkButton('Oficiální web', links.official)}
-        ${linkButton(game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam)}
-        ${linkButton(game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic)}
         ${linkButton('IGDB', links.igdb)}
         ${linkButton('Reddit', links.reddit)}
       </div>
