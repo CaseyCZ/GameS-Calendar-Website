@@ -1,0 +1,50 @@
+name: Update IGDB game data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 4 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-igdb-games
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --omit=dev
+
+      - name: Refresh games.json
+        env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          IGDB_MONTHS_PAST: 6
+          IGDB_MONTHS_FUTURE: 18
+        run: npm run fetch-games
+
+      - name: Commit changed data
+        run: |
+          if git diff --quiet -- games.json; then
+            echo "games.json is unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games.json
+          git commit -m "chore: refresh IGDB game data"
+          git push

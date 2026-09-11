@@ -1,0 +1,19 @@
+{
+  "name": "Herní Kalendář",
+  "short_name": "Herní Kalendář",
+  "description": "Vyhledávání a kalendář herních vydání z IGDB.",
+  "lang": "cs",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08040d",
+  "theme_color": "#100719",
+  "icons": [
+    {
+      "src": "CaseyCZ.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
