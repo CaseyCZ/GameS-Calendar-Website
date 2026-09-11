@@ -1,10 +1,11 @@
-const VERSION = 'games-calendar-v2.2.0';
+const VERSION = 'games-calendar-v2.2.1';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
   './',
   './index.html',
   './styles.css',
+  './detail-polish.css',
   './js/app.js',
   './js/data.js',
   './js/calendar.js',
