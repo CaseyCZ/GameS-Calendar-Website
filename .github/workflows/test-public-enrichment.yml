@@ -1,0 +1,36 @@
+name: Test public game enrichment
+
+on:
+  push:
+    paths:
+      - '.github/workflows/test-public-enrichment.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Steam, Wikidata and Wikipedia
+        shell: bash
+        run: |
+          node <<'NODE'
+          const name = 'NHL 27';
+          const q = encodeURIComponent(name);
+          async function get(url, headers={}) {
+            const r = await fetch(url, {headers:{'User-Agent':'GameS-Calendar/2.0 (https://caseycz.github.io/GameS-Calendar-Website/)', 'Accept':'application/json,text/html;q=0.9,*/*;q=0.8', ...headers}});
+            const text = await r.text();
+            console.log('\nURL', url, 'STATUS', r.status, 'LEN', text.length);
+            return {r,text};
+          }
+
+          const steam = await get(`https://store.steampowered.com/search/suggest?term=${q}&f=games&cc=CZ&l=english&v=228`);
+          console.log('STEAM', steam.text.slice(0,900).replace(/\s+/g,' '));
+
+          const wd = await get(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${q}&language=en&uselang=en&type=item&limit=5&format=json&origin=*`);
+          console.log('WIKIDATA', wd.text.slice(0,1800).replace(/\s+/g,' '));
+
+          const wp = await get(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}%20video%20game&srlimit=5&format=json&origin=*`);
+          console.log('WIKIPEDIA', wp.text.slice(0,1800).replace(/\s+/g,' '));
+          NODE
