@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.0.1';
+const VERSION = 'games-calendar-v3.0.2';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -7,6 +7,8 @@ const SHELL = [
   './styles.css',
   './detail-polish.css',
   './layout-fixes.css',
+  './compact-controls.css',
+  './compact-controls.js',
   './js/app.js',
   './js/data.js',
   './js/calendar.js',
