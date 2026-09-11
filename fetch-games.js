@@ -5,17 +5,17 @@ require('dotenv').config();
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
-const CLIENT_ID = process.env.TWITCH_CLIENT_ID;
-const CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
-const MONTHS_PAST = Math.max(0, Number(process.env.IGDB_MONTHS_PAST ?? 6));
-const MONTHS_FUTURE = Math.max(1, Number(process.env.IGDB_MONTHS_FUTURE ?? 18));
+const API_KEY = process.env.RAWG_API_KEY;
+const MONTHS_PAST = Math.max(0, Number(process.env.GAMES_MONTHS_PAST ?? 6));
+const MONTHS_FUTURE = Math.max(1, Number(process.env.GAMES_MONTHS_FUTURE ?? 18));
 const OUTPUT = path.resolve(process.env.GAMES_OUTPUT || 'games.json');
-const API = 'https://api.igdb.com/v4';
-const REQUEST_DELAY_MS = 280;
+const API = 'https://api.rawg.io/api';
+const PAGE_SIZE = 40;
+const DETAIL_CONCURRENCY = Math.max(1, Math.min(6, Number(process.env.RAWG_DETAIL_CONCURRENCY ?? 4)));
 const MAX_RETRIES = 4;
 
-if (!CLIENT_ID || !CLIENT_SECRET) {
-  console.error('❌ Chybí TWITCH_CLIENT_ID nebo TWITCH_CLIENT_SECRET.');
+if (!API_KEY) {
+  console.error('❌ Chybí RAWG_API_KEY. Zdarma ho získáš na https://rawg.io/apidocs');
   process.exit(1);
 }
 if (typeof fetch !== 'function') {
@@ -25,206 +25,235 @@ if (typeof fetch !== 'function') {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const pad = n => String(n).padStart(2, '0');
-const dayString = date => `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+const cleanText = value => String(value || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const uniq = values => [...new Set((values || []).filter(Boolean))];
 
-async function getToken() {
-  const url = new URL('https://id.twitch.tv/oauth2/token');
-  url.searchParams.set('client_id', CLIENT_ID);
-  url.searchParams.set('client_secret', CLIENT_SECRET);
-  url.searchParams.set('grant_type', 'client_credentials');
-  const response = await fetch(url, { method: 'POST' });
-  if (!response.ok) throw new Error(`Twitch OAuth HTTP ${response.status}: ${await response.text()}`);
-  const data = await response.json();
-  if (!data.access_token) throw new Error('Twitch OAuth nevrátil access_token.');
-  return data.access_token;
+function normalizeName(value = '') {
+  return String(value)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
-async function igdbRequest(endpoint, body, token, attempt = 0) {
-  await sleep(REQUEST_DELAY_MS);
-  const response = await fetch(`${API}/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'Client-ID': CLIENT_ID,
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json',
-      'Content-Type': 'text/plain'
-    },
-    body
-  });
+function dayString(date) {
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+}
 
+function dateWindow() {
+  const now = new Date();
+  const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - MONTHS_PAST, 1));
+  const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + MONTHS_FUTURE, 0));
+  return { from: dayString(from), to: dayString(to) };
+}
+
+async function rawg(pathname, params = {}, attempt = 0) {
+  const url = new URL(`${API}${pathname}`);
+  url.searchParams.set('key', API_KEY);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value));
+  }
+
+  const response = await fetch(url, { headers: { Accept: 'application/json' } });
   if (response.ok) return response.json();
+
   const detail = await response.text();
   if ((response.status === 429 || response.status >= 500) && attempt < MAX_RETRIES) {
-    const wait = Math.min(8000, 700 * (2 ** attempt)) + Math.floor(Math.random() * 250);
-    console.warn(`⚠️ IGDB HTTP ${response.status}; opakuji za ${wait} ms…`);
+    const wait = Math.min(10_000, 700 * (2 ** attempt)) + Math.floor(Math.random() * 350);
+    console.warn(`⚠️ RAWG HTTP ${response.status}; opakuji za ${wait} ms…`);
     await sleep(wait);
-    return igdbRequest(endpoint, body, token, attempt + 1);
+    return rawg(pathname, params, attempt + 1);
   }
-  throw new Error(`IGDB ${endpoint} HTTP ${response.status}: ${detail.slice(0, 500)}`);
+  throw new Error(`RAWG ${pathname} HTTP ${response.status}: ${detail.slice(0, 400)}`);
 }
 
-async function discoverPlatforms(token) {
-  if (process.env.IGDB_PLATFORM_IDS) {
-    const ids = process.env.IGDB_PLATFORM_IDS.split(',').map(Number).filter(Number.isInteger);
-    if (!ids.length) throw new Error('IGDB_PLATFORM_IDS neobsahuje žádné platné ID.');
-    console.log(`🎮 Používám platformy z IGDB_PLATFORM_IDS: ${ids.join(', ')}`);
-    return ids;
-  }
-
+async function loadPrevious() {
   try {
-    const platforms = await igdbRequest('platforms', 'fields id,name,abbreviation; sort id asc; limit 500;', token);
-    const primaryNames = new Set([
-      'PC (Microsoft Windows)', 'PlayStation 5', 'Xbox Series X|S',
-      'Nintendo Switch', 'Nintendo Switch 2'
-    ]);
-    const isWanted = platform => {
-      const name = String(platform.name || '');
-      return primaryNames.has(name) || /SteamVR|Quest|Rift|PlayStation VR|Virtual Reality/i.test(name);
-    };
-    const selected = platforms.filter(isWanted);
-    if (!selected.length) throw new Error('nepodařilo se najít cílové platformy');
-    console.log('🎮 Platformy: ' + selected.map(p => `${p.name} (${p.id})`).join(', '));
-    return [...new Set(selected.map(p => p.id))];
-  } catch (error) {
-    console.warn(`⚠️ Dynamické načtení platforem selhalo (${error.message}). Používám základní fallback.`);
-    return [6, 167, 169, 130];
+    const raw = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
+    const byRawgId = new Map();
+    const coverByName = new Map();
+
+    if (raw && Array.isArray(raw.games)) {
+      for (const game of raw.games) {
+        const rawgId = Number(game.rawgId || game.source?.rawgId || 0);
+        if (rawgId) byRawgId.set(rawgId, game);
+        if (game.name && game.cover) coverByName.set(normalizeName(game.name), game.cover);
+      }
+    } else if (Array.isArray(raw)) {
+      for (const item of raw) {
+        const game = item?.game || item;
+        if (game?.name && (game.cover?.url || game.cover)) {
+          coverByName.set(normalizeName(game.name), game.cover?.url || game.cover);
+        }
+      }
+    }
+    return { byRawgId, coverByName };
+  } catch {
+    return { byRawgId: new Map(), coverByName: new Map() };
   }
 }
 
-function monthBounds(offset) {
-  const now = new Date();
-  const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
-  const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset + 1, 0, 23, 59, 59));
-  return {
-    from,
-    to,
-    fromTs: Math.floor(from.getTime() / 1000),
-    toTs: Math.floor(to.getTime() / 1000)
-  };
+async function discoverPlatforms() {
+  const first = await rawg('/platforms', { page_size: 100, page: 1 });
+  const all = [...(first.results || [])];
+  let next = first.next;
+  let page = 2;
+  while (next && page <= 5) {
+    const result = await rawg('/platforms', { page_size: 100, page });
+    all.push(...(result.results || []));
+    next = result.next;
+    page += 1;
+  }
+
+  const wanted = all.filter(platform => {
+    const name = String(platform.name || '').toLowerCase();
+    return name === 'pc'
+      || name === 'playstation 5'
+      || /xbox series/.test(name)
+      || name === 'nintendo switch'
+      || name === 'nintendo switch 2'
+      || /playstation vr|\bvr\b|quest|rift/.test(name);
+  });
+
+  if (!wanted.length) throw new Error('RAWG nevrátil žádné cílové platformy.');
+  console.log('🎮 Platformy: ' + wanted.map(p => `${p.name} (${p.id})`).join(', '));
+  return wanted;
 }
 
-const RELEASE_FIELDS = [
-  'id','date','human',
-  'platform.id','platform.name','platform.abbreviation',
-  'game.id','game.name','game.slug','game.summary','game.storyline','game.url',
-  'game.cover.url','game.cover.image_id',
-  'game.genres.name',
-  'game.involved_companies.developer','game.involved_companies.publisher','game.involved_companies.company.name',
-  'game.rating','game.rating_count','game.total_rating','game.total_rating_count',
-  'game.videos.video_id','game.videos.name',
-  'game.websites.url','game.websites.type',
-  'game.external_games.url','game.external_games.uid','game.external_games.external_game_source'
-].join(',');
-
-async function fetchMonth(offset, platformIds, token) {
-  const { from, fromTs, toTs } = monthBounds(offset);
+async function fetchGameList(platformIds) {
+  const { from, to } = dateWindow();
   const all = [];
-  for (let pageOffset = 0; ; pageOffset += 500) {
-    const body = `
-      fields ${RELEASE_FIELDS};
-      where date >= ${fromTs} & date <= ${toTs}
-        & game.game_type = 0
-        & game.version_parent = null
-        & game.parent_game = null
-        & platform = (${platformIds.join(',')});
-      sort date asc;
-      limit 500;
-      offset ${pageOffset};
-    `;
-    const batch = await igdbRequest('release_dates', body, token);
-    all.push(...batch);
-    if (batch.length < 500) break;
+  let page = 1;
+  for (;;) {
+    const payload = await rawg('/games', {
+      dates: `${from},${to}`,
+      platforms: platformIds.join(','),
+      ordering: 'released',
+      page_size: PAGE_SIZE,
+      page,
+      exclude_additions: true
+    });
+    all.push(...(payload.results || []));
+    console.log(`📄 RAWG stránka ${page}: ${payload.results?.length || 0} her`);
+    if (!payload.next || !(payload.results || []).length) break;
+    page += 1;
   }
-  console.log(`📅 ${from.getUTCFullYear()}-${pad(from.getUTCMonth()+1)}: ${all.length} release záznamů`);
-  return all;
+  console.log(`📚 Seznam: ${all.length} her (${from} – ${to})`);
+  return { list: all, range: { from, to } };
 }
 
-function typeId(value) {
-  if (typeof value === 'number') return value;
-  return Number(value?.id ?? value?.value ?? value) || 0;
+function platformAbbreviation(name = '') {
+  const n = String(name).toLowerCase();
+  if (n === 'pc') return 'PC';
+  if (n.includes('playstation 5')) return 'PS5';
+  if (n.includes('xbox series')) return 'XSX';
+  if (n.includes('switch 2')) return 'Switch 2';
+  if (n.includes('nintendo switch')) return 'Switch';
+  if (n.includes('playstation vr')) return 'PS VR';
+  if (n.includes('quest')) return 'Quest';
+  return name;
 }
 
-function firstLink(items, predicate) {
-  return (items || []).find(predicate)?.url || '';
+function releasesFromList(game, allowedPlatformIds) {
+  const groups = new Map();
+  for (const item of game.platforms || []) {
+    const platform = item?.platform;
+    if (!platform?.id || !allowedPlatformIds.has(platform.id)) continue;
+    const date = item.released_at || game.released;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) continue;
+    if (!groups.has(date)) groups.set(date, []);
+    groups.get(date).push({
+      id: platform.id,
+      name: platform.name || platform.slug || String(platform.id),
+      abbreviation: platformAbbreviation(platform.name || platform.slug || '')
+    });
+  }
+
+  if (!groups.size && /^\d{4}-\d{2}-\d{2}$/.test(game.released || '')) {
+    groups.set(game.released, []);
+  }
+
+  return [...groups.entries()].map(([date, platforms]) => ({
+    date,
+    timestamp: Math.floor(Date.parse(`${date}T00:00:00Z`) / 1000),
+    platforms: platforms.sort((a, b) => a.name.localeCompare(b.name))
+  })).sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function makeLinks(game) {
-  const websites = game.websites || [];
-  const external = game.external_games || [];
-  const official = firstLink(websites, item => typeId(item.type) === 1);
-  const websiteYoutube = firstLink(websites, item => typeId(item.type) === 9);
-  const websiteSteam = firstLink(websites, item => typeId(item.type) === 13);
-  const reddit = firstLink(websites, item => typeId(item.type) === 14);
-  const websiteEpic = firstLink(websites, item => typeId(item.type) === 16);
-  const externalSteam = firstLink(external, item => typeId(item.external_game_source) === 1);
-  const externalYoutube = firstLink(external, item => typeId(item.external_game_source) === 10);
-  const externalEpic = firstLink(external, item => typeId(item.external_game_source) === 26);
+function listGenres(game) {
+  return uniq((game.genres || []).map(item => item?.name));
+}
+
+function detailGenres(detail, fallback) {
+  const genres = uniq((detail?.genres || []).map(item => item?.name));
+  return genres.length ? genres : fallback;
+}
+
+function storesFromDetail(detail) {
+  return uniq((detail?.stores || []).map(item => item?.store?.name));
+}
+
+function buildGame(listGame, detail, previous, allowedPlatformIds) {
+  const releases = releasesFromList(listGame, allowedPlatformIds);
+  const fallbackGenres = listGenres(listGame);
+  const genres = detailGenres(detail, fallbackGenres);
+  const developers = uniq((detail?.developers || []).map(item => item?.name));
+  const publishers = uniq((detail?.publishers || []).map(item => item?.name));
+  const rawDescription = cleanText(detail?.description_raw || detail?.description || previous?.summary || '');
+  const cover = previous?.cover || detail?.background_image || listGame.background_image || '';
+  const metacritic = Number(detail?.metacritic || listGame.metacritic || 0) || 0;
+  const rawRating = Number(detail?.rating || listGame.rating || 0) || 0;
+  const rating = metacritic || (rawRating ? Math.round(rawRating * 20) : 0);
+  const ratingCount = Number(detail?.ratings_count || listGame.ratings_count || 0) || 0;
+  const website = detail?.website || previous?.links?.official || '';
+  const reddit = detail?.reddit_url || previous?.links?.reddit || '';
+  const slug = detail?.slug || listGame.slug || previous?.slug || '';
+
   return {
-    official,
-    steam: websiteSteam || externalSteam,
-    epic: websiteEpic || externalEpic,
-    reddit,
-    youtube: websiteYoutube || externalYoutube,
-    igdb: game.url || ''
+    id: `rawg-${listGame.id}`,
+    rawgId: listGame.id,
+    sourceUpdated: listGame.updated || detail?.updated || null,
+    name: listGame.name || detail?.name || previous?.name || 'Neznámá hra',
+    slug,
+    summary: rawDescription,
+    storyline: '',
+    cover,
+    genres,
+    developers,
+    publishers,
+    stores: storesFromDetail(detail),
+    rating,
+    ratingCount,
+    igdbUrl: '',
+    trailerId: '',
+    links: {
+      official: website,
+      steam: previous?.links?.steam || '',
+      epic: previous?.links?.epic || '',
+      reddit,
+      youtube: '',
+      igdb: slug ? `https://rawg.io/games/${encodeURIComponent(slug)}` : 'https://rawg.io/'
+    },
+    releases
   };
 }
 
-function uniqueNames(items) {
-  return [...new Set((items || []).map(item => item?.name).filter(Boolean))];
+function canReuse(previous, listGame) {
+  if (!previous) return false;
+  if (!previous.summary || !(previous.genres || []).length) return false;
+  return previous.sourceUpdated && listGame.updated && String(previous.sourceUpdated) === String(listGame.updated);
 }
 
-function transform(releases) {
-  const games = new Map();
-  for (const item of releases) {
-    const source = item.game;
-    if (!source?.id || !source.name || !item.date) continue;
-    const id = String(source.id);
-    if (!games.has(id)) {
-      const companies = source.involved_companies || [];
-      const cover = source.cover?.image_id
-        ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${source.cover.image_id}.jpg`
-        : (source.cover?.url || '').replace(/^\/\//, 'https://').replace(/\/t_[a-zA-Z0-9_]+\//, '/t_cover_big/');
-      games.set(id, {
-        id: source.id,
-        name: source.name,
-        slug: source.slug || '',
-        summary: source.summary || source.storyline || '',
-        cover,
-        genres: uniqueNames(source.genres),
-        developers: [...new Set(companies.filter(c => c.developer).map(c => c.company?.name).filter(Boolean))],
-        publishers: [...new Set(companies.filter(c => c.publisher).map(c => c.company?.name).filter(Boolean))],
-        rating: Number(source.total_rating || source.rating || 0) || 0,
-        ratingCount: Number(source.total_rating_count || source.rating_count || 0) || 0,
-        igdbUrl: source.url || '',
-        trailerId: source.videos?.[0]?.video_id || '',
-        links: makeLinks(source),
-        releases: []
-      });
-    }
-
-    const game = games.get(id);
-    const date = dayString(new Date(item.date * 1000));
-    let release = game.releases.find(r => r.date === date);
-    if (!release) {
-      release = { date, timestamp: item.date, platforms: [] };
-      game.releases.push(release);
-    }
-    if (item.platform && !release.platforms.some(p => p.id === item.platform.id)) {
-      release.platforms.push({
-        id: item.platform.id,
-        name: item.platform.name || String(item.platform.id),
-        abbreviation: item.platform.abbreviation || ''
-      });
+async function mapLimit(items, limit, worker) {
+  const output = new Array(items.length);
+  let cursor = 0;
+  async function run() {
+    while (true) {
+      const index = cursor++;
+      if (index >= items.length) return;
+      output[index] = await worker(items[index], index);
     }
   }
-
-  const result = [...games.values()];
-  for (const game of result) {
-    game.releases.sort((a,b) => a.date.localeCompare(b.date));
-    for (const release of game.releases) release.platforms.sort((a,b) => a.name.localeCompare(b.name));
-  }
-  result.sort((a,b) => (a.releases[0]?.date || '').localeCompare(b.releases[0]?.date || '') || a.name.localeCompare(b.name));
-  return result;
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
+  return output;
 }
 
 async function atomicWrite(file, content) {
@@ -236,27 +265,55 @@ async function atomicWrite(file, content) {
 }
 
 async function main() {
-  console.log('🔐 Získávám Twitch token…');
-  const token = await getToken();
-  const platforms = await discoverPlatforms(token);
-  const releases = [];
-  for (let offset = -MONTHS_PAST; offset < MONTHS_FUTURE; offset++) {
-    releases.push(...await fetchMonth(offset, platforms, token));
-  }
+  console.log('🟢 Zdroj dat: RAWG (free plan)');
+  const previousData = await loadPrevious();
+  const platforms = await discoverPlatforms();
+  const allowedPlatformIds = new Set(platforms.map(p => p.id));
+  const { list, range } = await fetchGameList(platforms.map(p => p.id));
 
-  const games = transform(releases);
-  const allDates = games.flatMap(game => game.releases.map(r => r.date)).sort();
+  let reused = 0;
+  let detailed = 0;
+  let detailFailures = 0;
+  const games = await mapLimit(list, DETAIL_CONCURRENCY, async (listGame, index) => {
+    const previous = previousData.byRawgId.get(Number(listGame.id));
+    let detail = null;
+    if (canReuse(previous, listGame)) {
+      reused += 1;
+    } else {
+      try {
+        detail = await rawg(`/games/${listGame.id}`);
+        detailed += 1;
+      } catch (error) {
+        detailFailures += 1;
+        console.warn(`⚠️ Detail ${listGame.name}: ${error.message}`);
+      }
+    }
+
+    const fallbackPrevious = previous || {
+      cover: previousData.coverByName.get(normalizeName(listGame.name)) || ''
+    };
+    const game = buildGame(listGame, detail, previous || fallbackPrevious, allowedPlatformIds);
+    if (!game.releases.length) return null;
+    if ((index + 1) % 100 === 0) console.log(`🔎 Zpracováno ${index + 1}/${list.length}`);
+    return game;
+  });
+
+  const cleanGames = games.filter(Boolean).sort((a, b) =>
+    (a.releases[0]?.date || '').localeCompare(b.releases[0]?.date || '') || a.name.localeCompare(b.name)
+  );
+  const allDates = cleanGames.flatMap(game => game.releases.map(r => r.date)).sort();
   const payload = {
-    version: 2,
+    version: 3,
+    provider: 'RAWG',
     generatedAt: new Date().toISOString(),
-    range: allDates.length ? { from: allDates[0], to: allDates.at(-1) } : null,
-    platforms,
-    games
+    range: allDates.length ? { from: allDates[0], to: allDates.at(-1) } : range,
+    games: cleanGames
   };
 
   await atomicWrite(OUTPUT, JSON.stringify(payload, null, 2) + '\n');
-  const releaseCount = games.reduce((sum, game) => sum + game.releases.length, 0);
-  console.log(`✅ Uloženo ${games.length} her / ${releaseCount} datumů vydání do ${OUTPUT}`);
+  const releaseCount = cleanGames.reduce((sum, game) => sum + game.releases.length, 0);
+  console.log(`✅ Uloženo ${cleanGames.length} her / ${releaseCount} datumů vydání do ${OUTPUT}`);
+  console.log(`ℹ️ Detail RAWG: ${detailed} staženo, ${reused} použito z cache, ${detailFailures} selhalo.`);
 }
 
 main().catch(error => {
