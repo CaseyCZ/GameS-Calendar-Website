@@ -12,25 +12,30 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Test Steam, Wikidata and Wikipedia
+      - name: Inspect NHL 27 Wikidata fields
         shell: bash
         run: |
           node <<'NODE'
-          const name = 'NHL 27';
-          const q = encodeURIComponent(name);
-          async function get(url, headers={}) {
-            const r = await fetch(url, {headers:{'User-Agent':'GameS-Calendar/2.0 (https://caseycz.github.io/GameS-Calendar-Website/)', 'Accept':'application/json,text/html;q=0.9,*/*;q=0.8', ...headers}});
-            const text = await r.text();
-            console.log('\nURL', url, 'STATUS', r.status, 'LEN', text.length);
-            return {r,text};
+          const qid = 'Q140695791';
+          const base = 'https://www.wikidata.org/w/api.php';
+          const ua = {'User-Agent':'GameS-Calendar/2.0 (https://caseycz.github.io/GameS-Calendar-Website/)'};
+          const u = new URL(base);
+          for (const [k,v] of Object.entries({action:'wbgetentities',ids:qid,props:'labels|descriptions|claims|sitelinks',languages:'cs|en',languagefallback:'1',format:'json',origin:'*'})) u.searchParams.set(k,v);
+          const entity = (await (await fetch(u,{headers:ua})).json()).entities[qid];
+          const ids = [];
+          for (const prop of ['P136','P178','P123','P400']) {
+            const values = (entity.claims?.[prop] || []).map(c => c.mainsnak?.datavalue?.value?.id).filter(Boolean);
+            console.log(prop, values);
+            ids.push(...values);
           }
-
-          const steam = await get(`https://store.steampowered.com/search/suggest?term=${q}&f=games&cc=CZ&l=english&v=228`);
-          console.log('STEAM', steam.text.slice(0,900).replace(/\s+/g,' '));
-
-          const wd = await get(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${q}&language=en&uselang=en&type=item&limit=5&format=json&origin=*`);
-          console.log('WIKIDATA', wd.text.slice(0,1800).replace(/\s+/g,' '));
-
-          const wp = await get(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}%20video%20game&srlimit=5&format=json&origin=*`);
-          console.log('WIKIPEDIA', wp.text.slice(0,1800).replace(/\s+/g,' '));
+          console.log('P856', (entity.claims?.P856 || []).map(c => c.mainsnak?.datavalue?.value).filter(Boolean));
+          console.log('P1733', (entity.claims?.P1733 || []).map(c => c.mainsnak?.datavalue?.value).filter(Boolean));
+          console.log('DESC', entity.descriptions);
+          console.log('SITELINKS', {cswiki:entity.sitelinks?.cswiki?.title,enwiki:entity.sitelinks?.enwiki?.title});
+          if (ids.length) {
+            const l = new URL(base);
+            for (const [k,v] of Object.entries({action:'wbgetentities',ids:[...new Set(ids)].join('|'),props:'labels',languages:'cs|en',languagefallback:'1',format:'json',origin:'*'})) l.searchParams.set(k,v);
+            const labels = (await (await fetch(l,{headers:ua})).json()).entities;
+            console.log('LABELS', Object.fromEntries(Object.entries(labels).map(([id,e])=>[id,e.labels?.cs?.value||e.labels?.en?.value||''])));
+          }
           NODE
