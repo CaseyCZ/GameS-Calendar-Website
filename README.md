@@ -18,7 +18,7 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 - ⏳ **Odpočet do vydání** u připravovaných titulů
 - 🖼️ **Obaly her a přehledné karty**
 - 📖 **Detail hry** s popisem, žánrem, vývojářem, vydavatelem a hodnocením
-- 🔗 **Odkazy na Steam, Epic Games, oficiální stránky, IGDB, Reddit a YouTube**
+- 🔗 **Odkazy na herní obchody, oficiální stránky, databázi hry, Reddit a YouTube**
 - 📅 **Přidání hry do kalendáře** — Google Calendar, Apple Calendar nebo Outlook
 - 📥 **Stažení více vybraných vydání do kalendáře najednou**
 - 🔗 **Sdílení aktuálního výběru a filtrů pomocí odkazu**
