@@ -7,7 +7,7 @@ export { MONTHS, formatter };
 
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
   }[char]));
 }
 
@@ -85,7 +85,7 @@ export function fallbackLinks(game) {
     epic: game.links?.epic || `https://store.epicgames.com/en-US/browse?q=${q}&sortBy=relevancy&sortDir=DESC&count=40`,
     reddit: game.links?.reddit || `https://www.reddit.com/search/?q=${q}`,
     youtube: game.links?.youtube || `https://www.youtube.com/results?search_query=${q}+trailer`,
-    igdb: game.links?.igdb || game.igdbUrl || `https://www.igdb.com/search?type=1&q=${q}`,
+    database: game.links?.igdb || game.igdbUrl || '',
     official: game.links?.official || '',
     playstation: `https://store.playstation.com/en-cz/search/${q}`,
     xbox: `https://www.xbox.com/cs-CZ/Search/Results?q=${q}`,
@@ -109,8 +109,8 @@ function platformStoreLinks(row, links) {
   };
 
   if (groups.has('PC')) {
-    add(links.steam && row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam);
-    add(links.epic && row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic);
+    add(row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam);
+    add(row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic);
   }
   if (groups.has('PS5')) add('PlayStation Store', links.playstation);
   if (groups.has('Xbox Series')) add('Xbox Store', links.xbox);
@@ -131,12 +131,27 @@ function factMarkup(label, value) {
   return `<div class="fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
 }
 
+function generatedDescription(row) {
+  const game = row.game;
+  const genres = game.genres || [];
+  const developers = game.developers || [];
+  const platformNames = row.platforms.map(platform => platform.name).filter(Boolean);
+  const parts = [];
+
+  if (genres.length) parts.push(`${game.name} je ${genres.slice(0,2).join(' / ').toLowerCase()} hra`);
+  else parts.push(`${game.name} je videohra`);
+  if (developers.length) parts.push(`od studia ${developers[0]}`);
+  if (platformNames.length) parts.push(`pro ${platformNames.join(', ')}`);
+
+  return `${parts.join(' ')}. Datum vydání: ${formatDate(row.day)}.`;
+}
+
 export function gameDialogHtml(row, watched) {
   const game = row.game;
   const links = fallbackLinks(game);
   const countdown = releaseCountdown(row.day);
   const cover = safeUrl(game.cover);
-  const summary = game.summary || game.storyline || '';
+  const summary = game.summary || game.storyline || generatedDescription(row);
   const genres = game.genres.join(', ');
   const devs = game.developers.join(', ');
   const publishers = game.publishers.join(', ');
@@ -145,9 +160,10 @@ export function gameDialogHtml(row, watched) {
     factMarkup('Žánry', genres),
     factMarkup('Vývojář', devs),
     factMarkup('Vydavatel', publishers),
-    factMarkup('Hodnocení IGDB', rating)
+    factMarkup('Hodnocení', rating)
   ].filter(Boolean).join('');
   const storeLinks = platformStoreLinks(row, links);
+  const databaseLabel = /rawg\.io/i.test(links.database || '') ? 'RAWG' : 'IGDB';
 
   return `<div class="detail-hero">
     <div class="detail-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" decoding="async">` : ''}</div>
@@ -159,7 +175,7 @@ export function gameDialogHtml(row, watched) {
         ${row.platforms.map(p => `<span class="badge">${escapeHtml(p.name)}</span>`).join('')}
         ${game.rating ? `<span class="badge">★ ${Math.round(game.rating)} %</span>` : ''}
       </div>
-      ${summary ? `<p class="detail-summary">${escapeHtml(summary)}</p>` : '<p class="detail-summary">Další informace k této hře zatím nejsou k dispozici.</p>'}
+      <p class="detail-summary">${escapeHtml(summary)}</p>
       ${facts ? `<div class="detail-facts">${facts}</div>` : ''}
       <div class="detail-actions">
         <button class="primary-btn" type="button" data-dialog-calendar="${escapeHtml(row.key)}">📅 Přidat do kalendáře</button>
@@ -169,7 +185,7 @@ export function gameDialogHtml(row, watched) {
       ${storeLinks ? `<div class="detail-links" aria-label="Obchody pro toto vydání">${storeLinks}</div>` : ''}
       <div class="detail-links" aria-label="Další odkazy">
         ${linkButton('Oficiální web', links.official)}
-        ${linkButton('IGDB', links.igdb)}
+        ${linkButton(databaseLabel, links.database)}
         ${linkButton('Reddit', links.reddit)}
       </div>
     </div>
