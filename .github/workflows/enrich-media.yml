@@ -1,0 +1,58 @@
+name: Enrich Steam media
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 3 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'enrich-steam-media.js'
+      - '.github/workflows/enrich-media.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enrich-steam-media
+  cancel-in-progress: false
+
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enrich trailers and screenshots
+        env:
+          STEAM_MEDIA_LIMIT: 180
+          STEAM_MEDIA_DELAY_MS: 1750
+          STEAM_MEDIA_RETRY_DAYS: 21
+        run: node enrich-steam-media.js
+
+      - name: Validate JavaScript
+        run: node --check enrich-steam-media.js
+
+      - name: Commit changed media
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if git diff --quiet -- games.json; then
+            echo "games.json is unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games.json
+          git commit -m "chore: enrich trailers and screenshots"
+          git pull --rebase origin main
+          git push origin HEAD:main
