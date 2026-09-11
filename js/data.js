@@ -1,7 +1,7 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-json-v2';
+const CACHE_KEY = 'games-json-v3';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 
 const pad = value => String(value).padStart(2, '0');
