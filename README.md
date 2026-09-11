@@ -1,144 +1,50 @@
-# GameS Calendar 2.0
+# 🎮 GameS Calendar
 
-Moderní, rychlý herní kalendář a vyhledávač vydání her založený na datech z IGDB. Frontend zůstává statický a je vhodný pro GitHub Pages; tajné IGDB/Twitch údaje se používají pouze při serverovém/build-time generování `games.json`.
+**Přehledný herní kalendář a vyhledávač připravovaných i vydaných her.**
 
-## Co verze 2.0 přidává
+GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vychází, kdy to vychází a na jaké platformě** — bez zdlouhavého hledání na několika různých webech.
 
-- moderní dark/glass UI bez runtime Tailwind CDN
-- okamžité vyhledávání s debounce
-- multi-select platformy: PC, PS5, Xbox Series, Switch, Switch 2 a VR
-- filtry podle žánru, stavu vydání, měsíce a roku
-- přesné měsíční počty respektující aktivní filtry
-- grid a kompaktní zobrazení
-- detail hry v modalu: popis, žánr, vývojář, vydavatel, hodnocení, platformy
-- přímé odkazy z IGDB na oficiální web / Steam / Epic / Reddit; fallback na vyhledávání, pokud IGDB přímý odkaz nemá
-- YouTube trailer načtený až při otevření
-- Watchlist v `localStorage`
-- countdown do vydání
-- Google Calendar + správný celodenní `.ics` export pro Apple Calendar / Outlook
-- export celého aktuálního výběru do `.ics`
-- lazy loading obalů, skeleton loading a stránkované vykreslování velkých výsledků
-- IndexedDB cache + stale fallback při výpadku sítě
-- PWA manifest + service worker/offline aplikační shell
-- sdílení aktuálních filtrů v URL
-- plná česká lokalizace datumů (`cs-CZ`)
-- kompatibilita se starým `games.json`; detailní metadata se objeví po prvním spuštění nového fetch skriptu
+## 🌐 Otevřít web
 
-## Architektura
+👉 **https://caseycz.github.io/GameS-Calendar-Website/**
 
-```text
-index.html                    # sémantické UI
-styles.css                    # kompletní vzhled, responzivita, animace
-js/app.js                     # stav aplikace, filtry a události
-js/ui.js                      # rendering karet, modalu a UI helpery
-js/data.js                    # normalizace dat + IndexedDB cache
-js/calendar.js                # Google Calendar a RFC5545 .ics
-fetch-games.js                # IGDB/Twitch datová vrstva
-manifest.webmanifest          # PWA
-sw.js                         # offline cache
-.github/workflows/update-games.yml
-                               # denní automatická aktualizace games.json
-games.json                    # generovaná data
-CaseyCZ.png                   # logo / PWA ikona
-```
+## ✨ Co na webu najdete
 
-## Jak fungují data
+- 🔍 **Rychlé vyhledávání her podle názvu**
+- 🎮 **Filtrování podle platforem** — PC, PlayStation, Xbox, Nintendo a další
+- 🗓️ **Přehled podle měsíců a data vydání**
+- 🎯 **Filtry podle žánru a stavu vydání**
+- ❤️ **Sledované / oblíbené hry** pro vlastní seznam
+- ⏳ **Odpočet do vydání** u připravovaných titulů
+- 🖼️ **Obaly her a přehledné karty**
+- 📖 **Detail hry** s popisem, žánrem, vývojářem, vydavatelem a hodnocením
+- 🔗 **Odkazy na Steam, Epic Games, oficiální stránky, IGDB, Reddit a YouTube**
+- 📅 **Přidání hry do kalendáře** — Google Calendar, Apple Calendar nebo Outlook
+- 📥 **Stažení více vybraných vydání do kalendáře najednou**
+- 🔗 **Sdílení aktuálního výběru a filtrů pomocí odkazu**
+- 🇨🇿 **České prostředí a český formát data**
+- 📱 **Pohodlné použití na počítači i telefonu**
 
-IGDB API nepovoluje přímé browserové CORS volání a Client Secret nesmí být ve frontendu. Proto `fetch-games.js` získá Twitch App Access Token, stáhne release data a detailnější metadata z IGDB a bezpečně vytvoří statický `games.json`. Web pak pracuje jen s tímto souborem a může být extrémně rychlý i na GitHub Pages.
+## 🕹️ Jak GameS Calendar používat
 
-Nový skript standardně načítá 6 měsíců historie a 18 měsíců budoucnosti. Platformy se nejprve objeví dynamicky přes IGDB `platforms` endpoint, takže není nutné udržovat ID Switch 2/VR ručně. Při výpadku tohoto lookupu zůstává fallback pro PC, PS5, Xbox Series X|S a Nintendo Switch.
+Vyberte platformu nebo období, případně napište název hry do vyhledávání. Výsledky se okamžitě přizpůsobí vašemu výběru.
 
-### Nový datový formát
+Kliknutím na hru otevřete její detail, kde najdete další informace a odkazy. Hru si můžete uložit mezi sledované nebo ji rovnou přidat do svého kalendáře, abyste na vydání nezapomněli.
 
-```json
-{
-  "version": 2,
-  "generatedAt": "2026-09-11T12:00:00.000Z",
-  "range": { "from": "2026-03-01", "to": "2028-02-29" },
-  "games": [
-    {
-      "id": 123,
-      "name": "Example Game",
-      "summary": "…",
-      "cover": "https://images.igdb.com/…",
-      "genres": ["Role-playing (RPG)"],
-      "developers": ["Studio"],
-      "publishers": ["Publisher"],
-      "rating": 86.4,
-      "links": {
-        "official": "https://…",
-        "steam": "https://…",
-        "epic": "",
-        "reddit": "",
-        "igdb": "https://www.igdb.com/…"
-      },
-      "releases": [
-        {
-          "date": "2026-10-15",
-          "platforms": [{ "id": 6, "name": "PC (Microsoft Windows)" }]
-        }
-      ]
-    }
-  ]
-}
-```
+Pokud chcete vidět jen hry, které vás skutečně zajímají, můžete kombinovat více filtrů současně.
 
-## Lokální spuštění
+## ❤️ Proč projekt vznikl
 
-Požadavky: Node.js 18+.
+Herních vydání je každý měsíc velké množství a sledovat všechny termíny na různých stránkách je nepraktické. Cílem GameS Calendar je nabídnout **jedno rychlé a přehledné místo**, kde se dá během několika sekund zjistit:
 
-```bash
-npm install
-```
+> **Co vychází? Kdy? Na čem? A kde si o hře zjistím víc?**
 
-Vytvoř `.env` (nenahrávat do Gitu):
+## 🔄 Aktuální informace
 
-```env
-TWITCH_CLIENT_ID=...
-TWITCH_CLIENT_SECRET=...
-```
+Přehled her je průběžně aktualizovaný, takže se mohou měnit data vydání, platformy i další informace podle toho, jak jsou zveřejňovány nové údaje o hrách.
 
-Data obnovíš:
+---
 
-```bash
-npm run fetch-games
-```
+### 🎮 Najděte si svou další hru
 
-Statické soubory otevři přes lokální HTTP server, například:
-
-```bash
-python -m http.server 8080
-```
-
-Pak otevři `http://localhost:8080`.
-
-## GitHub Actions
-
-V repozitáři nastav v **Settings → Secrets and variables → Actions**:
-
-- `TWITCH_CLIENT_ID`
-- `TWITCH_CLIENT_SECRET`
-
-Workflow `.github/workflows/update-games.yml` spouští aktualizaci jednou denně a `games.json` commitne pouze tehdy, pokud se skutečně změnil. Lze ho spustit i ručně přes **Actions → Update IGDB game data → Run workflow**.
-
-## Volitelné proměnné
-
-```env
-IGDB_MONTHS_PAST=6
-IGDB_MONTHS_FUTURE=18
-# Volitelně lze dynamický výběr platforem kompletně nahradit vlastním seznamem ID:
-IGDB_PLATFORM_IDS=6,167,169,130
-GAMES_OUTPUT=games.json
-```
-
-## GitHub Pages
-
-Web nevyžaduje build. GitHub Pages může dál publikovat přímo větev `main`. Service worker funguje na HTTPS automaticky.
-
-## Poznámka k cenám / CZK
-
-IGDB neposkytuje aktuální prodejní ceny obchodů. UI je plně české a používá český formát data, ale cenu v Kč záměrně nevymýšlí. Pro skutečné ceny v CZK je potřeba připojit samostatné store API (Steam/Epic nebo agregátor cen) a řešit jeho podmínky a cache zvlášť.
-
-## Bezpečnost
-
-Nikdy nevkládej `TWITCH_CLIENT_SECRET` do `index.html`, JavaScriptu prohlížeče ani do `games.json`. Tajné údaje patří pouze do lokálního `.env` nebo GitHub Actions Secrets.
+👉 **https://caseycz.github.io/GameS-Calendar-Website/**
