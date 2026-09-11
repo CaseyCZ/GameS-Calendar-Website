@@ -1,259 +1,389 @@
 #!/usr/bin/env node
 'use strict';
 
-require('dotenv').config();
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
-const API_KEY = process.env.RAWG_API_KEY;
-const MONTHS_PAST = Math.max(0, Number(process.env.GAMES_MONTHS_PAST ?? 6));
-const MONTHS_FUTURE = Math.max(1, Number(process.env.GAMES_MONTHS_FUTURE ?? 18));
 const OUTPUT = path.resolve(process.env.GAMES_OUTPUT || 'games.json');
-const API = 'https://api.rawg.io/api';
-const PAGE_SIZE = 40;
-const DETAIL_CONCURRENCY = Math.max(1, Math.min(6, Number(process.env.RAWG_DETAIL_CONCURRENCY ?? 4)));
-const MAX_RETRIES = 4;
-
-if (!API_KEY) {
-  console.error('❌ Chybí RAWG_API_KEY. Zdarma ho získáš na https://rawg.io/apidocs');
-  process.exit(1);
-}
-if (typeof fetch !== 'function') {
-  console.error('❌ Tento skript vyžaduje Node.js 18+ (globální fetch).');
-  process.exit(1);
-}
+const WD_API = 'https://www.wikidata.org/w/api.php';
+const WIKI_API = 'https://cs.wikipedia.org/w/api.php';
+const CONCURRENCY = Math.max(1, Math.min(8, Number(process.env.METADATA_CONCURRENCY || 5)));
+const RETRY_MISSES_AFTER_DAYS = Math.max(1, Number(process.env.METADATA_RETRY_DAYS || 30));
+const MAX_RETRIES = 5;
+const USER_AGENT = 'GameS-Calendar/2.0 (https://caseycz.github.io/GameS-Calendar-Website/; public game metadata enrichment)';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const pad = n => String(n).padStart(2, '0');
-const cleanText = value => String(value || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 const uniq = values => [...new Set((values || []).filter(Boolean))];
+
+const GENRE_CS = new Map(Object.entries({
+  'action game': 'Akční',
+  'action-adventure game': 'Akční adventura',
+  'adventure game': 'Adventura',
+  'adventure video game': 'Adventura',
+  'role-playing video game': 'RPG',
+  'role-playing game': 'RPG',
+  'sports video game': 'Sportovní',
+  'sports game': 'Sportovní',
+  'simulation video game': 'Simulace',
+  'simulation game': 'Simulace',
+  'strategy video game': 'Strategie',
+  'strategy game': 'Strategie',
+  'racing video game': 'Závodní',
+  'racing game': 'Závodní',
+  'platform game': 'Plošinovka',
+  'platformer': 'Plošinovka',
+  'puzzle video game': 'Logická',
+  'puzzle game': 'Logická',
+  'fighting game': 'Bojová',
+  'survival horror': 'Survival horor',
+  'horror game': 'Horor',
+  'first-person shooter': 'FPS',
+  'third-person shooter': 'TPS',
+  'shooter game': 'Střílečka',
+  'real-time strategy': 'RTS',
+  'turn-based strategy': 'Tahová strategie',
+  'ice hockey video game': 'Hokej',
+  'association football video game': 'Fotbal',
+  'football video game': 'Fotbal',
+  'basketball video game': 'Basketbal',
+  'baseball video game': 'Baseball',
+  'battle royale game': 'Battle royale',
+  'metroidvania': 'Metroidvania',
+  'sandbox game': 'Sandbox',
+  'roguelike': 'Roguelike',
+  'roguelite': 'Roguelite',
+  'visual novel': 'Vizuální novela',
+  'massively multiplayer online role-playing game': 'MMORPG',
+  'rhythm game': 'Rytmická',
+  'party game': 'Párty',
+  'stealth game': 'Stealth',
+  'survival game': 'Survival',
+  'city-building game': 'Budovatelská',
+  'management game': 'Management',
+  'turn-based tactics': 'Tahová taktika',
+  'tactical role-playing game': 'Taktické RPG'
+}));
 
 function normalizeName(value = '') {
   return String(value)
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    .toLowerCase()
+    .replace(/[™®©]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
-function dayString(date) {
-  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+function dayFrom(value) {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  let ms;
+  if (typeof value === 'number') ms = value > 1e12 ? value : value * 1000;
+  else if (typeof value === 'string' && /^\d+$/.test(value)) {
+    const n = Number(value); ms = n > 1e12 ? n : n * 1000;
+  } else ms = Date.parse(value);
+  if (!Number.isFinite(ms)) return null;
+  const d = new Date(ms);
+  if (Number.isNaN(d.getTime())) return null;
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }
 
-function dateWindow() {
-  const now = new Date();
-  const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - MONTHS_PAST, 1));
-  const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + MONTHS_FUTURE, 0));
-  return { from: dayString(from), to: dayString(to) };
+function timestampFromDay(day) {
+  return Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
 }
 
-async function rawg(pathname, params = {}, attempt = 0) {
-  const url = new URL(`${API}${pathname}`);
-  url.searchParams.set('key', API_KEY);
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value));
-  }
-
-  const response = await fetch(url, { headers: { Accept: 'application/json' } });
-  if (response.ok) return response.json();
-
-  const detail = await response.text();
-  if ((response.status === 429 || response.status >= 500) && attempt < MAX_RETRIES) {
-    const wait = Math.min(10_000, 700 * (2 ** attempt)) + Math.floor(Math.random() * 350);
-    console.warn(`⚠️ RAWG HTTP ${response.status}; opakuji za ${wait} ms…`);
-    await sleep(wait);
-    return rawg(pathname, params, attempt + 1);
-  }
-  throw new Error(`RAWG ${pathname} HTTP ${response.status}: ${detail.slice(0, 400)}`);
+function coverUrl(value) {
+  if (!value) return '';
+  let url = typeof value === 'string' ? value : value.url || '';
+  if (url.startsWith('//')) url = `https:${url}`;
+  return url.replace(/\/t_[a-zA-Z0-9_]+\//, '/t_cover_big/');
 }
 
-async function loadPrevious() {
-  try {
-    const raw = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
-    const byRawgId = new Map();
-    const coverByName = new Map();
-
-    if (raw && Array.isArray(raw.games)) {
-      for (const game of raw.games) {
-        const rawgId = Number(game.rawgId || game.source?.rawgId || 0);
-        if (rawgId) byRawgId.set(rawgId, game);
-        if (game.name && game.cover) coverByName.set(normalizeName(game.name), game.cover);
-      }
-    } else if (Array.isArray(raw)) {
-      for (const item of raw) {
-        const game = item?.game || item;
-        if (game?.name && (game.cover?.url || game.cover)) {
-          coverByName.set(normalizeName(game.name), game.cover?.url || game.cover);
-        }
-      }
-    }
-    return { byRawgId, coverByName };
-  } catch {
-    return { byRawgId: new Map(), coverByName: new Map() };
-  }
+function normalizePlatform(platform) {
+  if (!platform) return null;
+  if (typeof platform === 'string') return { id: null, name: platform, abbreviation: '' };
+  const name = platform.name || platform.abbreviation || platform.abbr || String(platform.id || '');
+  if (!name) return null;
+  return { id: platform.id ?? null, name, abbreviation: platform.abbreviation || platform.abbr || '' };
 }
 
-async function discoverPlatforms() {
-  const first = await rawg('/platforms', { page_size: 100, page: 1 });
-  const all = [...(first.results || [])];
-  let next = first.next;
-  let page = 2;
-  while (next && page <= 5) {
-    const result = await rawg('/platforms', { page_size: 100, page });
-    all.push(...(result.results || []));
-    next = result.next;
-    page += 1;
-  }
-
-  const wanted = all.filter(platform => {
-    const name = String(platform.name || '').toLowerCase();
-    return name === 'pc'
-      || name === 'playstation 5'
-      || /xbox series/.test(name)
-      || name === 'nintendo switch'
-      || name === 'nintendo switch 2'
-      || /playstation vr|\bvr\b|quest|rift/.test(name);
-  });
-
-  if (!wanted.length) throw new Error('RAWG nevrátil žádné cílové platformy.');
-  console.log('🎮 Platformy: ' + wanted.map(p => `${p.name} (${p.id})`).join(', '));
-  return wanted;
-}
-
-async function fetchGameList(platformIds) {
-  const { from, to } = dateWindow();
-  const all = [];
-  let page = 1;
-  for (;;) {
-    const payload = await rawg('/games', {
-      dates: `${from},${to}`,
-      platforms: platformIds.join(','),
-      ordering: 'released',
-      page_size: PAGE_SIZE,
-      page,
-      exclude_additions: true
-    });
-    all.push(...(payload.results || []));
-    console.log(`📄 RAWG stránka ${page}: ${payload.results?.length || 0} her`);
-    if (!payload.next || !(payload.results || []).length) break;
-    page += 1;
-  }
-  console.log(`📚 Seznam: ${all.length} her (${from} – ${to})`);
-  return { list: all, range: { from, to } };
-}
-
-function platformAbbreviation(name = '') {
-  const n = String(name).toLowerCase();
-  if (n === 'pc') return 'PC';
-  if (n.includes('playstation 5')) return 'PS5';
-  if (n.includes('xbox series')) return 'XSX';
-  if (n.includes('switch 2')) return 'Switch 2';
-  if (n.includes('nintendo switch')) return 'Switch';
-  if (n.includes('playstation vr')) return 'PS VR';
-  if (n.includes('quest')) return 'Quest';
-  return name;
-}
-
-function releasesFromList(game, allowedPlatformIds) {
-  const groups = new Map();
-  for (const item of game.platforms || []) {
-    const platform = item?.platform;
-    if (!platform?.id || !allowedPlatformIds.has(platform.id)) continue;
-    const date = item.released_at || game.released;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) continue;
-    if (!groups.has(date)) groups.set(date, []);
-    groups.get(date).push({
-      id: platform.id,
-      name: platform.name || platform.slug || String(platform.id),
-      abbreviation: platformAbbreviation(platform.name || platform.slug || '')
-    });
-  }
-
-  if (!groups.size && /^\d{4}-\d{2}-\d{2}$/.test(game.released || '')) {
-    groups.set(game.released, []);
-  }
-
-  return [...groups.entries()].map(([date, platforms]) => ({
-    date,
-    timestamp: Math.floor(Date.parse(`${date}T00:00:00Z`) / 1000),
-    platforms: platforms.sort((a, b) => a.name.localeCompare(b.name))
-  })).sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function listGenres(game) {
-  return uniq((game.genres || []).map(item => item?.name));
-}
-
-function detailGenres(detail, fallback) {
-  const genres = uniq((detail?.genres || []).map(item => item?.name));
-  return genres.length ? genres : fallback;
-}
-
-function storesFromDetail(detail) {
-  return uniq((detail?.stores || []).map(item => item?.store?.name));
-}
-
-function buildGame(listGame, detail, previous, allowedPlatformIds) {
-  const releases = releasesFromList(listGame, allowedPlatformIds);
-  const fallbackGenres = listGenres(listGame);
-  const genres = detailGenres(detail, fallbackGenres);
-  const developers = uniq((detail?.developers || []).map(item => item?.name));
-  const publishers = uniq((detail?.publishers || []).map(item => item?.name));
-  const rawDescription = cleanText(detail?.description_raw || detail?.description || previous?.summary || '');
-  const cover = previous?.cover || detail?.background_image || listGame.background_image || '';
-  const metacritic = Number(detail?.metacritic || listGame.metacritic || 0) || 0;
-  const rawRating = Number(detail?.rating || listGame.rating || 0) || 0;
-  const rating = metacritic || (rawRating ? Math.round(rawRating * 20) : 0);
-  const ratingCount = Number(detail?.ratings_count || listGame.ratings_count || 0) || 0;
-  const website = detail?.website || previous?.links?.official || '';
-  const reddit = detail?.reddit_url || previous?.links?.reddit || '';
-  const slug = detail?.slug || listGame.slug || previous?.slug || '';
-
+function normalizeLinks(links = {}, game = {}) {
   return {
-    id: `rawg-${listGame.id}`,
-    rawgId: listGame.id,
-    sourceUpdated: listGame.updated || detail?.updated || null,
-    name: listGame.name || detail?.name || previous?.name || 'Neznámá hra',
-    slug,
-    summary: rawDescription,
-    storyline: '',
-    cover,
-    genres,
-    developers,
-    publishers,
-    stores: storesFromDetail(detail),
-    rating,
-    ratingCount,
-    igdbUrl: '',
-    trailerId: '',
-    links: {
-      official: website,
-      steam: previous?.links?.steam || '',
-      epic: previous?.links?.epic || '',
-      reddit,
-      youtube: '',
-      igdb: slug ? `https://rawg.io/games/${encodeURIComponent(slug)}` : 'https://rawg.io/'
-    },
-    releases
+    official: links.official || '',
+    steam: links.steam || '',
+    epic: links.epic || '',
+    reddit: links.reddit || '',
+    youtube: links.youtube || '',
+    wikipedia: links.wikipedia || '',
+    igdb: links.igdb || game.igdbUrl || game.url || ''
   };
 }
 
-function canReuse(previous, listGame) {
-  if (!previous) return false;
-  if (!previous.summary || !(previous.genres || []).length) return false;
-  return previous.sourceUpdated && listGame.updated && String(previous.sourceUpdated) === String(listGame.updated);
+function normalizeExisting(raw) {
+  if (raw && Array.isArray(raw.games)) {
+    return raw.games.map(game => ({
+      ...game,
+      id: game.id ?? game.name,
+      name: game.name || 'Neznámá hra',
+      summary: game.summary || '',
+      storyline: game.storyline || '',
+      cover: coverUrl(game.cover),
+      genres: uniq((game.genres || []).map(x => typeof x === 'string' ? x : x?.name)),
+      developers: uniq((game.developers || []).map(x => typeof x === 'string' ? x : x?.name)),
+      publishers: uniq((game.publishers || []).map(x => typeof x === 'string' ? x : x?.name)),
+      links: normalizeLinks(game.links, game),
+      releases: (game.releases || []).map(release => {
+        const day = dayFrom(release.date ?? release.day ?? release.timestamp);
+        if (!day) return null;
+        return {
+          date: day,
+          timestamp: release.timestamp || timestampFromDay(day),
+          platforms: (release.platforms || []).map(normalizePlatform).filter(Boolean)
+        };
+      }).filter(Boolean)
+    })).filter(game => game.releases.length);
+  }
+
+  if (!Array.isArray(raw)) throw new Error('games.json má neznámý formát.');
+  const map = new Map();
+  for (const item of raw) {
+    const nested = item?.game || item || {};
+    const name = nested.name || item?.name;
+    const day = dayFrom(item?.date ?? item?.first_release_date ?? nested.first_release_date);
+    if (!name || !day) continue;
+    const id = nested.id ?? item?.game_id ?? name;
+    const key = String(id);
+    if (!map.has(key)) {
+      map.set(key, {
+        id,
+        name,
+        slug: nested.slug || '',
+        summary: nested.summary || '',
+        storyline: nested.storyline || '',
+        cover: coverUrl(nested.cover || item?.cover),
+        genres: uniq((nested.genres || []).map(x => typeof x === 'string' ? x : x?.name)),
+        developers: [],
+        publishers: [],
+        rating: Number(nested.rating || nested.total_rating || 0) || 0,
+        ratingCount: Number(nested.rating_count || nested.total_rating_count || 0) || 0,
+        trailerId: nested.videos?.[0]?.video_id || '',
+        links: normalizeLinks({}, nested),
+        releases: []
+      });
+    }
+    const game = map.get(key);
+    let release = game.releases.find(r => r.date === day);
+    if (!release) {
+      release = { date: day, timestamp: timestampFromDay(day), platforms: [] };
+      game.releases.push(release);
+    }
+    const sourcePlatforms = item?.platforms || nested.platforms || (item?.platform ? [item.platform] : []);
+    for (const p of sourcePlatforms) {
+      const normalized = normalizePlatform(p);
+      if (normalized && !release.platforms.some(existing => existing.name === normalized.name)) release.platforms.push(normalized);
+    }
+  }
+  return [...map.values()];
+}
+
+async function requestJson(url, attempt = 0) {
+  const response = await fetch(url, {
+    headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
+  });
+  const text = await response.text();
+  let payload;
+  try { payload = JSON.parse(text); } catch { payload = null; }
+
+  const maxlag = payload?.error?.code === 'maxlag';
+  if ((!response.ok || maxlag) && attempt < MAX_RETRIES && (response.status === 429 || response.status >= 500 || maxlag)) {
+    const wait = Math.min(12_000, 700 * (2 ** attempt)) + Math.floor(Math.random() * 400);
+    console.warn(`⚠️ ${response.status || ''} ${payload?.error?.code || ''}; opakuji za ${wait} ms`);
+    await sleep(wait);
+    return requestJson(url, attempt + 1);
+  }
+  if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0, 250)}`);
+  if (payload?.error) throw new Error(`${payload.error.code}: ${payload.error.info || 'Wikimedia API error'}`);
+  return payload;
+}
+
+function apiUrl(base, params) {
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value));
+  }
+  return url;
+}
+
+async function wikidata(params) {
+  return requestJson(apiUrl(WD_API, { format: 'json', origin: '*', maxlag: 5, ...params }));
+}
+
+function firstReleaseYear(game) {
+  return Number((game.releases || []).map(r => r.date).filter(Boolean).sort()[0]?.slice(0,4) || 0);
+}
+
+function candidateScore(game, result) {
+  const target = normalizeName(game.name);
+  const label = normalizeName(result.label || result.display?.label?.value || '');
+  const desc = String(result.description || result.display?.description?.value || '').toLowerCase();
+  const year = firstReleaseYear(game);
+  let score = 0;
+  if (label === target) score += 100;
+  else if (label && (label.includes(target) || target.includes(label))) score += 35;
+  if (/video game|videogame|computer game/.test(desc)) score += 45;
+  else if (/\bgame\b/.test(desc)) score += 20;
+  if (year && desc.includes(String(year))) score += 15;
+  if (/film|album|song|novel|television|tv series|board game/.test(desc) && !/video game|videogame|computer game/.test(desc)) score -= 100;
+  return score;
+}
+
+function shouldRetryMiss(game) {
+  if (game.wikidataId) return false;
+  if (game.metadataStatus !== 'not-found' || !game.metadataCheckedAt) return true;
+  const checked = Date.parse(game.metadataCheckedAt);
+  if (!Number.isFinite(checked)) return true;
+  return Date.now() - checked >= RETRY_MISSES_AFTER_DAYS * 86400000;
+}
+
+async function searchGame(game) {
+  const payload = await wikidata({
+    action: 'wbsearchentities',
+    search: game.name,
+    language: 'en',
+    uselang: 'en',
+    type: 'item',
+    limit: 7
+  });
+  const ranked = (payload.search || [])
+    .map(result => ({ result, score: candidateScore(game, result) }))
+    .sort((a, b) => b.score - a.score);
+  const best = ranked[0];
+  if (!best || best.score < 100) return null;
+  return best.result.id;
 }
 
 async function mapLimit(items, limit, worker) {
-  const output = new Array(items.length);
+  const out = new Array(items.length);
   let cursor = 0;
   async function run() {
-    while (true) {
+    for (;;) {
       const index = cursor++;
       if (index >= items.length) return;
-      output[index] = await worker(items[index], index);
+      out[index] = await worker(items[index], index);
     }
   }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
-  return output;
+  await Promise.all(Array.from({ length: Math.min(limit, Math.max(1, items.length)) }, run));
+  return out;
+}
+
+function chunks(items, size) {
+  const result = [];
+  for (let i = 0; i < items.length; i += size) result.push(items.slice(i, i + size));
+  return result;
+}
+
+async function fetchEntities(ids, props = 'labels|descriptions|claims|sitelinks') {
+  const result = new Map();
+  for (const batch of chunks(uniq(ids), 50)) {
+    if (!batch.length) continue;
+    const payload = await wikidata({
+      action: 'wbgetentities',
+      ids: batch.join('|'),
+      props,
+      languages: 'cs|en',
+      languagefallback: 1,
+      sitefilter: props.includes('sitelinks') ? 'cswiki|enwiki' : undefined
+    });
+    for (const [id, entity] of Object.entries(payload.entities || {})) result.set(id, entity);
+    await sleep(80);
+  }
+  return result;
+}
+
+function claimItemIds(entity, property) {
+  return uniq((entity?.claims?.[property] || [])
+    .map(claim => claim?.mainsnak?.datavalue?.value?.id)
+    .filter(Boolean));
+}
+
+function claimStrings(entity, property) {
+  return uniq((entity?.claims?.[property] || [])
+    .map(claim => claim?.mainsnak?.datavalue?.value)
+    .filter(value => typeof value === 'string' && value.trim()));
+}
+
+function entityLabel(entity) {
+  return entity?.labels?.cs?.value || entity?.labels?.en?.value || '';
+}
+
+function translatedGenre(value) {
+  const label = String(value || '').trim();
+  if (!label) return '';
+  const key = label.toLowerCase();
+  if (GENRE_CS.has(key)) return GENRE_CS.get(key);
+  return label
+    .replace(/\s+video game$/i, '')
+    .replace(/\s+game$/i, '')
+    .replace(/^./, char => char.toLocaleUpperCase('cs'));
+}
+
+async function fetchCzechExtracts(entities) {
+  const titleToQid = new Map();
+  for (const [qid, entity] of entities) {
+    const title = entity?.sitelinks?.cswiki?.title;
+    if (title) titleToQid.set(title, qid);
+  }
+  const qidToExtract = new Map();
+  for (const batch of chunks([...titleToQid.keys()], 20)) {
+    if (!batch.length) continue;
+    const payload = await requestJson(apiUrl(WIKI_API, {
+      action: 'query',
+      prop: 'extracts',
+      exintro: 1,
+      explaintext: 1,
+      redirects: 1,
+      titles: batch.join('|'),
+      format: 'json',
+      formatversion: 2,
+      origin: '*'
+    }));
+    for (const page of payload?.query?.pages || []) {
+      const qid = titleToQid.get(page.title);
+      if (qid && page.extract) qidToExtract.set(qid, String(page.extract).replace(/\s+/g, ' ').trim());
+    }
+    await sleep(80);
+  }
+  return qidToExtract;
+}
+
+function shortText(value, max = 520) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  if (text.length <= max) return text;
+  const head = text.slice(0, max);
+  const sentence = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
+  if (sentence > max * 0.5) return head.slice(0, sentence + 1);
+  const word = head.lastIndexOf(' ');
+  return `${head.slice(0, word > 0 ? word : max)}…`;
+}
+
+function formatCzechDate(day) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day || '')) return '';
+  const [y,m,d] = day.split('-');
+  return `${Number(d)}. ${Number(m)}. ${y}`;
+}
+
+function generatedSummary(game, genres, developers, publishers) {
+  const firstRelease = (game.releases || []).map(r => r.date).filter(Boolean).sort()[0] || '';
+  const platforms = uniq((game.releases || []).flatMap(r => (r.platforms || []).map(p => p.name))).slice(0, 4);
+  let text = genres.length
+    ? `${game.name} je hra z kategorie ${genres.slice(0, 2).join(' / ')}`
+    : `${game.name} je videohra`;
+  if (developers.length) text += ` od ${developers[0]}`;
+  if (publishers.length && publishers[0] !== developers[0]) text += `, kterou vydává ${publishers[0]}`;
+  if (platforms.length) text += ` pro ${platforms.join(', ')}`;
+  text += '.';
+  if (firstRelease) text += ` Datum vydání: ${formatCzechDate(firstRelease)}.`;
+  return text;
 }
 
 async function atomicWrite(file, content) {
@@ -265,59 +395,93 @@ async function atomicWrite(file, content) {
 }
 
 async function main() {
-  console.log('🟢 Zdroj dat: RAWG (free plan)');
-  const previousData = await loadPrevious();
-  const platforms = await discoverPlatforms();
-  const allowedPlatformIds = new Set(platforms.map(p => p.id));
-  const { list, range } = await fetchGameList(platforms.map(p => p.id));
+  const raw = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
+  const games = normalizeExisting(raw);
+  console.log(`🎮 Základ: ${games.length} her. Termíny a platformy zůstávají beze změny.`);
+  console.log('🌐 Metadata: Wikidata + česká Wikipedie, bez API klíče.');
 
-  let reused = 0;
-  let detailed = 0;
-  let detailFailures = 0;
-  const games = await mapLimit(list, DETAIL_CONCURRENCY, async (listGame, index) => {
-    const previous = previousData.byRawgId.get(Number(listGame.id));
-    let detail = null;
-    if (canReuse(previous, listGame)) {
-      reused += 1;
-    } else {
-      try {
-        detail = await rawg(`/games/${listGame.id}`);
-        detailed += 1;
-      } catch (error) {
-        detailFailures += 1;
-        console.warn(`⚠️ Detail ${listGame.name}: ${error.message}`);
-      }
+  const toSearch = games.filter(shouldRetryMiss);
+  let searched = 0;
+  let found = 0;
+  await mapLimit(toSearch, CONCURRENCY, async (game, index) => {
+    try {
+      game.wikidataId = await searchGame(game);
+      game.metadataCheckedAt = new Date().toISOString();
+      game.metadataStatus = game.wikidataId ? 'matched' : 'not-found';
+      if (game.wikidataId) found += 1;
+    } catch (error) {
+      console.warn(`⚠️ Hledání ${game.name}: ${error.message}`);
     }
-
-    const fallbackPrevious = previous || {
-      cover: previousData.coverByName.get(normalizeName(listGame.name)) || ''
-    };
-    const game = buildGame(listGame, detail, previous || fallbackPrevious, allowedPlatformIds);
-    if (!game.releases.length) return null;
-    if ((index + 1) % 100 === 0) console.log(`🔎 Zpracováno ${index + 1}/${list.length}`);
-    return game;
+    searched += 1;
+    if ((index + 1) % 100 === 0) console.log(`🔎 Hledání ${index + 1}/${toSearch.length}, nalezeno ${found}`);
   });
 
-  const cleanGames = games.filter(Boolean).sort((a, b) =>
-    (a.releases[0]?.date || '').localeCompare(b.releases[0]?.date || '') || a.name.localeCompare(b.name)
-  );
-  const allDates = cleanGames.flatMap(game => game.releases.map(r => r.date)).sort();
+  const qids = uniq(games.map(game => game.wikidataId));
+  console.log(`🔗 Wikidata: ${qids.length} přiřazených her (${found} nově nalezeno, ${searched} hledáno).`);
+  const entities = await fetchEntities(qids);
+
+  const referencedIds = [];
+  for (const entity of entities.values()) {
+    for (const property of ['P136','P178','P123','P400']) referencedIds.push(...claimItemIds(entity, property));
+  }
+  const labels = await fetchEntities(uniq(referencedIds), 'labels');
+  const extracts = await fetchCzechExtracts(entities);
+
+  let withGenre = 0;
+  let withDeveloper = 0;
+  let withSummary = 0;
+  for (const game of games) {
+    const entity = game.wikidataId ? entities.get(game.wikidataId) : null;
+    if (!entity) {
+      game.summary = game.summary || generatedSummary(game, game.genres || [], game.developers || [], game.publishers || []);
+      if (game.summary) withSummary += 1;
+      if ((game.genres || []).length) withGenre += 1;
+      if ((game.developers || []).length) withDeveloper += 1;
+      continue;
+    }
+
+    const genres = claimItemIds(entity, 'P136').map(id => translatedGenre(entityLabel(labels.get(id)))).filter(Boolean);
+    const developers = claimItemIds(entity, 'P178').map(id => entityLabel(labels.get(id))).filter(Boolean);
+    const publishers = claimItemIds(entity, 'P123').map(id => entityLabel(labels.get(id))).filter(Boolean);
+    const official = claimStrings(entity, 'P856')[0] || game.links?.official || '';
+    const steamId = claimStrings(entity, 'P1733')[0] || '';
+    const igdbSlug = claimStrings(entity, 'P5794')[0] || '';
+    const wikiTitle = entity?.sitelinks?.cswiki?.title || entity?.sitelinks?.enwiki?.title || '';
+    const csExtract = extracts.get(game.wikidataId) || '';
+
+    game.genres = uniq(genres.length ? genres : (game.genres || []));
+    game.developers = uniq(developers.length ? developers : (game.developers || []));
+    game.publishers = uniq(publishers.length ? publishers : (game.publishers || []));
+    game.summary = shortText(csExtract) || game.summary || generatedSummary(game, game.genres, game.developers, game.publishers);
+    game.links = {
+      ...normalizeLinks(game.links, game),
+      official,
+      steam: steamId ? `https://store.steampowered.com/app/${encodeURIComponent(steamId)}/` : (game.links?.steam || ''),
+      wikipedia: wikiTitle ? `https://${entity?.sitelinks?.cswiki ? 'cs' : 'en'}.wikipedia.org/wiki/${encodeURIComponent(wikiTitle.replace(/ /g, '_'))}` : (game.links?.wikipedia || ''),
+      igdb: igdbSlug ? `https://www.igdb.com/games/${encodeURIComponent(igdbSlug)}` : (game.links?.igdb || `https://www.igdb.com/search?type=1&q=${encodeURIComponent(game.name)}`)
+    };
+
+    if (game.genres.length) withGenre += 1;
+    if (game.developers.length) withDeveloper += 1;
+    if (game.summary) withSummary += 1;
+  }
+
+  const allDates = games.flatMap(game => game.releases.map(r => r.date)).filter(Boolean).sort();
   const payload = {
-    version: 3,
-    provider: 'RAWG',
+    version: 4,
+    provider: 'IGDB release data + Wikidata/Wikipedia metadata',
     generatedAt: new Date().toISOString(),
-    range: allDates.length ? { from: allDates[0], to: allDates.at(-1) } : range,
-    games: cleanGames
+    range: allDates.length ? { from: allDates[0], to: allDates.at(-1) } : null,
+    games: games.sort((a, b) => (a.releases[0]?.date || '').localeCompare(b.releases[0]?.date || '') || a.name.localeCompare(b.name, 'cs'))
   };
 
   await atomicWrite(OUTPUT, JSON.stringify(payload, null, 2) + '\n');
-  const releaseCount = cleanGames.reduce((sum, game) => sum + game.releases.length, 0);
-  console.log(`✅ Uloženo ${cleanGames.length} her / ${releaseCount} datumů vydání do ${OUTPUT}`);
-  console.log(`ℹ️ Detail RAWG: ${detailed} staženo, ${reused} použito z cache, ${detailFailures} selhalo.`);
+  console.log(`✅ Uloženo ${games.length} her.`);
+  console.log(`🏷️ Žánr: ${withGenre}/${games.length} · Vývojář: ${withDeveloper}/${games.length} · Popis: ${withSummary}/${games.length}`);
 }
 
 main().catch(error => {
-  console.error('❌ Aktualizace games.json selhala. Původní soubor zůstal zachovaný.');
+  console.error('❌ Obohacení games.json selhalo. Původní soubor zůstal zachovaný.');
   console.error(error.stack || error.message || error);
   process.exit(1);
 });
