@@ -5,13 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#100719">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Rychlý herní kalendář a vyhledávač nových her napříč platformami.">
-  <title>Herní Kalendář</title>
+  <meta name="description" content="Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Herní Kalendář">
+  <meta property="og:title" content="Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo">
+  <meta property="og:description" content="Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.">
+  <meta property="og:url" content="https://caseycz.github.io/GameS-Calendar-Website/">
+  <meta property="og:image" content="https://caseycz.github.io/GameS-Calendar-Website/CaseyCZ.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo">
+  <meta name="twitter:description" content="Přehled připravovaných a vydaných her napříč platformami.">
+  <link rel="canonical" href="https://caseycz.github.io/GameS-Calendar-Website/">
+  <title>Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo</title>
   <link rel="icon" href="CaseyCZ.png">
   <link rel="apple-touch-icon" href="CaseyCZ.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="detail-polish.css">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Herní Kalendář",
+    "url":"https://caseycz.github.io/GameS-Calendar-Website/",
+    "applicationCategory":"EntertainmentApplication",
+    "operatingSystem":"Web",
+    "inLanguage":"cs",
+    "description":"Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody."
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#games">Přejít na hry</a>
@@ -28,7 +51,7 @@
 
       <div class="topbar__stats" aria-label="Souhrn">
         <button class="stat-pill" type="button" data-stat-jump="visible" title="Zobrazit aktuální výběr">
-          <strong id="stat-visible">0</strong><span>ve výběru</span>
+          <strong id="stat-visible">0</strong><span id="stat-visible-label">her ve výběru</span>
         </button>
         <button class="stat-pill" type="button" data-stat-jump="30" title="Příštích 30 dní">
           <strong id="stat-30">0</strong><span>30 dní</span>
@@ -46,6 +69,10 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
           <span class="sr-only">Hledat</span>
         </button>
+        <button class="icon-btn" id="notification-toggle" type="button" title="Upozornění na sledované hry">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+          <span class="sr-only">Upozornění</span>
+        </button>
         <button class="icon-btn" id="share-button" type="button" title="Sdílet aktuální filtry">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V3m0 0 4 4m-4-4L8 7M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
           <span class="sr-only">Sdílet</span>
@@ -60,18 +87,25 @@
     <div class="search-popover shell" id="search-popover" hidden>
       <label class="search-field" for="search-input">
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
-        <input id="search-input" type="search" inputmode="search" autocomplete="off" placeholder="Hledat podle názvu hry…">
+        <input id="search-input" type="search" inputmode="search" autocomplete="off" placeholder="Hledat název, alternativní název, studio nebo sérii…">
         <kbd>/</kbd>
       </label>
     </div>
 
     <div class="filters-wrap">
       <div class="filters shell" aria-label="Filtry her">
-        <div class="platforms" id="platform-filters" aria-label="Platformy"></div>
+        <div class="platform-filter-row">
+          <div class="platforms" id="platform-filters" aria-label="Platformy"></div>
+          <div class="platform-memory" aria-label="Moje platformy">
+            <button class="chip chip--utility" id="platform-my" type="button" disabled>★ Moje</button>
+            <button class="chip chip--utility" id="platform-save" type="button" disabled>Uložit</button>
+          </div>
+        </div>
 
-        <select class="control" id="genre-filter" aria-label="Žánr">
-          <option value="">Všechny žánry</option>
-        </select>
+        <div class="genre-filter-wrap" aria-label="Žánry">
+          <div class="genre-filter-heading"><span>Žánry</span><button id="genre-clear" type="button" hidden>Zrušit výběr</button></div>
+          <div class="genre-filter-list" id="genre-filters"></div>
+        </div>
 
         <select class="control" id="status-filter" aria-label="Stav vydání">
           <option value="upcoming">Nadcházející</option>
@@ -107,6 +141,7 @@
         <p class="eyebrow">Aktuální výběr</p>
         <h1 id="range-title">Načítám herní vydání…</h1>
         <p id="result-summary" class="muted" aria-live="polite">Připravuji data.</p>
+        <div id="active-context-filters" class="active-context-filters" hidden></div>
       </div>
       <div class="view-toggle" role="group" aria-label="Zobrazení">
         <button class="icon-btn icon-btn--small is-active" type="button" data-view="grid" title="Mřížka" aria-label="Mřížka">
@@ -134,13 +169,13 @@
     <section class="empty-state" id="empty-state" hidden>
       <div class="empty-state__icon">🎮</div>
       <h2>Nic jsme nenašli</h2>
-      <p>Zkus jinou platformu, období nebo název hry.</p>
+      <p>Zkus jinou platformu, žánr, období nebo název hry.</p>
       <button class="secondary-btn" type="button" id="empty-reset">Zrušit filtry</button>
     </section>
   </main>
 
   <footer class="shell" style="padding:0 0 28px;color:var(--muted);font-size:11px">
-    Žánry a doplňující informace čerpají z <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikidata</a> a <a href="https://cs.wikipedia.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikipedie</a>.
+    Žánry a doplňující informace čerpají z <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikidata</a>, <a href="https://cs.wikipedia.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikipedie</a> a u vybraných PC her také ze Steamu. Dostupnost v předplatných je zobrazena jen tehdy, když ji lze ověřit v oficiálním katalogu.
   </footer>
 
   <dialog class="game-dialog" id="game-dialog">
@@ -148,9 +183,9 @@
     <div id="dialog-content"></div>
   </dialog>
 
-  <dialog class="trailer-dialog" id="trailer-dialog">
-    <button class="dialog-close icon-btn" id="trailer-close" type="button" aria-label="Zavřít">×</button>
-    <div class="video-frame" id="trailer-frame"></div>
+  <dialog class="image-dialog" id="image-dialog">
+    <button class="dialog-close icon-btn" id="image-dialog-close" type="button" aria-label="Zavřít">×</button>
+    <img id="image-dialog-img" alt="Screenshot hry">
   </dialog>
 
   <div class="toast-region" id="toast-region" style="pointer-events:auto" aria-live="polite" aria-atomic="true"></div>

@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v2.2.3';
+const VERSION = 'games-calendar-v3.0.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -40,6 +40,21 @@ self.addEventListener('fetch', event => {
   event.respondWith(staleWhileRevalidate(request));
 });
 
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url || './', self.location.href).href;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of windows) {
+      if ('focus' in client) {
+        if ('navigate' in client) await client.navigate(target);
+        return client.focus();
+      }
+    }
+    return self.clients.openWindow(target);
+  })());
+});
+
 async function networkFirst(request) {
   const cache = await caches.open(DATA_CACHE);
   try {
@@ -47,7 +62,7 @@ async function networkFirst(request) {
     if (response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    return (await cache.match(request)) || new Response(JSON.stringify({version:4,games:[]}), {
+    return (await cache.match(request)) || new Response(JSON.stringify({version:5,games:[]}), {
       status: 503,
       headers: {'Content-Type':'application/json'}
     });

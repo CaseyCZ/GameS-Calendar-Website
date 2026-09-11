@@ -1,7 +1,7 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-json-v3';
+const CACHE_KEY = 'games-json-v4';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 
 const pad = value => String(value).padStart(2, '0');
@@ -12,6 +12,7 @@ export function todayLocal() {
 }
 
 export function toDay(value) {
+  if (!value) return null;
   if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
   let ms;
   if (typeof value === 'number') ms = value > 1e12 ? value : value * 1000;
@@ -26,10 +27,12 @@ export function toDay(value) {
 }
 
 export function dayToTimestamp(day) {
+  if (!day) return 0;
   return Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
 }
 
 export function addDays(day, amount) {
+  if (!day) return null;
   const d = new Date(`${day}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + amount);
   return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
@@ -78,7 +81,7 @@ function uniq(values) {
 function normalizePlatform(platform) {
   if (!platform) return null;
   if (typeof platform === 'string') return { id: null, name: platform, abbreviation: '', group: platformGroup(platform) };
-  const name = platform.name || platform.abbreviation || String(platform.id || '');
+  const name = platform.name || platform.abbreviation || platform.abbr || String(platform.id || '');
   return {
     id: platform.id ?? null,
     name,
@@ -88,49 +91,88 @@ function normalizePlatform(platform) {
 }
 
 function normalizeLinks(links = {}, game = {}) {
-  const result = {
+  return {
     official: links.official || '',
     steam: links.steam || '',
     epic: links.epic || '',
     reddit: links.reddit || '',
     youtube: links.youtube || '',
+    wikipedia: links.wikipedia || '',
     igdb: links.igdb || game.igdbUrl || game.url || ''
   };
-  return result;
+}
+
+function normalizeScreenshot(item) {
+  if (!item) return null;
+  if (typeof item === 'string') return { full: item, thumb: item };
+  const full = item.full || item.path_full || item.url || '';
+  const thumb = item.thumb || item.path_thumbnail || full;
+  return full ? { full, thumb } : null;
+}
+
+function normalizeRelease(release = {}) {
+  const day = toDay(release.date ?? release.day ?? release.timestamp);
+  const window = String(release.window || release.releaseWindow || release.label || '').trim();
+  if (!day && !window) return null;
+  const platforms = (release.platforms || []).map(normalizePlatform).filter(Boolean);
+  return {
+    day,
+    timestamp: release.timestamp || (day ? dayToTimestamp(day) : 0),
+    platforms,
+    window,
+    precision: release.precision || release.datePrecision || (day ? 'day' : 'unknown'),
+    regions: uniq(release.regions || [])
+  };
+}
+
+function normalizeGame(game = {}) {
+  const releases = (game.releases || []).map(normalizeRelease).filter(Boolean).sort((a, b) => {
+    const ak = a.day || '9999-12-31';
+    const bk = b.day || '9999-12-31';
+    return ak.localeCompare(bk);
+  });
+
+  return {
+    id: game.id ?? game.slug ?? game.name,
+    name: game.name || 'Neznámá hra',
+    slug: game.slug || '',
+    aliases: uniq(game.aliases || game.alternativeNames || []),
+    summary: game.summary || '',
+    storyline: game.storyline || '',
+    cover: normalizeCover(game.cover),
+    genres: uniq((game.genres || []).map(item => typeof item === 'string' ? item : item?.name)),
+    developers: uniq((game.developers || []).map(item => typeof item === 'string' ? item : item?.name)),
+    publishers: uniq((game.publishers || []).map(item => typeof item === 'string' ? item : item?.name)),
+    series: uniq((game.series || []).map(item => typeof item === 'string' ? item : item?.name)),
+    scale: game.scale || '',
+    earlyAccess: Boolean(game.earlyAccess),
+    rating: Number(game.rating || game.totalRating || 0) || 0,
+    ratingCount: Number(game.ratingCount || game.totalRatingCount || 0) || 0,
+    igdbUrl: game.igdbUrl || game.url || '',
+    trailerId: game.trailerId || '',
+    trailerUrl: game.trailerUrl || '',
+    trailerPoster: game.trailerPoster || '',
+    screenshots: uniq((game.screenshots || []).map(normalizeScreenshot).filter(Boolean).map(item => JSON.stringify(item))).map(item => JSON.parse(item)),
+    subscriptions: {
+      gamePass: Boolean(game.subscriptions?.gamePass),
+      psPlus: Boolean(game.subscriptions?.psPlus),
+      geforceNow: Boolean(game.subscriptions?.geforceNow),
+      checkedAt: game.subscriptions?.checkedAt || null
+    },
+    regionalReleases: Array.isArray(game.regionalReleases) ? game.regionalReleases : [],
+    announcedWindow: game.announcedWindow || '',
+    links: normalizeLinks(game.links, game),
+    releases
+  };
 }
 
 function normalizeV2(payload) {
-  const games = (payload.games || []).map(game => {
-    const releases = (game.releases || []).map(release => {
-      const day = toDay(release.date ?? release.timestamp);
-      if (!day) return null;
-      const platforms = (release.platforms || []).map(normalizePlatform).filter(Boolean);
-      return { day, timestamp: release.timestamp || dayToTimestamp(day), platforms };
-    }).filter(Boolean).sort((a, b) => a.day.localeCompare(b.day));
-
-    return {
-      id: game.id ?? game.slug ?? game.name,
-      name: game.name || 'Neznámá hra',
-      slug: game.slug || '',
-      summary: game.summary || '',
-      storyline: game.storyline || '',
-      cover: normalizeCover(game.cover),
-      genres: uniq((game.genres || []).map(item => typeof item === 'string' ? item : item?.name)),
-      developers: uniq(game.developers || []),
-      publishers: uniq(game.publishers || []),
-      rating: Number(game.rating || game.totalRating || 0) || 0,
-      ratingCount: Number(game.ratingCount || game.totalRatingCount || 0) || 0,
-      igdbUrl: game.igdbUrl || game.url || '',
-      trailerId: game.trailerId || '',
-      links: normalizeLinks(game.links, game),
-      releases
-    };
-  }).filter(game => game.releases.length > 0);
-
+  const games = (payload.games || []).map(normalizeGame).filter(game => game.releases.length > 0);
   return {
     version: payload.version || 2,
     generatedAt: payload.generatedAt || null,
     range: payload.range || null,
+    provider: payload.provider || '',
     games
   };
 }
@@ -145,30 +187,23 @@ function normalizeLegacy(items) {
     const gameId = nested?.id ?? item.game_id ?? name.toLowerCase();
     const key = String(gameId);
     if (!gameMap.has(key)) {
-      gameMap.set(key, {
+      gameMap.set(key, normalizeGame({
+        ...nested,
         id: gameId,
         name,
-        slug: nested.slug || '',
-        summary: nested.summary || '',
-        storyline: nested.storyline || '',
-        cover: normalizeCover(nested.cover?.url || nested.cover || item.cover?.url || item.cover),
-        genres: uniq((nested.genres || []).map(x => typeof x === 'string' ? x : x?.name)),
-        developers: [],
-        publishers: [],
-        rating: Number(nested.rating || nested.total_rating || 0) || 0,
-        ratingCount: Number(nested.rating_count || nested.total_rating_count || 0) || 0,
-        igdbUrl: nested.url || '',
+        cover: nested.cover?.url || nested.cover || item.cover?.url || item.cover,
         trailerId: nested.videos?.[0]?.video_id || '',
         links: normalizeLinks({}, nested),
         releases: []
-      });
+      }));
+      gameMap.get(key).releases = [];
     }
     const game = gameMap.get(key);
-    const release = game.releases.find(r => r.day === day) || (() => {
-      const created = { day, timestamp: dayToTimestamp(day), platforms: [] };
-      game.releases.push(created);
-      return created;
-    })();
+    let release = game.releases.find(r => r.day === day);
+    if (!release) {
+      release = { day, timestamp: dayToTimestamp(day), platforms: [], window: '', precision: 'day', regions: [] };
+      game.releases.push(release);
+    }
     const sourcePlatforms = item.platforms || nested.platforms || (item.platform ? [item.platform] : []);
     for (const p of sourcePlatforms) {
       const normalized = normalizePlatform(p);
@@ -176,12 +211,13 @@ function normalizeLegacy(items) {
     }
   }
   const games = [...gameMap.values()];
-  for (const game of games) game.releases.sort((a, b) => a.day.localeCompare(b.day));
-  const days = games.flatMap(game => game.releases.map(r => r.day)).sort();
+  for (const game of games) game.releases.sort((a, b) => (a.day || '').localeCompare(b.day || ''));
+  const days = games.flatMap(game => game.releases.map(r => r.day).filter(Boolean)).sort();
   return {
     version: 1,
     generatedAt: null,
     range: days.length ? { from: days[0], to: days.at(-1) } : null,
+    provider: '',
     games
   };
 }
@@ -195,18 +231,26 @@ export function normalizePayload(payload) {
 export function flattenReleases(dataset) {
   const rows = [];
   for (const game of dataset.games) {
-    for (const release of game.releases) {
+    for (let index = 0; index < game.releases.length; index += 1) {
+      const release = game.releases[index];
       rows.push({
-        key: `${game.id}:${release.day}`,
+        key: `${game.id}:${release.day || `window-${index}`}`,
         game,
         day: release.day,
         timestamp: release.timestamp,
         platforms: release.platforms,
-        platformGroups: uniq(release.platforms.map(p => p.group || platformGroup(p.name)))
+        platformGroups: uniq(release.platforms.map(p => p.group || platformGroup(p.name))),
+        window: release.window,
+        precision: release.precision,
+        regions: release.regions
       });
     }
   }
-  return rows.sort((a, b) => a.day.localeCompare(b.day) || a.game.name.localeCompare(b.game.name, 'cs'));
+  return rows.sort((a, b) => {
+    const ak = a.day || '9999-12-31';
+    const bk = b.day || '9999-12-31';
+    return ak.localeCompare(bk) || a.game.name.localeCompare(b.game.name, 'cs');
+  });
 }
 
 function openDb() {

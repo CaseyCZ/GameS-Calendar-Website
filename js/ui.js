@@ -25,6 +25,7 @@ export function formatDate(day, options = { day:'2-digit', month:'2-digit', year
 }
 
 export function formatMonth(day) {
+  if (!day) return '';
   const [year, month] = day.split('-').map(Number);
   return `${MONTHS[month - 1]} ${year}`;
 }
@@ -33,7 +34,6 @@ export function formatGenre(value) {
   const raw = String(value || '').trim();
   if (!raw) return '';
   const key = raw.toLocaleLowerCase('en');
-
   const exact = new Map([
     ['action game','Akční'], ['action video game','Akční'],
     ['action-adventure game','Akční adventura'], ['action-adventure video game','Akční adventura'],
@@ -60,7 +60,6 @@ export function formatGenre(value) {
     ['turn-based tactics','Tahová taktika'], ['tactical role-playing game','Taktické RPG']
   ]);
   if (exact.has(key)) return exact.get(key);
-
   if (/ice hockey|hockey/.test(key)) return 'Hokej';
   if (/association football|soccer/.test(key)) return 'Fotbal';
   if (/basketball/.test(key)) return 'Basketbal';
@@ -81,7 +80,6 @@ export function formatGenre(value) {
   if (/simulation/.test(key)) return 'Simulace';
   if (/strategy/.test(key)) return 'Strategie';
   if (/sports?/.test(key)) return 'Sportovní';
-
   const cleaned = raw
     .replace(/\s+video game genre$/i, '')
     .replace(/\s+video game$/i, '')
@@ -102,6 +100,7 @@ export function platformIcon(key) {
 }
 
 export function releaseCountdown(day) {
+  if (!day) return null;
   const target = new Date(`${day}T00:00:00`);
   const ms = target - new Date();
   if (ms <= 0) return null;
@@ -112,10 +111,24 @@ export function releaseCountdown(day) {
   return null;
 }
 
+export function releaseText(row) {
+  if (row.day) return formatDate(row.day);
+  return row.window || row.game.announcedWindow || 'TBA';
+}
+
 function coverMarkup(game) {
   const cover = safeUrl(game.cover);
   if (!cover) return `<div class="game-card__cover" aria-hidden="true"><div class="game-card__gradient"></div></div>`;
   return `<div class="game-card__cover"><img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" loading="lazy" decoding="async" width="360" height="480"><div class="game-card__gradient"></div></div>`;
+}
+
+function serviceBadges(game, compact = false) {
+  const services = [];
+  if (game.subscriptions?.gamePass) services.push(['Game Pass','gamepass']);
+  if (game.subscriptions?.psPlus) services.push(['PS Plus','psplus']);
+  if (game.subscriptions?.geforceNow) services.push(['GeForce NOW','gfn']);
+  if (!services.length) return '';
+  return `<span class="service-badges ${compact ? 'service-badges--compact' : ''}">${services.map(([label, key]) => `<span class="service-badge service-badge--${key}">${escapeHtml(label)}</span>`).join('')}</span>`;
 }
 
 export function rowCard(row, watched) {
@@ -123,18 +136,24 @@ export function rowCard(row, watched) {
   const countdown = releaseCountdown(row.day);
   const rating = game.rating ? Math.round(game.rating) : 0;
   const platforms = row.platforms.slice(0,3).map(p => `<span class="platform-tag">${escapeHtml(p.abbreviation || p.name)}</span>`).join('');
+  const releaseState = row.day ? (row.day >= todayLocal() ? 'Nadcházející' : 'Vydáno') : (row.window || game.announcedWindow || 'TBA');
+  const extraBadges = [
+    game.earlyAccess ? '<span class="badge badge--early">Early Access</span>' : '',
+    game.scale ? `<span class="badge badge--scale">${escapeHtml(game.scale)}</span>` : ''
+  ].filter(Boolean).join('');
   return `<article class="game-card" data-row-key="${escapeHtml(row.key)}">
     <button class="game-card__button" type="button" data-open-game="${escapeHtml(row.key)}" aria-label="Detail hry ${escapeHtml(game.name)}">
       ${coverMarkup(game)}
-      <span class="card-badges"><span class="badge ${row.day >= todayLocal() ? 'badge--soon' : 'badge--released'}">${countdown || (row.day >= todayLocal() ? 'Nadcházející' : 'Vydáno')}</span></span>
+      <span class="card-badges"><span class="badge ${row.day && row.day < todayLocal() ? 'badge--released' : 'badge--soon'}">${escapeHtml(countdown || releaseState)}</span>${extraBadges}</span>
       <span class="game-card__body">
         <span class="game-card__title">${escapeHtml(game.name)}</span>
-        <span class="game-card__meta"><time class="game-card__date" datetime="${row.day}">${formatDate(row.day)}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
+        <span class="game-card__meta"><time class="game-card__date" ${row.day ? `datetime="${row.day}"` : ''}>${escapeHtml(releaseText(row))}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
         <span class="card-platforms">${platforms}</span>
+        ${serviceBadges(game, true)}
       </span>
     </button>
     <div class="game-card__actions">
-      <button class="card-action" type="button" data-calendar="${escapeHtml(row.key)}">📅 Kalendář</button>
+      ${row.day ? `<button class="card-action" type="button" data-calendar="${escapeHtml(row.key)}">📅 Kalendář</button>` : '<span></span>'}
       <button class="card-action watch-btn ${watched ? 'is-active' : ''}" type="button" data-watch="${escapeHtml(String(game.id))}" aria-pressed="${watched}" title="${watched ? 'Odebrat ze sledovaných' : 'Sledovat hru'}">${watched ? '♥' : '♡'}</button>
     </div>
   </article>`;
@@ -149,6 +168,7 @@ export function fallbackLinks(game) {
     youtube: game.links?.youtube || `https://www.youtube.com/results?search_query=${q}+trailer`,
     database: game.links?.igdb || game.igdbUrl || '',
     official: game.links?.official || '',
+    wikipedia: game.links?.wikipedia || '',
     playstation: `https://store.playstation.com/en-cz/search/${q}`,
     xbox: `https://www.xbox.com/cs-CZ/Search/Results?q=${q}`,
     nintendo: `https://www.nintendo.com/us/search/#q=${q}`,
@@ -164,26 +184,27 @@ function storeIcon(kind) {
   if (kind === 'steam') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="15" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16.8" cy="7.5" r="2.7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m11.7 13.4 3.1-3.4M4 13.5l2.7 1.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
   if (kind === 'youtube') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 8.2v7.6l6.2-3.8-6.2-3.8Z" fill="currentColor"/><rect x="3" y="5.5" width="18" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   if (kind === 'official') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.3-5.1-3.3-8.5S9.8 5.8 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
-  if (kind === 'reddit') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9.2" cy="12" r=".9" fill="currentColor"/><circle cx="14.8" cy="12" r=".9" fill="currentColor"/><path d="M9 15c1.8 1.1 4.2 1.1 6 0M14.2 6.8l1-3.1 3.2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="19.2" cy="5" r="1.3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+  if (kind === 'reddit') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9.2" cy="12" r=".9" fill="currentColor"/><circle cx="14.8" cy="12" r=".9" fill="currentColor"/><path d="M9 15c1.8 1.1 4.2 1.1 6 0M14.2 6.8l1-3.1 3.2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
   if (kind === 'database') return '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
-  if (kind === 'epic') return '<span class="store-link__monogram" aria-hidden="true">E</span>';
-  return '<span class="store-link__monogram" aria-hidden="true">↗</span>';
+  if (kind === 'wikipedia') return '<span class="store-link__monogram">W</span>';
+  if (kind === 'epic') return '<span class="store-link__monogram">E</span>';
+  return '<span class="store-link__monogram">↗</span>';
 }
 
-function linkButton(label, url, kind = 'more') {
+function linkButton(label, url, kind) {
   const safe = safeUrl(url);
-  return safe ? `<a class="store-link store-link--${escapeHtml(kind)}" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer"><span class="store-link__icon">${storeIcon(kind)}</span><span class="store-link__label">${escapeHtml(label)}</span><svg class="store-link__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : '';
+  if (!safe) return '';
+  return `<a class="store-link store-link--${escapeHtml(kind)}" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer"><span class="store-link__icon">${storeIcon(kind)}</span><span class="store-link__label">${escapeHtml(label)}</span><svg class="store-link__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8m-6 0h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
 }
 
 function platformStoreLinks(row, links) {
-  const groups = new Set(row.platforms.map(platform => platform.group).filter(Boolean));
+  const groups = new Set(row.platformGroups);
   const names = row.platforms.map(platform => String(platform.name || '').toLowerCase());
   const items = [];
   const add = (label, url, kind) => {
     const button = linkButton(label, url, kind);
     if (button && !items.includes(button)) items.push(button);
   };
-
   if (groups.has('PC')) {
     add(row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam, 'steam');
     add(row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic, 'epic');
@@ -198,13 +219,7 @@ function platformStoreLinks(row, links) {
     if (names.some(name => /steamvr|windows|pc/.test(name))) { add('Steam', links.steam, 'steam'); matched = true; }
     if (!matched) add('Meta Quest Store', links.meta, 'meta');
   }
-
   return items.join('');
-}
-
-function factMarkup(label, value) {
-  if (!value) return '';
-  return `<div class="fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
 }
 
 function generatedDescription(row) {
@@ -216,10 +231,10 @@ function generatedDescription(row) {
   if (genres.length) text += ` v žánru ${genres.slice(0,2).map(formatGenre).join(' / ')}`;
   if (developers.length) text += ` od studia ${developers[0]}`;
   if (platformNames.length) text += ` pro ${platformNames.join(', ')}`;
-  return `${text}. Datum vydání: ${formatDate(row.day)}.`;
+  return `${text}. ${row.day ? `Datum vydání: ${formatDate(row.day)}.` : `Termín vydání: ${row.window || game.announcedWindow || 'TBA'}.`}`;
 }
 
-function shortDescription(value, maxLength = 460) {
+function shortDescription(value, maxLength = 520) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();
   if (text.length <= maxLength) return text;
   const head = text.slice(0, maxLength);
@@ -229,6 +244,42 @@ function shortDescription(value, maxLength = 460) {
   return `${head.slice(0, wordEnd > 0 ? wordEnd : maxLength)}…`;
 }
 
+function peopleFact(label, values, type) {
+  if (!values?.length) return '';
+  return `<div class="fact"><span>${escapeHtml(label)}</span><strong class="fact-links">${values.map(value => `<button type="button" class="text-filter-link" data-filter-company="${type}" data-filter-value="${escapeHtml(value)}">${escapeHtml(value)}</button>`).join('<span class="fact-sep">, </span>')}</strong></div>`;
+}
+
+function seriesFact(series) {
+  if (!series?.length) return '';
+  return `<div class="fact"><span>Série</span><strong class="fact-links">${series.map(value => `<button type="button" class="text-filter-link" data-filter-series="${escapeHtml(value)}">${escapeHtml(value)}</button>`).join('<span class="fact-sep">, </span>')}</strong></div>`;
+}
+
+function regionalMarkup(game) {
+  if (!game.regionalReleases?.length) return '';
+  const items = game.regionalReleases.slice(0, 8).map(item => `<span class="region-release"><strong>${escapeHtml(item.region || 'Region')}</strong><span>${escapeHtml(item.label || (item.day ? formatDate(item.day) : 'TBA'))}</span></span>`).join('');
+  return `<section class="detail-subsection"><p class="detail-section-label">Regionální vydání</p><div class="region-grid">${items}</div></section>`;
+}
+
+function mediaMarkup(game) {
+  const trailerId = String(game.trailerId || '').replace(/[^a-zA-Z0-9_-]/g, '');
+  const trailerUrl = safeUrl(game.trailerUrl);
+  const poster = safeUrl(game.trailerPoster);
+  let trailer = '';
+  if (trailerId) {
+    trailer = `<div class="detail-video"><iframe src="https://www.youtube-nocookie.com/embed/${trailerId}" title="Trailer ${escapeHtml(game.name)}" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+  } else if (trailerUrl) {
+    trailer = `<div class="detail-video"><video controls preload="metadata" ${poster ? `poster="${escapeHtml(poster)}"` : ''}><source src="${escapeHtml(trailerUrl)}"></video></div>`;
+  }
+  const screenshots = (game.screenshots || []).slice(0, 8).map(item => {
+    const full = safeUrl(item.full);
+    const thumb = safeUrl(item.thumb || item.full);
+    if (!full || !thumb) return '';
+    return `<button class="gallery-item" type="button" data-gallery-image="${escapeHtml(full)}" aria-label="Otevřít screenshot"><img src="${escapeHtml(thumb)}" alt="Screenshot ze hry ${escapeHtml(game.name)}" loading="lazy" decoding="async"></button>`;
+  }).filter(Boolean).join('');
+  if (!trailer && !screenshots) return '';
+  return `<section class="detail-media-section">${trailer ? `<p class="detail-section-label">Trailer</p>${trailer}` : ''}${screenshots ? `<p class="detail-section-label detail-section-label--gallery">Screenshoty</p><div class="screenshot-rail">${screenshots}</div>` : ''}</section>`;
+}
+
 export function gameDialogHtml(row, watched) {
   const game = row.game;
   const links = fallbackLinks(game);
@@ -236,41 +287,51 @@ export function gameDialogHtml(row, watched) {
   const cover = safeUrl(game.cover);
   const summary = shortDescription(game.summary || game.storyline || generatedDescription(row));
   const genreLabels = [...new Set((game.genres || []).map(formatGenre).filter(Boolean))];
-  const devs = game.developers.join(', ');
-  const publishers = game.publishers.join(', ');
   const rating = game.rating ? `${Math.round(game.rating)} %${game.ratingCount ? ` (${formatter.format(game.ratingCount)})` : ''}` : '';
-  const facts = [
-    factMarkup('Vývojář', devs),
-    factMarkup('Vydavatel', publishers),
-    factMarkup('Hodnocení', rating)
-  ].filter(Boolean).join('');
   const storeLinks = platformStoreLinks(row, links);
   const databaseLabel = /rawg\.io/i.test(links.database || '') ? 'RAWG' : 'IGDB';
   const moreLinks = [
     linkButton('Oficiální web', links.official, 'official'),
     linkButton(databaseLabel, links.database, 'database'),
+    linkButton('Wikipedia', links.wikipedia, 'wikipedia'),
     linkButton('Reddit', links.reddit, 'reddit'),
-    !game.trailerId ? linkButton('YouTube', links.youtube, 'youtube') : ''
+    !game.trailerId && !game.trailerUrl ? linkButton('YouTube', links.youtube, 'youtube') : ''
+  ].filter(Boolean).join('');
+  const flags = [
+    game.earlyAccess ? '<span class="detail-flag detail-flag--early">Early Access</span>' : '',
+    game.scale ? `<span class="detail-flag">${escapeHtml(game.scale)}</span>` : '',
+    row.precision && row.precision !== 'day' ? `<span class="detail-flag">Termín: ${escapeHtml(row.window || game.announcedWindow || row.precision)}</span>` : ''
+  ].filter(Boolean).join('');
+  const facts = [
+    peopleFact('Vývojář', game.developers, 'developer'),
+    peopleFact('Vydavatel', game.publishers, 'publisher'),
+    seriesFact(game.series),
+    rating ? `<div class="fact"><span>Hodnocení</span><strong>${escapeHtml(rating)}</strong></div>` : ''
   ].filter(Boolean).join('');
 
   return `<div class="detail-hero">
     <div class="detail-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" decoding="async">` : ''}</div>
     <div class="detail-main">
-      <p class="detail-kicker">${countdown ? escapeHtml(countdown) : (row.day >= todayLocal() ? 'Nadcházející vydání' : 'Vydaná hra')}</p>
+      <p class="detail-kicker">${escapeHtml(countdown || (row.day ? (row.day >= todayLocal() ? 'Nadcházející vydání' : 'Vydaná hra') : 'Termín zatím není přesný'))}</p>
       <h2>${escapeHtml(game.name)}</h2>
+      ${game.aliases?.length ? `<p class="detail-aliases">Také: ${escapeHtml(game.aliases.slice(0,4).join(' · '))}</p>` : ''}
       <div class="detail-meta">
-        <span class="badge">📅 ${formatDate(row.day)}</span>
+        <span class="badge">📅 ${escapeHtml(releaseText(row))}</span>
         ${row.platforms.map(p => `<span class="badge">${escapeHtml(p.name)}</span>`).join('')}
         ${game.rating ? `<span class="badge">★ ${Math.round(game.rating)} %</span>` : ''}
       </div>
+      ${flags ? `<div class="detail-flags">${flags}</div>` : ''}
+      ${serviceBadges(game)}
       <p class="detail-summary">${escapeHtml(summary)}</p>
-      ${genreLabels.length ? `<div class="detail-genres"><span class="detail-section-label">Žánr</span><div class="genre-chips">${genreLabels.map(genre => `<span class="genre-chip">${escapeHtml(genre)}</span>`).join('')}</div></div>` : ''}
+      ${genreLabels.length ? `<div class="detail-genres"><span class="detail-section-label">Žánry</span><div class="genre-chips">${genreLabels.map(genre => `<button type="button" class="genre-chip" data-dialog-genre="${escapeHtml(genre)}">${escapeHtml(genre)}</button>`).join('')}</div></div>` : ''}
       ${facts ? `<div class="detail-facts">${facts}</div>` : ''}
+      ${regionalMarkup(game)}
       <div class="detail-actions">
-        <button class="primary-btn" type="button" data-dialog-calendar="${escapeHtml(row.key)}">📅 Přidat do kalendáře</button>
+        ${row.day ? `<button class="primary-btn" type="button" data-dialog-calendar="${escapeHtml(row.key)}">📅 Přidat do kalendáře</button>` : ''}
         <button class="secondary-btn" type="button" data-dialog-watch="${escapeHtml(String(game.id))}">${watched ? '♥ Sledováno' : '♡ Sledovat'}</button>
-        ${game.trailerId ? `<button class="secondary-btn" type="button" data-trailer="${escapeHtml(game.trailerId)}">▶ Trailer</button>` : ''}
+        <button class="secondary-btn" type="button" data-dialog-share="${escapeHtml(row.key)}">↗ Sdílet hru</button>
       </div>
+      ${mediaMarkup(game)}
       ${storeLinks ? `<section class="detail-link-section detail-link-section--stores" aria-label="Obchody pro toto vydání"><p class="detail-section-label">Kde hru najít</p><div class="detail-store-grid">${storeLinks}</div></section>` : ''}
       ${moreLinks ? `<section class="detail-link-section" aria-label="Další odkazy"><p class="detail-section-label">Další odkazy</p><div class="detail-more-links">${moreLinks}</div></section>` : ''}
     </div>
