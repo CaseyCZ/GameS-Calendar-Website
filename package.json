@@ -1,8 +1,8 @@
 {
   "name": "games-calendar-website",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
-  "description": "Rychlý herní kalendář a vyhledávač vydání her z IGDB",
+  "description": "Rychlý herní kalendář a vyhledávač vydání her s bezplatným obohacením dat z RAWG",
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "check": "node --check fetch-games.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js"
