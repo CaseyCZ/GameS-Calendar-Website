@@ -1,16 +1,13 @@
 {
   "name": "games-calendar-website",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
-  "description": "Rychlý herní kalendář a vyhledávač vydání her s bezplatným obohacením dat z RAWG",
+  "description": "Rychlý herní kalendář s termíny vydání a bezplatným obohacením metadat z Wikidata a Wikipedie",
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "check": "node --check fetch-games.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js"
   },
   "engines": {
     "node": ">=18"
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2"
   }
 }
