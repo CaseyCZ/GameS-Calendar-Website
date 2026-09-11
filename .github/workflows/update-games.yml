@@ -1,19 +1,21 @@
-name: Update IGDB game data
+name: Update game data from RAWG
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '15 4 * * 1,4'
 
 permissions:
   contents: write
 
 concurrency:
-  group: update-igdb-games
+  group: update-rawg-games
   cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,15 +29,29 @@ jobs:
       - name: Install dependencies
         run: npm install --omit=dev
 
-      - name: Refresh games.json
+      - name: Check RAWG API key
+        id: rawg
         env:
-          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
-          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
-          IGDB_MONTHS_PAST: 6
-          IGDB_MONTHS_FUTURE: 18
+          RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
+        run: |
+          if [ -n "$RAWG_API_KEY" ]; then
+            echo "has_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_key=false" >> "$GITHUB_OUTPUT"
+            echo "RAWG_API_KEY is not configured; keeping the current games.json."
+          fi
+
+      - name: Refresh games.json
+        if: steps.rawg.outputs.has_key == 'true'
+        env:
+          RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
+          GAMES_MONTHS_PAST: 6
+          GAMES_MONTHS_FUTURE: 18
+          RAWG_DETAIL_CONCURRENCY: 4
         run: npm run fetch-games
 
       - name: Commit changed data
+        if: steps.rawg.outputs.has_key == 'true'
         run: |
           if git diff --quiet -- games.json; then
             echo "games.json is unchanged"
@@ -44,5 +60,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add games.json
-          git commit -m "chore: refresh IGDB game data"
+          git commit -m "chore: refresh RAWG game data"
           git push
