@@ -5,7 +5,7 @@
   "description": "Rychlý herní kalendář a vyhledávač vydání her z IGDB",
   "scripts": {
     "fetch-games": "node fetch-games.js",
-    "check": "node --check fetch-games.js && node --check js/data.js && node --check js/calendar.js && node --check js/app.js"
+    "check": "node --check fetch-games.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js"
   },
   "engines": {
     "node": ">=18"
