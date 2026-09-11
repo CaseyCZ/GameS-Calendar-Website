@@ -1,4 +1,15 @@
 {
+  "name": "games-calendar-website",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Rychlý herní kalendář a vyhledávač vydání her z IGDB",
+  "scripts": {
+    "fetch-games": "node fetch-games.js",
+    "check": "node --check fetch-games.js && node --check js/data.js && node --check js/calendar.js && node --check js/app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "dotenv": "^17.4.2"
   }
