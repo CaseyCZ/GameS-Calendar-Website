@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - 'fetch-games.js'
+      - '.github/workflows/update-games.yml'
 
 permissions:
   contents: write
