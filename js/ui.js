@@ -7,7 +7,7 @@ export { MONTHS, formatter };
 
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[char]));
 }
 
@@ -136,14 +136,21 @@ function generatedDescription(row) {
   const genres = game.genres || [];
   const developers = game.developers || [];
   const platformNames = row.platforms.map(platform => platform.name).filter(Boolean);
-  const parts = [];
+  let text = `${game.name} je videohra`;
+  if (genres.length) text += ` v žánru ${genres.slice(0,2).join(' / ')}`;
+  if (developers.length) text += ` od studia ${developers[0]}`;
+  if (platformNames.length) text += ` pro ${platformNames.join(', ')}`;
+  return `${text}. Datum vydání: ${formatDate(row.day)}.`;
+}
 
-  if (genres.length) parts.push(`${game.name} je ${genres.slice(0,2).join(' / ').toLowerCase()} hra`);
-  else parts.push(`${game.name} je videohra`);
-  if (developers.length) parts.push(`od studia ${developers[0]}`);
-  if (platformNames.length) parts.push(`pro ${platformNames.join(', ')}`);
-
-  return `${parts.join(' ')}. Datum vydání: ${formatDate(row.day)}.`;
+function shortDescription(value, maxLength = 460) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= maxLength) return text;
+  const head = text.slice(0, maxLength);
+  const sentenceEnd = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
+  if (sentenceEnd > maxLength * 0.55) return head.slice(0, sentenceEnd + 1);
+  const wordEnd = head.lastIndexOf(' ');
+  return `${head.slice(0, wordEnd > 0 ? wordEnd : maxLength)}…`;
 }
 
 export function gameDialogHtml(row, watched) {
@@ -151,7 +158,7 @@ export function gameDialogHtml(row, watched) {
   const links = fallbackLinks(game);
   const countdown = releaseCountdown(row.day);
   const cover = safeUrl(game.cover);
-  const summary = game.summary || game.storyline || generatedDescription(row);
+  const summary = shortDescription(game.summary || game.storyline || generatedDescription(row));
   const genres = game.genres.join(', ');
   const devs = game.developers.join(', ');
   const publishers = game.publishers.join(', ');
