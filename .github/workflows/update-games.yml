@@ -5,6 +5,8 @@ on:
   schedule:
     - cron: '35 4 * * 1'
   push:
+    branches:
+      - main
     paths:
       - 'fetch-games.js'
       - '.github/workflows/update-games.yml'
@@ -35,12 +37,15 @@ jobs:
         env:
           METADATA_CONCURRENCY: 8
           METADATA_RETRY_DAYS: 30
+          STEAM_CONCURRENCY: 2
+          STEAM_RETRY_DAYS: 14
         run: npm run fetch-games
 
       - name: Check JavaScript
         run: npm run check
 
       - name: Commit changed data
+        if: github.ref == 'refs/heads/main'
         run: |
           if git diff --quiet -- games.json; then
             echo "games.json is unchanged"
