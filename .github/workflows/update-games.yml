@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: enrich-game-metadata
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Enrich games.json
         env:
-          METADATA_CONCURRENCY: 5
+          METADATA_CONCURRENCY: 8
           METADATA_RETRY_DAYS: 30
         run: npm run fetch-games
 
