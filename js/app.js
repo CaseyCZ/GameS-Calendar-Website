@@ -7,7 +7,7 @@ import {
   todayLocal
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
-import { MONTHS, escapeHtml, formatDate, formatMonth, formatter, gameDialogHtml, platformIcon, rowCard } from './ui.js';
+import { MONTHS, escapeHtml, formatDate, formatGenre, formatMonth, formatter, gameDialogHtml, platformIcon, rowCard } from './ui.js';
 
 const $ = id => document.getElementById(id);
 const PAGE_SIZE = 72;
@@ -103,7 +103,7 @@ function matchesBase(row, { includeStatus = true } = {}) {
   const search = state.search.trim().toLocaleLowerCase('cs');
   if (search && !game.name.toLocaleLowerCase('cs').includes(search)) return false;
   if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
-  if (state.genre && !game.genres.includes(state.genre)) return false;
+  if (state.genre && !(game.genres || []).some(genre => formatGenre(genre) === state.genre)) return false;
   if (state.watchlistOnly && !isWatched(game)) return false;
   if (includeStatus) {
     const today = todayLocal();
@@ -139,7 +139,7 @@ function renderPlatformFilters() {
 }
 
 function renderGenres() {
-  const genres = [...new Set(state.dataset.games.flatMap(game => game.genres))].filter(Boolean).sort((a,b) => a.localeCompare(b,'cs'));
+  const genres = [...new Set(state.dataset.games.flatMap(game => (game.genres || []).map(formatGenre)))].filter(Boolean).sort((a,b) => a.localeCompare(b,'cs'));
   $('genre-filter').innerHTML = '<option value="">Všechny žánry</option>' + genres.map(genre => `<option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>`).join('');
   $('genre-filter').value = genres.includes(state.genre) ? state.genre : '';
   if (state.genre && !genres.includes(state.genre)) state.genre = '';
