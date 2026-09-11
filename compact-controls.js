@@ -1,5 +1,32 @@
 (() => {
   const $ = id => document.getElementById(id);
+  const THEME_KEY = 'games-calendar-theme';
+
+  function ensureUpgradeStyles() {
+    if (document.querySelector('link[data-ui-upgrades]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'ui-upgrades.css';
+    link.dataset.uiUpgrades = '1';
+    document.head.appendChild(link);
+  }
+
+  function preferredTheme() {
+    return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme, persist = false) {
+    const next = theme === 'light' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    if (persist) localStorage.setItem(THEME_KEY, next);
+    const color = next === 'light' ? '#f7f4f9' : '#100719';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
+    document.querySelectorAll('[data-theme-option]').forEach(button => {
+      const active = button.dataset.themeOption === next;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
 
   function iconSliders() {
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M14 4v6M4 17h2M10 17h10M10 14v6"/></svg>';
@@ -7,6 +34,14 @@
 
   function iconSettings() {
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 .63 1.7 1.7 0 0 0-.37 1.08V21h-4v-.08A1.7 1.7 0 0 0 8.6 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.23 15a1.7 1.7 0 0 0-.63-1 1.7 1.7 0 0 0-1.08-.37H2.5v-4h.08A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.57 4.2a1.7 1.7 0 0 0 1-.63A1.7 1.7 0 0 0 9.94 2.5V2h4v.08A1.7 1.7 0 0 0 15 3.7a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 8a1.7 1.7 0 0 0 .63 1 1.7 1.7 0 0 0 1.08.37H21.5v4h-.08A1.7 1.7 0 0 0 19.8 14a1.7 1.7 0 0 0-.4 1Z"/></svg>';
+  }
+
+  function iconSun() {
+    return '<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  }
+
+  function iconMoon() {
+    return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 15.2A8 8 0 0 1 8.8 4 8.2 8.2 0 1 0 20 15.2Z"/></svg>';
   }
 
   function activeFilterCount() {
@@ -107,6 +142,19 @@
     popover.className = 'settings-popover';
     popover.innerHTML = '<p class="settings-title">Nastavení</p>';
 
+    const appearanceGroup = document.createElement('div');
+    appearanceGroup.className = 'settings-group';
+    appearanceGroup.innerHTML = `
+      <span class="settings-group__label">Vzhled</span>
+      <div class="theme-choice" role="group" aria-label="Vzhled stránky">
+        <button class="theme-choice__button" type="button" data-theme-option="dark" aria-pressed="false">${iconMoon()}<span>Tmavý</span></button>
+        <button class="theme-choice__button" type="button" data-theme-option="light" aria-pressed="false">${iconSun()}<span>Světlý</span></button>
+      </div>`;
+    appearanceGroup.querySelectorAll('[data-theme-option]').forEach(button => {
+      button.addEventListener('click', () => applyTheme(button.dataset.themeOption, true));
+    });
+    popover.appendChild(appearanceGroup);
+
     if (platformMemory) {
       const group = document.createElement('div');
       group.className = 'settings-group';
@@ -138,6 +186,7 @@
 
     details.append(summary, popover);
     actions.insertBefore(details, actions.firstChild?.nextSibling || null);
+    applyTheme(preferredTheme());
 
     details.addEventListener('toggle', () => {
       if (details.open) {
@@ -165,6 +214,8 @@
   }
 
   function setup() {
+    ensureUpgradeStyles();
+    applyTheme(preferredTheme());
     if (document.documentElement.dataset.compactControls === '1') return;
     document.documentElement.dataset.compactControls = '1';
     const platformMemory = setupFilters();
