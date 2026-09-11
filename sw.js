@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v2.0.1';
+const VERSION = 'games-calendar-v2.1.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -46,7 +46,7 @@ async function networkFirst(request) {
     if (response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    return (await cache.match(request)) || new Response(JSON.stringify({version:2,games:[]}), {
+    return (await cache.match(request)) || new Response(JSON.stringify({version:3,games:[]}), {
       status: 503,
       headers: {'Content-Type':'application/json'}
     });
