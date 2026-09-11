@@ -1,0 +1,33 @@
+name: Test public IGDB page
+
+on:
+  push:
+    paths:
+      - '.github/workflows/test-igdb-public.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch NHL 27 public IGDB page
+        shell: bash
+        run: |
+          node <<'NODE'
+          const url = 'https://www.igdb.com/games/nhl-27';
+          const response = await fetch(url, {headers:{'User-Agent':'Mozilla/5.0 (compatible; GameS-Calendar/1.0; +https://caseycz.github.io/GameS-Calendar-Website/)','Accept':'text/html'}});
+          const html = await response.text();
+          console.log('STATUS', response.status, 'URL', response.url, 'LENGTH', html.length);
+          const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g,' ').trim();
+          const desc = html.match(/<meta[^>]+(?:name|property)=["'](?:description|og:description)["'][^>]+content=["']([^"']*)/i)?.[1]
+            || html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+(?:name|property)=["'](?:description|og:description)["']/i)?.[1];
+          console.log('TITLE', title);
+          console.log('DESCRIPTION', desc);
+          const plain = html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+          for (const needle of ['Genre:', 'Genres', 'Main Developers', 'Publishers']) {
+            const i = plain.indexOf(needle);
+            console.log('SNIPPET', needle, i >= 0 ? plain.slice(Math.max(0,i-150), i+500) : 'NOT FOUND');
+          }
+          NODE
