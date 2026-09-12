@@ -84,11 +84,24 @@ export function canonicalGame(provider, fields = {}) {
   };
 }
 
+function uniqueObjects(values, keyFn) {
+  const out = [];
+  const seen = new Set();
+  for (const value of values || []) {
+    if (!value) continue;
+    const key = keyFn(value);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(value);
+  }
+  return out;
+}
+
 export function mergeGames(games = []) {
   const valid = games.filter(Boolean);
   if (!valid.length) return null;
   const preferred = [...valid].sort((a, b) => {
-    const rank = { microsoft: 5, playstation: 5, nintendo: 5, steam: 4, geforceNow: 2 };
+    const rank = { microsoft: 6, playstation: 6, nintendo: 6, steam: 5, igdb: 4, geforceNow: 2 };
     return (rank[b.provider] || 0) - (rank[a.provider] || 0);
   });
   const first = preferred[0];
@@ -98,6 +111,18 @@ export function mergeGames(games = []) {
   const shortDescriptionSource = sourceFor('shortDescription');
   const coverSource = preferred.find(item => item.media?.cover) || null;
   const heroSource = preferred.find(item => item.media?.hero) || null;
+  const metadataSource = preferred.find(item => item.provider === 'igdb') || null;
+  const providerReleaseDates = Object.fromEntries(valid.filter(item => item.releaseDate).map(item => [item.provider, item.releaseDate]));
+  const platformReleaseDates = uniqueObjects(
+    valid.flatMap(item => Array.isArray(item.releaseDates) ? item.releaseDates : []),
+    item => `${item.day || ''}|${item.platform || ''}`
+  );
+  const videos = uniqueObjects(
+    valid.flatMap(item => Array.isArray(item.videos) ? item.videos : []),
+    item => item.id || item.url || item.name
+  );
+  const externalIds = Object.assign({}, ...valid.map(item => item.externalIds || item.rawHints?.externalIds || {}));
+
   return {
     title: titleSource?.title || first.title,
     description: descriptionSource?.description || '',
@@ -107,7 +132,17 @@ export function mergeGames(games = []) {
     genres: uniq(valid.flatMap(item => item.genres || [])),
     categories: uniq(valid.flatMap(item => item.categories || [])),
     platforms: uniq(valid.flatMap(item => item.platforms || [])),
-    releaseDates: Object.fromEntries(valid.filter(item => item.releaseDate).map(item => [item.provider, item.releaseDate])),
+    aliases: uniq(valid.flatMap(item => item.aliases || item.rawHints?.aliases || [])),
+    series: uniq(valid.flatMap(item => item.series || [])),
+    gameModes: uniq(valid.flatMap(item => item.gameModes || item.rawHints?.gameModes || [])),
+    perspectives: uniq(valid.flatMap(item => item.perspectives || item.rawHints?.perspectives || [])),
+    themes: uniq(valid.flatMap(item => item.themes || item.rawHints?.themes || [])),
+    gameType: metadataSource?.gameType || metadataSource?.rawHints?.gameType || null,
+    externalIds,
+    releaseDates: platformReleaseDates,
+    providerReleaseDates,
+    videos,
+    websites: uniq(valid.flatMap(item => item.websites || item.rawHints?.websites || [])),
     media: {
       cover: coverSource?.media.cover || '',
       hero: heroSource?.media.hero || '',
@@ -121,7 +156,8 @@ export function mergeGames(games = []) {
       shortDescription: shortDescriptionSource?.provider || null,
       cover: coverSource?.provider || null,
       hero: heroSource?.provider || null,
-      releaseDate: Object.fromEntries(valid.filter(item => item.releaseDate).map(item => [item.provider, item.releaseDate]))
+      releaseDate: providerReleaseDates,
+      metadata: metadataSource?.provider || null
     },
     providers: Object.fromEntries(valid.map(item => [item.provider, item])),
     fetchedAt: new Date().toISOString()
