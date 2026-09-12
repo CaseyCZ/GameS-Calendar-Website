@@ -38,7 +38,7 @@ jobs:
           chmod 600 ~/.ssh/id_oracle
           ssh-keyscan -p "$PORT" -H "$ORACLE_HOST" >> ~/.ssh/known_hosts
 
-      - name: Deploy web and API
+      - name: Deploy web and API through existing PM2 stack
         env:
           ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
           ORACLE_USER: ${{ secrets.ORACLE_USER }}
@@ -48,16 +48,18 @@ jobs:
           PORT="${ORACLE_PORT:-22}"
           ssh -p "$PORT" -i ~/.ssh/id_oracle "$ORACLE_USER@$ORACLE_HOST" <<'REMOTE'
             set -euo pipefail
-            sudo git -C /opt/games-calendar/repo fetch origin main
-            sudo git -C /opt/games-calendar/repo reset --hard origin/main
-            sudo chmod +x /opt/games-calendar/repo/games-api/deploy/oracle-update.sh
-            sudo /opt/games-calendar/repo/games-api/deploy/oracle-update.sh
+            test "$(id -un)" = "ubuntu"
+            git -C /home/ubuntu/games-calendar/repo fetch origin main
+            git -C /home/ubuntu/games-calendar/repo checkout main
+            git -C /home/ubuntu/games-calendar/repo reset --hard origin/main
+            chmod +x /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh
+            /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh
           REMOTE
 
-      - name: Verify public health endpoint
+      - name: Verify public GameS health endpoint
         env:
           PUBLIC_URL: ${{ secrets.ORACLE_PUBLIC_URL }}
         if: ${{ env.PUBLIC_URL != '' }}
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --max-time 20 "${PUBLIC_URL%/}/health"
+          curl --fail --silent --show-error --max-time 20 "${PUBLIC_URL%/}/games-health"
