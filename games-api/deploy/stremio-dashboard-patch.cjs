@@ -115,56 +115,30 @@ replaceOnce('GameS audit action', `app.post('/api/action/update-all', async (req
 
 app.post('/api/action/update-all', async (req,res) => {`);
 
-replaceOnce('GameS logs button', `  <button onclick="logs('stremio-dashboard')">Dashboard</button>`, `  <button onclick="logs('stremio-dashboard')">Dashboard</button>
-  <button onclick="logs('games-api')">GameS API</button>`);
+replaceOnce('GameS audit control button', `<button class="danger" onclick="action('/api/action/reboot','RESTARTOVAT CELÝ SERVER?')">⚠️ Reboot serveru</button>`, `<button class="danger" onclick="action('/api/action/reboot','RESTARTOVAT CELÝ SERVER?')">⚠️ Reboot serveru</button>
+<button class="secondary" onclick="auditGames()">🧪 GameS audit zdrojů</button>`);
 
-replaceOnce('GameS card rendering', `   if(p.name==='stremio-sosac') git=d.git.main;
-   if(p.name==='stremio-subtitles') git=d.git.subtitles;
-   if(p.name==='stremio-dashboard') git=d.git.dashboard;
+replaceOnce('GameS logs button', `<button onclick="logs('stremio-dashboard')">Dashboard</button>`, `<button onclick="logs('stremio-dashboard')">Dashboard</button>
+<button onclick="logs('games-api')">GameS API</button>`);
 
-   return '<div class="card">'+
-    '<div class="app">📦 '+escapeHtml(p.name)+'</div>'+
-    '<div class="'+(p.status==='online'?'online':'offline')+'">● '+escapeHtml(p.status)+'</div>'+
-    '<br>CPU: '+p.cpu+' %'+
-    '<br>RAM: '+p.memory+' MB'+
-    '<br>Uptime: '+fmtUptime(p.uptime)+
-    '<br>Restarty: '+p.restarts+
-    (git?'<br>Verze: '+escapeHtml(git.version)+
-    '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
-    (p.name!=='stremio-dashboard'
-     ?'<br><br><button onclick="restartApp(\\''+p.name+'\\')">🔄 Restart</button>'+
-      '<button onclick="updateApp(\\''+p.name+'\\')">⬇️ Update</button>'
-    :'')+
-    '</div>';`, `   if(p.name==='stremio-sosac') git=d.git.main;
-   if(p.name==='stremio-subtitles') git=d.git.subtitles;
-   if(p.name==='stremio-dashboard') git=d.git.dashboard;
-   if(p.name==='games-api') git=d.git.games;
+replaceOnce('GameS card mapping', `  if(p.name==='stremio-dashboard') git=d.git.dashboard;`, `  if(p.name==='stremio-dashboard') git=d.git.dashboard;
+  if(p.name==='games-api') git=d.git.games;
 
-   let gamesExtra='';
-   if(p.name==='games-api'){
-    const gh=d.gamesApi||{};
-    gamesExtra='<br>Port: 8787'+
-     '<br>API: <span class="'+(gh.online?'online':'offline')+'">'+(gh.online?'online':'offline')+'</span>'+
-     (gh.providersTotal?'<br>Zdroje: '+gh.providersOk+' / '+gh.providersTotal:'')+
-     '<br>Web: <a href="/games/" target="_blank" rel="noopener" style="color:#7dd3fc">/games/</a>';
-   }
+  let gamesExtra='';
+  if(p.name==='games-api'){
+   const gh=d.gamesApi||{};
+   gamesExtra='<br>Port: 8787'+
+    '<br>API: <span class="'+(gh.online?'online':'offline')+'">'+(gh.online?'online':'offline')+'</span>'+
+    (gh.providersTotal?'<br>Zdroje: '+gh.providersOk+' / '+gh.providersTotal:'')+
+    '<br>Web: <a href="/games/" target="_blank" rel="noopener" style="color:#7dd3fc">/games/</a>';
+  }`);
 
-   return '<div class="card">'+
-    '<div class="app">📦 '+escapeHtml(p.name)+'</div>'+
-    '<div class="'+(p.status==='online'?'online':'offline')+'">● '+escapeHtml(p.status)+'</div>'+
-    '<br>CPU: '+p.cpu+' %'+
-    '<br>RAM: '+p.memory+' MB'+
-    '<br>Uptime: '+fmtUptime(p.uptime)+
-    '<br>Restarty: '+p.restarts+
-    (git?'<br>Verze: '+escapeHtml(git.version)+
-    '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
-    gamesExtra+
-    (p.name!=='stremio-dashboard'
-     ?'<br><br><button onclick="restartApp(\\''+p.name+'\\')">🔄 Restart</button>'+
-      '<button onclick="updateApp(\\''+p.name+'\\')">⬇️ Update</button>'+
-      (p.name==='games-api'?'<button class="secondary" onclick="auditGames()">🧪 Audit zdrojů</button>':'')
-    :'')+
-    '</div>';`);
+replaceOnce('GameS card extra fields', `   (git?'<br>Verze: '+escapeHtml(git.version)+
+   '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
+   (p.name!=='stremio-dashboard'`, `   (git?'<br>Verze: '+escapeHtml(git.version)+
+   '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
+   gamesExtra+
+   (p.name!=='stremio-dashboard'`);
 
 replaceOnce('auditGames browser action', `function updateApp(name){
  action(
