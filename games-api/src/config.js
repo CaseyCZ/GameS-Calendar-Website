@@ -3,6 +3,7 @@ import path from 'node:path';
 const num = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 
 export const config = Object.freeze({
+  host: String(process.env.HOST || process.env.GAMES_API_HOST || '127.0.0.1').trim() || '127.0.0.1',
   port: num(process.env.PORT, 8787),
   dbFile: path.resolve(process.env.GAMES_API_DB || './data/games-api.sqlite'),
   market: String(process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
