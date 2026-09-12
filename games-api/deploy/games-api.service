@@ -1,0 +1,19 @@
+[Unit]
+Description=GameS Calendar API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=games
+Group=games
+WorkingDirectory=/opt/games-calendar/games-api
+EnvironmentFile=/opt/games-calendar/games-api/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
