@@ -1,0 +1,26 @@
+/* Keep game-detail gestures inside the modal on iOS/Safari. */
+html.game-detail-open,
+body.game-detail-open {
+  overscroll-behavior-y: none;
+}
+
+.game-dialog {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.game-dialog #dialog-content {
+  transform: translate3d(0,0,0);
+  transition: transform .16s ease, opacity .16s ease;
+  will-change: transform, opacity;
+}
+
+.game-dialog.is-gesture-dragging #dialog-content {
+  transition: none;
+}
+
+@media (max-width: 820px) {
+  .game-dialog {
+    touch-action: pan-y pinch-zoom;
+  }
+}
