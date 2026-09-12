@@ -74,6 +74,9 @@
     if (!group) return;
     group.querySelectorAll('[data-choice-value]').forEach(button => {
       const active = button.dataset.choiceValue === select.value;
+      const option = [...select.options].find(item => item.value === button.dataset.choiceValue);
+      button.hidden = Boolean(option?.hidden);
+      button.disabled = Boolean(option?.disabled);
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
     });
