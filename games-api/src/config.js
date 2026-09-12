@@ -1,8 +1,12 @@
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const num = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const version = String(packageJson.version || '0.0.0');
 
 export const config = Object.freeze({
+  version,
   host: String(process.env.HOST || process.env.GAMES_API_HOST || '127.0.0.1').trim() || '127.0.0.1',
   port: num(process.env.PORT, 8787),
   dbFile: path.resolve(process.env.GAMES_API_DB || './data/games-api.sqlite'),
@@ -19,7 +23,7 @@ export const config = Object.freeze({
   igdbClientSecret: String(process.env.IGDB_CLIENT_SECRET || '').trim(),
   igdbConfigured: Boolean(String(process.env.IGDB_CLIENT_ID || '').trim() && String(process.env.IGDB_CLIENT_SECRET || '').trim()),
   rateLimitPerMinute: Math.max(30, num(process.env.GAMES_API_RATE_LIMIT_PER_MINUTE, 180)),
-  userAgent: 'GameS-Calendar-API/0.1 (+https://github.com/CaseyCZ/GameS-Calendar-Website)',
+  userAgent: `GameS-Calendar-API/${version} (+https://github.com/CaseyCZ/GameS-Calendar-Website)`,
   ttl: Object.freeze({
     search: 30 * 60_000,
     product: 6 * 60 * 60_000,
