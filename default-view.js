@@ -1,7 +1,12 @@
-const hasExplicitView = (() => {
-  const q = new URLSearchParams(location.search);
-  return ['status','period','month','from','to','game','release'].some(key => q.has(key));
-})();
+const explicitKeys = ['status','period','month','from','to','game','release'];
+const initialQuery = new URLSearchParams(location.search);
+const hasExplicitView = explicitKeys.some(key => initialQuery.has(key));
+
+if (!hasExplicitView) {
+  initialQuery.set('status', 'all');
+  initialQuery.set('period', 'all');
+  history.replaceState(null, '', `${location.pathname}?${initialQuery}${location.hash}`);
+}
 
 function applyAllView() {
   const status = document.getElementById('status-filter');
