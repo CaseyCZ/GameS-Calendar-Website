@@ -4,8 +4,6 @@
   if (!dialog || !content || window.__gamesLiveDetailEnrichment) return;
   window.__gamesLiveDetailEnrichment = true;
 
-  // The Oracle deployment exposes the API next to the static site. GitHub Pages
-  // keeps working without live enrichment and continues to use games.json.
   const API_ROOT = location.pathname.startsWith('/games/') ? '/games-api' : '';
   if (!API_ROOT) return;
 
@@ -14,6 +12,7 @@
   let timer = 0;
 
   const PROVIDER_LABELS = {
+    igdb: 'IGDB',
     steam: 'Steam · PC',
     microsoft: 'Microsoft / Xbox Store',
     playstation: 'PlayStation Store',
@@ -45,7 +44,7 @@
 
   function providersForPlatforms(platforms) {
     const text = platforms.join(' ').toLowerCase();
-    const names = new Set();
+    const names = new Set(['igdb']);
     if (/\bpc\b|windows/.test(text)) {
       names.add('steam');
       names.add('microsoft');
@@ -57,7 +56,7 @@
     }
     if (/ps4|ps5|playstation/.test(text)) names.add('playstation');
     if (/switch|nintendo/.test(text)) names.add('nintendo');
-    if (!names.size) ['microsoft','steam','playstation','nintendo'].forEach(name => names.add(name));
+    if (names.size === 1) ['microsoft','steam','playstation','nintendo'].forEach(name => names.add(name));
     return [...names];
   }
 
@@ -183,10 +182,26 @@
     else content.querySelector('.detail-main')?.appendChild(section);
   }
 
-  function addTrailer(merged) {
+  function youtubeId(value) {
+    const raw = clean(value);
+    if (/^[A-Za-z0-9_-]{6,20}$/.test(raw)) return raw;
+    try {
+      const url = new URL(raw);
+      if (/youtu\.be$/i.test(url.hostname)) return url.pathname.split('/').filter(Boolean)[0] || '';
+      if (/youtube\.com$/i.test(url.hostname) || /youtube-nocookie\.com$/i.test(url.hostname)) {
+        return url.searchParams.get('v') || url.pathname.match(/\/(?:embed|shorts)\/([A-Za-z0-9_-]+)/)?.[1] || '';
+      }
+    } catch {}
+    return '';
+  }
+
+  function addTrailer(merged, providers) {
     if (content.querySelector('.detail-video')) return;
-    const trailerUrl = (merged?.media?.trailers || []).map(safeUrl).find(Boolean);
-    if (!trailerUrl) return;
+    const igdbVideos = providers?.igdb?.videos || providers?.igdb?.rawHints?.videos || [];
+    const yt = igdbVideos.map(item => youtubeId(item?.id || item?.url || item)).find(Boolean)
+      || (merged?.videos || []).map(youtubeId).find(Boolean);
+    const trailerUrl = (merged?.media?.trailers || []).map(safeUrl).find(url => url && !youtubeId(url));
+    if (!yt && !trailerUrl) return;
 
     let section = content.querySelector('.detail-media-section');
     if (!section) {
@@ -202,12 +217,24 @@
     label.textContent = 'Trailer';
     const frame = document.createElement('div');
     frame.className = 'detail-video';
-    const video = document.createElement('video');
-    video.controls = true;
-    video.preload = 'metadata';
-    video.playsInline = true;
-    video.src = trailerUrl;
-    frame.appendChild(video);
+
+    if (yt) {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(yt)}`;
+      iframe.title = 'Trailer';
+      iframe.loading = 'lazy';
+      iframe.allow = 'encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      frame.appendChild(iframe);
+    } else {
+      const video = document.createElement('video');
+      video.controls = true;
+      video.preload = 'metadata';
+      video.playsInline = true;
+      video.src = trailerUrl;
+      frame.appendChild(video);
+    }
+
     section.prepend(frame);
     section.prepend(label);
   }
@@ -256,7 +283,6 @@
     const summary = content.querySelector('.detail-summary');
     if (!summary || text.length < 80) return;
     const current = clean(summary.textContent);
-    // Replace only generated/very short descriptions; preserve richer curated text.
     if (current.length < 110 || /\bje videohra\b/i.test(current)) summary.textContent = text.length > 850 ? `${text.slice(0, 847)}…` : text;
   }
 
@@ -267,13 +293,14 @@
     const merged = result.merged || {};
     addSubscriptions(merged, providers);
     addPrices(providers);
-    addTrailer(merged);
+    addTrailer(merged, providers);
     addScreenshots(merged, title);
     improveSummary(merged);
 
     const matched = Object.keys(providers).map(name => PROVIDER_LABELS[name] || name);
+    const identity = result.identity?.igdbId ? ` · IGDB #${result.identity.igdbId}` : '';
     setStatus(matched.length
-      ? `Živě ověřeno: ${matched.join(' · ')}`
+      ? `Živě ověřeno: ${matched.join(' · ')}${identity}`
       : 'Živé zdroje pro tuto hru nenašly jistou shodu.', matched.length ? 'ok' : 'empty');
   }
 
@@ -283,7 +310,7 @@
     if (!title || pendingTitle === title || content.dataset.liveEnrichedTitle === title) return;
     pendingTitle = title;
     content.dataset.liveEnrichedTitle = title;
-    setStatus('Ověřuji ceny, předplatné a média v oficiálních obchodech…', 'loading');
+    setStatus('Ověřuji IGDB identitu, ceny, předplatné a média…', 'loading');
 
     try {
       let payload = cache.get(title);
