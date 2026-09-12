@@ -230,3 +230,5 @@
   root?.addEventListener('change', () => setTimeout(updateMeta, 0), true);
   setup();
 })();
+
+import('./dynamic-filter-fix.js').catch(error => console.warn('Dynamic filter fix:', error));
