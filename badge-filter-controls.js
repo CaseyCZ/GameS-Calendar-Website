@@ -56,6 +56,17 @@
     try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch {}
   }
 
+  function ensureDetailGestureFix() {
+    if (!document.querySelector('link[data-detail-gesture-fix]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'detail-gesture-fix.css';
+      link.dataset.detailGestureFix = '1';
+      document.head.appendChild(link);
+    }
+    import('./detail-gesture-fix.js').catch(error => console.warn('Detail gesture fix:', error));
+  }
+
   function normalize(value = '') {
     return String(value)
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -196,6 +207,7 @@
   }
 
   function setup() {
+    ensureDetailGestureFix();
     enableLegacyBadgeEngine();
     removeBadgeControlsFromSettings();
     ensureFilterControls();
