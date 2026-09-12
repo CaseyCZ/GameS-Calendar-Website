@@ -1,9 +1,9 @@
 {
   "name": "games-calendar-api",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "private": true,
   "type": "module",
-  "description": "Unified game metadata API backed by IGDB and official storefront/catalog endpoints.",
+  "description": "Unified game metadata API backed by IGDB, storefront/catalog endpoints and safe metadata fallbacks.",
   "scripts": {
     "start": "node --env-file-if-exists=.env src/boot.js",
     "dev": "node --env-file-if-exists=.env --watch src/boot.js",
