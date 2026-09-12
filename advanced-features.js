@@ -676,10 +676,8 @@ function setupObservers() {
 
 async function loadData() {
   try {
-    const [normalized, rawResponse] = await Promise.all([
-      loadGameData(),
-      fetch('games.json', { cache: 'no-store', headers: { Accept: 'application/json' } }).then(response => response.ok ? response.json() : null).catch(() => null)
-    ]);
+    const normalized = await loadGameData();
+    const rawResponse = normalized.rawPayload || null;
     dataset = normalized.dataset;
     rawGameMap = new Map((rawResponse?.games || []).map(game => [String(game.id), game]));
     for (const game of dataset.games || []) {
