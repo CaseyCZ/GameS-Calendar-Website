@@ -66,36 +66,110 @@ async function bestSearchHit(provider, title, { force = false } = {}) {
     .sort((a, b) => b.score - a.score)[0] || null;
 }
 
+function addFound(found, item) {
+  if (!item?.provider) return;
+  const index = found.findIndex(entry => entry?.provider === item.provider);
+  if (index >= 0) found[index] = item;
+  else found.push(item);
+}
+
+function selectedNames(providerNames) {
+  return new Set(providerList(providerNames).map(provider => provider.name));
+}
+
+function psIdentity(ids = {}) {
+  const explicitProduct = ids.playstationProduct || '';
+  const explicitConcept = ids.playstationConcept || '';
+  const generic = ids.playstation || '';
+  if (explicitProduct) return { product: explicitProduct };
+  if (explicitConcept) return { concept: explicitConcept };
+  if (/^(?:UP|EP|JP|HP|PP|CUSA|PPSA)/i.test(generic)) return { product: generic };
+  if (/^\d+$/.test(generic)) return { concept: generic };
+  return {};
+}
+
+async function resolveIgdbIdentity(game, title, { force = false } = {}) {
+  if (!providers.igdb) return null;
+  if (game.igdbId) {
+    try { return await providers.igdb.product(String(game.igdbId), { force }); }
+    catch {}
+  }
+  if (!title) return null;
+  try {
+    const hit = await bestSearchHit(providers.igdb, title, { force });
+    if (hit?.item && hit.score >= 0.62) return hit.item;
+  } catch {}
+  return null;
+}
+
+async function directFromIdentity(identity, wanted, { force = false } = {}) {
+  if (!identity) return [];
+  const ids = identity.externalIds || identity.rawHints?.externalIds || {};
+  const jobs = [];
+
+  if (wanted.has('steam') && providers.steam && ids.steam) {
+    jobs.push(providers.steam.product(String(ids.steam), { force }));
+  }
+
+  const microsoftId = ids.microsoft || ids.xbox;
+  if (wanted.has('microsoft') && providers.microsoft && microsoftId) {
+    jobs.push(providers.microsoft.product(String(microsoftId), { force }));
+  }
+
+  if (wanted.has('playstation') && providers.playstation) {
+    const ps = psIdentity(ids);
+    if (ps.product) jobs.push(providers.playstation.product(String(ps.product), { force }));
+    else if (ps.concept) jobs.push(providers.playstation.concept(String(ps.concept), { force }));
+  }
+
+  const out = [];
+  for (const result of await Promise.allSettled(jobs)) {
+    if (result.status === 'fulfilled' && result.value) out.push(result.value);
+  }
+  return out;
+}
+
 async function enrichOne(input, { force = false, providerNames } = {}) {
   const game = typeof input === 'string' ? { title: input } : (input || {});
   const title = String(game.title || game.name || '').trim();
   const found = [];
+  const wanted = selectedNames(providerNames);
 
+  // Explicit IDs supplied by our own catalog always win over title matching.
   const direct = [
-    game.steamId && providers.steam.product(String(game.steamId), { force }),
-    game.xboxProductId && providers.microsoft.product(String(game.xboxProductId), { force }),
-    game.microsoftProductId && providers.microsoft.product(String(game.microsoftProductId), { force }),
-    game.psProductId && providers.playstation.product(String(game.psProductId), { force }),
-    game.psConceptId && providers.playstation.concept(String(game.psConceptId), { force }),
-    game.nintendoUrl && providers.nintendo.productByUrl(String(game.nintendoUrl), { force }),
-    game.nintendoTitleId && providers.nintendo.productById(String(game.nintendoTitleId), { force })
+    game.steamId && providers.steam?.product(String(game.steamId), { force }),
+    game.xboxProductId && providers.microsoft?.product(String(game.xboxProductId), { force }),
+    game.microsoftProductId && providers.microsoft?.product(String(game.microsoftProductId), { force }),
+    game.psProductId && providers.playstation?.product(String(game.psProductId), { force }),
+    game.psConceptId && providers.playstation?.concept(String(game.psConceptId), { force }),
+    game.nintendoUrl && providers.nintendo?.productByUrl(String(game.nintendoUrl), { force }),
+    game.nintendoTitleId && providers.nintendo?.productById(String(game.nintendoTitleId), { force })
   ].filter(Boolean);
 
-  if (direct.length) {
-    for (const result of await Promise.allSettled(direct)) {
-      if (result.status === 'fulfilled' && result.value) found.push(result.value);
-    }
+  for (const result of await Promise.allSettled(direct)) {
+    if (result.status === 'fulfilled' && result.value) addFound(found, result.value);
   }
 
+  // IGDB is our identity/metadata layer. Resolve it first even when the browser
+  // asks only for storefront providers, then use its external IDs to call stores directly.
+  const igdbIdentity = await resolveIgdbIdentity(game, title, { force });
+  if (igdbIdentity) {
+    addFound(found, igdbIdentity);
+    const directStoreResults = await directFromIdentity(igdbIdentity, wanted, { force });
+    directStoreResults.forEach(item => addFound(found, item));
+  }
+
+  // Fall back to provider title search only for providers not resolved by IDs.
   if (title) {
-    const selected = providerList(providerNames).filter(provider => typeof provider.search === 'function');
+    const selected = providerList(providerNames)
+      .filter(provider => provider.name !== 'igdb')
+      .filter(provider => typeof provider.search === 'function')
+      .filter(provider => !found.some(item => item.provider === provider.name));
     const searched = await Promise.allSettled(selected.map(provider => bestSearchHit(provider, title, { force })));
     for (const result of searched) {
       if (result.status !== 'fulfilled' || !result.value?.item) continue;
       const threshold = result.value.item.provider === 'nintendo' ? 0.55 : 0.48;
-      if (result.value.score >= threshold && !found.some(item => item.provider === result.value.item.provider)) {
-        found.push(result.value.item);
-      }
+      if (result.value.score >= threshold) addFound(found, result.value.item);
     }
   }
 
@@ -105,6 +179,10 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   return {
     query: game,
     gameKey,
+    identity: igdbIdentity ? {
+      igdbId: igdbIdentity.providerId,
+      externalIds: igdbIdentity.externalIds || igdbIdentity.rawHints?.externalIds || {}
+    } : null,
     matchedProviders: found.map(item => item.provider),
     merged,
     changes,
@@ -115,7 +193,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
 app.get('/', (req, res) => {
   res.json({
     name: 'GameS Calendar API',
-    version: '0.1.0',
+    version: config.version,
     market: config.market,
     language: config.language,
     providers: Object.values(providers).map(provider => ({ name: provider.name, capabilities: provider.capabilities }))
@@ -123,9 +201,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', asyncRoute(async (req, res) => {
-  if (!bool(req.query.refresh)) return res.json({ ok: true, cached: listHealth() });
+  if (!bool(req.query.refresh)) return res.json({ ok: true, version: config.version, cached: listHealth() });
   const results = await Promise.all(Object.values(providers).map(providerHealth));
-  res.status(results.every(item => item.ok) ? 200 : 207).json({ ok: results.every(item => item.ok), results });
+  res.status(results.every(item => item.ok) ? 200 : 207).json({ ok: results.every(item => item.ok), version: config.version, results });
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {
@@ -158,7 +236,7 @@ app.post('/api/enrich', asyncRoute(async (req, res) => {
     const batch = games.slice(i, i + 5);
     results.push(...await Promise.all(batch.map(game => enrichOne(game, { force, providerNames }))));
   }
-  res.json({ count: results.length, results });
+  res.json({ version: config.version, count: results.length, results });
 }));
 
 app.get('/api/gamepass/:kind', asyncRoute(async (req, res) => {
@@ -245,6 +323,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(config.port, config.host, () => {
-  console.log(`GameS API listening on http://${config.host}:${config.port}`);
+  console.log(`GameS API ${config.version} listening on http://${config.host}:${config.port}`);
   console.log(`Market=${config.market}, language=${config.language}, PS locale=${config.psLocale}`);
 });
