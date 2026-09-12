@@ -232,4 +232,5 @@
   }
 
   setup();
+  import('./advanced-features.js').catch(error => console.warn('Advanced features:', error));
 })();
