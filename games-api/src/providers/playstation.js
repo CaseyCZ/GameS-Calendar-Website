@@ -5,6 +5,8 @@ import { fetchJson, fetchText } from '../lib/http.js';
 import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
+const COMMERCIAL_KEY = /price|currency|discount|msrp/i;
+const COMMERCIAL_MARKER = /price|currency|discount|msrp/i;
 
 export const CATEGORY_IDS = Object.freeze({
   ps4: '44d8bb20-653e-431e-8ad0-c0a365f68d2f',
@@ -34,13 +36,29 @@ const HASHES = Object.freeze({
   conceptRetrieveForMedia: process.env.PS_HASH_MEDIA_BY_CONCEPT || DEFAULT_HASHES.conceptRetrieveForMedia
 });
 
+function stripCommercial(value) {
+  if (Array.isArray(value)) return value.map(stripCommercial).filter(item => item !== undefined);
+  if (!value || typeof value !== 'object') return value;
+
+  const marker = `${value.name || ''} ${value.displayName || ''}`;
+  if (COMMERCIAL_MARKER.test(marker)) return undefined;
+
+  const out = {};
+  for (const [key, child] of Object.entries(value)) {
+    if (COMMERCIAL_KEY.test(key)) continue;
+    const safe = stripCommercial(child);
+    if (safe !== undefined) out[key] = safe;
+  }
+  return out;
+}
+
 async function persisted(operationName, variables, { force = false } = {}) {
   const hash = HASHES[operationName];
   if (!hash) throw new Error(`Missing PlayStation persisted-query hash for ${operationName}`);
   const key = `playstation:${operationName}:${config.psLocale}:${JSON.stringify(variables)}`;
   if (!force) {
     const cached = cacheGet(key);
-    if (cached) return cached;
+    if (cached) return stripCommercial(cached);
   }
   const url = new URL(BASE);
   url.searchParams.set('operationName', operationName);
@@ -56,7 +74,8 @@ async function persisted(operationName, variables, { force = false } = {}) {
     const error = payload.errors.map(item => item?.message || 'GraphQL error').join('; ');
     throw new Error(`PlayStation ${operationName}: ${error}`);
   }
-  return cachePut(key, 'playstation', payload, config.ttl.product);
+  const safePayload = stripCommercial(payload);
+  return cachePut(key, 'playstation', safePayload, config.ttl.product);
 }
 
 function walk(value, visitor) {
@@ -124,8 +143,8 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
   const description = firstString(payload, ['longDescription', 'description', 'shortDescription']);
   const publisher = firstString(payload, ['publisherName', 'publisher']);
   const releaseDate = firstString(payload, ['releaseDate', 'releaseDateTime', 'productReleaseDate']);
-  const platforms = collectStrings(payload, ['platform', 'platforms', 'platformType', 'platformNames']).filter(v => /PS4|PS5|PlayStation/i.test(v));
-  const genres = collectStrings(payload, ['genres', 'genre']);
+  const platforms = collectStrings(payload, ['platform', 'platforms', 'platformType', 'platformNames', 'targetPlatforms']).filter(v => /PS4|PS5|PlayStation/i.test(v));
+  const genres = collectStrings(payload, ['genres', 'genre', 'productGenres']);
   const images = collectImages(payload);
   const ratingText = firstString(payload, ['averageRating', 'starRating']);
   const ratingNumber = firstNumber(payload, ['averageRating', 'starRating']);
@@ -180,6 +199,40 @@ export async function catalog(category = 'all', { force = false, size = 100, off
   }, { force });
 }
 
+function categoryProducts(payload) {
+  const products = payload?.data?.categoryGridRetrieve?.products;
+  return Array.isArray(products) ? products : [];
+}
+
+export async function catalogProducts(category = 'all', { force = false, size = 200, maxPages = 10 } = {}) {
+  const pageSize = Math.max(1, Math.min(1000, Number(size) || 200));
+  const pages = Math.max(1, Math.min(50, Number(maxPages) || 10));
+  const out = [];
+  const seen = new Set();
+
+  for (let page = 0; page < pages; page += 1) {
+    const payload = await catalog(category, { force, size: pageSize, offset: page * pageSize });
+    const products = categoryProducts(payload);
+    for (const raw of products) {
+      const id = String(raw?.id || raw?.productId || raw?.npTitleId || '').trim();
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      const item = normalizePsPayload(id, raw);
+      if (item?.title) out.push(item);
+    }
+    if (products.length < pageSize) break;
+  }
+  return out;
+}
+
+export async function psPlusCatalog(options = {}) {
+  const items = await catalogProducts('psPlus', options);
+  return items.map(item => ({
+    ...item,
+    subscriptions: { ...(item.subscriptions || {}), psPlus: true }
+  }));
+}
+
 export async function psPlus(tier = 'TIER_20', { force = false } = {}) {
   const allowed = new Set(['TIER_10', 'TIER_20', 'TIER_30']);
   const tierLabel = allowed.has(tier) ? tier : 'TIER_20';
@@ -223,12 +276,14 @@ export async function search(query, { force = false, limit = 8 } = {}) {
 
 export const playstationProvider = {
   name: 'playstation',
-  capabilities: ['search', 'product', 'concept', 'catalog', 'psPlus', 'media'],
+  capabilities: ['search', 'product', 'concept', 'catalog', 'catalogProducts', 'psPlus', 'psPlusCatalog', 'media'],
   search,
   product,
   concept,
   catalog,
+  catalogProducts,
   psPlus,
+  psPlusCatalog,
   health: async () => {
     const result = await concept('212779', { force: true });
     return { ok: Boolean(result?.title), sample: result?.title || null, locale: config.psLocale };
