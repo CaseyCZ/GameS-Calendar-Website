@@ -18,8 +18,8 @@ const argValue = name => {
 const full = args.has('--full');
 const force = args.has('--force');
 const igdbOnly = args.has('--igdb-only');
-const monthsBack = Math.max(0, Number(argValue('--months-back') || process.env.GAMES_CATALOG_MONTHS_BACK || 12));
-const monthsForward = Math.max(1, Number(argValue('--months-forward') || process.env.GAMES_CATALOG_MONTHS_FORWARD || 24));
+const monthsBack = Math.max(0, Number(argValue('--months-back') || process.env.GAMES_CATALOG_MONTHS_BACK || 1));
+const monthsForward = Math.max(1, Number(argValue('--months-forward') || process.env.GAMES_CATALOG_MONTHS_FORWARD || 12));
 const storeLimit = full ? Number.POSITIVE_INFINITY : Math.max(0, Number(argValue('--store-limit') || process.env.GAMES_STORE_ENRICH_LIMIT || 1500));
 const searchLimit = full ? Number.POSITIVE_INFINITY : Math.max(0, Number(argValue('--search-limit') || process.env.GAMES_SEARCH_ENRICH_LIMIT || 300));
 const storeConcurrency = Math.max(1, Math.min(4, Number(process.env.GAMES_STORE_CONCURRENCY || 3)));
