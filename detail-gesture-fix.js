@@ -118,3 +118,16 @@
     if (dy > 4 && !interactiveTarget(event.target)) event.preventDefault();
   }, { passive: false, capture: true });
 })();
+
+// Compact controls used to move the grid/compact switch into Settings. Keep the
+// original buttons (and their app.js listeners) visible next to the current view.
+(() => {
+  const viewToggle = document.querySelector('.view-toggle');
+  const hero = document.querySelector('.hero-strip');
+  if (!viewToggle || !hero || viewToggle.dataset.restored === '1') return;
+
+  const settingsGroup = viewToggle.closest('.settings-group');
+  viewToggle.dataset.restored = '1';
+  hero.appendChild(viewToggle);
+  if (settingsGroup && !settingsGroup.querySelector('.view-toggle')) settingsGroup.remove();
+})();
