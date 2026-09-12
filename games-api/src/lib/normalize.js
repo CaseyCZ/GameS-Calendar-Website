@@ -68,7 +68,6 @@ export function canonicalGame(provider, fields = {}) {
     earlyAccess: Boolean(fields.earlyAccess),
     rating: Number(fields.rating || 0) || null,
     ratingCount: Number(fields.ratingCount || 0) || null,
-    price: fields.price || null,
     media: {
       cover: fields.media?.cover || '',
       hero: fields.media?.hero || '',
