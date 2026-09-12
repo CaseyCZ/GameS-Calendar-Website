@@ -24,3 +24,123 @@ body.game-detail-open {
     touch-action: pan-y pinch-zoom;
   }
 }
+
+/* Late contrast guard for the optional light theme.
+ * ui-upgrades.css is injected at runtime, so critical controls use explicit
+ * light-mode values here to remain readable regardless of stylesheet order. */
+html[data-theme="light"] .icon-btn,
+html[data-theme="light"] .secondary-btn,
+html[data-theme="light"] .chip,
+html[data-theme="light"] .filter-summary,
+html[data-theme="light"] .settings-summary,
+html[data-theme="light"] .theme-choice__button,
+html[data-theme="light"] .genre-filter-chip,
+html[data-theme="light"] .filter-choice-chip,
+html[data-theme="light"] .card-action,
+html[data-theme="light"] .store-link {
+  color: #35263b !important;
+  background: #ffffff !important;
+  border-color: rgba(62,35,72,.24) !important;
+  box-shadow: 0 1px 2px rgba(75,45,82,.06);
+}
+
+html[data-theme="light"] .icon-btn:hover,
+html[data-theme="light"] .secondary-btn:hover,
+html[data-theme="light"] .chip:hover,
+html[data-theme="light"] .filter-summary:hover,
+html[data-theme="light"] .settings-summary:hover,
+html[data-theme="light"] .theme-choice__button:hover,
+html[data-theme="light"] .genre-filter-chip:hover,
+html[data-theme="light"] .filter-choice-chip:hover,
+html[data-theme="light"] .card-action:hover,
+html[data-theme="light"] .store-link:hover {
+  color: #26182c !important;
+  background: #f9edf4 !important;
+  border-color: rgba(219,47,131,.55) !important;
+}
+
+html[data-theme="light"] .chip.is-active,
+html[data-theme="light"] .chip--platform.is-active,
+html[data-theme="light"] .genre-filter-chip.is-active,
+html[data-theme="light"] .filter-choice-chip.is-active,
+html[data-theme="light"] .filters-disclosure[open] > .filter-summary,
+html[data-theme="light"] .filter-summary.has-active {
+  color: #ffffff !important;
+  background: linear-gradient(105deg,#db2f83,#a952d0) !important;
+  border-color: transparent !important;
+  box-shadow: 0 5px 16px rgba(183,38,113,.22) !important;
+}
+
+html[data-theme="light"] .icon-btn.is-active,
+html[data-theme="light"] .settings-menu[open] > .settings-summary,
+html[data-theme="light"] .theme-choice__button.is-active {
+  color: #b71f68 !important;
+  background: #fbe7f1 !important;
+  border-color: rgba(219,47,131,.62) !important;
+}
+
+html[data-theme="light"] .genre-filter-chip.is-active small,
+html[data-theme="light"] .filter-summary__count {
+  color: #ffffff !important;
+  background: rgba(87,20,68,.28) !important;
+}
+
+html[data-theme="light"] .genre-filter-chip.is-empty {
+  color: #8e8195 !important;
+  background: #f5f1f6 !important;
+  border-color: rgba(62,35,72,.12) !important;
+}
+
+html[data-theme="light"] .watch-btn.is-active {
+  color: #0f7653 !important;
+  background: #e8f6f0 !important;
+  border-color: rgba(22,138,98,.42) !important;
+}
+
+html[data-theme="light"] .settings-notification-row,
+html[data-theme="light"] .context-filter,
+html[data-theme="light"] .text-filter-link {
+  color: var(--text) !important;
+}
+
+html[data-theme="light"] .control,
+html[data-theme="light"] .search-field,
+html[data-theme="light"] kbd {
+  color: var(--text) !important;
+  background: #ffffff !important;
+  border-color: rgba(62,35,72,.24) !important;
+}
+
+html[data-theme="light"] .control:focus,
+html[data-theme="light"] .search-field:focus-within {
+  border-color: rgba(219,47,131,.62) !important;
+}
+
+html[data-theme="light"] .stat-pill:hover,
+html[data-theme="light"] .month-tile:hover {
+  background: #f9edf4 !important;
+  border-color: rgba(219,47,131,.35) !important;
+}
+
+html[data-theme="light"] .service-badge--gamepass {
+  color: #2f741f !important;
+  background: #edf8e9 !important;
+  border-color: rgba(61,143,33,.35) !important;
+}
+
+html[data-theme="light"] .service-badge--psplus {
+  color: #2c5ba7 !important;
+  background: #edf3ff !important;
+  border-color: rgba(49,93,168,.32) !important;
+}
+
+html[data-theme="light"] .service-badge--gfn {
+  color: #517b12 !important;
+  background: #f1f8e5 !important;
+  border-color: rgba(82,125,20,.32) !important;
+}
+
+html[data-theme="light"] button:disabled,
+html[data-theme="light"] .is-disabled {
+  opacity: .52;
+}
