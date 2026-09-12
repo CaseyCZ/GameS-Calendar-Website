@@ -23,7 +23,6 @@ const DEFAULT_HASHES = Object.freeze({
   featuresRetrieve: '010870e8b9269c5bcf06b60190edbf5229310d8fae5b86515ad73f05bd11c4d1',
   metGetProductById: 'a128042177bd93dd831164103d53b73ef790d56f51dae647064cb8f9d9fc9d1a',
   metGetConceptById: 'cc90404ac049d935afbd9968aef523da2b6723abfb9d586e5f77ebf7c5289006',
-  metGetPricingDataByConceptId: 'abcb311ea830e679fe2b697a27f755764535d825b24510ab1239a4ca3092bd09',
   conceptRetrieveForMedia: '615a2c4618229aa2f11c10fe497eaf4fdc151e4dcc0b6b82e154aeacb0123c2d'
 });
 
@@ -32,7 +31,6 @@ const HASHES = Object.freeze({
   featuresRetrieve: process.env.PS_HASH_FEATURES_RETRIEVE || DEFAULT_HASHES.featuresRetrieve,
   metGetProductById: process.env.PS_HASH_MET_GET_PRODUCT_BY_ID || DEFAULT_HASHES.metGetProductById,
   metGetConceptById: process.env.PS_HASH_MET_GET_CONCEPT_BY_ID || DEFAULT_HASHES.metGetConceptById,
-  metGetPricingDataByConceptId: process.env.PS_HASH_PRICING_BY_CONCEPT || DEFAULT_HASHES.metGetPricingDataByConceptId,
   conceptRetrieveForMedia: process.env.PS_HASH_MEDIA_BY_CONCEPT || DEFAULT_HASHES.conceptRetrieveForMedia
 });
 
@@ -132,11 +130,6 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
   const ratingText = firstString(payload, ['averageRating', 'starRating']);
   const ratingNumber = firstNumber(payload, ['averageRating', 'starRating']);
   const ratingCount = firstNumber(payload, ['ratingCount', 'starRatingCount', 'totalRatingsCount']);
-  const regularText = firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
-  const currentText = firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
-  const regularValue = firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
-  const currentValue = firstNumber(payload, ['discountedPriceValue', 'discountedPrice', 'salePriceValue']) ?? regularValue;
-  const currency = firstString(payload, ['currencyCode', 'currency']);
   return canonicalGame('playstation', {
     providerId,
     title,
@@ -149,13 +142,6 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
     releaseDate,
     rating: Number(ratingText || ratingNumber || 0) || null,
     ratingCount,
-    price: (regularText || currentText || regularValue != null) ? {
-      currency: currency || null,
-      current: currentValue,
-      regular: regularValue,
-      currentText: currentText || null,
-      regularText: regularText || null
-    } : null,
     media: { cover: images[0] || '', hero: images[1] || '', screenshots: images.slice(2, 18) },
     storeUrl: providerId ? `https://store.playstation.com/${config.psLocale}/product/${providerId}` : '',
     sourceUrl,
@@ -172,7 +158,6 @@ export async function concept(conceptId, { force = false } = {}) {
   const id = String(conceptId);
   const requests = await Promise.allSettled([
     persisted('metGetConceptById', { conceptId: id }, { force }),
-    persisted('metGetPricingDataByConceptId', { conceptId: id }, { force }),
     persisted('conceptRetrieveForMedia', { conceptId: id }, { force })
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
@@ -238,7 +223,7 @@ export async function search(query, { force = false, limit = 8 } = {}) {
 
 export const playstationProvider = {
   name: 'playstation',
-  capabilities: ['search', 'product', 'concept', 'catalog', 'psPlus', 'price', 'media'],
+  capabilities: ['search', 'product', 'concept', 'catalog', 'psPlus', 'media'],
   search,
   product,
   concept,
