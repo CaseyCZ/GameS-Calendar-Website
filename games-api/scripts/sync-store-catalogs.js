@@ -60,13 +60,59 @@ function uniqueScreenshots(values) {
   return out.slice(0, 24);
 }
 
+const FALLBACK_GENRES = [
+  ['point and click', 'Point-and-click'],
+  ['fighting', 'Fighting'],
+  ['shooter', 'Shooter'],
+  ['music', 'Music'],
+  ['platformer', 'Platform'],
+  ['platform', 'Platform'],
+  ['puzzle', 'Puzzle'],
+  ['racing', 'Racing'],
+  ['real time strategy', 'Real Time Strategy (RTS)'],
+  ['rts', 'Real Time Strategy (RTS)'],
+  ['role playing', 'Role-playing (RPG)'],
+  ['rpg', 'Role-playing (RPG)'],
+  ['simulation', 'Simulator'],
+  ['simulator', 'Simulator'],
+  ['sports', 'Sport'],
+  ['sport', 'Sport'],
+  ['strategy', 'Strategy'],
+  ['turn based strategy', 'Turn-based strategy (TBS)'],
+  ['tactical', 'Tactical'],
+  ['hack and slash', "Hack and slash/Beat 'em up"],
+  ['beat em up', "Hack and slash/Beat 'em up"],
+  ['quiz', 'Quiz/Trivia'],
+  ['trivia', 'Quiz/Trivia'],
+  ['pinball', 'Pinball'],
+  ['adventure', 'Adventure'],
+  ['indie', 'Indie'],
+  ['arcade', 'Arcade'],
+  ['visual novel', 'Visual Novel'],
+  ['card', 'Card & Board Game'],
+  ['board game', 'Card & Board Game'],
+  ['moba', 'MOBA']
+];
+
+function fallbackGenres(values = []) {
+  const out = [];
+  for (const value of values) {
+    const key = normalizeTitle(value);
+    if (!key) continue;
+    for (const [needle, canonical] of FALLBACK_GENRES) {
+      if (key === needle || key.includes(needle)) out.push(canonical);
+    }
+  }
+  return uniq(out);
+}
+
 function applyCanonical(game, item, provider) {
   if (!game || !item) return false;
   if (!game.summary && (item.shortDescription || item.description)) game.summary = item.shortDescription || item.description;
   game.developers = uniq([...(game.developers || []), ...(item.developers || [])]);
   game.publishers = uniq([...(game.publishers || []), ...(item.publishers || [])]);
-  game.genres = uniq([...(game.genres || []), ...(item.genres || [])]);
-  game.storeCategories = uniq([...(game.storeCategories || []), ...(item.categories || [])]);
+  game.storeCategories = uniq([...(game.storeCategories || []), ...(item.genres || []), ...(item.categories || [])]);
+  if (!(game.genres || []).length) game.genres = fallbackGenres([...(item.genres || []), ...(item.categories || [])]);
   game.metadataSources = uniq([...(game.metadataSources || []), provider]);
   game.providerIds ||= {};
   if (item.providerId) game.providerIds[provider] = String(item.providerId);
@@ -182,6 +228,12 @@ function markCheck(game, provider, matched, detail = '') {
   };
 }
 
+function checkedRecently(game, provider, days = 30) {
+  if (force) return false;
+  const checked = Date.parse(game.providerChecks?.[`${provider}-catalog-match`]?.checkedAt || '');
+  return Number.isFinite(checked) && Date.now() - checked < days * 86_400_000;
+}
+
 async function mapLimit(items, worker) {
   let cursor = 0;
   async function run() {
@@ -195,13 +247,34 @@ async function mapLimit(items, worker) {
 }
 
 async function loadPlayStationCatalog() {
-  const items = await providers.playstation.catalogProducts('all', {
-    force,
-    size: 1000,
-    maxPages: Number(process.env.GAMES_PS_CATALOG_MAX_PAGES || 50)
-  });
-  console.log(`PlayStation official catalog: ${items.length} products`);
-  return items;
+  const categories = (process.env.GAMES_PS_CATALOG_CATEGORIES || 'all,ps5,ps4,new,psPlus')
+    .split(',').map(value => value.trim()).filter(Boolean);
+  const pageSize = Math.max(20, Math.min(200, Number(process.env.GAMES_PS_CATALOG_PAGE_SIZE || 100)));
+  const maxPages = Math.max(1, Math.min(100, Number(process.env.GAMES_PS_CATALOG_MAX_PAGES || 60)));
+  const out = [];
+  const seen = new Set();
+
+  for (const category of categories) {
+    try {
+      const items = await providers.playstation.catalogProducts(category, {
+        force,
+        size: pageSize,
+        maxPages
+      });
+      console.log(`PlayStation category ${category}: ${items.length} products`);
+      for (const item of items) {
+        const key = String(item?.providerId || `${item?.title}:${item?.releaseDate}`);
+        if (!item?.title || seen.has(key)) continue;
+        seen.add(key);
+        out.push(item);
+      }
+    } catch (error) {
+      console.warn(`PlayStation category ${category}: ${error.message}`);
+    }
+  }
+
+  console.log(`PlayStation official catalog: ${out.length} unique products`);
+  return out;
 }
 
 async function loadNintendoCatalog() {
@@ -249,7 +322,7 @@ for (const provider of selected) {
   const items = catalogs[provider] || [];
   const index = buildIndex(items);
   let queue = games
-    .filter(game => relevant(game, provider) && missingScore(game) > 0 && bestExact(game, index))
+    .filter(game => relevant(game, provider) && missingScore(game) > 0 && !checkedRecently(game, provider) && bestExact(game, index))
     .sort((a, b) => missingScore(b) - missingScore(a) || String(a.name).localeCompare(String(b.name), 'cs'));
   const eligible = queue.length;
   if (Number.isFinite(limit)) queue = queue.slice(0, limit);
