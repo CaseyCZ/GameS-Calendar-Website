@@ -8,7 +8,7 @@
   if (!API_ROOT) return;
 
   const cache = new Map();
-  let pendingTitle = '';
+  let pendingKey = '';
   let timer = 0;
 
   const PROVIDER_LABELS = {
@@ -34,6 +34,12 @@
 
   function currentTitle() {
     return clean(content.querySelector('.detail-main h2')?.textContent);
+  }
+
+  function currentGameId() {
+    const rowKey = String(dialog.dataset.rowKey || '');
+    const id = rowKey.split(':', 1)[0].trim();
+    return /^\d+$/.test(id) ? id : '';
   }
 
   function platformTexts() {
@@ -234,30 +240,32 @@
   async function enrichCurrent() {
     if (!dialog.open) return;
     const title = currentTitle();
-    if (!title || pendingTitle === title || content.dataset.liveEnrichedTitle === title) return;
-    pendingTitle = title;
-    content.dataset.liveEnrichedTitle = title;
-    setStatus('Ověřuji IGDB identitu, předplatné a média…', 'loading');
+    const igdbId = currentGameId();
+    const key = `${igdbId || 'title'}:${title}`;
+    if (!title || pendingKey === key || content.dataset.liveEnrichedKey === key) return;
+    pendingKey = key;
+    content.dataset.liveEnrichedKey = key;
+    setStatus('Načítám aktuální detail online…', 'loading');
 
     try {
-      let payload = cache.get(title);
+      let payload = cache.get(key);
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
         const response = await fetch(`${API_ROOT}/enrich`, {
           method: 'POST',
           headers: { 'content-type': 'application/json', accept: 'application/json' },
-          body: JSON.stringify({ game: { title }, providers })
+          body: JSON.stringify({ game: { title, ...(igdbId ? { igdbId } : {}) }, providers })
         });
         if (!response.ok) throw new Error(`API ${response.status}`);
         payload = await response.json();
-        cache.set(title, payload);
+        cache.set(key, payload);
       }
       if (currentTitle() !== title || !dialog.open) return;
       applyLiveData(title, payload);
     } catch (error) {
       if (currentTitle() === title) setStatus(`Živé ověření se nepodařilo: ${error?.message || error}`, 'error');
     } finally {
-      if (pendingTitle === title) pendingTitle = '';
+      if (pendingKey === key) pendingKey = '';
     }
   }
 
@@ -269,8 +277,8 @@
   new MutationObserver(schedule).observe(content, { childList: true, subtree: false });
   new MutationObserver(schedule).observe(dialog, { attributes: true, attributeFilter: ['open'] });
   dialog.addEventListener('close', () => {
-    pendingTitle = '';
-    content.removeAttribute('data-live-enriched-title');
+    pendingKey = '';
+    content.removeAttribute('data-live-enriched-key');
   });
 
   schedule();
