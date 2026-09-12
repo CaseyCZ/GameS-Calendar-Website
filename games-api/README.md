@@ -7,13 +7,13 @@ Vlastní backend pro GameS Calendar. Data bere přímo z endpointů a HTML ofici
 | Provider | Oficiální zdroj | Použití |
 | --- | --- | --- |
 | Microsoft / Xbox | `catalog.gamepass.com/sigls/v2` | Game Pass Console / PC / Cloud / EA Play Product ID |
-| Microsoft Store | `displaycatalog.mp.microsoft.com/v7.0/products` | popis, publisher, developer, kategorie, release, média, rating, cena |
+| Microsoft Store | `displaycatalog.mp.microsoft.com/v7.0/products` | popis, publisher, developer, kategorie, release, média, rating |
 | Xbox Store | `xbox.com/<locale>/Search/Results` | hledání Product ID podle názvu |
 | Steam Store | `store.steampowered.com/api/storesearch` | hledání App ID |
-| Steam Store | `store.steampowered.com/api/appdetails` | detail hry, cena, release, žánry, media, trailer |
+| Steam Store | `store.steampowered.com/api/appdetails` | detail hry, release, žánry, media, trailer |
 | Steamworks | `partner.steam-api.com/IStoreService/GetAppList/v1/` | kompletní/inkrementální seznam App ID; vyžaduje Web API key |
 | PlayStation Store | `web.np.playstation.com/api/graphql/v1/op` | product/concept/catalog/PS Plus přes persisted GraphQL dotazy |
-| Nintendo eShop | `ec.nintendo.com` + `api.ec.nintendo.com` | seznamy, title ID a regionální cena |
+| Nintendo eShop | `searching.nintendo-europe.com/<lang>/select` | katalog, title ID, release, metadata |
 | Nintendo | `nintendo.com/.../store/products/...` | oficiální produktová HTML stránka; popis, release, publisher, média, systém |
 | GeForce NOW | `api-prod.nvidia.com/services/gfngames/v1/gameList` | live katalog GFN, playType, obchody, obrázky |
 
@@ -34,6 +34,7 @@ Node.js 22.13+ je vyžadován kvůli vestavěnému `node:sqlite`. SQLite drží 
 
 ```text
 GET  /health?refresh=1
+GET  /api/catalog
 GET  /api/search?q=Kingdom%20Come&providers=steam,microsoft,playstation,nintendo,geforceNow
 POST /api/enrich
 GET  /api/gamepass/console
@@ -50,7 +51,6 @@ GET  /api/playstation/catalog/all?size=100&offset=0
 GET  /api/nintendo?url=https://www.nintendo.com/us/store/products/.../
 GET  /api/nintendo?id=70010000063715
 GET  /api/nintendo/list/new
-GET  /api/nintendo/price/70010000063715
 GET  /api/gfn/search?q=Cyberpunk
 GET  /api/gfn/catalog
 GET  /api/history/:gameKey
@@ -71,7 +71,7 @@ Pošli JSON na `POST /api/enrich`. API nejdřív použije známá provider ID. P
 
 ## Cache
 
-Cache je serverová a per-provider. Game Pass/GFN se obnovují po hodině, produktová metadata zhruba po 6 hodinách a Nintendo produktové stránky po 12 hodinách. `?refresh=1` cache obejde.
+Cache je serverová a per-provider. Game Pass/GFN se obnovují po hodině, produktová metadata zhruba po 6 hodinách a Nintendo metadata po 12 hodinách. `?refresh=1` cache obejde.
 
 ## Endpoint audit
 
@@ -87,6 +87,6 @@ Backend je určený pro Oracle Compute VM za Nginxem. Nginx může servírovat s
 
 ## Historie změn
 
-Při `POST /api/enrich` se ukládá malý snapshot důležitých polí. Změna data vydání, předplatného, ceny nebo provider ID se zapíše do `change_history`. Díky tomu může frontend později zobrazit například **ODLOŽENO** nebo historii ceny bez ukládání celých odpovědí obchodů.
+Při `POST /api/enrich` se ukládá malý snapshot důležitých polí. Změna data vydání, předplatného nebo provider ID se zapíše do `change_history`.
 
 Podrobné rozdělení endpointů na dokumentované / oficiální interní / HTML je v [`OFFICIAL-ENDPOINTS.md`](OFFICIAL-ENDPOINTS.md).
