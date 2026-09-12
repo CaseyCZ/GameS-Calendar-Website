@@ -1,0 +1,135 @@
+/* Advanced filtering, card badge preferences and mobile detail gestures. */
+
+.trait-filter-section {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255,255,255,.065);
+}
+.trait-filter-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.trait-filter-clear {
+  border: 0;
+  padding: 2px 0;
+  color: var(--pink);
+  background: transparent;
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+.trait-filter-groups { display: grid; gap: 10px; }
+.trait-filter-group { min-width: 0; }
+.trait-filter-group__label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 750;
+}
+.trait-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.trait-filter-chip { min-height: 29px; padding: 4px 9px; }
+.trait-filter-chip.is-empty { opacity: .42; }
+.trait-filter-chip.is-active { opacity: 1; }
+
+.badge--content-type {
+  border-color: rgba(245,158,11,.42);
+  color: #ffe0a8;
+  background: rgba(245,158,11,.11);
+}
+.badge--type-remake,
+.badge--type-remaster { border-color: rgba(56,189,248,.42); color:#bae6fd; background:rgba(56,189,248,.10); }
+.badge--type-dlc,
+.badge--type-rozsireni { border-color: rgba(192,132,252,.45); color:#e9d5ff; background:rgba(192,132,252,.11); }
+.badge--type-demo { border-color: rgba(52,211,153,.42); color:#bbf7d0; background:rgba(52,211,153,.10); }
+.detail-flag--content-type { border-color: rgba(245,158,11,.4); color:#ffe0a8; background:rgba(245,158,11,.09); }
+
+.hide-badge-release .card-badges > .badge--soon,
+.hide-badge-release .card-badges > .badge--released { display:none !important; }
+.hide-badge-scale .badge--scale { display:none !important; }
+.hide-badge-early .badge--early,
+.hide-badge-early .detail-flag--early { display:none !important; }
+.hide-badge-services .service-badges { display:none !important; }
+.hide-card-rating .game-card .rating { display:none !important; }
+.hide-badge-type .badge--content-type,
+.hide-badge-type .detail-flag--content-type { display:none !important; }
+
+.settings-group__label--spaced { margin-top: 9px; }
+.advanced-setting-list { display:grid; gap:2px; }
+.advanced-setting {
+  min-height: 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--text);
+  font-size:11px;
+  cursor:pointer;
+}
+.advanced-setting input {
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.advanced-setting i {
+  position:relative;
+  width:34px;
+  height:20px;
+  flex:0 0 34px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:rgba(255,255,255,.055);
+  transition:.16s ease;
+}
+.advanced-setting i::after {
+  content:'';
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--muted);
+  transition:.16s ease;
+}
+.advanced-setting input:checked + i {
+  border-color:rgba(255,71,155,.5);
+  background:rgba(255,71,155,.2);
+}
+.advanced-setting input:checked + i::after {
+  transform:translateX(14px);
+  background:var(--pink);
+}
+.advanced-setting input:focus-visible + i { outline:2px solid var(--purple); outline-offset:2px; }
+
+@media (max-width:760px) {
+  .trait-filter-section { margin-top:10px; padding-top:9px; }
+  .trait-filter-groups { gap:8px; }
+  .trait-filter-list { gap:5px; }
+  .trait-filter-chip { min-height:27px; padding:3px 8px; font-size:10px; }
+  .filter-panel .trait-filter-section { padding-bottom: 4px; }
+}
+
+@media (max-width:760px) and (max-height:600px) {
+  .trait-filter-groups { grid-template-columns: repeat(3,minmax(0,1fr)); gap:8px; }
+  .trait-filter-list { display:flex; max-height:78px; overflow-y:auto; align-content:flex-start; }
+  .trait-filter-chip { max-width:100%; }
+}
+
+html[data-theme="light"] .trait-filter-section { border-color: rgba(62,35,72,.09); }
+html[data-theme="light"] .badge--content-type,
+html[data-theme="light"] .detail-flag--content-type { color:#8a5300; }
+html[data-theme="light"] .advanced-setting i { background:rgba(70,45,78,.08); }
