@@ -5,10 +5,8 @@ import { fetchJson, fetchText } from '../lib/http.js';
 import { canonicalGame, cleanText, titleScore, uniq } from '../lib/normalize.js';
 
 const SEARCH_HOST = 'https://searching.nintendo-europe.com';
-const PRICE_API = 'https://api.ec.nintendo.com/v1/price';
 const NINTENDO_SITE = 'https://www.nintendo.com';
-const ESHOP = 'https://ec.nintendo.com';
-const VALID_LISTS = new Set(['sales', 'new', 'ranking']);
+const VALID_LISTS = new Set(['new', 'ranking']);
 
 const arr = value => value == null ? [] : Array.isArray(value) ? value : [value];
 const first = value => Array.isArray(value) ? value[0] : value;
@@ -77,28 +75,6 @@ function normalizeDoc(doc = {}) {
   });
 }
 
-function priceObject(entry) {
-  if (!entry) return null;
-  const regular = first(entry.regular_price || entry.regularPrice);
-  const discount = first(entry.discount_price || entry.discountPrice);
-  const active = discount?.amount != null ? discount : regular;
-  if (!active) return null;
-  const number = value => {
-    const parsed = Number(String(value ?? '').replace(',', '.'));
-    return Number.isFinite(parsed) ? parsed : null;
-  };
-  return {
-    currency: active.currency || regular?.currency || null,
-    current: number(active.raw_value ?? active.amount),
-    regular: number(regular?.raw_value ?? regular?.amount),
-    currentText: active.amount || null,
-    regularText: regular?.amount || null,
-    saleStart: discount?.start_datetime || null,
-    saleEnd: discount?.end_datetime || null,
-    salesStatus: entry.sales_status || null
-  };
-}
-
 async function solr({ q = '*', fq = 'type:GAME', rows = 20, start = 0, sort = '', force = false } = {}) {
   const language = String(config.nintendoLanguage || 'en').split('-')[0].toLowerCase();
   const url = new URL(`${SEARCH_HOST}/${language}/select`);
@@ -116,22 +92,6 @@ async function solr({ q = '*', fq = 'type:GAME', rows = 20, start = 0, sort = ''
   }
   const payload = await fetchJson(url, { attempts: 2, timeoutMs: 10_000 });
   return cachePut(key, 'nintendo', payload, config.ttl.nintendo);
-}
-
-export async function price(titleIds, { force = false } = {}) {
-  const ids = uniq(arr(titleIds).map(String).filter(id => /^7\d{13}$/.test(id))).slice(0, 50);
-  if (!ids.length) return { country: config.nintendoCountry, prices: [] };
-  const key = `nintendo:price:${config.nintendoCountry}:${ids.join(',')}`;
-  if (!force) {
-    const cached = cacheGet(key);
-    if (cached) return cached;
-  }
-  const url = new URL(PRICE_API);
-  url.searchParams.set('country', config.nintendoCountry);
-  url.searchParams.set('ids', ids.join(','));
-  url.searchParams.set('lang', String(config.nintendoLanguage || 'en').split('-')[0]);
-  const payload = await fetchJson(url, { attempts: 2, timeoutMs: 10_000 });
-  return cachePut(key, 'nintendo', payload, 30 * 60_000);
 }
 
 export async function contents(titleIds, { force = false } = {}) {
@@ -152,15 +112,8 @@ export async function eshopList(kind = 'new', { force = false, count = 30, offse
   const list = VALID_LISTS.has(kind) ? kind : 'new';
   const safeCount = Math.max(1, Math.min(100, Number(count) || 30));
   const safeOffset = Math.max(0, Number(offset) || 0);
-  let fq = 'type:GAME';
-  let sort = 'date_from desc';
-  if (list === 'sales') {
-    fq += ' AND price_has_discount_b:true';
-    sort = 'price_discount_percentage_f desc, date_from desc';
-  } else if (list === 'ranking') {
-    sort = 'score desc, date_from desc';
-  }
-  const payload = await solr({ q: '*', fq, rows: safeCount, start: safeOffset, sort, force });
+  const sort = list === 'ranking' ? 'score desc, date_from desc' : 'date_from desc';
+  const payload = await solr({ q: '*', fq: 'type:GAME', rows: safeCount, start: safeOffset, sort, force });
   const docs = arr(payload?.response?.docs);
   return {
     contents: docs,
@@ -182,9 +135,6 @@ export async function productById(titleId, { force = false } = {}) {
   if (!doc) throw new Error(`Nintendo title ${id} not found in official Europe search API`);
   const result = normalizeDoc(doc);
   result.providerId = id;
-  const pricing = await price(id, { force }).catch(() => null);
-  const hit = arr(pricing?.prices).find(entry => String(entry?.title_id || entry?.titleId) === id);
-  if (hit) result.price = priceObject(hit);
   return cachePut(key, 'nintendo', result, config.ttl.nintendo);
 }
 
@@ -226,29 +176,19 @@ export async function search(query, { force = false, limit = 6 } = {}) {
     .slice(0, limit)
     .map(entry => entry.item);
 
-  await Promise.all(candidates.map(async item => {
-    if (!/^7\d{13}$/.test(String(item.providerId))) return;
-    const pricing = await price(item.providerId, { force }).catch(() => null);
-    const hit = arr(pricing?.prices).find(entry => String(entry?.title_id || entry?.titleId) === String(item.providerId));
-    if (hit) item.price = priceObject(hit);
-  }));
-
   cachePut(key, 'nintendo', candidates, config.ttl.search);
   return candidates;
 }
 
 export const nintendoProvider = {
   name: 'nintendo',
-  capabilities: ['search', 'productPage', 'titleId', 'catalog', 'price', 'media', 'releaseDate'],
+  capabilities: ['search', 'productPage', 'titleId', 'catalog', 'media', 'releaseDate'],
   search,
   productByUrl,
   productById,
   contents,
-  price,
   eshopList,
   health: async () => {
-    // The newest few records can be placeholders/preorders without NSUID. Sample
-    // a wider official catalog window and validate one purchasable title instead.
     const list = await eshopList('new', { force: true, count: 100 });
     const firstDoc = list.contents.find(doc => nsuidFromDoc(doc));
     if (!firstDoc) return { ok: false, reason: 'Nintendo Europe search returned no NSUID in first 100 games', listCount: list.contents.length };
@@ -258,7 +198,6 @@ export const nintendoProvider = {
       ok: Boolean(sample?.title && list.contents.length),
       sample: sample?.title || null,
       releaseDate: sample?.releaseDate || null,
-      priced: Boolean(sample?.price),
       listCount: list.contents.length,
       country: config.nintendoCountry,
       endpoint: `${SEARCH_HOST}/${String(config.nintendoLanguage || 'en').split('-')[0]}/select`
