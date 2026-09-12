@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT=/home/ubuntu/games-calendar
 REPO="$ROOT/repo"
+WEB=/var/www/games-calendar
 REPO_URL=https://github.com/CaseyCZ/GameS-Calendar-Website.git
 NGINX_SITE=/etc/nginx/sites-available/default
 NGINX_SNIPPET=/etc/nginx/snippets/games-calendar.conf
@@ -40,8 +41,12 @@ else
   git -C "$REPO" reset --hard origin/main
 fi
 
-chmod +x "$REPO/games-api/deploy/stremio-server-update.sh"
-"$REPO/games-api/deploy/stremio-server-update.sh"
+# Keep the browser files in a normal Nginx-readable location, while the repo/API stay in ubuntu's home.
+sudo mkdir -p "$WEB"
+sudo chown ubuntu:www-data "$WEB"
+sudo chmod 0755 "$WEB"
+
+bash "$REPO/games-api/deploy/stremio-server-update.sh"
 
 # Add GameS routes without replacing any existing Stremio locations.
 sudo install -m 0644 "$REPO/games-api/deploy/nginx-stremio-server.conf" "$NGINX_SNIPPET"
@@ -68,6 +73,7 @@ sudo systemctl reload nginx
 # Integrate GameS into the existing authenticated PM2 dashboard.
 if [[ -f "$DASHBOARD" ]]; then
   node "$REPO/games-api/deploy/stremio-dashboard-patch.cjs" "$DASHBOARD"
+  node --check "$DASHBOARD"
   pm2 restart stremio-dashboard --update-env
   pm2 save
 else
@@ -81,7 +87,8 @@ curl --insecure --fail --silent --show-error --max-time 5 https://127.0.0.1:8443
 echo
 echo "GameS Calendar installed alongside the existing Stremio services."
 echo "PM2 process: games-api (127.0.0.1:8787)"
-echo "Web route:     https://SERVER:8443/games/"
-echo "API route:     https://SERVER:8443/games-api/"
-echo "Health route:  https://SERVER:8443/games-health"
-echo "Dashboard:     existing /dashboard/ now includes games-api"
+echo "Web root:     $WEB"
+echo "Web route:    https://SERVER:8443/games/"
+echo "API route:    https://SERVER:8443/games-api/"
+echo "Health route: https://SERVER:8443/games-health"
+echo "Dashboard:    existing /dashboard/ now includes games-api"
