@@ -127,7 +127,7 @@
 
   function ensureFilterControls() {
     const host = document.querySelector('.trait-filter-section') || document.querySelector('.genre-filter-wrap');
-    if (!host || host.querySelector('.badge-visibility-section:not(.platform-visibility-section)')) return;
+    if (!host || host.querySelector('.badge-visibility-section')) return;
 
     const details = document.createElement('details');
     details.className = 'badge-visibility-section';

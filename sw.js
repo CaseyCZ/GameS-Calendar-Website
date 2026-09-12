@@ -1,5 +1,6 @@
-const VERSION = 'games-calendar-v3.6.0';
+const VERSION = 'games-calendar-v3.2.11';
 const SHELL_CACHE = `${VERSION}-shell`;
+const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
   './',
   './index.html',
@@ -15,8 +16,6 @@ const SHELL = [
   './compact-controls.js',
   './advanced-features.js',
   './badge-filter-controls.js',
-  './platform-filter-controls.js',
-  './default-view.js',
   './filter-section-accordion.js',
   './detail-gesture-fix.js',
   './live-detail-enrichment.js',
@@ -36,7 +35,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => name !== SHELL_CACHE).map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => ![SHELL_CACHE, DATA_CACHE].includes(name)).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
@@ -47,15 +46,12 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/games-lite.json') || url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
-    event.respondWith(fetch(request, { cache: 'default' }).catch(() => new Response(JSON.stringify({version:9,games:[]}), {
-      status: 503,
-      headers: {'Content-Type':'application/json'}
-    })));
+  if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json')) {
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  event.respondWith(cacheFirst(request));
+  event.respondWith(staleWhileRevalidate(request));
 });
 
 self.addEventListener('notificationclick', event => {
@@ -73,15 +69,26 @@ self.addEventListener('notificationclick', event => {
   })());
 });
 
-async function cacheFirst(request) {
-  const cache = await caches.open(SHELL_CACHE);
-  const cached = await cache.match(request);
-  if (cached) return cached;
+async function networkFirst(request) {
+  const cache = await caches.open(DATA_CACHE);
   try {
     const response = await fetch(request);
-    if (response.ok) await cache.put(request, response.clone());
+    if (response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    return Response.error();
+    return (await cache.match(request)) || new Response(JSON.stringify({version:5,games:[]}), {
+      status: 503,
+      headers: {'Content-Type':'application/json'}
+    });
   }
+}
+
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(SHELL_CACHE);
+  const cached = await cache.match(request);
+  const network = fetch(request).then(response => {
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  }).catch(() => null);
+  return cached || (await network) || Response.error();
 }

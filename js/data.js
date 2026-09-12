@@ -1,11 +1,10 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v7-lite';
-const OLD_CACHE_KEY = 'games-catalog-v6';
-const LIVE_CATALOG_URL = 'games-lite.json';
+const CACHE_KEY = 'games-catalog-v6';
+const CACHE_TTL = 6 * 60 * 60 * 1000;
+const LIVE_CATALOG_URL = '/games-api/catalog';
 const STATIC_CATALOG_URL = 'games.json';
-let sharedLoadPromise = null;
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -51,56 +50,24 @@ export function monthRange(year, monthIndex) {
 }
 
 export function platformGroup(name = '') {
-  const n = String(name).toLowerCase().trim();
+  const n = String(name).toLowerCase();
   if (n.includes('switch 2')) return 'Switch 2';
   if (n.includes('playstation 5') || n === 'ps5') return 'PS5';
-  if (n.includes('playstation 4') || n === 'ps4') return 'PS4';
   if (n.includes('xbox series')) return 'Xbox Series';
-  if (n.includes('xbox one')) return 'Xbox One';
   if (n.includes('nintendo switch')) return 'Switch';
-  if (n.includes('playstation vr2') || n.includes('ps vr2') || n.includes('psvr2')) return 'PS VR2';
-  if (n.includes('steamvr')) return 'SteamVR';
-  if (/meta quest|oculus quest|\bquest\b|oculus rift|\brift\b/.test(n)) return 'Meta Quest';
-  if (/\bvr\b|virtual reality|playstation vr/.test(n)) return 'VR';
-  if (/macintosh|macos|\bmac\b/.test(n)) return 'macOS';
-  if (/\blinux\b/.test(n)) return 'Linux';
-  if (/android/.test(n)) return 'Android';
-  if (/\bios\b|iphone|ipad/.test(n)) return 'iOS';
-  if (/web browser|browser/.test(n)) return 'Web';
-  if (/playdate/.test(n)) return 'Playdate';
-  if (/arcade/.test(n)) return 'Arcade';
-  if (/super nintendo|nintendo entertainment system|nintendo 64|game boy|mega drive|genesis|dreamcast|saturn|playstation(?! 4| 5| vr)|wii|gamecube|atari|neo geo|dos|amiga/.test(n)) return 'Retro';
-  if (/pc|windows/.test(n)) return 'PC';
+  if (/quest|rift|steamvr|playstation vr|\bvr\b|virtual reality/.test(n)) return 'VR';
+  if (/pc|windows|linux|mac|steam/.test(n)) return 'PC';
   return 'Other';
 }
 
 export const PLATFORM_GROUPS = [
-  { key: 'PC', label: 'PC', icon: '▣', defaultVisible: true },
-  { key: 'PS5', label: 'PS5', icon: 'PS', defaultVisible: true },
-  { key: 'Xbox Series', label: 'Xbox', icon: 'X', defaultVisible: true },
-  { key: 'Switch', label: 'Switch', icon: 'N', defaultVisible: true },
-  { key: 'Switch 2', label: 'Switch 2', icon: 'N2', defaultVisible: true },
-  { key: 'VR', label: 'VR', icon: 'VR', defaultVisible: true },
-  { key: 'PS4', label: 'PS4', icon: 'PS4', defaultVisible: false },
-  { key: 'Xbox One', label: 'Xbox One', icon: 'X1', defaultVisible: false },
-  { key: 'macOS', label: 'macOS', icon: 'Mac', defaultVisible: false },
-  { key: 'Linux', label: 'Linux', icon: 'Linux', defaultVisible: false },
-  { key: 'Android', label: 'Android', icon: 'A', defaultVisible: false },
-  { key: 'iOS', label: 'iOS', icon: 'iOS', defaultVisible: false },
-  { key: 'Web', label: 'Web', icon: 'Web', defaultVisible: false },
-  { key: 'SteamVR', label: 'SteamVR', icon: 'VR', defaultVisible: false },
-  { key: 'PS VR2', label: 'PS VR2', icon: 'VR', defaultVisible: false },
-  { key: 'Meta Quest', label: 'Meta Quest', icon: 'VR', defaultVisible: false },
-  { key: 'Playdate', label: 'Playdate', icon: 'P', defaultVisible: false },
-  { key: 'Arcade', label: 'Arcade', icon: 'A', defaultVisible: false },
-  { key: 'Retro', label: 'Retro', icon: 'R', defaultVisible: false },
-  { key: 'Other', label: 'Ostatní', icon: '…', defaultVisible: false }
+  { key: 'PC', label: 'PC', icon: '▣' },
+  { key: 'PS5', label: 'PS5', icon: 'PS' },
+  { key: 'Xbox Series', label: 'Xbox', icon: 'X' },
+  { key: 'Switch', label: 'Switch', icon: 'N' },
+  { key: 'Switch 2', label: 'Switch 2', icon: 'N2' },
+  { key: 'VR', label: 'VR', icon: 'VR' }
 ];
-
-function platformGroupAliases(group) {
-  if (['SteamVR', 'PS VR2', 'Meta Quest'].includes(group)) return [group, 'VR'];
-  return [group];
-}
 
 function normalizeCover(url) {
   if (!url) return '';
@@ -285,7 +252,7 @@ export function flattenReleases(dataset) {
         day: release.day,
         timestamp: release.timestamp,
         platforms: release.platforms,
-        platformGroups: uniq(release.platforms.flatMap(p => platformGroupAliases(p.group || platformGroup(p.name)))),
+        platformGroups: uniq(release.platforms.map(p => p.group || platformGroup(p.name))),
         window: release.window,
         precision: release.precision,
         regions: release.regions
@@ -312,21 +279,30 @@ function openDb() {
   });
 }
 
-async function clearLargeCaches() {
+async function readCache() {
+  const db = await openDb();
+  if (!db) return null;
+  return new Promise(resolve => {
+    const tx = db.transaction(STORE, 'readonly');
+    const request = tx.objectStore(STORE).get(CACHE_KEY);
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => resolve(null);
+  });
+}
+
+async function writeCache(payload) {
   const db = await openDb();
   if (!db) return;
   await new Promise(resolve => {
     const tx = db.transaction(STORE, 'readwrite');
-    const store = tx.objectStore(STORE);
-    store.delete(CACHE_KEY);
-    store.delete(OLD_CACHE_KEY);
+    tx.objectStore(STORE).put({ payload, savedAt: Date.now() }, CACHE_KEY);
     tx.oncomplete = resolve;
     tx.onerror = resolve;
   });
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url, { cache: 'default', headers: { Accept: 'application/json' } });
+  const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
 }
@@ -335,40 +311,49 @@ async function fetchPayload() {
   let liveError = null;
   try {
     const payload = await fetchJson(LIVE_CATALOG_URL);
-    return { payload, source: 'web-feed' };
+    await writeCache(payload);
+    return { payload, source: 'live-api' };
   } catch (error) {
     liveError = error;
   }
 
   try {
     const payload = await fetchJson(STATIC_CATALOG_URL);
+    await writeCache(payload);
     return { payload, source: 'games-json', liveError };
   } catch (fallbackError) {
-    throw new Error(`Živý webový katalog i games.json selhaly: ${liveError?.message || 'feed error'}; ${fallbackError.message}`);
+    throw new Error(`Živé API i games.json selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
   }
 }
 
-export async function loadGameData() {
-  if (!sharedLoadPromise) {
-    sharedLoadPromise = (async () => {
-      await clearLargeCaches();
-      const { payload, source, liveError } = await fetchPayload();
-      const dataset = normalizePayload(payload);
-      return {
-        dataset,
-        rawPayload: null,
-        source,
-        stale: false,
-        liveError: liveError || null
-      };
-    })().catch(error => {
-      sharedLoadPromise = null;
-      throw error;
-    });
-  }
-  return sharedLoadPromise;
-}
+export async function loadGameData({ onRevalidated } = {}) {
+  const cached = await readCache();
+  const isFresh = cached && Date.now() - cached.savedAt < CACHE_TTL;
 
-if (typeof document !== 'undefined') {
-  import('../platform-filter-controls.js').catch(error => console.warn('Platform controls:', error));
+  if (isFresh) {
+    const dataset = normalizePayload(cached.payload);
+    fetchPayload().then(({ payload }) => {
+      const fresh = normalizePayload(payload);
+      const before = dataset.generatedAt || cached.savedAt;
+      const after = fresh.generatedAt || Date.now();
+      if (String(before) !== String(after)) onRevalidated?.(fresh);
+    }).catch(() => {});
+    return { dataset, rawPayload: cached.payload, source: 'cache', stale: false };
+  }
+
+  try {
+    const { payload, source, liveError } = await fetchPayload();
+    return {
+      dataset: normalizePayload(payload),
+      rawPayload: payload,
+      source,
+      stale: false,
+      liveError: liveError || null
+    };
+  } catch (error) {
+    if (cached?.payload) {
+      return { dataset: normalizePayload(cached.payload), rawPayload: cached.payload, source: 'cache', stale: true, error };
+    }
+    throw error;
+  }
 }
