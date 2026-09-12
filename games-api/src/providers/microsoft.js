@@ -38,19 +38,6 @@ function imageMap(product) {
   }
   return grouped;
 }
-function priceOf(product) {
-  const availability = product?.DisplaySkuAvailabilities?.[0]?.Availabilities?.[0];
-  const price = availability?.OrderManagementData?.Price;
-  if (!price) return null;
-  return {
-    currency: price.CurrencyCode || null,
-    current: Number(price.ListPrice ?? price.MSRP ?? 0),
-    regular: Number(price.MSRP ?? price.ListPrice ?? 0),
-    wholesale: Number(price.WholesalePrice ?? 0) || null,
-    saleStart: availability?.Conditions?.StartDate || null,
-    saleEnd: availability?.Conditions?.EndDate || null
-  };
-}
 
 export function normalizeMicrosoftProduct(product, subscriptionKinds = []) {
   if (!product) return null;
@@ -89,7 +76,6 @@ export function normalizeMicrosoftProduct(product, subscriptionKinds = []) {
     platforms,
     releaseDate: mp.OriginalReleaseDate || mp.originalReleaseDate,
     rating: mp?.UsageData?.find?.(entry => entry.AggregateTimeSpan === 'AllTime')?.AverageRating || 0,
-    price: priceOf(product),
     media: {
       cover: images.Poster?.[0] || images.BoxArt?.[0] || images.ProductTitle?.[0] || '',
       hero: images.SuperHeroArt?.[0] || images.Hero?.[0] || images.BrandedKeyArt?.[0] || '',
@@ -211,7 +197,7 @@ export async function search(query, { force = false, limit = 8 } = {}) {
 
 export const microsoftProvider = {
   name: 'microsoft',
-  capabilities: ['search', 'product', 'gamePass', 'cloudGaming', 'price', 'media'],
+  capabilities: ['search', 'product', 'gamePass', 'cloudGaming', 'media'],
   search,
   product,
   gamePassIds,
