@@ -68,17 +68,89 @@
     });
   }
 
+  function syncChoiceButtons(select) {
+    if (!select) return;
+    const group = document.querySelector(`[data-choice-for="${select.id}"]`);
+    if (!group) return;
+    group.querySelectorAll('[data-choice-value]').forEach(button => {
+      const active = button.dataset.choiceValue === select.value;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  function makeChoiceGroup(label, select) {
+    const group = document.createElement('div');
+    group.className = 'selection-choice-group';
+    group.dataset.choiceFor = select.id;
+
+    const title = document.createElement('span');
+    title.className = 'selection-choice-label';
+    title.textContent = label;
+
+    const list = document.createElement('div');
+    list.className = 'selection-choice-list';
+    list.setAttribute('role', 'group');
+    list.setAttribute('aria-label', label);
+
+    [...select.options].forEach(option => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'genre-filter-chip filter-choice-chip';
+      button.dataset.choiceValue = option.value;
+      button.textContent = option.textContent.trim();
+      button.addEventListener('click', () => {
+        if (select.value === option.value) return;
+        select.value = option.value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        syncChoiceButtons(select);
+      });
+      list.appendChild(button);
+    });
+
+    select.classList.add('filter-native-select');
+    select.tabIndex = -1;
+    select.setAttribute('aria-hidden', 'true');
+    group.append(title, list, select);
+    syncChoiceButtons(select);
+    return group;
+  }
+
+  function makePeriodGroup(period) {
+    const group = document.createElement('div');
+    group.className = 'selection-choice-group';
+
+    const title = document.createElement('span');
+    title.className = 'selection-choice-label';
+    title.textContent = 'Období';
+
+    period.classList.add('selection-choice-list');
+    period.querySelectorAll('[data-period]').forEach(button => {
+      button.classList.remove('chip');
+      button.classList.add('genre-filter-chip', 'filter-choice-chip');
+    });
+
+    group.append(title, period);
+    return group;
+  }
+
   function setupSelection() {
     const row = document.querySelector('.filter-controls-row');
     if (!row || row.dataset.accordionSelection === '1') return;
-    const controls = [...row.children].filter(node => node.matches?.('#status-filter,.period-control,#sort-filter'));
-    if (!controls.length) return;
+    const status = row.querySelector(':scope > #status-filter');
+    const period = row.querySelector(':scope > .period-control');
+    const sort = row.querySelector(':scope > #sort-filter');
+    if (!status || !period || !sort) return;
 
     const details = makeDetails('selection', 'Vydání a řazení', 'filter-subsection--selection');
     const body = details.querySelector('.filter-subsection__body');
     const inner = document.createElement('div');
     inner.className = 'filter-subsection__controls';
-    controls.forEach(node => inner.appendChild(node));
+    inner.append(
+      makeChoiceGroup('Stav vydání', status),
+      makePeriodGroup(period),
+      makeChoiceGroup('Řazení', sort)
+    );
     body.appendChild(inner);
     row.appendChild(details);
     row.dataset.accordionSelection = '1';
@@ -121,10 +193,13 @@
       meta.textContent = `${available} možností`;
     });
 
+    const status = document.getElementById('status-filter');
+    const sort = document.getElementById('sort-filter');
+    syncChoiceButtons(status);
+    syncChoiceButtons(sort);
+
     const selectionMeta = document.querySelector('[data-filter-subsection-meta="selection"]');
     if (selectionMeta) {
-      const status = document.getElementById('status-filter');
-      const sort = document.getElementById('sort-filter');
       const period = document.querySelector('[data-period].is-active');
       const parts = [];
       if (status?.selectedOptions?.[0]) parts.push(status.selectedOptions[0].textContent.trim());
