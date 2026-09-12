@@ -1,6 +1,5 @@
-const VERSION = 'games-calendar-v3.4.0';
+const VERSION = 'games-calendar-v3.5.0';
 const SHELL_CACHE = `${VERSION}-shell`;
-const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
   './',
   './index.html',
@@ -37,7 +36,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => ![SHELL_CACHE, DATA_CACHE].includes(name)).map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => name !== SHELL_CACHE).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
@@ -49,7 +48,10 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   if (url.pathname.endsWith('/games-lite.json') || url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
-    event.respondWith(networkFirst(request));
+    event.respondWith(fetch(request, { cache: 'default' }).catch(() => new Response(JSON.stringify({version:7,games:[]}), {
+      status: 503,
+      headers: {'Content-Type':'application/json'}
+    })));
     return;
   }
 
@@ -70,20 +72,6 @@ self.addEventListener('notificationclick', event => {
     return self.clients.openWindow(target);
   })());
 });
-
-async function networkFirst(request) {
-  const cache = await caches.open(DATA_CACHE);
-  try {
-    const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
-    return response;
-  } catch {
-    return (await cache.match(request)) || new Response(JSON.stringify({version:7,games:[]}), {
-      status: 503,
-      headers: {'Content-Type':'application/json'}
-    });
-  }
-}
 
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(SHELL_CACHE);
