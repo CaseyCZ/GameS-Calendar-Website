@@ -115,11 +115,12 @@ export async function eshopList(kind = 'new', { force = false, count = 30, offse
   const sort = list === 'ranking' ? 'score desc, date_from desc' : 'date_from desc';
   const payload = await solr({ q: '*', fq: 'type:GAME', rows: safeCount, start: safeOffset, sort, force });
   const docs = arr(payload?.response?.docs);
+  const contents = docs.map(normalizeDoc).filter(item => item?.title);
   return {
-    contents: docs,
-    length: docs.length,
+    contents,
+    length: contents.length,
     offset: safeOffset,
-    total: Number(payload?.response?.numFound || docs.length)
+    total: Number(payload?.response?.numFound || contents.length)
   };
 }
 
@@ -190,9 +191,9 @@ export const nintendoProvider = {
   eshopList,
   health: async () => {
     const list = await eshopList('new', { force: true, count: 100 });
-    const firstDoc = list.contents.find(doc => nsuidFromDoc(doc));
-    if (!firstDoc) return { ok: false, reason: 'Nintendo Europe search returned no NSUID in first 100 games', listCount: list.contents.length };
-    const id = nsuidFromDoc(firstDoc);
+    const firstItem = list.contents.find(item => /^7\d{13}$/.test(String(item?.providerId || '')));
+    if (!firstItem) return { ok: false, reason: 'Nintendo Europe search returned no NSUID in first 100 games', listCount: list.contents.length };
+    const id = String(firstItem.providerId);
     const sample = await productById(id, { force: true });
     return {
       ok: Boolean(sample?.title && list.contents.length),
