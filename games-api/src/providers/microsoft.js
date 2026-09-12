@@ -57,13 +57,12 @@ export function normalizeMicrosoftProduct(product, subscriptionKinds = []) {
     ...strArray(lp.Categories || lp.categories),
     typeof p.Category === 'string' ? p.Category : ''
   ]);
-  const subscriptions = {
-    gamePass: subscriptionKinds.some(v => ['console', 'pc', 'cloud'].includes(v)),
-    gamePassConsole: subscriptionKinds.includes('console'),
-    gamePassPc: subscriptionKinds.includes('pc'),
-    cloudGaming: subscriptionKinds.includes('cloud'),
-    eaPlay: subscriptionKinds.includes('eaPlay')
-  };
+  const subscriptions = {};
+  if (subscriptionKinds.some(v => ['console', 'pc', 'cloud'].includes(v))) subscriptions.gamePass = true;
+  if (subscriptionKinds.includes('console')) subscriptions.gamePassConsole = true;
+  if (subscriptionKinds.includes('pc')) subscriptions.gamePassPc = true;
+  if (subscriptionKinds.includes('cloud')) subscriptions.cloudGaming = true;
+  if (subscriptionKinds.includes('eaPlay')) subscriptions.eaPlay = true;
   return canonicalGame('microsoft', {
     providerId: product.ProductId || product.productId,
     title: lp.ProductTitle || lp.productTitle || '',
