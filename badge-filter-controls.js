@@ -67,11 +67,6 @@
     import('./detail-gesture-fix.js').catch(error => console.warn('Detail gesture fix:', error));
   }
 
-  function ensureExtraFilterModules() {
-    import('./platform-filter-controls.js').catch(error => console.warn('Platform filter controls:', error));
-    import('./default-view.js').catch(error => console.warn('Default all-games view:', error));
-  }
-
   function normalize(value = '') {
     return String(value)
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -213,7 +208,6 @@
 
   function setup() {
     ensureDetailGestureFix();
-    ensureExtraFilterModules();
     enableLegacyBadgeEngine();
     removeBadgeControlsFromSettings();
     ensureFilterControls();
