@@ -1,0 +1,637 @@
+import { flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
+import { formatGenre, formatter, rowCard } from './js/ui.js';
+
+const $ = id => document.getElementById(id);
+const TRAIT_KEY = 'games-calendar-trait-filters-v1';
+const BADGE_PREF_KEY = 'games-calendar-badge-prefs-v1';
+const GESTURE_KEY = 'games-calendar-detail-gestures-v1';
+const PAGE_SIZE = 72;
+
+const TRAIT_GROUPS = [
+  {
+    label: 'Kategorie',
+    items: [
+      ['aaa', 'AAA'],
+      ['indie', 'Indie'],
+      ['small', 'Menší titul'],
+      ['early', 'Early Access']
+    ]
+  },
+  {
+    label: 'Typ hry',
+    items: [
+      ['full', 'Plná hra'],
+      ['dlc', 'DLC'],
+      ['expansion', 'Rozšíření'],
+      ['remake', 'Remake'],
+      ['remaster', 'Remaster'],
+      ['demo', 'Demo'],
+      ['mod', 'Mod']
+    ]
+  },
+  {
+    label: 'Služby a média',
+    items: [
+      ['gamepass', 'Game Pass'],
+      ['psplus', 'PS Plus'],
+      ['gfn', 'GeForce NOW'],
+      ['trailer', 'Trailer'],
+      ['screenshots', 'Screenshoty'],
+      ['rating', 'S hodnocením']
+    ]
+  }
+];
+
+const TRAIT_LABELS = new Map(TRAIT_GROUPS.flatMap(group => group.items));
+const DEFAULT_BADGES = {
+  release: true,
+  scale: true,
+  type: true,
+  fullType: false,
+  early: true,
+  services: true,
+  rating: true
+};
+
+let dataset = null;
+let rows = [];
+let rowMap = new Map();
+let rawGameMap = new Map();
+let traits = readSet(TRAIT_KEY);
+let badgePrefs = readBadgePrefs();
+let advancedLimit = PAGE_SIZE;
+let wasFiltering = false;
+let ignoreGameMutation = false;
+let touchStart = null;
+
+function readSet(key) {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+    return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeSet(key, set) {
+  try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+}
+
+function readBadgePrefs() {
+  try {
+    return { ...DEFAULT_BADGES, ...(JSON.parse(localStorage.getItem(BADGE_PREF_KEY) || '{}') || {}) };
+  } catch {
+    return { ...DEFAULT_BADGES };
+  }
+}
+
+function saveBadgePrefs() {
+  try { localStorage.setItem(BADGE_PREF_KEY, JSON.stringify(badgePrefs)); } catch {}
+}
+
+function gesturesEnabled() {
+  return localStorage.getItem(GESTURE_KEY) !== '0';
+}
+
+function ensureStyles() {
+  if (document.querySelector('link[data-advanced-features]')) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'advanced-features.css';
+  link.dataset.advancedFeatures = '1';
+  document.head.appendChild(link);
+}
+
+function normalizeSearch(value = '') {
+  const roman = new Map([
+    ['i','1'],['ii','2'],['iii','3'],['iv','4'],['v','5'],['vi','6'],['vii','7'],['viii','8'],['ix','9'],['x','10']
+  ]);
+  return String(value)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[™®©]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(token => roman.get(token) || token)
+    .join(' ');
+}
+
+function gameSearchText(game) {
+  return normalizeSearch([
+    game.name,
+    ...(game.aliases || []),
+    ...(game.developers || []),
+    ...(game.publishers || []),
+    ...(game.series || [])
+  ].join(' '));
+}
+
+function contentType(game) {
+  const raw = String(game.contentType || rawGameMap.get(String(game.id))?.contentType || '').trim().toLowerCase();
+  const text = normalizeSearch(`${game.name || ''} ${game.summary || ''}`);
+
+  if (/\bremaster(ed)?\b/.test(text)) return 'Remaster';
+  if (/\bremake\b/.test(text)) return 'Remake';
+  if (/\bexpansion\b|expansion pack|rozsireni/.test(text)) return 'Rozšíření';
+  if (/\bdlc\b|downloadable content/.test(text)) return 'DLC';
+  if (/\bdemo\b/.test(text)) return 'Demo';
+
+  if (['dlc','downloadable content'].includes(raw)) return 'DLC';
+  if (['expansion','expansion pack','rozšíření'].includes(raw)) return 'Rozšíření';
+  if (['remake'].includes(raw)) return 'Remake';
+  if (['remaster','remastered'].includes(raw)) return 'Remaster';
+  if (['demo'].includes(raw)) return 'Demo';
+  if (['mod'].includes(raw)) return 'Mod';
+  if (['game','full game','plná hra','full'].includes(raw)) return 'Plná hra';
+  return game.contentType || rawGameMap.get(String(game.id))?.contentType || '';
+}
+
+function gameTraits(game) {
+  const result = new Set();
+  const scale = normalizeSearch(game.scale || rawGameMap.get(String(game.id))?.scale || '');
+  if (scale === 'aaa') result.add('aaa');
+  if (scale.includes('indie')) result.add('indie');
+  if (scale.includes('mensi') || scale.includes('small')) result.add('small');
+  if (game.earlyAccess || rawGameMap.get(String(game.id))?.earlyAccess) result.add('early');
+
+  const type = normalizeSearch(contentType(game));
+  if (type.includes('plna hra') || type === 'game' || type === 'full game') result.add('full');
+  if (type === 'dlc' || type.includes('downloadable')) result.add('dlc');
+  if (type.includes('rozsireni') || type.includes('expansion')) result.add('expansion');
+  if (type.includes('remake')) result.add('remake');
+  if (type.includes('remaster')) result.add('remaster');
+  if (type.includes('demo')) result.add('demo');
+  if (type === 'mod' || type.includes('modifikace')) result.add('mod');
+
+  const subs = game.subscriptions || rawGameMap.get(String(game.id))?.subscriptions || {};
+  if (subs.gamePass) result.add('gamepass');
+  if (subs.psPlus) result.add('psplus');
+  if (subs.geforceNow) result.add('gfn');
+  if (game.trailerId || game.trailerUrl || rawGameMap.get(String(game.id))?.trailerId || rawGameMap.get(String(game.id))?.trailerUrl) result.add('trailer');
+  const shots = game.screenshots?.length || rawGameMap.get(String(game.id))?.screenshots?.length;
+  if (shots) result.add('screenshots');
+  if (Number(game.rating || rawGameMap.get(String(game.id))?.rating || 0) > 0) result.add('rating');
+  return result;
+}
+
+function readBaseState() {
+  const query = new URLSearchParams(location.search);
+  const platforms = new Set([...document.querySelectorAll('#platform-filters [data-platform].is-active')].map(node => node.dataset.platform));
+  const genres = new Set([...document.querySelectorAll('#genre-filters [data-genre].is-active')].map(node => node.dataset.genre));
+  const search = $('search-input')?.value?.trim() || '';
+  const status = $('status-filter')?.value || 'upcoming';
+  const sort = $('sort-filter')?.value || 'date-asc';
+  const watchlistOnly = $('watchlist-toggle')?.classList.contains('is-active') || false;
+  const watchlist = readSet('games-calendar-watchlist-v2');
+  const company = query.get('developer') ? {type:'developer', value:query.get('developer')} : query.get('publisher') ? {type:'publisher', value:query.get('publisher')} : null;
+  const series = query.get('series') || '';
+
+  let range = null;
+  const from = query.get('from');
+  const to = query.get('to');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(from || '') && /^\d{4}-\d{2}-\d{2}$/.test(to || '')) {
+    range = {from, to};
+  } else if (query.get('period') === 'all') {
+    range = null;
+  } else if (query.get('period') === 'next') {
+    const now = new Date();
+    range = monthRange(now.getFullYear(), now.getMonth() + 1);
+  } else if (/^\d{4}-\d{2}$/.test(query.get('month') || '')) {
+    const [year, month] = query.get('month').split('-').map(Number);
+    range = monthRange(year, month - 1);
+  } else {
+    const now = new Date();
+    range = monthRange(now.getFullYear(), now.getMonth());
+  }
+
+  return { platforms, genres, search, status, sort, watchlistOnly, watchlist, company, series, range };
+}
+
+function baseMatches(row, base, { ignoreRange = false } = {}) {
+  const game = row.game;
+  const search = normalizeSearch(base.search);
+  if (search && !gameSearchText(game).includes(search)) return false;
+  if (base.platforms.size && !row.platformGroups.some(group => base.platforms.has(group))) return false;
+  if (base.genres.size) {
+    const labels = new Set((game.genres || []).map(formatGenre));
+    if (![...base.genres].some(genre => labels.has(genre))) return false;
+  }
+  if (base.company?.value) {
+    const source = base.company.type === 'developer' ? game.developers : game.publishers;
+    if (!(source || []).includes(base.company.value)) return false;
+  }
+  if (base.series && !(game.series || []).includes(base.series)) return false;
+  if (base.watchlistOnly && !base.watchlist.has(String(game.id))) return false;
+
+  const today = todayLocal();
+  if (base.status === 'upcoming' && row.day && row.day < today) return false;
+  if (base.status === 'released' && (!row.day || row.day >= today)) return false;
+
+  if (!ignoreRange && base.range) {
+    if (!row.day || row.day < base.range.from || row.day > base.range.to) return false;
+  }
+  return true;
+}
+
+function sortRows(items, sort) {
+  return [...items].sort((a, b) => {
+    const ad = a.day || '9999-12-31';
+    const bd = b.day || '9999-12-31';
+    if (sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
+    if (sort === 'rating-desc') return (b.game.rating || 0) - (a.game.rating || 0) || ad.localeCompare(bd);
+    if (sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+    return ad.localeCompare(bd) || a.game.name.localeCompare(b.game.name, 'cs');
+  });
+}
+
+function uniqueGameCount(items) {
+  return new Set(items.map(row => String(row.game.id))).size;
+}
+
+function selectedTraitLabels() {
+  return [...traits].map(key => TRAIT_LABELS.get(key) || key);
+}
+
+function ensureTraitUi() {
+  const wrap = document.querySelector('.genre-filter-wrap');
+  if (!wrap || wrap.querySelector('.trait-filter-section')) return;
+
+  const section = document.createElement('section');
+  section.className = 'trait-filter-section';
+  section.innerHTML = `
+    <div class="trait-filter-heading">
+      <span>Další filtry</span>
+      <button class="trait-filter-clear" type="button" ${traits.size ? '' : 'hidden'}>Zrušit výběr</button>
+    </div>
+    <div class="trait-filter-groups">
+      ${TRAIT_GROUPS.map(group => `
+        <div class="trait-filter-group">
+          <span class="trait-filter-group__label">${group.label}</span>
+          <div class="trait-filter-list">
+            ${group.items.map(([key, label]) => `<button type="button" class="genre-filter-chip trait-filter-chip ${traits.has(key) ? 'is-active' : ''}" data-trait="${key}" aria-pressed="${traits.has(key)}"><span>${label}</span><small data-trait-count="${key}">0</small></button>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`;
+  wrap.appendChild(section);
+
+  section.addEventListener('click', event => {
+    const chip = event.target.closest('[data-trait]');
+    if (chip) {
+      const key = chip.dataset.trait;
+      if (traits.has(key)) traits.delete(key); else traits.add(key);
+      writeSet(TRAIT_KEY, traits);
+      advancedLimit = PAGE_SIZE;
+      syncTraitUi();
+      if (!traits.size && wasFiltering) forceBaseRender(); else applyAdvancedFilters();
+      return;
+    }
+    if (event.target.closest('.trait-filter-clear')) {
+      traits.clear();
+      writeSet(TRAIT_KEY, traits);
+      advancedLimit = PAGE_SIZE;
+      syncTraitUi();
+      forceBaseRender();
+    }
+  });
+}
+
+function syncTraitUi() {
+  document.querySelectorAll('[data-trait]').forEach(button => {
+    const active = traits.has(button.dataset.trait);
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  const clear = document.querySelector('.trait-filter-clear');
+  if (clear) clear.hidden = traits.size === 0;
+}
+
+function renderTraitCounts(baseRows) {
+  const seenByTrait = new Map([...TRAIT_LABELS.keys()].map(key => [key, new Set()]));
+  for (const row of baseRows) {
+    const id = String(row.game.id);
+    for (const trait of gameTraits(row.game)) seenByTrait.get(trait)?.add(id);
+  }
+  for (const [key, set] of seenByTrait) {
+    const counter = document.querySelector(`[data-trait-count="${CSS.escape(key)}"]`);
+    const chip = document.querySelector(`[data-trait="${CSS.escape(key)}"]`);
+    if (counter) counter.textContent = formatter.format(set.size);
+    if (chip) chip.classList.toggle('is-empty', set.size === 0 && !traits.has(key));
+  }
+}
+
+function renderAdvancedSummary(filtered) {
+  const stat = $('stat-visible');
+  if (stat) stat.textContent = formatter.format(uniqueGameCount(filtered));
+  const summary = $('result-summary');
+  if (!summary) return;
+  const marker = ' · vlastnosti: ';
+  const current = summary.textContent || '';
+  const baseText = current.includes(marker) ? current.split(marker)[0] : current;
+  summary.textContent = `${baseText}${marker}${selectedTraitLabels().join(' + ')}`;
+}
+
+function updateMonthCounts(base) {
+  if (!traits.size) return;
+  const source = rows.filter(row => baseMatches(row, base, { ignoreRange: true }) && [...traits].every(key => gameTraits(row.game).has(key)));
+  const counts = new Map();
+  for (const row of source) {
+    if (!row.day) continue;
+    const month = row.day.slice(0, 7);
+    if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0 });
+    const entry = counts.get(month);
+    entry.games.add(String(row.game.id));
+    entry.releases += 1;
+  }
+  document.querySelectorAll('#month-rail [data-month]').forEach(tile => {
+    const entry = counts.get(tile.dataset.month) || { games: new Set(), releases: 0 };
+    const strong = tile.querySelector('strong');
+    const small = tile.querySelector('small');
+    if (strong) strong.textContent = `${formatter.format(entry.games.size)} her`;
+    if (small) small.textContent = `${formatter.format(entry.releases)} vydání`;
+  });
+}
+
+function decorateCard(card) {
+  const key = card.dataset.rowKey;
+  const row = rowMap.get(key);
+  if (!row) return;
+  card.querySelectorAll('.badge--content-type').forEach(node => node.remove());
+  const type = contentType(row.game);
+  if (!type || !badgePrefs.type) return;
+  if (normalizeSearch(type) === 'plna hra' && !badgePrefs.fullType) return;
+  const badges = card.querySelector('.card-badges');
+  if (!badges) return;
+  const badge = document.createElement('span');
+  badge.className = `badge badge--content-type badge--type-${normalizeSearch(type).replace(/\s+/g, '-')}`;
+  badge.textContent = type;
+  badges.appendChild(badge);
+}
+
+function decorateCards() {
+  document.querySelectorAll('#games .game-card').forEach(decorateCard);
+}
+
+function decorateDialog() {
+  const dialog = $('game-dialog');
+  if (!dialog?.open) return;
+  const row = rowMap.get(dialog.dataset.rowKey);
+  if (!row) return;
+  const main = dialog.querySelector('.detail-main');
+  if (!main) return;
+
+  main.querySelectorAll('.detail-flag--content-type').forEach(node => node.remove());
+  const type = contentType(row.game);
+  if (type && badgePrefs.type && (normalizeSearch(type) !== 'plna hra' || badgePrefs.fullType)) {
+    let flags = main.querySelector('.detail-flags');
+    if (!flags) {
+      flags = document.createElement('div');
+      flags.className = 'detail-flags';
+      const meta = main.querySelector('.detail-meta');
+      meta?.insertAdjacentElement('afterend', flags);
+    }
+    const flag = document.createElement('span');
+    flag.className = 'detail-flag detail-flag--content-type';
+    flag.textContent = type;
+    flags.appendChild(flag);
+  }
+}
+
+function applyBadgePrefs() {
+  const root = document.documentElement;
+  const mapping = {
+    release: 'hide-badge-release',
+    scale: 'hide-badge-scale',
+    type: 'hide-badge-type',
+    early: 'hide-badge-early',
+    services: 'hide-badge-services',
+    rating: 'hide-card-rating'
+  };
+  for (const [key, className] of Object.entries(mapping)) root.classList.toggle(className, !badgePrefs[key]);
+  decorateCards();
+  decorateDialog();
+}
+
+function applyAdvancedFilters() {
+  ensureTraitUi();
+  if (!rows.length) return;
+  const base = readBaseState();
+  const baseRows = rows.filter(row => baseMatches(row, base));
+  renderTraitCounts(baseRows);
+  syncTraitUi();
+
+  if (!traits.size) {
+    wasFiltering = false;
+    decorateCards();
+    applyBadgePrefs();
+    return;
+  }
+
+  const filtered = sortRows(baseRows.filter(row => [...traits].every(key => gameTraits(row.game).has(key))), base.sort);
+  const shown = filtered.slice(0, advancedLimit);
+  const games = $('games');
+  if (!games) return;
+  const watchlist = base.watchlist;
+  ignoreGameMutation = true;
+  games.innerHTML = shown.map(row => rowCard(row, watchlist.has(String(row.game.id)))).join('');
+  games.hidden = shown.length === 0;
+  $('empty-state').hidden = filtered.length !== 0;
+  $('load-more-wrap').hidden = filtered.length <= shown.length;
+  wasFiltering = true;
+  renderAdvancedSummary(filtered);
+  updateMonthCounts(base);
+  decorateCards();
+  applyBadgePrefs();
+}
+
+function forceBaseRender() {
+  wasFiltering = false;
+  const sort = $('sort-filter');
+  if (sort) sort.dispatchEvent(new Event('change', { bubbles: true }));
+  else location.reload();
+}
+
+function setupSettings() {
+  const popover = document.querySelector('.settings-popover');
+  if (!popover || popover.querySelector('[data-advanced-settings]')) return;
+  const group = document.createElement('div');
+  group.className = 'settings-group';
+  group.dataset.advancedSettings = '1';
+  const badgeOptions = [
+    ['release', 'Termín / odpočet'],
+    ['scale', 'AAA / Indie'],
+    ['type', 'Typ hry'],
+    ['fullType', 'Odznak „Plná hra“'],
+    ['early', 'Early Access'],
+    ['services', 'Předplatné'],
+    ['rating', 'Hodnocení']
+  ];
+  group.innerHTML = `
+    <span class="settings-group__label">Odznaky na kartách</span>
+    <div class="advanced-setting-list">
+      ${badgeOptions.map(([key, label]) => `<label class="advanced-setting"><span>${label}</span><input type="checkbox" data-badge-pref="${key}" ${badgePrefs[key] ? 'checked' : ''}><i aria-hidden="true"></i></label>`).join('')}
+    </div>
+    <span class="settings-group__label settings-group__label--spaced">Detail hry</span>
+    <label class="advanced-setting"><span>Gesta ← → / ↓</span><input type="checkbox" data-detail-gestures ${gesturesEnabled() ? 'checked' : ''}><i aria-hidden="true"></i></label>`;
+
+  group.addEventListener('change', event => {
+    const badge = event.target.closest('[data-badge-pref]');
+    if (badge) {
+      badgePrefs[badge.dataset.badgePref] = badge.checked;
+      saveBadgePrefs();
+      applyBadgePrefs();
+      return;
+    }
+    if (event.target.matches('[data-detail-gestures]')) {
+      localStorage.setItem(GESTURE_KEY, event.target.checked ? '1' : '0');
+    }
+  });
+  popover.appendChild(group);
+}
+
+function currentAdvancedRows() {
+  if (!rows.length) return [];
+  const base = readBaseState();
+  let list = rows.filter(row => baseMatches(row, base));
+  if (traits.size) list = list.filter(row => [...traits].every(key => gameTraits(row.game).has(key)));
+  return sortRows(list, base.sort);
+}
+
+function openRowThroughApp(rowKey) {
+  const games = $('games');
+  if (!games || !rowKey) return;
+  const ghost = document.createElement('button');
+  ghost.type = 'button';
+  ghost.hidden = true;
+  ghost.dataset.openGame = rowKey;
+  games.appendChild(ghost);
+  ghost.click();
+  ghost.remove();
+  decorateDialog();
+}
+
+function navigateDialog(direction) {
+  const dialog = $('game-dialog');
+  const currentKey = dialog?.dataset.rowKey;
+  if (!currentKey) return;
+  const list = currentAdvancedRows();
+  const index = list.findIndex(row => row.key === currentKey);
+  if (index < 0 || list.length < 2) return;
+  const nextIndex = (index + direction + list.length) % list.length;
+  const next = list[nextIndex];
+  openRowThroughApp(next.key);
+  const content = $('dialog-content');
+  content?.animate?.([
+    { opacity: .55, transform: `translateX(${direction > 0 ? '16px' : '-16px'})` },
+    { opacity: 1, transform: 'translateX(0)' }
+  ], { duration: 170, easing: 'ease-out' });
+}
+
+function interactiveTarget(target) {
+  return Boolean(target?.closest?.('button,a,input,select,textarea,video,iframe,.screenshot-rail,.gallery-item'));
+}
+
+function setupGestures() {
+  const dialog = $('game-dialog');
+  if (!dialog || dialog.dataset.advancedGestures === '1') return;
+  dialog.dataset.advancedGestures = '1';
+
+  dialog.addEventListener('pointerdown', event => {
+    if (!gesturesEnabled()) return;
+    if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
+    if (interactiveTarget(event.target)) return;
+    touchStart = {
+      x: event.clientX,
+      y: event.clientY,
+      time: performance.now(),
+      scrollTop: dialog.scrollTop
+    };
+  });
+
+  dialog.addEventListener('pointercancel', () => { touchStart = null; });
+  dialog.addEventListener('pointerup', event => {
+    if (!touchStart || !gesturesEnabled()) { touchStart = null; return; }
+    const dx = event.clientX - touchStart.x;
+    const dy = event.clientY - touchStart.y;
+    const elapsed = performance.now() - touchStart.time;
+    const start = touchStart;
+    touchStart = null;
+    if (elapsed > 800) return;
+
+    if (Math.abs(dx) >= 72 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+      navigateDialog(dx < 0 ? 1 : -1);
+      return;
+    }
+    if (dy >= 88 && Math.abs(dy) > Math.abs(dx) * 1.25 && start.scrollTop <= 8) {
+      $('dialog-close')?.click();
+    }
+  });
+}
+
+function setupObservers() {
+  const games = $('games');
+  if (games) {
+    const observer = new MutationObserver(() => {
+      if (ignoreGameMutation) { ignoreGameMutation = false; return; }
+      requestAnimationFrame(applyAdvancedFilters);
+    });
+    observer.observe(games, { childList: true });
+  }
+
+  const dialogContent = $('dialog-content');
+  if (dialogContent) {
+    const observer = new MutationObserver(() => requestAnimationFrame(() => {
+      decorateDialog();
+      applyBadgePrefs();
+    }));
+    observer.observe(dialogContent, { childList: true });
+  }
+
+  $('load-more')?.addEventListener('click', () => {
+    if (!traits.size) return;
+    advancedLimit += PAGE_SIZE;
+    setTimeout(applyAdvancedFilters, 0);
+  });
+}
+
+async function loadData() {
+  try {
+    const [normalized, rawResponse] = await Promise.all([
+      loadGameData(),
+      fetch('games.json', { cache: 'no-store', headers: { Accept: 'application/json' } }).then(response => response.ok ? response.json() : null).catch(() => null)
+    ]);
+    dataset = normalized.dataset;
+    rawGameMap = new Map((rawResponse?.games || []).map(game => [String(game.id), game]));
+    for (const game of dataset.games || []) {
+      const raw = rawGameMap.get(String(game.id));
+      if (raw?.contentType) game.contentType = raw.contentType;
+    }
+    rows = flattenReleases(dataset);
+    rowMap = new Map(rows.map(row => [row.key, row]));
+    applyAdvancedFilters();
+  } catch (error) {
+    console.warn('Advanced filters:', error);
+  }
+}
+
+function setup() {
+  ensureStyles();
+  ensureTraitUi();
+  setupSettings();
+  setupGestures();
+  setupObservers();
+  applyBadgePrefs();
+  loadData();
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('#reset-filters, #empty-reset')) {
+      traits.clear();
+      writeSet(TRAIT_KEY, traits);
+      advancedLimit = PAGE_SIZE;
+      syncTraitUi();
+    }
+  }, true);
+}
+
+setup();
