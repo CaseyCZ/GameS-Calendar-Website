@@ -15,6 +15,9 @@ export const config = Object.freeze({
   gfnCountry: String(process.env.GAMES_API_GFN_COUNTRY || 'CZ').toUpperCase(),
   gfnLanguage: String(process.env.GAMES_API_GFN_LANGUAGE || 'en_US'),
   steamWebApiKey: String(process.env.STEAM_WEB_API_KEY || '').trim(),
+  igdbClientId: String(process.env.IGDB_CLIENT_ID || '').trim(),
+  igdbClientSecret: String(process.env.IGDB_CLIENT_SECRET || '').trim(),
+  igdbConfigured: Boolean(String(process.env.IGDB_CLIENT_ID || '').trim() && String(process.env.IGDB_CLIENT_SECRET || '').trim()),
   rateLimitPerMinute: Math.max(30, num(process.env.GAMES_API_RATE_LIMIT_PER_MINUTE, 180)),
   userAgent: 'GameS-Calendar-API/0.1 (+https://github.com/CaseyCZ/GameS-Calendar-Website)',
   ttl: Object.freeze({
@@ -24,6 +27,7 @@ export const config = Object.freeze({
     gamePass: 60 * 60_000,
     gfn: 60 * 60_000,
     nintendo: 12 * 60 * 60_000,
+    igdb: 24 * 60 * 60_000,
     health: 15 * 60_000
   })
 });
