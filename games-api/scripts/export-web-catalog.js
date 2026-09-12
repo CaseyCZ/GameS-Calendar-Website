@@ -16,10 +16,10 @@ const uniq = values => [...new Set((values || []).filter(Boolean))];
 
 function shortSummary(game) {
   const value = text(game.summary || game.storyline || '');
-  if (value.length <= 280) return value;
-  const head = value.slice(0, 280);
+  if (value.length <= 180) return value;
+  const head = value.slice(0, 180);
   const end = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
-  return end > 160 ? head.slice(0, end + 1) : `${head.slice(0, head.lastIndexOf(' ') > 0 ? head.lastIndexOf(' ') : 277)}…`;
+  return end > 100 ? head.slice(0, end + 1) : `${head.slice(0, head.lastIndexOf(' ') > 0 ? head.lastIndexOf(' ') : 177)}…`;
 }
 
 function screenshotOne(game) {
@@ -31,44 +31,36 @@ function screenshotOne(game) {
   return [{ full, thumb: first.thumb || first.path_thumbnail || full }];
 }
 
-function compactPlatform(platform) {
+function platformName(platform) {
   if (typeof platform === 'string') return platform;
-  if (!platform || typeof platform !== 'object') return null;
-  return {
-    id: platform.id ?? null,
-    name: platform.name || platform.abbreviation || platform.abbr || '',
-    abbreviation: platform.abbreviation || platform.abbr || ''
-  };
+  if (!platform || typeof platform !== 'object') return '';
+  return platform.name || platform.abbreviation || platform.abbr || String(platform.id || '');
 }
 
 function compactRelease(release) {
-  return {
+  const out = {
     date: release.date || release.day || null,
-    timestamp: release.timestamp || 0,
-    window: release.window || release.releaseWindow || '',
-    precision: release.precision || release.datePrecision || '',
-    regions: uniq(release.regions || []),
-    platforms: (release.platforms || []).map(compactPlatform).filter(Boolean)
+    platforms: uniq((release.platforms || []).map(platformName).filter(Boolean))
   };
-}
-
-function compactLinks(links = {}, game = {}) {
-  const out = {};
-  for (const key of ['official','steam','epic','reddit','youtube','wikipedia','igdb','xbox','playstation','nintendo']) {
-    const value = links[key] || (key === 'igdb' ? game.igdbUrl : '');
-    if (value) out[key] = value;
-  }
+  const window = release.window || release.releaseWindow || '';
+  const precision = release.precision || release.datePrecision || '';
+  if (window) out.window = window;
+  if (precision && precision !== 'day') out.precision = precision;
   return out;
 }
 
+function compactSubscriptions(subscriptions = {}) {
+  const out = {};
+  for (const key of ['gamePass','gamePassConsole','gamePassPc','cloudGaming','psPlus','geforceNow']) {
+    if (subscriptions[key]) out[key] = true;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 function compactGame(game) {
-  const subscriptions = game.subscriptions || {};
-  return {
+  const out = {
     id: game.id,
     name: game.name,
-    slug: game.slug || '',
-    aliases: uniq(game.aliases || []),
-    summary: shortSummary(game),
     cover: game.cover || '',
     genres: uniq(game.genres || []),
     developers: uniq(game.developers || []),
@@ -78,31 +70,23 @@ function compactGame(game) {
     contentType: game.contentType || '',
     earlyAccess: Boolean(game.earlyAccess),
     rating: Number(game.rating || 0) || 0,
-    ratingCount: Number(game.ratingCount || 0) || 0,
+    summary: shortSummary(game),
     trailerId: game.trailerId || '',
-    trailerUrl: game.trailerUrl || '',
     screenshots: screenshotOne(game),
-    subscriptions: {
-      gamePass: Boolean(subscriptions.gamePass),
-      gamePassConsole: Boolean(subscriptions.gamePassConsole),
-      gamePassPc: Boolean(subscriptions.gamePassPc),
-      cloudGaming: Boolean(subscriptions.cloudGaming),
-      psPlus: Boolean(subscriptions.psPlus),
-      geforceNow: Boolean(subscriptions.geforceNow)
-    },
-    regionalReleases: Array.isArray(game.regionalReleases) ? game.regionalReleases.slice(0, 8) : [],
-    announcedWindow: game.announcedWindow || '',
-    links: compactLinks(game.links, game),
     releases: (game.releases || []).map(compactRelease)
   };
+  if (game.slug) out.slug = game.slug;
+  const subscriptions = compactSubscriptions(game.subscriptions || {});
+  if (subscriptions) out.subscriptions = subscriptions;
+  return out;
 }
 
 const web = {
-  version: payload.version || 2,
+  version: 8,
   provider: payload.provider || 'igdb+official-stores',
   generatedAt: payload.generatedAt || new Date().toISOString(),
   range: payload.range || null,
-  source: 'sqlite-web-feed',
+  source: 'sqlite-web-feed-lite',
   games: payload.games.map(compactGame)
 };
 
