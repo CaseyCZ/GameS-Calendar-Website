@@ -67,7 +67,7 @@ sudo systemctl reload nginx
 
 # Integrate GameS into the existing authenticated PM2 dashboard.
 if [[ -f "$DASHBOARD" ]]; then
-  node "$REPO/games-api/deploy/stremio-dashboard-patch.js" "$DASHBOARD"
+  node "$REPO/games-api/deploy/stremio-dashboard-patch.cjs" "$DASHBOARD"
   pm2 restart stremio-dashboard --update-env
   pm2 save
 else
