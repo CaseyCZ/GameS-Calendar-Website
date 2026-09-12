@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.5.0';
+const VERSION = 'games-calendar-v3.6.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const SHELL = [
   './',
@@ -48,14 +48,14 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   if (url.pathname.endsWith('/games-lite.json') || url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
-    event.respondWith(fetch(request, { cache: 'default' }).catch(() => new Response(JSON.stringify({version:7,games:[]}), {
+    event.respondWith(fetch(request, { cache: 'default' }).catch(() => new Response(JSON.stringify({version:9,games:[]}), {
       status: 503,
       headers: {'Content-Type':'application/json'}
     })));
     return;
   }
 
-  event.respondWith(staleWhileRevalidate(request));
+  event.respondWith(cacheFirst(request));
 });
 
 self.addEventListener('notificationclick', event => {
@@ -73,12 +73,15 @@ self.addEventListener('notificationclick', event => {
   })());
 });
 
-async function staleWhileRevalidate(request) {
+async function cacheFirst(request) {
   const cache = await caches.open(SHELL_CACHE);
   const cached = await cache.match(request);
-  const network = fetch(request).then(response => {
-    if (response.ok) cache.put(request, response.clone());
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    if (response.ok) await cache.put(request, response.clone());
     return response;
-  }).catch(() => null);
-  return cached || (await network) || Response.error();
+  } catch {
+    return Response.error();
+  }
 }
