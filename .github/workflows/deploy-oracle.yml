@@ -1,0 +1,63 @@
+name: Deploy to Oracle Cloud
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '*.css'
+      - '*.js'
+      - 'js/**'
+      - 'games.json'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'CaseyCZ.png'
+      - 'games-api/**'
+      - '.github/workflows/deploy-oracle.yml'
+
+concurrency:
+  group: oracle-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ secrets.ORACLE_HOST != '' && secrets.ORACLE_USER != '' && secrets.ORACLE_SSH_KEY != '' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Prepare SSH
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_PORT: ${{ secrets.ORACLE_SSH_PORT }}
+          ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          PORT="${ORACLE_PORT:-22}"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$ORACLE_SSH_KEY" > ~/.ssh/id_oracle
+          chmod 600 ~/.ssh/id_oracle
+          ssh-keyscan -p "$PORT" -H "$ORACLE_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy web and API
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_USER: ${{ secrets.ORACLE_USER }}
+          ORACLE_PORT: ${{ secrets.ORACLE_SSH_PORT }}
+        run: |
+          set -euo pipefail
+          PORT="${ORACLE_PORT:-22}"
+          ssh -p "$PORT" -i ~/.ssh/id_oracle "$ORACLE_USER@$ORACLE_HOST" <<'REMOTE'
+            set -euo pipefail
+            sudo git -C /opt/games-calendar/repo fetch origin main
+            sudo git -C /opt/games-calendar/repo reset --hard origin/main
+            sudo chmod +x /opt/games-calendar/repo/games-api/deploy/oracle-update.sh
+            sudo /opt/games-calendar/repo/games-api/deploy/oracle-update.sh
+          REMOTE
+
+      - name: Verify public health endpoint
+        env:
+          PUBLIC_URL: ${{ secrets.ORACLE_PUBLIC_URL }}
+        if: ${{ env.PUBLIC_URL != '' }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 20 "${PUBLIC_URL%/}/health"
