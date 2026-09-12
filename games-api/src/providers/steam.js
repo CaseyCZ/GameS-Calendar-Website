@@ -5,6 +5,7 @@ import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
 
 const STORE_SEARCH = 'https://store.steampowered.com/api/storesearch/';
 const APP_DETAILS = 'https://store.steampowered.com/api/appdetails';
+const STEAM_SPY = 'https://steamspy.com/api.php';
 
 function normalizeSteam(appId, data) {
   if (!data) return null;
@@ -33,8 +34,59 @@ function normalizeSteam(appId, data) {
     },
     storeUrl: `https://store.steampowered.com/app/${appId}/`,
     sourceUrl: APP_DETAILS,
-    rawHints: { type: data.type || '', requiredAge: data.required_age || 0, recommendations: data.recommendations?.total || 0 }
+    rawHints: { type: data.type || '', requiredAge: data.required_age || 0, recommendations: data.recommendations?.total || 0, source: 'steam-store' }
   });
+}
+
+function splitList(value = '') {
+  return uniq(String(value || '').split(',').map(item => item.trim()).filter(Boolean));
+}
+
+function splitCompanies(value = '') {
+  return uniq(String(value || '').split(/\s*;\s*/).map(item => item.trim()).filter(Boolean));
+}
+
+function normalizeSteamSpy(appId, data) {
+  if (!data || !String(data.name || '').trim()) return null;
+  const positive = Number(data.positive || 0);
+  const negative = Number(data.negative || 0);
+  const ratingCount = positive + negative;
+  const rating = ratingCount > 0 ? Math.round((positive / ratingCount) * 1000) / 10 : 0;
+  const categories = Object.entries(data.tags || {})
+    .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
+    .slice(0, 20)
+    .map(([name]) => name);
+
+  return canonicalGame('steam', {
+    providerId: appId,
+    title: String(data.name || '').trim(),
+    developers: splitCompanies(data.developer),
+    publishers: splitCompanies(data.publisher),
+    genres: splitList(data.genre),
+    categories,
+    rating,
+    ratingCount,
+    storeUrl: `https://store.steampowered.com/app/${appId}/`,
+    sourceUrl: `${STEAM_SPY}?request=appdetails&appid=${encodeURIComponent(appId)}`,
+    rawHints: { source: 'steamspy', positive, negative }
+  });
+}
+
+async function steamSpyDetails(appId, { force = false } = {}) {
+  const id = String(appId || '').replace(/\D/g, '');
+  if (!id) throw new Error('Invalid Steam App ID');
+  const key = `steam:spy:${id}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached;
+  }
+  const url = new URL(STEAM_SPY);
+  url.searchParams.set('request', 'appdetails');
+  url.searchParams.set('appid', id);
+  const payload = await fetchJson(url);
+  const normalized = normalizeSteamSpy(id, payload);
+  if (!normalized?.title) throw new Error(`SteamSpy app ${id} not found`);
+  return cachePut(key, 'steam', normalized, config.ttl.product);
 }
 
 export async function appDetails(appId, { force = false, language = 'english' } = {}) {
@@ -45,14 +97,24 @@ export async function appDetails(appId, { force = false, language = 'english' } 
     const cached = cacheGet(key);
     if (cached) return cached;
   }
-  const url = new URL(APP_DETAILS);
-  url.searchParams.set('appids', id);
-  url.searchParams.set('cc', 'cz');
-  url.searchParams.set('l', language);
-  const payload = await fetchJson(url);
-  const wrapper = payload?.[id];
-  if (!wrapper?.success || !wrapper?.data) throw new Error(`Steam app ${id} not found`);
-  return cachePut(key, 'steam', normalizeSteam(id, wrapper.data), config.ttl.product);
+
+  try {
+    const url = new URL(APP_DETAILS);
+    url.searchParams.set('appids', id);
+    url.searchParams.set('cc', 'cz');
+    url.searchParams.set('l', language);
+    const payload = await fetchJson(url);
+    const wrapper = payload?.[id];
+    if (!wrapper?.success || !wrapper?.data) throw new Error(`Steam app ${id} not found`);
+    return cachePut(key, 'steam', normalizeSteam(id, wrapper.data), config.ttl.product);
+  } catch (storeError) {
+    try {
+      const fallback = await steamSpyDetails(id, { force });
+      return cachePut(key, 'steam', fallback, config.ttl.product);
+    } catch (spyError) {
+      throw new Error(`Steam Store failed: ${storeError?.message || storeError}; SteamSpy failed: ${spyError?.message || spyError}`);
+    }
+  }
 }
 
 export async function search(query, { force = false, limit = 8 } = {}) {
@@ -110,12 +172,17 @@ export async function appList({ ifModifiedSince = 0, force = false } = {}) {
 
 export const steamProvider = {
   name: 'steam',
-  capabilities: ['search', 'product', 'media', 'trailer', 'optionalOfficialAppList'],
+  capabilities: ['search', 'product', 'media', 'trailer', 'steamSpyFallback', 'optionalOfficialAppList'],
   search,
   product: appDetails,
   appList,
   health: async () => {
     const result = await appDetails('570', { force: true });
-    return { ok: Boolean(result?.title), sample: result?.title || null, documentedListAvailable: Boolean(config.steamWebApiKey) };
+    return {
+      ok: Boolean(result?.title),
+      sample: result?.title || null,
+      fallback: result?.rawHints?.source || null,
+      documentedListAvailable: Boolean(config.steamWebApiKey)
+    };
   }
 };
