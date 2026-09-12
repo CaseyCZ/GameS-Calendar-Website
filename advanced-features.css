@@ -67,6 +67,12 @@
 .hide-badge-type .badge--content-type,
 .hide-badge-type .detail-flag--content-type { display:none !important; }
 
+.settings-popover {
+  max-height: min(78dvh, 650px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
 .settings-group__label--spaced { margin-top: 9px; }
 .advanced-setting-list { display:grid; gap:2px; }
 .advanced-setting {
@@ -121,6 +127,7 @@
   .trait-filter-list { gap:5px; }
   .trait-filter-chip { min-height:27px; padding:3px 8px; font-size:10px; }
   .filter-panel .trait-filter-section { padding-bottom: 4px; }
+  .settings-popover { max-height: calc(100dvh - max(78px, env(safe-area-inset-top))); }
 }
 
 @media (max-width:760px) and (max-height:600px) {
