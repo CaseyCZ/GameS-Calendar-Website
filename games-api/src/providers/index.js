@@ -1,10 +1,13 @@
+import { config } from '../config.js';
 import { microsoftProvider } from './microsoft.js';
 import { steamProvider } from './steam.js';
 import { playstationProvider } from './playstation.js';
 import { nintendoProvider } from './nintendo.js';
 import { geforceNowProvider } from './geforce-now.js';
+import { igdbProvider } from './igdb.js';
 
 export const providers = Object.freeze({
+  ...(config.igdbConfigured ? { igdb: igdbProvider } : {}),
   microsoft: microsoftProvider,
   steam: steamProvider,
   playstation: playstationProvider,
