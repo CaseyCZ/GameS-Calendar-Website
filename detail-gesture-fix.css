@@ -25,6 +25,70 @@ body.game-detail-open {
   }
 }
 
+/* Live detail enrichment from the Oracle API. */
+.live-enrich-status {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.live-enrich-status[data-state="loading"]::before { content: '↻ '; color: var(--pink); }
+.live-enrich-status[data-state="ok"] { color: #9de6c8; border-color: rgba(52,211,153,.25); background: rgba(52,211,153,.05); }
+.live-enrich-status[data-state="empty"] { color: var(--muted); }
+.live-enrich-status[data-state="error"] { color: #f6a6b5; border-color: rgba(244,63,94,.24); background: rgba(244,63,94,.05); }
+
+.live-price-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.live-price-card {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: rgba(255,255,255,.025);
+  text-decoration: none;
+}
+a.live-price-card:hover {
+  border-color: var(--border-strong);
+  background: var(--pink-soft);
+}
+.live-price-card__store {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.live-price-card__price {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.live-price-card__price del {
+  margin-left: 3px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 500;
+}
+.service-badge--cloud { color:#9edcff; border-color:rgba(56,189,248,.35); background:rgba(56,189,248,.08); }
+.service-badge--eaplay { color:#ffb8b8; border-color:rgba(239,68,68,.32); background:rgba(239,68,68,.07); }
+
+@media (max-width: 560px) {
+  .live-price-grid { grid-template-columns: 1fr; }
+}
+
 /* Late contrast guard for the optional light theme.
  * ui-upgrades.css is injected at runtime, so critical controls use explicit
  * light-mode values here to remain readable regardless of stylesheet order. */
@@ -138,6 +202,32 @@ html[data-theme="light"] .service-badge--gfn {
   color: #517b12 !important;
   background: #f1f8e5 !important;
   border-color: rgba(82,125,20,.32) !important;
+}
+html[data-theme="light"] .service-badge--cloud {
+  color:#12658b !important;
+  background:#eaf7fd !important;
+  border-color:rgba(22,101,139,.28) !important;
+}
+html[data-theme="light"] .service-badge--eaplay {
+  color:#a62d39 !important;
+  background:#fff0f1 !important;
+  border-color:rgba(166,45,57,.26) !important;
+}
+html[data-theme="light"] .live-enrich-status,
+html[data-theme="light"] .live-price-card {
+  color: var(--text);
+  background: #ffffff;
+  border-color: rgba(62,35,72,.18);
+}
+html[data-theme="light"] .live-enrich-status[data-state="ok"] {
+  color:#0f7653;
+  background:#eef9f4;
+  border-color:rgba(22,138,98,.28);
+}
+html[data-theme="light"] .live-enrich-status[data-state="error"] {
+  color:#a52d45;
+  background:#fff1f4;
+  border-color:rgba(165,45,69,.25);
 }
 
 html[data-theme="light"] button:disabled,
