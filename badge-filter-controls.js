@@ -1,3 +1,6 @@
+import('./platform-filter-controls.js').catch(error => console.warn('Platform controls:', error));
+import('./default-view.js').catch(error => console.warn('Default view:', error));
+
 (() => {
   const PREF_KEY = 'games-calendar-card-badge-visibility-v2';
   const LEGACY_KEY = 'games-calendar-badge-prefs-v1';
