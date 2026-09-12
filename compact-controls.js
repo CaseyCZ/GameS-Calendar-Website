@@ -233,4 +233,5 @@
 
   setup();
   import('./advanced-features.js').catch(error => console.warn('Advanced features:', error));
+  import('./watchlist-view-fix.js').catch(error => console.warn('Watchlist view fix:', error));
 })();
