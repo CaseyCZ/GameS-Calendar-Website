@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.2.11';
+const VERSION = 'games-calendar-v3.3.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -16,6 +16,8 @@ const SHELL = [
   './compact-controls.js',
   './advanced-features.js',
   './badge-filter-controls.js',
+  './platform-filter-controls.js',
+  './default-view.js',
   './filter-section-accordion.js',
   './detail-gesture-fix.js',
   './live-detail-enrichment.js',
@@ -46,7 +48,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json')) {
+  if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
     event.respondWith(networkFirst(request));
     return;
   }
@@ -76,7 +78,7 @@ async function networkFirst(request) {
     if (response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    return (await cache.match(request)) || new Response(JSON.stringify({version:5,games:[]}), {
+    return (await cache.match(request)) || new Response(JSON.stringify({version:7,games:[]}), {
       status: 503,
       headers: {'Content-Type':'application/json'}
     });
