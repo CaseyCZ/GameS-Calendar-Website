@@ -9,16 +9,29 @@ const PAGE_SIZE = 72;
 
 const TRAIT_GROUPS = [
   {
+    key: 'scale',
     label: 'Kategorie',
+    partition: true,
     items: [
       ['aaa', 'AAA'],
       ['indie', 'Indie'],
       ['small', 'Menší titul'],
-      ['early', 'Early Access']
+      ['scale_unknown', 'Nezařazeno']
     ]
   },
   {
+    key: 'access',
+    label: 'Stav vydání',
+    partition: true,
+    items: [
+      ['early', 'Early Access'],
+      ['regular', 'Běžné vydání']
+    ]
+  },
+  {
+    key: 'type',
     label: 'Typ hry',
+    partition: true,
     items: [
       ['full', 'Plná hra'],
       ['dlc', 'DLC'],
@@ -26,23 +39,37 @@ const TRAIT_GROUPS = [
       ['remake', 'Remake'],
       ['remaster', 'Remaster'],
       ['demo', 'Demo'],
-      ['mod', 'Mod']
+      ['mod', 'Mod'],
+      ['type_unknown', 'Nezařazeno']
     ]
   },
   {
-    label: 'Služby a média',
+    key: 'services',
+    label: 'Předplatné',
+    partition: false,
     items: [
       ['gamepass', 'Game Pass'],
+      ['cloud', 'Cloud Gaming'],
       ['psplus', 'PS Plus'],
       ['gfn', 'GeForce NOW'],
+      ['no_service', 'Bez předplatného']
+    ]
+  },
+  {
+    key: 'media',
+    label: 'Média a data',
+    partition: false,
+    items: [
       ['trailer', 'Trailer'],
       ['screenshots', 'Screenshoty'],
-      ['rating', 'S hodnocením']
+      ['rating', 'S hodnocením'],
+      ['description', 'S popisem']
     ]
   }
 ];
 
 const TRAIT_LABELS = new Map(TRAIT_GROUPS.flatMap(group => group.items));
+const TRAIT_GROUP_BY_ITEM = new Map(TRAIT_GROUPS.flatMap(group => group.items.map(([key]) => [key, group.key])));
 const DEFAULT_BADGES = {
   release: true,
   scale: true,
@@ -67,7 +94,7 @@ let touchStart = null;
 function readSet(key) {
   try {
     const parsed = JSON.parse(localStorage.getItem(key) || '[]');
-    return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
+    return new Set(Array.isArray(parsed) ? parsed.map(String).filter(item => TRAIT_LABELS.has(item)) : []);
   } catch {
     return new Set();
   }
@@ -128,8 +155,12 @@ function gameSearchText(game) {
   ].join(' '));
 }
 
+function rawGame(game) {
+  return rawGameMap.get(String(game?.id)) || {};
+}
+
 function contentType(game) {
-  const raw = String(game.contentType || rawGameMap.get(String(game.id))?.contentType || '').trim().toLowerCase();
+  const raw = String(game.contentType || rawGame(game).contentType || '').trim().toLowerCase();
   const text = normalizeSearch(`${game.name || ''} ${game.summary || ''}`);
 
   if (/\bremaster(ed)?\b/.test(text)) return 'Remaster';
@@ -145,35 +176,68 @@ function contentType(game) {
   if (['demo'].includes(raw)) return 'Demo';
   if (['mod'].includes(raw)) return 'Mod';
   if (['game','full game','plná hra','full'].includes(raw)) return 'Plná hra';
-  return game.contentType || rawGameMap.get(String(game.id))?.contentType || '';
+  return game.contentType || rawGame(game).contentType || '';
 }
 
 function gameTraits(game) {
   const result = new Set();
-  const scale = normalizeSearch(game.scale || rawGameMap.get(String(game.id))?.scale || '');
-  if (scale === 'aaa') result.add('aaa');
-  if (scale.includes('indie')) result.add('indie');
-  if (scale.includes('mensi') || scale.includes('small')) result.add('small');
-  if (game.earlyAccess || rawGameMap.get(String(game.id))?.earlyAccess) result.add('early');
+  const raw = rawGame(game);
+  const scale = normalizeSearch(game.scale || raw.scale || '');
+  let hasScale = false;
+  if (scale === 'aaa' || scale.includes('triple a')) { result.add('aaa'); hasScale = true; }
+  else if (scale.includes('indie')) { result.add('indie'); hasScale = true; }
+  else if (scale.includes('mensi') || scale.includes('small')) { result.add('small'); hasScale = true; }
+  if (!hasScale) result.add('scale_unknown');
+
+  const early = Boolean(game.earlyAccess || raw.earlyAccess);
+  result.add(early ? 'early' : 'regular');
 
   const type = normalizeSearch(contentType(game));
-  if (type.includes('plna hra') || type === 'game' || type === 'full game') result.add('full');
-  if (type === 'dlc' || type.includes('downloadable')) result.add('dlc');
-  if (type.includes('rozsireni') || type.includes('expansion')) result.add('expansion');
-  if (type.includes('remake')) result.add('remake');
-  if (type.includes('remaster')) result.add('remaster');
-  if (type.includes('demo')) result.add('demo');
-  if (type === 'mod' || type.includes('modifikace')) result.add('mod');
+  let hasType = false;
+  if (type.includes('plna hra') || type === 'game' || type === 'full game') { result.add('full'); hasType = true; }
+  else if (type === 'dlc' || type.includes('downloadable')) { result.add('dlc'); hasType = true; }
+  else if (type.includes('rozsireni') || type.includes('expansion')) { result.add('expansion'); hasType = true; }
+  else if (type.includes('remake')) { result.add('remake'); hasType = true; }
+  else if (type.includes('remaster')) { result.add('remaster'); hasType = true; }
+  else if (type.includes('demo')) { result.add('demo'); hasType = true; }
+  else if (type === 'mod' || type.includes('modifikace')) { result.add('mod'); hasType = true; }
+  if (!hasType) result.add('type_unknown');
 
-  const subs = game.subscriptions || rawGameMap.get(String(game.id))?.subscriptions || {};
-  if (subs.gamePass) result.add('gamepass');
-  if (subs.psPlus) result.add('psplus');
-  if (subs.geforceNow) result.add('gfn');
-  if (game.trailerId || game.trailerUrl || rawGameMap.get(String(game.id))?.trailerId || rawGameMap.get(String(game.id))?.trailerUrl) result.add('trailer');
-  const shots = game.screenshots?.length || rawGameMap.get(String(game.id))?.screenshots?.length;
+  const subs = { ...(game.subscriptions || {}), ...(raw.subscriptions || {}) };
+  const hasGamePass = Boolean(subs.gamePass || subs.gamePassConsole || subs.gamePassPc || subs.cloudGaming);
+  const hasPsPlus = Boolean(subs.psPlus);
+  const hasGfn = Boolean(subs.geforceNow);
+  if (hasGamePass) result.add('gamepass');
+  if (subs.cloudGaming) result.add('cloud');
+  if (hasPsPlus) result.add('psplus');
+  if (hasGfn) result.add('gfn');
+  if (!hasGamePass && !hasPsPlus && !hasGfn) result.add('no_service');
+
+  if (game.trailerId || game.trailerUrl || raw.trailerId || raw.trailerUrl) result.add('trailer');
+  const shots = game.screenshots?.length || raw.screenshots?.length;
   if (shots) result.add('screenshots');
-  if (Number(game.rating || rawGameMap.get(String(game.id))?.rating || 0) > 0) result.add('rating');
+  if (Number(game.rating || raw.rating || 0) > 0) result.add('rating');
+  if (String(game.summary || game.storyline || raw.summary || raw.storyline || '').trim()) result.add('description');
   return result;
+}
+
+function selectedTraitsByGroup() {
+  const selected = new Map();
+  for (const trait of traits) {
+    const group = TRAIT_GROUP_BY_ITEM.get(trait) || trait;
+    if (!selected.has(group)) selected.set(group, []);
+    selected.get(group).push(trait);
+  }
+  return selected;
+}
+
+function matchesSelectedTraits(game) {
+  if (!traits.size) return true;
+  const available = gameTraits(game);
+  for (const keys of selectedTraitsByGroup().values()) {
+    if (!keys.some(key => available.has(key))) return false;
+  }
+  return true;
 }
 
 function readBaseState() {
@@ -267,7 +331,7 @@ function ensureTraitUi() {
     </div>
     <div class="trait-filter-groups">
       ${TRAIT_GROUPS.map(group => `
-        <div class="trait-filter-group">
+        <div class="trait-filter-group" data-trait-group="${group.key}" data-trait-partition="${group.partition ? '1' : '0'}">
           <span class="trait-filter-group__label">${group.label}</span>
           <div class="trait-filter-list">
             ${group.items.map(([key, label]) => `<button type="button" class="genre-filter-chip trait-filter-chip ${traits.has(key) ? 'is-active' : ''}" data-trait="${key}" aria-pressed="${traits.has(key)}"><span>${label}</span><small data-trait-count="${key}">0</small></button>`).join('')}
@@ -309,8 +373,10 @@ function syncTraitUi() {
 
 function renderTraitCounts(baseRows) {
   const seenByTrait = new Map([...TRAIT_LABELS.keys()].map(key => [key, new Set()]));
+  const baseGameIds = new Set();
   for (const row of baseRows) {
     const id = String(row.game.id);
+    baseGameIds.add(id);
     for (const trait of gameTraits(row.game)) seenByTrait.get(trait)?.add(id);
   }
   for (const [key, set] of seenByTrait) {
@@ -318,6 +384,19 @@ function renderTraitCounts(baseRows) {
     const chip = document.querySelector(`[data-trait="${CSS.escape(key)}"]`);
     if (counter) counter.textContent = formatter.format(set.size);
     if (chip) chip.classList.toggle('is-empty', set.size === 0 && !traits.has(key));
+  }
+
+  for (const group of TRAIT_GROUPS) {
+    const covered = new Set();
+    for (const [key] of group.items) {
+      for (const id of seenByTrait.get(key) || []) covered.add(id);
+    }
+    const node = document.querySelector(`[data-trait-group="${CSS.escape(group.key)}"]`);
+    if (node) {
+      node.dataset.filterCoverage = String(covered.size);
+      node.dataset.filterTotal = String(baseGameIds.size);
+      node.dataset.traitPartition = group.partition ? '1' : '0';
+    }
   }
 }
 
@@ -334,7 +413,7 @@ function renderAdvancedSummary(filtered) {
 
 function updateMonthCounts(base) {
   if (!traits.size) return;
-  const source = rows.filter(row => baseMatches(row, base, { ignoreRange: true }) && [...traits].every(key => gameTraits(row.game).has(key)));
+  const source = rows.filter(row => baseMatches(row, base, { ignoreRange: true }) && matchesSelectedTraits(row.game));
   const counts = new Map();
   for (const row of source) {
     if (!row.day) continue;
@@ -428,7 +507,7 @@ function applyAdvancedFilters() {
     return;
   }
 
-  const filtered = sortRows(baseRows.filter(row => [...traits].every(key => gameTraits(row.game).has(key))), base.sort);
+  const filtered = sortRows(baseRows.filter(row => matchesSelectedTraits(row.game)), base.sort);
   const shown = filtered.slice(0, advancedLimit);
   const games = $('games');
   if (!games) return;
@@ -494,7 +573,7 @@ function currentAdvancedRows() {
   if (!rows.length) return [];
   const base = readBaseState();
   let list = rows.filter(row => baseMatches(row, base));
-  if (traits.size) list = list.filter(row => [...traits].every(key => gameTraits(row.game).has(key)));
+  if (traits.size) list = list.filter(row => matchesSelectedTraits(row.game));
   return sortRows(list, base.sort);
 }
 
@@ -605,7 +684,11 @@ async function loadData() {
     rawGameMap = new Map((rawResponse?.games || []).map(game => [String(game.id), game]));
     for (const game of dataset.games || []) {
       const raw = rawGameMap.get(String(game.id));
-      if (raw?.contentType) game.contentType = raw.contentType;
+      if (!raw) continue;
+      if (raw.contentType) game.contentType = raw.contentType;
+      if (raw.subscriptions) game.subscriptions = { ...(game.subscriptions || {}), ...raw.subscriptions };
+      if (raw.scale && !game.scale) game.scale = raw.scale;
+      if (raw.earlyAccess) game.earlyAccess = true;
     }
     rows = flattenReleases(dataset);
     rowMap = new Map(rows.map(row => [row.key, row]));
