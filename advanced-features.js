@@ -84,7 +84,7 @@ let dataset = null;
 let rows = [];
 let rowMap = new Map();
 let rawGameMap = new Map();
-let traits = readSet(TRAIT_KEY);
+let traits = new Set([...readSet(TRAIT_KEY)].filter(item => TRAIT_LABELS.has(item)));
 let badgePrefs = readBadgePrefs();
 let advancedLimit = PAGE_SIZE;
 let wasFiltering = false;
@@ -94,7 +94,7 @@ let touchStart = null;
 function readSet(key) {
   try {
     const parsed = JSON.parse(localStorage.getItem(key) || '[]');
-    return new Set(Array.isArray(parsed) ? parsed.map(String).filter(item => TRAIT_LABELS.has(item)) : []);
+    return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
   } catch {
     return new Set();
   }
