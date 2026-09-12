@@ -11,14 +11,13 @@ GameS API volá pouze služby a webové endpointy provozované přímo platformo
 | Provider | Endpoint | Typ | Auth | Co používáme |
 | --- | --- | --- | --- | --- |
 | Xbox Game Pass | `https://catalog.gamepass.com/sigls/v2` | oficiální interní | ne | Product ID pro Console, PC, Cloud, EA Play |
-| Microsoft Store | `https://displaycatalog.mp.microsoft.com/v7.0/products` | oficiální interní | ne | titul, popis, release, publisher/developer, kategorie, obrázky, rating, cena |
+| Microsoft Store | `https://displaycatalog.mp.microsoft.com/v7.0/products` | oficiální interní | ne | titul, popis, release, publisher/developer, kategorie, obrázky, rating |
 | Xbox Store | `https://www.xbox.com/<locale>/Search/Results?q=` | oficiální HTML | ne | dohledání Microsoft Product ID podle názvu |
 | Steam Store | `https://store.steampowered.com/api/storesearch/` | oficiální interní | ne | vyhledání App ID |
-| Steam Store | `https://store.steampowered.com/api/appdetails` | oficiální interní | ne | detail, cena, release, žánry, media, trailery |
+| Steam Store | `https://store.steampowered.com/api/appdetails` | oficiální interní | ne | detail, release, žánry, media, trailery |
 | Steamworks | `https://partner.steam-api.com/IStoreService/GetAppList/v1/` | dokumentované | Web API key | kompletní/inkrementální App ID katalog |
-| PlayStation Store | `https://web.np.playstation.com/api/graphql/v1/op` | oficiální interní | ne pro storefront dotazy | product, concept, catalog, PS Plus, price, media |
-| Nintendo eShop | `https://ec.nintendo.com/api/<country>/<lang>/search/<list>` | oficiální interní | ne | `sales`, `new`, `ranking` katalogy |
-| Nintendo eShop | `https://api.ec.nintendo.com/v1/price` | oficiální interní | ne | regionální cena dle title ID |
+| PlayStation Store | `https://web.np.playstation.com/api/graphql/v1/op` | oficiální interní | ne pro storefront dotazy | product, concept, catalog, PS Plus, media |
+| Nintendo eShop | `https://searching.nintendo-europe.com/<lang>/select` | oficiální interní | ne | katalog, title ID, release, metadata |
 | Nintendo | `https://www.nintendo.com/<region>/store/products/...` | oficiální HTML | ne | popis, release, publisher/developer, systém, média |
 | GeForce NOW | `https://api-prod.nvidia.com/services/gfngames/v1/gameList` | oficiální interní | ne | katalog, stores, play type, membership tier, media |
 
@@ -47,12 +46,11 @@ Storefront používá persisted GraphQL queries. Request má `operationName`, `v
 
 Sony může hash při nasazení frontendu změnit. Proto jsou hashe v `.env` přepisovatelné a `/health?refresh=1` chybu okamžitě ukáže.
 
-Mapované operace v první verzi:
+Mapované operace:
 
 ```text
 metGetProductById
 metGetConceptById
-metGetPricingDataByConceptId
 conceptRetrieveForMedia
 categoryGridRetrieve
 featuresRetrieve
@@ -68,9 +66,7 @@ TIER_30 Deluxe/Premium podle regionu
 
 ## Nintendo
 
-Pro ČR je eShop katalog dostupný přes `CZ/en`. Cena se bere z price endpointu podle 14místného Nintendo title ID. Když máme pouze produktovou URL, provider zároveň zkusí ID najít ve stránce a cenu doplnit.
-
-Nintendo nemá v této integraci jeden spolehlivý veřejný full-text katalog pro všechny regiony. Search proto kombinuje oficiální eShop listy, Nintendo web search a přímou produktovou stránku. Nevymýšlí data, která oficiální zdroj nevrátí.
+Pro ČR používá provider oficiální Nintendo Europe search endpoint a produktové stránky. Získává title ID, release, popis, vydavatele, platformy a média.
 
 ## GeForce NOW
 
