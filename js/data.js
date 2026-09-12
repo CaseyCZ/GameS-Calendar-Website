@@ -1,7 +1,7 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-json-v4';
+const CACHE_KEY = 'games-json-v5';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 
 const pad = value => String(value).padStart(2, '0');
@@ -138,6 +138,7 @@ function normalizeGame(game = {}) {
     slug: game.slug || '',
     aliases: uniq(game.aliases || game.alternativeNames || []),
     summary: game.summary || '',
+    summarySource: game.summarySource || '',
     storyline: game.storyline || '',
     cover: normalizeCover(game.cover),
     genres: uniq((game.genres || []).map(item => typeof item === 'string' ? item : item?.name)),
@@ -145,7 +146,11 @@ function normalizeGame(game = {}) {
     publishers: uniq((game.publishers || []).map(item => typeof item === 'string' ? item : item?.name)),
     series: uniq((game.series || []).map(item => typeof item === 'string' ? item : item?.name)),
     scale: game.scale || '',
+    contentType: game.contentType || '',
     earlyAccess: Boolean(game.earlyAccess),
+    storeCategories: uniq(game.storeCategories || []),
+    metadataSources: uniq(game.metadataSources || []),
+    steamId: game.steamId ? String(game.steamId) : '',
     rating: Number(game.rating || game.totalRating || 0) || 0,
     ratingCount: Number(game.ratingCount || game.totalRatingCount || 0) || 0,
     igdbUrl: game.igdbUrl || game.url || '',
@@ -155,9 +160,15 @@ function normalizeGame(game = {}) {
     screenshots: uniq((game.screenshots || []).map(normalizeScreenshot).filter(Boolean).map(item => JSON.stringify(item))).map(item => JSON.parse(item)),
     subscriptions: {
       gamePass: Boolean(game.subscriptions?.gamePass),
+      gamePassConsole: Boolean(game.subscriptions?.gamePassConsole),
+      gamePassPc: Boolean(game.subscriptions?.gamePassPc),
+      cloudGaming: Boolean(game.subscriptions?.cloudGaming),
       psPlus: Boolean(game.subscriptions?.psPlus),
       geforceNow: Boolean(game.subscriptions?.geforceNow),
-      checkedAt: game.subscriptions?.checkedAt || null
+      checkedAt: game.subscriptions?.checkedAt || null,
+      gamePassCheckedAt: game.subscriptions?.gamePassCheckedAt || null,
+      gamePassSource: game.subscriptions?.gamePassSource || '',
+      gamePassProductId: game.subscriptions?.gamePassProductId || ''
     },
     regionalReleases: Array.isArray(game.regionalReleases) ? game.regionalReleases : [],
     announcedWindow: game.announcedWindow || '',
