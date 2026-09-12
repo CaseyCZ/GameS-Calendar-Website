@@ -1,6 +1,3 @@
-import('./platform-filter-controls.js').catch(error => console.warn('Platform controls:', error));
-import('./default-view.js').catch(error => console.warn('Default view:', error));
-
 (() => {
   const PREF_KEY = 'games-calendar-card-badge-visibility-v2';
   const LEGACY_KEY = 'games-calendar-badge-prefs-v1';
@@ -130,7 +127,7 @@ import('./default-view.js').catch(error => console.warn('Default view:', error))
 
   function ensureFilterControls() {
     const host = document.querySelector('.trait-filter-section') || document.querySelector('.genre-filter-wrap');
-    if (!host || host.querySelector('.badge-visibility-section')) return;
+    if (!host || host.querySelector('.badge-visibility-section:not(.platform-visibility-section)')) return;
 
     const details = document.createElement('details');
     details.className = 'badge-visibility-section';
