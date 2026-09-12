@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readCatalog, replaceCatalog } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
-import { normalizeTitle, uniq } from '../src/lib/normalize.js';
+import { normalizeTitle, titleScore, uniq } from '../src/lib/normalize.js';
 
 const force = process.argv.includes('--force');
 const payload = readCatalog();
@@ -86,30 +86,53 @@ async function syncGfn() {
   console.log(`GeForce NOW: ${matched}`);
 }
 
-async function syncPsPlus() {
-  const names = new Set();
-  const walk = value => {
-    if (!value || typeof value !== 'object') return;
-    if (!Array.isArray(value)) {
-      for (const key of ['name','title','productName','conceptName']) {
-        if (typeof value[key] === 'string' && value[key].trim().length > 1) names.add(normalizeTitle(value[key]));
-      }
+function psIdentityCandidates(game) {
+  return uniq([
+    game.externalIds?.playstationProduct,
+    game.externalIds?.playstation,
+    game.providerIds?.playstation
+  ].map(value => String(value || '').trim()).filter(Boolean));
+}
+
+function fuzzyPsMatch(game, items) {
+  let best = null;
+  for (const name of namesFor(game)) {
+    for (const item of items) {
+      const score = titleScore(name, item?.title || '');
+      if (!best || score > best.score) best = { item, score };
     }
-    for (const child of Array.isArray(value) ? value : Object.values(value)) walk(child);
-  };
-
-  for (const tier of ['TIER_10','TIER_20','TIER_30']) {
-    try { walk(await providers.playstation.psPlus(tier, { force })); }
-    catch (error) { console.warn(`PS Plus ${tier}: ${error.message}`); }
   }
+  return best?.score >= 0.72 ? best.item : null;
+}
 
+async function syncPsPlus() {
+  const items = await providers.playstation.psPlusCatalog({ force, size: 200, maxPages: 5 });
+  if (!items.length) throw new Error('PlayStation PS Plus monthly catalog returned zero games');
+
+  const byId = new Map(items.map(item => [String(item.providerId || ''), item]));
+  const byTitle = exactIndex(items);
+  const matchedCatalogIds = new Set();
   let matched = 0;
+
   for (const game of games) {
-    if (!namesFor(game).some(name => names.has(name))) continue;
+    let item = null;
+    for (const id of psIdentityCandidates(game)) {
+      if (byId.has(id)) { item = byId.get(id); break; }
+    }
+    item ||= matchExact(game, byTitle);
+    item ||= fuzzyPsMatch(game, items);
+    if (!item) continue;
+
     game.subscriptions.psPlus = true;
+    addBasicMetadata(game, item, 'playstation');
+    matchedCatalogIds.add(String(item.providerId || item.title));
     matched++;
   }
-  console.log(`PS Plus: ${matched}`);
+
+  console.log(`PS Plus catalog games: ${items.length}`);
+  console.log(`PS Plus matched games: ${matched}`);
+  console.log(`PS Plus matched catalog entries: ${matchedCatalogIds.size}/${items.length}`);
+  for (const item of items) console.log(`  PS Plus: ${item.title} [${item.providerId}]`);
 }
 
 await syncGamePass().catch(error => console.warn(`Game Pass sync failed: ${error.message}`));
