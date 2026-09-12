@@ -52,21 +52,6 @@ const CATALOG_FILES = [
   new URL('../../games.json', import.meta.url)
 ].filter(Boolean);
 
-const PRICE_KEYS = new Set([
-  'price', 'prices', 'currency', 'discount', 'discountPercent',
-  'regularPrice', 'salePrice', 'msrp', 'formattedPrice'
-]);
-
-function stripPricing(value) {
-  if (Array.isArray(value)) return value.map(stripPricing);
-  if (!value || typeof value !== 'object') return value;
-  return Object.fromEntries(
-    Object.entries(value)
-      .filter(([key]) => !PRICE_KEYS.has(key))
-      .map(([key, nested]) => [key, stripPricing(nested)])
-  );
-}
-
 async function readCatalog() {
   const errors = [];
   for (const file of CATALOG_FILES) {
@@ -75,7 +60,7 @@ async function readCatalog() {
       if (!Array.isArray(payload) && !Array.isArray(payload?.games)) {
         throw new Error('catalog has no games array');
       }
-      return stripPricing(payload);
+      return payload;
     } catch (error) {
       errors.push(`${String(file)}: ${error?.message || String(error)}`);
     }
@@ -336,10 +321,6 @@ app.get('/api/nintendo/list/:kind', asyncRoute(async (req, res) => {
     count: limitOf(req.query.count, 30, 100),
     offset: Math.max(0, Number(req.query.offset) || 0)
   }));
-}));
-
-app.get('/api/nintendo/price/:titleId', asyncRoute(async (req, res) => {
-  res.json(await providers.nintendo.price(req.params.titleId, { force: bool(req.query.refresh) }));
 }));
 
 app.get('/api/gfn/search', asyncRoute(async (req, res) => {
