@@ -247,9 +247,11 @@ export const nintendoProvider = {
   price,
   eshopList,
   health: async () => {
-    const list = await eshopList('new', { force: true, count: 5 });
+    // The newest few records can be placeholders/preorders without NSUID. Sample
+    // a wider official catalog window and validate one purchasable title instead.
+    const list = await eshopList('new', { force: true, count: 100 });
     const firstDoc = list.contents.find(doc => nsuidFromDoc(doc));
-    if (!firstDoc) return { ok: false, reason: 'Nintendo Europe search returned no NSUID', listCount: list.contents.length };
+    if (!firstDoc) return { ok: false, reason: 'Nintendo Europe search returned no NSUID in first 100 games', listCount: list.contents.length };
     const id = nsuidFromDoc(firstDoc);
     const sample = await productById(id, { force: true });
     return {
@@ -259,7 +261,7 @@ export const nintendoProvider = {
       priced: Boolean(sample?.price),
       listCount: list.contents.length,
       country: config.nintendoCountry,
-      endpoint: `${SEARCH_HOST}/${config.nintendoLanguage}/select`
+      endpoint: `${SEARCH_HOST}/${String(config.nintendoLanguage || 'en').split('-')[0]}/select`
     };
   }
 };
