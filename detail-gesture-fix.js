@@ -64,7 +64,6 @@
     }
 
     if (gesture.axis === 'x') {
-      // Keep horizontal swipe inside the modal instead of letting Safari move the page.
       event.preventDefault();
       dialog.classList.add('is-gesture-dragging');
       const shift = Math.max(-58, Math.min(58, dx * 0.38));
@@ -74,14 +73,12 @@
     }
 
     if (gesture.axis === 'y' && dy > 0 && gesture.startScrollTop <= 2 && dialog.scrollTop <= 2) {
-      // Critical for iOS Safari: stop pull-to-refresh while dragging the open detail down.
       event.preventDefault();
       dialog.classList.add('is-gesture-dragging');
       const shift = Math.min(82, dy * 0.42);
       content.style.transform = `translate3d(0,${shift}px,0)`;
       content.style.opacity = String(Math.max(.78, 1 - shift / 300));
     }
-    // Swipe up is intentionally left native so the detail scrolls normally.
   }, { passive: false });
 
   dialog.addEventListener('touchend', event => {
@@ -99,9 +96,6 @@
     resetDrag();
 
     if (elapsed > 1000) return;
-
-    // Existing advanced-features.js handles left/right game navigation.
-    // Here we only make sure iOS receives a clean gesture and doesn't refresh the page.
     if (axis === 'y' && dy >= 72 && Math.abs(dy) > Math.abs(dx) * 1.15 && startScrollTop <= 2) {
       closeDialog();
     }
@@ -109,8 +103,6 @@
 
   dialog.addEventListener('touchcancel', resetDrag, { passive: true });
 
-  // Extra iOS guard: if the detail is at the very top, a downward drag must never
-  // bubble to Safari's pull-to-refresh gesture, even when it started on nested content.
   dialog.addEventListener('touchmove', event => {
     if (!dialog.open || event.touches.length !== 1 || dialog.scrollTop > 0) return;
     if (!gesture) return;
@@ -119,8 +111,8 @@
   }, { passive: false, capture: true });
 })();
 
-// Compact controls used to move the grid/compact switch into Settings. Keep the
-// original buttons (and their app.js listeners) visible next to the current view.
+// Keep the grid/compact switch visible in the main view as well as preserving
+// the original app.js listeners attached to these exact buttons.
 (() => {
   const viewToggle = document.querySelector('.view-toggle');
   const hero = document.querySelector('.hero-strip');
@@ -131,3 +123,6 @@
   hero.appendChild(viewToggle);
   if (settingsGroup && !settingsGroup.querySelector('.view-toggle')) settingsGroup.remove();
 })();
+
+// On the Oracle-hosted web, enrich the open detail from our server-side API.
+import('./live-detail-enrichment.js').catch(error => console.warn('Live detail enrichment:', error));
