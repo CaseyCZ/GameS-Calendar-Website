@@ -8,7 +8,7 @@ const OUTPUT = path.resolve(process.env.GAMES_OUTPUT || 'games.json');
 const LIMIT = Math.max(1, Math.min(190, Number(process.env.STEAM_MEDIA_LIMIT || 180)));
 const DELAY_MS = Math.max(1600, Number(process.env.STEAM_MEDIA_DELAY_MS || 1750));
 const RETRY_AFTER_DAYS = Math.max(1, Number(process.env.STEAM_MEDIA_RETRY_DAYS || 21));
-const USER_AGENT = 'GameS-Calendar/3.1 (https://caseycz.github.io/GameS-Calendar-Website/; Steam public store metadata)';
+const USER_AGENT = 'GameS-Calendar/3.2 (https://caseycz.github.io/GameS-Calendar-Website/; Steam public store metadata)';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const uniq = values => [...new Set((values || []).filter(Boolean))];
@@ -44,8 +44,30 @@ function mediaComplete(game) {
 }
 
 function recentlyChecked(game) {
+  if (!game.contentType) return false;
   const checked = Date.parse(game.steamMediaCheckedAt || '');
   return Number.isFinite(checked) && Date.now() - checked < RETRY_AFTER_DAYS * 86400000;
+}
+
+function inferContentType(game) {
+  const text = `${game?.name || ''} ${game?.summary || ''}`.toLowerCase();
+  if (/\bremaster(?:ed)?\b/i.test(text)) return 'Remaster';
+  if (/\bremake\b/i.test(text)) return 'Remake';
+  if (/\bexpansion(?: pack)?\b/i.test(text)) return 'Rozšíření';
+  if (/\bdlc\b|downloadable content/i.test(text)) return 'DLC';
+  if (/\bdemo\b/i.test(text)) return 'Demo';
+  return '';
+}
+
+function steamContentType(type) {
+  const key = String(type || '').toLowerCase();
+  if (key === 'game') return 'Plná hra';
+  if (key === 'dlc') return 'DLC';
+  if (key === 'demo') return 'Demo';
+  if (key === 'mod') return 'Mod';
+  if (key === 'music') return 'Soundtrack';
+  if (key === 'video') return 'Video';
+  return '';
 }
 
 async function fetchAppDetails(appid, attempt = 0) {
@@ -79,6 +101,9 @@ function applySteamData(game, appid, data) {
   if (!game.summary && data.short_description) game.summary = shortText(data.short_description);
   game.developers = uniq([...(game.developers || []), ...(data.developers || [])]);
   game.publishers = uniq([...(game.publishers || []), ...(data.publishers || [])]);
+
+  const specificType = inferContentType(game);
+  game.contentType = specificType || game.contentType || steamContentType(data.type);
 
   const genres = (data.genres || []).map(item => item.description).filter(Boolean);
   if (genres.some(value => /early access/i.test(value))) game.earlyAccess = true;
@@ -115,43 +140,56 @@ async function main() {
   const games = Array.isArray(raw?.games) ? raw.games : [];
   if (!games.length) throw new Error('games.json neobsahuje pole games.');
 
+  let inferred = 0;
+  for (const game of games) {
+    if (game.contentType) continue;
+    const type = inferContentType(game);
+    if (type) {
+      game.contentType = type;
+      inferred += 1;
+    }
+  }
+
   const candidates = games
     .filter(game => steamIdFromGame(game))
-    .filter(game => !mediaComplete(game))
+    .filter(game => !mediaComplete(game) || !game.contentType)
     .filter(game => !recentlyChecked(game))
     .sort((a, b) => nearestReleaseDistance(a) - nearestReleaseDistance(b))
     .slice(0, LIMIT);
 
-  console.log(`🎬 Steam média: ${candidates.length} her zpracujeme pomalu, aby nedošlo k rate limitu.`);
+  console.log(`🎬 Steam metadata: ${candidates.length} her zpracujeme pomalu, aby nedošlo k rate limitu.`);
 
   let updated = 0;
   let screenshots = 0;
   let trailers = 0;
+  let typed = 0;
 
   for (let index = 0; index < candidates.length; index += 1) {
     const game = candidates[index];
     const appid = steamIdFromGame(game);
     try {
+      const beforeType = game.contentType || '';
       const data = await fetchAppDetails(appid);
       applySteamData(game, appid, data);
+      if (!beforeType && game.contentType) typed += 1;
       if (game.screenshots?.length) screenshots += 1;
       if (game.trailerId || game.trailerUrl) trailers += 1;
       updated += 1;
-      console.log(`✅ ${index + 1}/${candidates.length} ${game.name}`);
+      console.log(`✅ ${index + 1}/${candidates.length} ${game.name}${game.contentType ? ` · ${game.contentType}` : ''}`);
     } catch (error) {
       console.warn(`⚠️ ${game.name}: ${error.message}`);
     }
     if (index + 1 < candidates.length) await sleep(DELAY_MS);
   }
 
-  if (!updated) {
-    console.log('ℹ️ Žádná Steam média nebyla změněna.');
+  if (!updated && !inferred) {
+    console.log('ℹ️ Žádná Steam metadata nebyla změněna.');
     return;
   }
 
   raw.generatedAt = new Date().toISOString();
   await atomicWrite(OUTPUT, JSON.stringify(raw, null, 2) + '\n');
-  console.log(`🎉 Aktualizováno ${updated} her · screenshoty ${screenshots} · trailery ${trailers}.`);
+  console.log(`🎉 Aktualizováno ${updated} her · typ hry +${typed + inferred} · screenshoty ${screenshots} · trailery ${trailers}.`);
 }
 
 main().catch(error => {
