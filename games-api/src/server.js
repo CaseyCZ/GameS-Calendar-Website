@@ -244,7 +244,7 @@ app.use((error, req, res, next) => {
   res.status(502).json({ error: error?.message || String(error) });
 });
 
-app.listen(config.port, '0.0.0.0', () => {
-  console.log(`GameS API listening on http://0.0.0.0:${config.port}`);
+app.listen(config.port, config.host, () => {
+  console.log(`GameS API listening on http://${config.host}:${config.port}`);
   console.log(`Market=${config.market}, language=${config.language}, PS locale=${config.psLocale}`);
 });
