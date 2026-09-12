@@ -1,9 +1,10 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v6';
+const CACHE_KEY = 'games-catalog-v7-lite';
+const OLD_CACHE_KEY = 'games-catalog-v6';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
-const LIVE_CATALOG_URL = '/games-api/catalog';
+const LIVE_CATALOG_URL = 'games-lite.json';
 const STATIC_CATALOG_URL = 'games.json';
 
 const pad = value => String(value).padStart(2, '0');
@@ -327,7 +328,9 @@ async function writeCache(payload) {
   if (!db) return;
   await new Promise(resolve => {
     const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put({ payload, savedAt: Date.now() }, CACHE_KEY);
+    const store = tx.objectStore(STORE);
+    store.put({ payload, savedAt: Date.now() }, CACHE_KEY);
+    store.delete(OLD_CACHE_KEY);
     tx.oncomplete = resolve;
     tx.onerror = resolve;
   });
@@ -344,7 +347,7 @@ async function fetchPayload() {
   try {
     const payload = await fetchJson(LIVE_CATALOG_URL);
     await writeCache(payload);
-    return { payload, source: 'live-api' };
+    return { payload, source: 'web-feed' };
   } catch (error) {
     liveError = error;
   }
@@ -354,7 +357,7 @@ async function fetchPayload() {
     await writeCache(payload);
     return { payload, source: 'games-json', liveError };
   } catch (fallbackError) {
-    throw new Error(`Živé API i games.json selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
+    throw new Error(`Živý webový katalog i games.json selhaly: ${liveError?.message || 'feed error'}; ${fallbackError.message}`);
   }
 }
 
