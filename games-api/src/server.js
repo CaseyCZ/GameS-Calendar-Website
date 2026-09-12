@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
 import { historyForGame, listHealth, saveGameSnapshot, saveHealth } from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
@@ -43,6 +44,43 @@ function bool(value) {
 function limitOf(value, fallback = 8, max = 50) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? Math.max(1, Math.min(max, Math.floor(parsed))) : fallback;
+}
+
+const CATALOG_FILES = [
+  process.env.GAMES_CATALOG_FILE,
+  '/var/www/games-calendar/games.json',
+  new URL('../../games.json', import.meta.url)
+].filter(Boolean);
+
+const PRICE_KEYS = new Set([
+  'price', 'prices', 'currency', 'discount', 'discountPercent',
+  'regularPrice', 'salePrice', 'msrp', 'formattedPrice'
+]);
+
+function stripPricing(value) {
+  if (Array.isArray(value)) return value.map(stripPricing);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => !PRICE_KEYS.has(key))
+      .map(([key, nested]) => [key, stripPricing(nested)])
+  );
+}
+
+async function readCatalog() {
+  const errors = [];
+  for (const file of CATALOG_FILES) {
+    try {
+      const payload = JSON.parse(await readFile(file, 'utf8'));
+      if (!Array.isArray(payload) && !Array.isArray(payload?.games)) {
+        throw new Error('catalog has no games array');
+      }
+      return stripPricing(payload);
+    } catch (error) {
+      errors.push(`${String(file)}: ${error?.message || String(error)}`);
+    }
+  }
+  throw new Error(`Game catalog unavailable: ${errors.join(' | ')}`);
 }
 
 async function providerHealth(provider) {
@@ -135,7 +173,6 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const found = [];
   const wanted = selectedNames(providerNames);
 
-  // Explicit IDs supplied by our own catalog always win over title matching.
   const direct = [
     game.steamId && providers.steam?.product(String(game.steamId), { force }),
     game.xboxProductId && providers.microsoft?.product(String(game.xboxProductId), { force }),
@@ -150,8 +187,6 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
     if (result.status === 'fulfilled' && result.value) addFound(found, result.value);
   }
 
-  // IGDB is our identity/metadata layer. Resolve it first even when the browser
-  // asks only for storefront providers, then use its external IDs to call stores directly.
   const igdbIdentity = await resolveIgdbIdentity(game, title, { force });
   if (igdbIdentity) {
     addFound(found, igdbIdentity);
@@ -159,7 +194,6 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
     directStoreResults.forEach(item => addFound(found, item));
   }
 
-  // Fall back to provider title search only for providers not resolved by IDs.
   if (title) {
     const selected = providerList(providerNames)
       .filter(provider => provider.name !== 'igdb')
@@ -204,6 +238,13 @@ app.get('/health', asyncRoute(async (req, res) => {
   if (!bool(req.query.refresh)) return res.json({ ok: true, version: config.version, cached: listHealth() });
   const results = await Promise.all(Object.values(providers).map(providerHealth));
   res.status(results.every(item => item.ok) ? 200 : 207).json({ ok: results.every(item => item.ok), version: config.version, results });
+}));
+
+app.get('/api/catalog', asyncRoute(async (req, res) => {
+  const payload = await readCatalog();
+  res.setHeader('Cache-Control', 'no-store');
+  if (Array.isArray(payload)) return res.json(payload);
+  res.json({ ...payload, apiVersion: config.version, source: 'games-api-catalog' });
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {
