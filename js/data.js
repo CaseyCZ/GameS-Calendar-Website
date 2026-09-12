@@ -1,8 +1,10 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-json-v5';
+const CACHE_KEY = 'games-catalog-v6';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
+const LIVE_CATALOG_URL = '/games-api/catalog';
+const STATIC_CATALOG_URL = 'games.json';
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -236,7 +238,7 @@ function normalizeLegacy(items) {
 export function normalizePayload(payload) {
   if (Array.isArray(payload)) return normalizeLegacy(payload);
   if (payload && Array.isArray(payload.games)) return normalizeV2(payload);
-  throw new Error('games.json má neznámý formát.');
+  throw new Error('Zdroj her má neznámý formát.');
 }
 
 export function flattenReleases(dataset) {
@@ -299,12 +301,29 @@ async function writeCache(payload) {
   });
 }
 
+async function fetchJson(url) {
+  const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } });
+  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+  return response.json();
+}
+
 async function fetchPayload() {
-  const response = await fetch('games.json', { cache: 'no-store', headers: { Accept: 'application/json' } });
-  if (!response.ok) throw new Error(`games.json: HTTP ${response.status}`);
-  const payload = await response.json();
-  await writeCache(payload);
-  return payload;
+  let liveError = null;
+  try {
+    const payload = await fetchJson(LIVE_CATALOG_URL);
+    await writeCache(payload);
+    return { payload, source: 'live-api' };
+  } catch (error) {
+    liveError = error;
+  }
+
+  try {
+    const payload = await fetchJson(STATIC_CATALOG_URL);
+    await writeCache(payload);
+    return { payload, source: 'games-json', liveError };
+  } catch (fallbackError) {
+    throw new Error(`Živé API i games.json selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
+  }
 }
 
 export async function loadGameData({ onRevalidated } = {}) {
@@ -313,20 +332,28 @@ export async function loadGameData({ onRevalidated } = {}) {
 
   if (isFresh) {
     const dataset = normalizePayload(cached.payload);
-    fetchPayload().then(payload => {
+    fetchPayload().then(({ payload }) => {
       const fresh = normalizePayload(payload);
       const before = dataset.generatedAt || cached.savedAt;
       const after = fresh.generatedAt || Date.now();
       if (String(before) !== String(after)) onRevalidated?.(fresh);
     }).catch(() => {});
-    return { dataset, source: 'cache', stale: false };
+    return { dataset, rawPayload: cached.payload, source: 'cache', stale: false };
   }
 
   try {
-    const payload = await fetchPayload();
-    return { dataset: normalizePayload(payload), source: 'network', stale: false };
+    const { payload, source, liveError } = await fetchPayload();
+    return {
+      dataset: normalizePayload(payload),
+      rawPayload: payload,
+      source,
+      stale: false,
+      liveError: liveError || null
+    };
   } catch (error) {
-    if (cached?.payload) return { dataset: normalizePayload(cached.payload), source: 'cache', stale: true, error };
+    if (cached?.payload) {
+      return { dataset: normalizePayload(cached.payload), rawPayload: cached.payload, source: 'cache', stale: true, error };
+    }
     throw error;
   }
 }
