@@ -1,7 +1,7 @@
 {
   "version": 5,
   "provider": "IGDB release data + Wikidata/Wikipedia + Steam metadata + official subscription catalogs",
-  "generatedAt": "2026-09-11T23:54:09.180Z",
+  "generatedAt": "2026-09-12T06:48:43.463Z",
   "range": {
     "from": "2026-09-01",
     "to": "2027-08-16"
@@ -209,7 +209,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257080044/79045f6398de6d47846e6c65ed96fb9b9f19975c/movie_600x337.jpg?t=1740157273",
-      "steamMediaCheckedAt": "2026-09-11T23:52:40.502Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:24.020Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410070,
@@ -318,7 +319,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257372324/d179490e0daff0672aba13697cc8dee55c492411/movie_600x337.jpg?t=1784842514",
-      "steamMediaCheckedAt": "2026-09-11T23:49:40.254Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:35.401Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411453,
@@ -622,7 +624,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257126662/e02b70d8fb62634e5728ef950b62838ce80ff663/movie_600x337.jpg?t=1745011415",
-      "steamMediaCheckedAt": "2026-09-11T23:52:42.345Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:25.877Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414977,
@@ -895,7 +898,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257376287/77e4b74fcb8edf3de2c3142906733a6c4a9bddde/movie_600x337.jpg?t=1783983709",
-      "steamMediaCheckedAt": "2026-09-11T23:52:44.210Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:27.732Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 374665,
@@ -1106,7 +1110,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409389/4c1be046642f3e98f3b8fb393071794358ac14c4/movie_600x337.jpg?t=1788281430",
-      "steamMediaCheckedAt": "2026-09-11T23:52:46.059Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:29.591Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 386548,
@@ -1948,7 +1953,8 @@
       "steamId": "1802900",
       "steamMetadataCheckedAt": "2026-09-11T23:05:33.644Z",
       "earlyAccess": false,
-      "steamMediaCheckedAt": "2026-09-11T23:52:47.899Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:31.437Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 402758,
@@ -2222,7 +2228,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257370716/e3ab9eee74e121671aa94c6915c8619c451cd3c0/movie_600x337.jpg?t=1783119720",
-      "steamMediaCheckedAt": "2026-09-11T23:52:49.746Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:33.296Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413780,
@@ -2897,7 +2904,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257148535/a38b8ae33489723999b50f58a6ac3e28f10d6216/movie_600x337.jpg?t=1748626155",
-      "steamMediaCheckedAt": "2026-09-11T23:52:51.595Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:35.148Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404002,
@@ -3262,7 +3270,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257102360/e599a822622a4aec606bb80b91072f1ea4542837/movie_600x337.jpg?t=1740738391",
-      "steamMediaCheckedAt": "2026-09-11T23:52:53.463Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:37.002Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415283,
@@ -4097,7 +4106,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256786410/movie.293x165.jpg?t=1590189000",
-      "steamMediaCheckedAt": "2026-09-11T23:52:55.301Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:38.845Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 361052,
@@ -4204,7 +4214,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257331169/0fcd40167ffcc05937df1f881e8f6996ae807e91/movie_600x337.jpg?t=1777888599",
-      "steamMediaCheckedAt": "2026-09-11T23:52:57.128Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:40.692Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 381635,
@@ -4661,7 +4672,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257356805/9c40c90c01a11b6662a889af0309478ca9b9690a/movie_600x337.jpg?t=1781261127",
-      "steamMediaCheckedAt": "2026-09-11T23:52:58.957Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:42.538Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415827,
@@ -5012,7 +5024,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256959137/movie.293x165.jpg?t=1689809131",
-      "steamMediaCheckedAt": "2026-09-11T23:53:00.781Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:44.377Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 401327,
@@ -5229,7 +5242,7 @@
       "announcedWindow": "",
       "steamId": "3329050",
       "steamMetadataCheckedAt": "2026-09-11T23:05:34.706Z",
-      "steamMediaCheckedAt": "2026-09-11T23:53:02.613Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:46.209Z"
     },
     {
       "id": 399257,
@@ -5436,7 +5449,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257397358/f45358fa955d828a0c78289bbdfc2f06b7e0afb7/movie_600x337.jpg?t=1788273990",
-      "steamMediaCheckedAt": "2026-09-11T23:53:04.439Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:48.060Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 346541,
@@ -5536,7 +5550,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257127261/7559579335eb4f3009afdbffc07fd8bd67a8f762/movie_600x337.jpg?t=1748122209",
-      "steamMediaCheckedAt": "2026-09-11T23:53:06.263Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:49.912Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 348824,
@@ -5734,7 +5749,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257125644/60150424807f579b98cb34fbe77d6c90c88e102f/movie_600x337.jpg?t=1744573835",
-      "steamMediaCheckedAt": "2026-09-11T23:53:08.111Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:51.749Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392540,
@@ -5823,7 +5839,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257287378/d4fd7f897ca00ac85c1b7d2e8976011e970b8d25/movie_600x337.jpg?t=1786382088",
-      "steamMediaCheckedAt": "2026-09-11T23:53:09.960Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:53.599Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 344886,
@@ -5923,7 +5940,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257070428/8713a9065dad2fcdb88c840ef002483228caa205/movie_600x337.jpg?t=1756290860",
-      "steamMediaCheckedAt": "2026-09-11T23:53:11.902Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:55.441Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 252768,
@@ -6045,7 +6063,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257236479/3515f23c1fae439bc4f4be8a42b175bbe091d545/movie_600x337.jpg?t=1766294290",
-      "steamMediaCheckedAt": "2026-09-11T23:52:07.141Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:03.683Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413815,
@@ -6206,7 +6225,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257342172/784973da0a1a28b1132cb7e7e62c8e2058169865/movie_600x337.jpg?t=1788268623",
-      "steamMediaCheckedAt": "2026-09-11T23:52:08.985Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:05.524Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 400626,
@@ -6645,7 +6665,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409167/a25f6f27e75e5e4d435dbcf7211d80072e7db1b8/movie_600x337.jpg?t=1788353852",
-      "steamMediaCheckedAt": "2026-09-11T23:52:10.839Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:07.382Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 374637,
@@ -6804,7 +6825,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257406674/1f5faf58a64757e8dd13dfc11ec29f294717407d/movie_600x337.jpg?t=1788709779",
-      "steamMediaCheckedAt": "2026-09-11T23:52:12.696Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:09.238Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 350456,
@@ -6922,7 +6944,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257250272/3a847b4b17fbceab73cc8211ebe180c7687edfdb/movie_600x337.jpg?t=1765828550",
-      "steamMediaCheckedAt": "2026-09-11T23:52:14.547Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:11.089Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 379060,
@@ -7066,7 +7089,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417415/3fcb35287bb5b4bb670f6348f1c9b638cc7051e7/movie_600x337.jpg?t=1788541495",
-      "steamMediaCheckedAt": "2026-09-11T23:52:16.466Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:12.946Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 27794,
@@ -7192,7 +7216,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257397151/0510ce3f739d8c200bcf8fc25a48967e0e46a771/movie_600x337.jpg?t=1786528579",
-      "steamMediaCheckedAt": "2026-09-11T23:51:29.980Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:08.088Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 373021,
@@ -7308,7 +7333,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257208644/bd32d26550d52b0c8a0e04dc45a0a36c5fa1070c/movie_600x337.jpg?t=1780519515",
-      "steamMediaCheckedAt": "2026-09-11T23:51:31.835Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:09.948Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 347541,
@@ -7475,7 +7501,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257214853/ecb697e1f6174e3df139cb639ec005c5788d615b/movie_600x337.jpg?t=1760019889",
-      "steamMediaCheckedAt": "2026-09-11T23:51:33.709Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:11.808Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404905,
@@ -7593,7 +7620,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257416345/f35035c9b299af2a83ba90152efe9f3c4c029665/movie_600x337.jpg?t=1788451303",
-      "steamMediaCheckedAt": "2026-09-11T23:51:35.566Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:13.659Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 349904,
@@ -7950,7 +7978,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257365109/37e1aa6fb42502b81af5e3fe14af64192474414d/movie_600x337.jpg?t=1782337533",
-      "steamMediaCheckedAt": "2026-09-11T23:51:37.432Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:15.521Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415390,
@@ -8248,7 +8277,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256955822/movie.293x165.jpg?t=1689892720",
-      "steamMediaCheckedAt": "2026-09-11T23:51:39.289Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:17.372Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408920,
@@ -8512,7 +8542,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257407832/c1598e2f615097e04e9bac9d2d5adbea20d212c7/movie_600x337.jpg?t=1787640870",
-      "steamMediaCheckedAt": "2026-09-11T23:51:41.146Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:19.222Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414232,
@@ -8785,7 +8816,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256944861/movie.293x165.jpg?t=1683074519",
-      "steamMediaCheckedAt": "2026-09-11T23:51:43.010Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:21.081Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 321405,
@@ -8900,7 +8932,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257416751/4d1f2b400132a536c30171f96b8f40caf80d011a/movie_600x337.jpg?t=1788465313",
-      "steamMediaCheckedAt": "2026-09-11T23:51:44.853Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:22.938Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 272792,
@@ -9067,7 +9100,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257407232/64d3875502399c811dc621e7f6ad4d403e70039f/movie_600x337.jpg?t=1788447711",
-      "steamMediaCheckedAt": "2026-09-11T23:51:46.721Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:24.785Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 393839,
@@ -9340,7 +9374,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257406992/69d7344aabccc3f2dacbf19e12d4b1fbcdaa6b30/movie_600x337.jpg?t=1788439534",
-      "steamMediaCheckedAt": "2026-09-11T23:51:48.573Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:26.639Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412138,
@@ -9513,7 +9548,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409089/a349822779f37d3741b8ab3bad7e9e786a4e2ad0/movie_600x337.jpg?t=1787763523",
-      "steamMediaCheckedAt": "2026-09-11T23:51:50.429Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:28.491Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 405996,
@@ -9610,7 +9646,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257365506/17728ecd9493f1b17c9235ec89ae9e30b31bc96f/movie_600x337.jpg?t=1784720675",
-      "steamMediaCheckedAt": "2026-09-11T23:51:52.280Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:30.342Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 339614,
@@ -9740,7 +9777,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257416608/a795dc6f2a0ede9b835f69bb91b3ba23b3754e06/movie_600x337.jpg?t=1788454619",
-      "steamMediaCheckedAt": "2026-09-11T23:51:54.133Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:32.195Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 270085,
@@ -9857,7 +9895,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257171140/bcde9df10e0cb1c481d214bf862fa748842af4d5/movie_600x337.jpg?t=1753689786",
-      "steamMediaCheckedAt": "2026-09-11T23:51:56.000Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:34.054Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 195655,
@@ -9969,7 +10008,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257229333/cc86097f43f4dcf165f6ea2ecf8cb17a2c34aa52/movie_600x337.jpg?t=1763038354",
-      "steamMediaCheckedAt": "2026-09-11T23:51:57.855Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:35.923Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414756,
@@ -10147,7 +10187,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408282/f667546c16d33d2ce53cdc3274732f3ba8a429de/movie_600x337.jpg?t=1787683203",
-      "steamMediaCheckedAt": "2026-09-11T23:51:59.726Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:37.777Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415829,
@@ -10315,7 +10356,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257079088/13a0fd1ac4ac71c8156463b365d6d0a0ff889c26/movie_600x337.jpg?t=1749721488",
-      "steamMediaCheckedAt": "2026-09-11T23:52:01.579Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:39.631Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 309638,
@@ -10614,7 +10656,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257066297/570155350cf65e62ce0f6c51f19fb804b81ac4af/movie_600x337.jpg?t=1746288466",
-      "steamMediaCheckedAt": "2026-09-11T23:51:07.697Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:42.201Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 329222,
@@ -10706,7 +10749,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257081887/f5bf232bfa5a87ddc99c87bde4465aa7f4e2cd33/movie_600x337.jpg?t=1738064728",
-      "steamMediaCheckedAt": "2026-09-11T23:51:09.582Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:44.056Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 350475,
@@ -10875,7 +10919,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417082/e93eeb975243ca7b3f52d05917d96359fb67f7a0/movie_600x337.jpg?t=1788510578",
-      "steamMediaCheckedAt": "2026-09-11T23:51:11.427Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:45.899Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 318266,
@@ -10998,7 +11043,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257256334/b3b7671b70b92298f1edf3ac02c64bcbfea91060/movie_600x337.jpg?t=1766943610",
-      "steamMediaCheckedAt": "2026-09-11T23:51:13.281Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:47.749Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411775,
@@ -11153,7 +11199,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257340511/3a7f7eadbc151fdb29218d2b967d6a76836940ef/movie_600x337.jpg?t=1779385890",
-      "steamMediaCheckedAt": "2026-09-11T23:51:15.136Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:49.596Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408823,
@@ -11400,7 +11447,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257049571/movie.293x165.jpg?t=1725016270",
-      "steamMediaCheckedAt": "2026-09-11T23:51:16.981Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:51.437Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 325602,
@@ -11520,7 +11568,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257371683/ed87d60648455aea3b1daa9aadfa2bf8c37328e8/movie_600x337.jpg?t=1783402757",
-      "steamMediaCheckedAt": "2026-09-11T23:51:18.844Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:53.287Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 213444,
@@ -11630,7 +11679,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417194/93de771292167412b9a068cdb3bd857812561cda/movie_600x337.jpg?t=1788523462",
-      "steamMediaCheckedAt": "2026-09-11T23:51:20.696Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:55.150Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414452,
@@ -11852,7 +11902,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257324048/8d4eb2788d7041546d761c3d5cb730774a5d93d7/movie_600x337.jpg?t=1776859481",
-      "steamMediaCheckedAt": "2026-09-11T23:51:22.554Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:57.009Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414437,
@@ -12022,7 +12073,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393247/29abe34ead6aaafaa3aeeb3775330eb81cd1b151/movie_600x337.jpg?t=1786051273",
-      "steamMediaCheckedAt": "2026-09-11T23:51:24.414Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:58.861Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 388910,
@@ -12233,7 +12285,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257000018/19d7a6ae9d2e1e71de8618b06f99907f7f3356fc/movie_600x337.jpg?t=1788619857",
-      "steamMediaCheckedAt": "2026-09-11T23:51:26.277Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:00.709Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413299,
@@ -12402,7 +12455,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417010/846f0096c0c703fbd22fa157284c23e75defa550/movie_600x337.jpg?t=1788532250",
-      "steamMediaCheckedAt": "2026-09-11T23:51:28.120Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:02.556Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 278211,
@@ -12500,7 +12554,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257088546/1679e01d2402d8efc6adf911ec60f12fbe9bc9a8/movie_600x337.jpg?t=1736779532",
-      "steamMediaCheckedAt": "2026-09-11T23:51:03.979Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:40.343Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414231,
@@ -13031,7 +13086,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257185443/0b001ec3b809c3fe68299026228afbef0640127e/movie_600x337.jpg?t=1788771419",
-      "steamMediaCheckedAt": "2026-09-11T23:50:21.173Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:21.832Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 398071,
@@ -13255,7 +13311,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257072741/1cd81c949eb8280838ccc49bb80048108f93666d/movie_600x337.jpg?t=1755712979",
-      "steamMediaCheckedAt": "2026-09-11T23:50:23.032Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:23.690Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404710,
@@ -13398,7 +13455,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417123/2424b0479819f90e28f3d2e6f0057a20bce824dd/movie_600x337.jpg?t=1789052573",
-      "steamMediaCheckedAt": "2026-09-11T23:48:42.479Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:26.786Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 352856,
@@ -13505,7 +13563,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419286/f4ff5616f2737cc594b4a52c401d1faaaf643c8b/movie_600x337.jpg?t=1788811988",
-      "steamMediaCheckedAt": "2026-09-11T23:50:24.879Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:25.550Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414228,
@@ -13663,7 +13722,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257023947/c9c9cce496772db61c572f9b91bc5435143ff237/movie_600x337.jpg?t=1788795729",
-      "steamMediaCheckedAt": "2026-09-11T23:50:26.732Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:27.408Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 293019,
@@ -13771,7 +13831,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257130547/b63638299a741d6a7d441c6b5d1d9f5ad448e5fe/movie_600x337.jpg?t=1745532197",
-      "steamMediaCheckedAt": "2026-09-11T23:50:28.588Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:29.252Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415267,
@@ -13982,7 +14043,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257418113/e31e2d29286b9bcd56e6fbe141bdceadcf4a9c76/movie_600x337.jpg?t=1788672028",
-      "steamMediaCheckedAt": "2026-09-11T23:50:30.443Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:31.104Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414181,
@@ -14163,7 +14225,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419805/48d2837ef924f0eae78e32e588e9d3c677cb5597/movie_600x337.jpg?t=1788880086",
-      "steamMediaCheckedAt": "2026-09-11T23:49:42.138Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:37.259Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 330066,
@@ -14286,7 +14349,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257315694/413c0a8dab33475fe60a7b657917591430ba7c5e/movie_600x337.jpg?t=1775569860",
-      "steamMediaCheckedAt": "2026-09-11T23:49:43.992Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:39.144Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415767,
@@ -14623,7 +14687,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419956/6d1caccdad1a14ee9010086c358c5ad608dcd3ab/movie_600x337.jpg?t=1788883694",
-      "steamMediaCheckedAt": "2026-09-11T23:49:45.837Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:40.994Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392147,
@@ -14741,7 +14806,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257401473/afc62edcb53355167a8e0e56f810bd93ac805dbf/movie_600x337.jpg?t=1787236598",
-      "steamMediaCheckedAt": "2026-09-11T23:49:47.696Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:42.856Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 8042,
@@ -14866,7 +14932,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257283662/a75ed3de9d42026cf27d7c4a8b30005e85b8baee/movie_600x337.jpg?t=1770734758",
-      "steamMediaCheckedAt": "2026-09-11T23:49:49.541Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:44.716Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399030,
@@ -14917,44 +14984,44 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43a81287577f81b0cd2ef9773de3c36ffc6b2378/ss_43a81287577f81b0cd2ef9773de3c36ffc6b2378.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43a81287577f81b0cd2ef9773de3c36ffc6b2378/ss_43a81287577f81b0cd2ef9773de3c36ffc6b2378.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43a81287577f81b0cd2ef9773de3c36ffc6b2378/ss_43a81287577f81b0cd2ef9773de3c36ffc6b2378.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43a81287577f81b0cd2ef9773de3c36ffc6b2378/ss_43a81287577f81b0cd2ef9773de3c36ffc6b2378.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/15d6b812b9c5eff046e7c40f22cd2379969526a7/ss_15d6b812b9c5eff046e7c40f22cd2379969526a7.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/15d6b812b9c5eff046e7c40f22cd2379969526a7/ss_15d6b812b9c5eff046e7c40f22cd2379969526a7.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f/ss_86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f/ss_86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/937a86c5da06f79500164e5e34fe9b5272f61aff/ss_937a86c5da06f79500164e5e34fe9b5272f61aff.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/937a86c5da06f79500164e5e34fe9b5272f61aff/ss_937a86c5da06f79500164e5e34fe9b5272f61aff.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/15d6b812b9c5eff046e7c40f22cd2379969526a7/ss_15d6b812b9c5eff046e7c40f22cd2379969526a7.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/15d6b812b9c5eff046e7c40f22cd2379969526a7/ss_15d6b812b9c5eff046e7c40f22cd2379969526a7.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/906e035b1db75125706d2a0b24f4a30e230740c7/ss_906e035b1db75125706d2a0b24f4a30e230740c7.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/906e035b1db75125706d2a0b24f4a30e230740c7/ss_906e035b1db75125706d2a0b24f4a30e230740c7.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/368d725ff98a2822bd35f3d447bc5bbb0bb44efd/ss_368d725ff98a2822bd35f3d447bc5bbb0bb44efd.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/368d725ff98a2822bd35f3d447bc5bbb0bb44efd/ss_368d725ff98a2822bd35f3d447bc5bbb0bb44efd.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43b14886b2320afcf1cf0a395a6a961e88842a7f/ss_43b14886b2320afcf1cf0a395a6a961e88842a7f.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43b14886b2320afcf1cf0a395a6a961e88842a7f/ss_43b14886b2320afcf1cf0a395a6a961e88842a7f.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/937a86c5da06f79500164e5e34fe9b5272f61aff/ss_937a86c5da06f79500164e5e34fe9b5272f61aff.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/937a86c5da06f79500164e5e34fe9b5272f61aff/ss_937a86c5da06f79500164e5e34fe9b5272f61aff.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/14d6dd91b101fe9a2a3d31e8d06613e47ac55f61/ss_14d6dd91b101fe9a2a3d31e8d06613e47ac55f61.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/14d6dd91b101fe9a2a3d31e8d06613e47ac55f61/ss_14d6dd91b101fe9a2a3d31e8d06613e47ac55f61.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/906e035b1db75125706d2a0b24f4a30e230740c7/ss_906e035b1db75125706d2a0b24f4a30e230740c7.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/906e035b1db75125706d2a0b24f4a30e230740c7/ss_906e035b1db75125706d2a0b24f4a30e230740c7.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f/ss_86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f/ss_86da1b7b2ec3ca06622e19e22e52aa1ff7c3406f.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/82f773c689671754750ef4eacb0c33eedccdfaad/ss_82f773c689671754750ef4eacb0c33eedccdfaad.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/82f773c689671754750ef4eacb0c33eedccdfaad/ss_82f773c689671754750ef4eacb0c33eedccdfaad.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/82f773c689671754750ef4eacb0c33eedccdfaad/ss_82f773c689671754750ef4eacb0c33eedccdfaad.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/82f773c689671754750ef4eacb0c33eedccdfaad/ss_82f773c689671754750ef4eacb0c33eedccdfaad.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/14d6dd91b101fe9a2a3d31e8d06613e47ac55f61/ss_14d6dd91b101fe9a2a3d31e8d06613e47ac55f61.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/14d6dd91b101fe9a2a3d31e8d06613e47ac55f61/ss_14d6dd91b101fe9a2a3d31e8d06613e47ac55f61.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/aec38f2c616741f1c44951315c3eea5457d68514/ss_aec38f2c616741f1c44951315c3eea5457d68514.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/aec38f2c616741f1c44951315c3eea5457d68514/ss_aec38f2c616741f1c44951315c3eea5457d68514.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43b14886b2320afcf1cf0a395a6a961e88842a7f/ss_43b14886b2320afcf1cf0a395a6a961e88842a7f.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/43b14886b2320afcf1cf0a395a6a961e88842a7f/ss_43b14886b2320afcf1cf0a395a6a961e88842a7f.600x338.jpg?t=1789178246"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/368d725ff98a2822bd35f3d447bc5bbb0bb44efd/ss_368d725ff98a2822bd35f3d447bc5bbb0bb44efd.1920x1080.jpg?t=1788917515",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/368d725ff98a2822bd35f3d447bc5bbb0bb44efd/ss_368d725ff98a2822bd35f3d447bc5bbb0bb44efd.600x338.jpg?t=1788917515"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/aec38f2c616741f1c44951315c3eea5457d68514/ss_aec38f2c616741f1c44951315c3eea5457d68514.1920x1080.jpg?t=1789178246",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4047270/aec38f2c616741f1c44951315c3eea5457d68514/ss_aec38f2c616741f1c44951315c3eea5457d68514.600x338.jpg?t=1789178246"
         }
       ],
       "subscriptions": {
@@ -14971,7 +15038,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419382/22e664442f6ea941f8f23c019af02e423cd53fe1/movie_600x337.jpg?t=1788848384",
-      "steamMediaCheckedAt": "2026-09-11T23:49:51.385Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:46.575Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 138211,
@@ -15099,7 +15167,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257343207/7b4f8b395e09cc01b5c2faaaf498ca600ddca204/movie_600x337.jpg?t=1779982152",
-      "steamMediaCheckedAt": "2026-09-11T23:49:53.244Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:48.438Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415142,
@@ -15252,7 +15321,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257416604/32ed9edee93e184b593932f05b338044a02e54a4/movie_600x337.jpg?t=1788879174",
-      "steamMediaCheckedAt": "2026-09-11T23:49:55.096Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:50.331Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 344878,
@@ -15339,7 +15409,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257292868/dc3c8153a7cea62b2cfe75e1b422584dcb60af75/movie_600x337.jpg?t=1771859458",
-      "steamMediaCheckedAt": "2026-09-11T23:49:56.934Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:52.197Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 360177,
@@ -15666,7 +15737,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257414812/eb91bd5aa89a4b789fb1ed3e15c819b27eaf07f5/movie_600x337.jpg?t=1788272368",
-      "steamMediaCheckedAt": "2026-09-11T23:49:58.784Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:54.041Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 405829,
@@ -15834,7 +15906,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257301490/6189cd7782d04fb9c96155ad188fc12d78918d13/movie_600x337.jpg?t=1780988596",
-      "steamMediaCheckedAt": "2026-09-11T23:49:14.163Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:02.067Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 365079,
@@ -15954,7 +16027,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257131281/9bcb9b9f912d1cafedccc2cff427fa623b28a3cb/movie_600x337.jpg?t=1788267390",
-      "steamMediaCheckedAt": "2026-09-11T23:49:16.049Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:03.914Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 340029,
@@ -16061,7 +16135,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257420999/431d9cd238da58f60bbda4e29e2ee3d2dbac9965/movie_600x337.jpg?t=1788972685",
-      "steamMediaCheckedAt": "2026-09-11T23:49:17.910Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:05.774Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411196,
@@ -16220,7 +16295,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421786/d44a3fc9eb56e53212dcb0480d09762f627bb3be/movie_600x337.jpg?t=1789039242",
-      "steamMediaCheckedAt": "2026-09-11T23:49:21.615Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:07.623Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406572,
@@ -16413,7 +16489,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257015968/movie.293x165.jpg?t=1715655502",
-      "steamMediaCheckedAt": "2026-09-11T23:49:23.471Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:09.498Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 393584,
@@ -16706,7 +16783,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257420513/3f5dcfbddfe4cca65abe94a03a46b3b5546c46ab/movie_600x337.jpg?t=1788958575",
-      "steamMediaCheckedAt": "2026-09-11T23:49:25.321Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:11.350Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 119642,
@@ -16883,7 +16961,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256982390/91ac38875b9dfa06c6fe04d00ff85a21a37bbef2/movie_600x337.jpg?t=1780388893",
-      "steamMediaCheckedAt": "2026-09-11T23:49:19.769Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:13.197Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409210,
@@ -17220,7 +17299,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409302/da2b1bc340d018f303205f508896ca6864b15bf5/movie_600x337.jpg?t=1789037840",
-      "steamMediaCheckedAt": "2026-09-11T23:48:44.383Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:28.646Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413943,
@@ -17367,7 +17447,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257252255/3e06f5b56a1a07a55547d84903ac11f457e46518/movie_600x337.jpg?t=1766083017",
-      "steamMediaCheckedAt": "2026-09-11T23:48:46.254Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:30.511Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 356899,
@@ -17527,7 +17608,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419009/35c4fb7b2b92a5bc6934f89292df4dec76934517/movie_600x337.jpg?t=1789048726",
-      "steamMediaCheckedAt": "2026-09-11T23:48:48.096Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:32.355Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 203752,
@@ -17651,7 +17733,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257413603/040285ea62208ca4379b83e4e139f8b2a42eaf38/movie_600x337.jpg?t=1788185612",
-      "steamMediaCheckedAt": "2026-09-11T23:48:49.957Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:34.222Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 44408,
@@ -17811,7 +17894,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257350998/42ee64d7ef3d69b8290b2aa2044c36dbab8f54a2/movie_600x337.jpg?t=1780638970",
-      "steamMediaCheckedAt": "2026-09-11T23:48:51.827Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:36.082Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 291764,
@@ -17921,7 +18005,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257419891/8ba72055c12fdf4db7c25cdccd269d8e6782b139/movie_600x337.jpg?t=1789043072",
-      "steamMediaCheckedAt": "2026-09-11T23:48:53.681Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:37.944Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414757,
@@ -18132,7 +18217,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257417287/85b2a09f0f229745571960073bb6ded41a0c24f6/movie_600x337.jpg?t=1788531027",
-      "steamMediaCheckedAt": "2026-09-11T23:48:55.543Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:39.793Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 159353,
@@ -18299,7 +18385,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421591/a10e3ce62a058887766464518121a82af790b805/movie_600x337.jpg?t=1789048763",
-      "steamMediaCheckedAt": "2026-09-11T23:48:57.410Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:41.654Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 339987,
@@ -18586,7 +18673,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257402941/a219380fe8942eb7e192d41f672c48f469b338dd/movie_600x337.jpg?t=1787125986",
-      "steamMediaCheckedAt": "2026-09-11T23:48:59.254Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:43.511Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414945,
@@ -18838,7 +18926,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257352220/5ad6b389932a4571ba27d4e8073302770e5c8a2e/movie_600x337.jpg?t=1780775194",
-      "steamMediaCheckedAt": "2026-09-11T23:49:01.117Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:45.361Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 319629,
@@ -18957,7 +19046,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421771/c7b54a5067f7dc82b6e5c86e346615c2e306d9d0/movie_600x337.jpg?t=1789051815",
-      "steamMediaCheckedAt": "2026-09-11T23:49:02.963Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:47.243Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 326485,
@@ -19313,7 +19403,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257292107/6643ff8dc495b0a5df859c2e53a5ba26f92aa0ca/movie_600x337.jpg?t=1787234150",
-      "steamMediaCheckedAt": "2026-09-11T23:48:36.904Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:11.935Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 377087,
@@ -19419,7 +19510,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257228360/07d5ee257e68c24d64715a07141b52f4e125d696/movie_600x337.jpg?t=1789163833",
-      "steamMediaCheckedAt": "2026-09-11T23:48:38.774Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:13.818Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 345067,
@@ -19516,7 +19608,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257334811/6bce5fcab3f19771653a504d62d75860722e7630/movie_600x337.jpg?t=1778506546",
-      "steamMediaCheckedAt": "2026-09-11T23:48:40.621Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:15.665Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412303,
@@ -19819,7 +19912,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257386705/a6903c4db9c31ccabd5dbd63672642b8e77fe74e/movie_600x337.jpg?t=1785416153",
-      "steamMediaCheckedAt": "2026-09-11T23:49:04.818Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:17.514Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 372394,
@@ -19979,7 +20073,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408194/cbb217b8b567d857a66811a5a63084e18703ff52/movie_600x337.jpg?t=1787847818",
-      "steamMediaCheckedAt": "2026-09-11T23:49:06.690Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:19.358Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413983,
@@ -20175,7 +20270,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257054602/64314ef25e59f8c1af011328e907e7748af6f108/movie_600x337.jpg?t=1774458699",
-      "steamMediaCheckedAt": "2026-09-11T23:49:08.536Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:21.202Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410924,
@@ -20322,7 +20418,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257376980/7607bf66dcaf6b74b5e96996b9073fb0e0dc504d/movie_600x337.jpg?t=1784055621",
-      "steamMediaCheckedAt": "2026-09-11T23:49:10.378Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:23.044Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411733,
@@ -20492,7 +20589,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257386602/a9b7779ff924059b8198bd3ef2a4f6eabf9f0f0b/movie_600x337.jpg?t=1788875403",
-      "steamMediaCheckedAt": "2026-09-11T23:49:12.273Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:24.884Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414992,
@@ -20774,7 +20872,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257347449/862538ab9b09790c9ecfbe11b7245ce4ceabd5b1/movie_600x337.jpg?t=1780311965",
-      "steamMediaCheckedAt": "2026-09-11T23:49:27.205Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:49.087Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 355555,
@@ -20994,7 +21093,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257415792/c68466f2a4f22a68181f4fab19d90e282ae725b7/movie_600x337.jpg?t=1788361642",
-      "steamMediaCheckedAt": "2026-09-11T23:49:29.048Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:50.959Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 376511,
@@ -21102,7 +21202,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257227413/c2cf335d4dbc6f0b360c2682f04e5f1e79b78ab6/movie_600x337.jpg?t=1784054497",
-      "steamMediaCheckedAt": "2026-09-11T23:49:30.898Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:52.797Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411580,
@@ -21254,7 +21355,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257386912/fa4e327c65b5fb728783132cb88207da589d8d2a/movie_600x337.jpg?t=1785262655",
-      "steamMediaCheckedAt": "2026-09-11T23:49:32.752Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:54.636Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414434,
@@ -21594,7 +21696,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257351220/74dc7bf4ed600e13e21e508b11740d827263cec5/movie_600x337.jpg?t=1780696629",
-      "steamMediaCheckedAt": "2026-09-11T23:49:34.627Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:56.500Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 407726,
@@ -21878,7 +21981,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257415293/0d412121034ee242806cedc2809055cc1c973804/movie_600x337.jpg?t=1788311690",
-      "steamMediaCheckedAt": "2026-09-11T23:49:36.494Z"
+      "steamMediaCheckedAt": "2026-09-12T06:43:58.353Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397186,
@@ -21928,32 +22032,32 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/96e3dffe16e192f0886bfbbc0fb55752e3fc2a29/ss_96e3dffe16e192f0886bfbbc0fb55752e3fc2a29.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/96e3dffe16e192f0886bfbbc0fb55752e3fc2a29/ss_96e3dffe16e192f0886bfbbc0fb55752e3fc2a29.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/96e3dffe16e192f0886bfbbc0fb55752e3fc2a29/ss_96e3dffe16e192f0886bfbbc0fb55752e3fc2a29.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/96e3dffe16e192f0886bfbbc0fb55752e3fc2a29/ss_96e3dffe16e192f0886bfbbc0fb55752e3fc2a29.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d91fbd9f998d476fd7c76a44a7b76a11df414838/ss_d91fbd9f998d476fd7c76a44a7b76a11df414838.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d91fbd9f998d476fd7c76a44a7b76a11df414838/ss_d91fbd9f998d476fd7c76a44a7b76a11df414838.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d91fbd9f998d476fd7c76a44a7b76a11df414838/ss_d91fbd9f998d476fd7c76a44a7b76a11df414838.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d91fbd9f998d476fd7c76a44a7b76a11df414838/ss_d91fbd9f998d476fd7c76a44a7b76a11df414838.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/bf4c5edfd1dbfa1cec22a23809aefe0ee58e7a16/ss_bf4c5edfd1dbfa1cec22a23809aefe0ee58e7a16.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/bf4c5edfd1dbfa1cec22a23809aefe0ee58e7a16/ss_bf4c5edfd1dbfa1cec22a23809aefe0ee58e7a16.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/490a11aa12181824782b9fb382cc01f1cd5f21f4/ss_490a11aa12181824782b9fb382cc01f1cd5f21f4.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/490a11aa12181824782b9fb382cc01f1cd5f21f4/ss_490a11aa12181824782b9fb382cc01f1cd5f21f4.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/b71874cabd458273790769c1d7cd3157ff00c368/ss_b71874cabd458273790769c1d7cd3157ff00c368.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/b71874cabd458273790769c1d7cd3157ff00c368/ss_b71874cabd458273790769c1d7cd3157ff00c368.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/b71874cabd458273790769c1d7cd3157ff00c368/ss_b71874cabd458273790769c1d7cd3157ff00c368.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/b71874cabd458273790769c1d7cd3157ff00c368/ss_b71874cabd458273790769c1d7cd3157ff00c368.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d0db6f9604028a5bf2bfc8abef7b496a08f2fab5/ss_d0db6f9604028a5bf2bfc8abef7b496a08f2fab5.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d0db6f9604028a5bf2bfc8abef7b496a08f2fab5/ss_d0db6f9604028a5bf2bfc8abef7b496a08f2fab5.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d0db6f9604028a5bf2bfc8abef7b496a08f2fab5/ss_d0db6f9604028a5bf2bfc8abef7b496a08f2fab5.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/d0db6f9604028a5bf2bfc8abef7b496a08f2fab5/ss_d0db6f9604028a5bf2bfc8abef7b496a08f2fab5.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/cc2185b6c54ccab71fcf44c50848005d268f9ec6/ss_cc2185b6c54ccab71fcf44c50848005d268f9ec6.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/cc2185b6c54ccab71fcf44c50848005d268f9ec6/ss_cc2185b6c54ccab71fcf44c50848005d268f9ec6.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/cc2185b6c54ccab71fcf44c50848005d268f9ec6/ss_cc2185b6c54ccab71fcf44c50848005d268f9ec6.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/cc2185b6c54ccab71fcf44c50848005d268f9ec6/ss_cc2185b6c54ccab71fcf44c50848005d268f9ec6.600x338.jpg?t=1789185621"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/7081f0c8cf0aaacc76437ad6c301b1ea3623e812/ss_7081f0c8cf0aaacc76437ad6c301b1ea3623e812.1920x1080.jpg?t=1788744709",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/7081f0c8cf0aaacc76437ad6c301b1ea3623e812/ss_7081f0c8cf0aaacc76437ad6c301b1ea3623e812.600x338.jpg?t=1788744709"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/7081f0c8cf0aaacc76437ad6c301b1ea3623e812/ss_7081f0c8cf0aaacc76437ad6c301b1ea3623e812.1920x1080.jpg?t=1789185621",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3503300/7081f0c8cf0aaacc76437ad6c301b1ea3623e812/ss_7081f0c8cf0aaacc76437ad6c301b1ea3623e812.600x338.jpg?t=1789185621"
         }
       ],
       "subscriptions": {
@@ -21973,7 +22077,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257118621/4524957fe4d9d18b1a1ddfa8d55fce36805784d4/movie_600x337.jpg?t=1777553072",
-      "steamMediaCheckedAt": "2026-09-11T23:49:38.351Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:00.209Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415465,
@@ -22148,7 +22253,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408603/32d4a06490c1e4a04596292f54b0208a7aac12a1/movie_600x337.jpg?t=1787709929",
-      "steamMediaCheckedAt": "2026-09-11T23:50:00.634Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:15.043Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 371847,
@@ -22423,7 +22529,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257321541/1e2ad0595ab5eacc9901167d6c83194fd688f5a2/movie_600x337.jpg?t=1776438649",
-      "steamMediaCheckedAt": "2026-09-11T23:50:02.504Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:16.881Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 142304,
@@ -22540,7 +22647,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393780/3ca9c14a516470e72c027b187c06044295d48af6/movie_600x337.jpg?t=1789061911",
-      "steamMediaCheckedAt": "2026-09-11T23:50:04.359Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:18.741Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414762,
@@ -22703,7 +22811,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257323544/88894a4396aaa045cfead81b9d5601855b79732a/movie_600x337.jpg?t=1777374169",
-      "steamMediaCheckedAt": "2026-09-11T23:50:06.304Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:20.585Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 204463,
@@ -22821,7 +22930,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257385917/d8c16b5a559fecbba589d80b81306d38f9db9dd4/movie_600x337.jpg?t=1785157524",
-      "steamMediaCheckedAt": "2026-09-11T23:50:08.163Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:22.426Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 362157,
@@ -23005,7 +23115,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257196265/9e5d0031786f05df7773e4b3d8a1dd3202ce3e1b/movie_600x337.jpg?t=1757606391",
-      "steamMediaCheckedAt": "2026-09-11T23:50:10.039Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:24.282Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 276631,
@@ -23133,7 +23244,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257398011/d8701d7e8084c5d9b055d03236e434110ccfb733/movie_600x337.jpg?t=1786613787",
-      "steamMediaCheckedAt": "2026-09-11T23:50:11.884Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:26.129Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412427,
@@ -23242,7 +23354,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421371/aa6023ee8ab346cbf9e87a1cf492837e6c9e57f1/movie_600x337.jpg?t=1788998560",
-      "steamMediaCheckedAt": "2026-09-11T23:50:13.742Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:27.977Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 364215,
@@ -23401,7 +23514,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256809732/movie.293x165.jpg?t=1605868527",
-      "steamMediaCheckedAt": "2026-09-11T23:50:15.588Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:29.816Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410574,
@@ -23566,7 +23680,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256727161/movie.293x165.jpg?t=1535609052",
-      "steamMediaCheckedAt": "2026-09-11T23:50:17.470Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:31.699Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 145078,
@@ -23684,7 +23799,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421885/e9c9ba95acde383c07fbb43f5fd6db5eecc6c2b2/movie_600x337.jpg?t=1789047199",
-      "steamMediaCheckedAt": "2026-09-11T23:50:19.313Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:33.547Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 369701,
@@ -23794,7 +23910,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257271085/6e4dfa6b0823f64579e07a4bf12fe9c4c00e4269/movie_600x337.jpg?t=1769154789",
-      "steamMediaCheckedAt": "2026-09-11T23:50:32.321Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:55.885Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 388448,
@@ -23898,7 +24015,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257282638/21544a7e83b5c1366c7f4f1d52ba363e097c4546/movie_600x337.jpg?t=1770686730",
-      "steamMediaCheckedAt": "2026-09-11T23:50:34.145Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:57.739Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 307878,
@@ -24006,7 +24124,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257034426/92010e77e3ca13b6360fb878093da4e5096c9118/movie_600x337.jpg?t=1754326904",
-      "steamMediaCheckedAt": "2026-09-11T23:50:36.180Z"
+      "steamMediaCheckedAt": "2026-09-12T06:44:59.592Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414555,
@@ -24105,7 +24224,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257404188/3fff8ab8d788dd43463fe94d93de50fd48407a9c/movie_600x337.jpg?t=1787242079",
-      "steamMediaCheckedAt": "2026-09-11T23:50:38.015Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:01.432Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 349936,
@@ -24328,7 +24448,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257392917/f817211f9b49529de88a4650a82c58e6f2de3db1/movie_600x337.jpg?t=1786012848",
-      "steamMediaCheckedAt": "2026-09-11T23:50:39.887Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:03.284Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408918,
@@ -24481,7 +24602,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256939813/movie.293x165.jpg?t=1681173441",
-      "steamMediaCheckedAt": "2026-09-11T23:50:41.746Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:05.136Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414234,
@@ -24654,7 +24776,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257300660/c2ec8f1d61c86a89adf2c52f31f4807b95c225a4/movie_600x337.jpg?t=1773085869",
-      "steamMediaCheckedAt": "2026-09-11T23:50:43.593Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:06.986Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 323462,
@@ -24759,7 +24882,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393015/f0afc15dbf2c31f093ec14957cf84cddd7b3fb14/movie_600x337.jpg?t=1786031952",
-      "steamMediaCheckedAt": "2026-09-11T23:50:45.434Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:08.833Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 306924,
@@ -24933,7 +25057,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257302531/131ab3ec02de9f90b925b244c002da209199d525/movie_600x337.jpg?t=1773870158",
-      "steamMediaCheckedAt": "2026-09-11T23:50:47.310Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:10.692Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 278965,
@@ -25051,7 +25176,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257349365/fdff4e217c5c9fe59b4583387a1de2840cc7f232/movie_600x337.jpg?t=1780484969",
-      "steamMediaCheckedAt": "2026-09-11T23:50:49.157Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:12.537Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 395699,
@@ -25154,7 +25280,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257397959/9cb3ce927792620da318ed5a689327716827bf1f/movie_600x337.jpg?t=1786604086",
-      "steamMediaCheckedAt": "2026-09-11T23:50:51.008Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:14.380Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 407158,
@@ -25388,7 +25515,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257383242/1490418dc71ef95bbb7ff8707addee086ed466f4/movie_600x337.jpg?t=1784819265",
-      "steamMediaCheckedAt": "2026-09-11T23:50:52.857Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:16.224Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 243345,
@@ -25504,7 +25632,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256932754/movie.293x165.jpg?t=1695686110",
-      "steamMediaCheckedAt": "2026-09-11T23:50:54.702Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:18.072Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403905,
@@ -25660,7 +25789,8 @@
         "geforceNow": false,
         "checkedAt": "2026-09-11T23:36:32.285Z"
       },
-      "regionalReleases": []
+      "regionalReleases": [],
+      "contentType": "Remake"
     },
     {
       "id": 390039,
@@ -25917,7 +26047,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257415497/a56c90b17577723ccdce267ac071dcf19ce9fc0d/movie_600x337.jpg?t=1788338610",
-      "steamMediaCheckedAt": "2026-09-11T23:50:56.550Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:19.966Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 398622,
@@ -26425,7 +26556,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257388726/8e3ce5c69a08e9cd47254babd759522cd3dd0ac6/movie_600x337.jpg?t=1785532834",
-      "steamMediaCheckedAt": "2026-09-11T23:50:58.417Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:32.958Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415015,
@@ -26757,7 +26889,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257391692/60688cec611e28e24365c4ee9934ea913f3b33fc/movie_600x337.jpg?t=1788440740",
-      "steamMediaCheckedAt": "2026-09-11T23:51:00.259Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:34.800Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409384,
@@ -26868,7 +27001,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409346/61328721c192d022e0ab469945a7298269b60db2/movie_600x337.jpg?t=1788262133",
-      "steamMediaCheckedAt": "2026-09-11T23:51:02.128Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:36.648Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 265376,
@@ -26981,7 +27115,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257414260/e927fecda76442620a5b0c4c639a10341e311d10/movie_600x337.jpg?t=1788278296",
-      "steamMediaCheckedAt": "2026-09-11T23:51:05.840Z"
+      "steamMediaCheckedAt": "2026-09-12T06:45:38.489Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414438,
@@ -27348,7 +27483,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257398102/17772bb2175a4ae72e87d3a21fdfbb19605c4aca/movie_600x337.jpg?t=1786619993",
-      "steamMediaCheckedAt": "2026-09-11T23:52:03.424Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:04.396Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 270906,
@@ -27448,7 +27584,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257152112/3cbf522f0c64442b25ab734ecc8141cdfbedd58a/movie_600x337.jpg?t=1787541184",
-      "steamMediaCheckedAt": "2026-09-11T23:52:05.263Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:06.241Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408519,
@@ -27683,7 +27820,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257405770/4bf8aa4edc79e052e3aa08c81e0c50e106f13d70/movie_600x337.jpg?t=1787683846",
-      "steamMediaCheckedAt": "2026-09-11T23:52:18.324Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:41.477Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403203,
@@ -27790,7 +27928,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257414813/9964e9296b46b547c25d2226563dea7e0b5927e5/movie_600x337.jpg?t=1788278231",
-      "steamMediaCheckedAt": "2026-09-11T23:52:20.178Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:43.318Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 136964,
@@ -27921,7 +28060,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257313026/557fb48287e5427873c01cc517389e758fd89c6f/movie_600x337.jpg?t=1776870007",
-      "steamMediaCheckedAt": "2026-09-11T23:52:22.026Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:45.160Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 291342,
@@ -28023,7 +28163,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257388288/8d2136c55a0298c9c759bb3143b13332bc67bc0b/movie_600x337.jpg?t=1785416414",
-      "steamMediaCheckedAt": "2026-09-11T23:52:23.867Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:47.008Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 214394,
@@ -28143,7 +28284,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257194721/2d19ead28c2a50a3090b7e53e645bfc35e7ae816/movie_600x337.jpg?t=1757949145",
-      "steamMediaCheckedAt": "2026-09-11T23:52:25.722Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:48.886Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 238731,
@@ -28247,7 +28389,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257128836/82801c3c8b3d8d34739d31b36b181dab4bc392db/movie_600x337.jpg?t=1745341900",
-      "steamMediaCheckedAt": "2026-09-11T23:52:27.565Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:50.725Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 275734,
@@ -28364,7 +28507,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257351873/0627ae8c9ff1cf12c7f5943187963eabd4dd2c3c/movie_600x337.jpg?t=1788898482",
-      "steamMediaCheckedAt": "2026-09-11T23:52:29.411Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:52.575Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397817,
@@ -28652,7 +28796,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257390742/a1d442e08d8e99f87382fd640840ec5b570ad38f/movie_600x337.jpg?t=1785743620",
-      "steamMediaCheckedAt": "2026-09-11T23:52:31.246Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:54.417Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 350440,
@@ -28913,7 +29058,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408624/5f5ea2d02fbfd59c61ae516871fb9419858ebfdb/movie_600x337.jpg?t=1787716126",
-      "steamMediaCheckedAt": "2026-09-11T23:52:33.096Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:56.261Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 304846,
@@ -29011,7 +29157,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257380994/847408b28ade6b88559b4ac59c87d156a0002bda/movie_600x337.jpg?t=1786627940",
-      "steamMediaCheckedAt": "2026-09-11T23:52:34.937Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:58.108Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415771,
@@ -29233,7 +29380,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408311/89331074ef1db5cb2c0997a7ef9516b40ab19880/movie_600x337.jpg?t=1787678584",
-      "steamMediaCheckedAt": "2026-09-11T23:52:36.778Z"
+      "steamMediaCheckedAt": "2026-09-12T06:46:59.954Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409708,
@@ -29330,7 +29478,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257388493/57695226fdb6bbce7de4a07e1edcfb89cc919b92/movie_600x337.jpg?t=1785424106",
-      "steamMediaCheckedAt": "2026-09-11T23:52:38.644Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:01.802Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 378548,
@@ -29533,7 +29682,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257394285/514b1359159a2a9cd9356209488bd83727a4fd49/movie_600x337.jpg?t=1786350436",
-      "steamMediaCheckedAt": "2026-09-11T23:53:13.743Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:14.790Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399307,
@@ -29700,7 +29850,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257396781/5e6e1870e699e750e0100d855f5476e9efff2a8f/movie_600x337.jpg?t=1786566803",
-      "steamMediaCheckedAt": "2026-09-11T23:53:15.627Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:16.636Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 213574,
@@ -29804,7 +29955,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257421950/6ddb166885868452382c4d9ec5e4e2e3bdb3b937/movie_600x337.jpg?t=1789052271",
-      "steamMediaCheckedAt": "2026-09-11T23:53:17.464Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:18.475Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 355983,
@@ -29965,7 +30117,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257399149/a4cbfa0ff5739a6f46a4caff52b1433f908076db/movie_600x337.jpg?t=1786707808",
-      "steamMediaCheckedAt": "2026-09-11T23:53:19.365Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:20.332Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 382154,
@@ -30184,7 +30337,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257352860/7df4ee75b4a5a3d098df0bc9c8972820ab156913/movie_600x337.jpg?t=1788510690",
-      "steamMediaCheckedAt": "2026-09-11T23:53:21.236Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:22.184Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 380068,
@@ -30340,7 +30494,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257216300/f4427c8602c8034d8bbbef193c22b73a56894575/movie_600x337.jpg?t=1760254279",
-      "steamMediaCheckedAt": "2026-09-11T23:53:23.093Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:57.300Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 378427,
@@ -30546,7 +30701,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257351018/91389861336f39ba83857e6c14bb18c41e81dead/movie_600x337.jpg?t=1780639882",
-      "steamMediaCheckedAt": "2026-09-11T23:53:24.928Z"
+      "steamMediaCheckedAt": "2026-09-12T06:47:59.145Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 251749,
@@ -30664,7 +30820,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257398145/7dbc1b7178c39c7c1e197eb8126bab608a264ca9/movie_600x337.jpg?t=1786625853",
-      "steamMediaCheckedAt": "2026-09-11T23:53:26.788Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:00.987Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 279963,
@@ -30780,7 +30937,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257372321/6a836a1d18b27e74002de3b2914c60899ee7c27b/movie_600x337.jpg?t=1785487408",
-      "steamMediaCheckedAt": "2026-09-11T23:53:28.622Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:02.834Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 383138,
@@ -30903,7 +31061,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257377458/729359c0726cd2f81d7fa8d0caff262ca68b501c/movie_600x337.jpg?t=1784114289",
-      "steamMediaCheckedAt": "2026-09-11T23:53:30.453Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:04.681Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415043,
@@ -30991,7 +31150,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257094320/a6a3282ccb051faa1e01af13a415e108238dfea7/movie_600x337.jpg?t=1740531568",
-      "steamMediaCheckedAt": "2026-09-11T23:53:32.294Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:06.514Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 376956,
@@ -31149,7 +31309,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257386797/3e63fad0181865a31c78a7d5670f176e8fd250cf/movie_600x337.jpg?t=1785250824",
-      "steamMediaCheckedAt": "2026-09-11T23:53:34.117Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:08.354Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 384730,
@@ -31295,7 +31456,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257321632/3ab4103080511e7edc4013bbc86c065e6ba642eb/movie_600x337.jpg?t=1786655501",
-      "steamMediaCheckedAt": "2026-09-11T23:53:35.941Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:10.195Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 398583,
@@ -31426,7 +31588,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257355221/f77b640457b11eee1bc133490bf79dd01349b63d/movie_600x337.jpg?t=1781114506",
-      "steamMediaCheckedAt": "2026-09-11T23:53:37.782Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:12.048Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414031,
@@ -31744,7 +31907,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257206670/4262d93fc71cd68393b52e5de6786b48434d5041/movie_600x337.jpg?t=1758883597",
-      "steamMediaCheckedAt": "2026-09-11T23:53:39.605Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:13.914Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408068,
@@ -31842,7 +32006,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257408834/5709ccc0cc368e6f4c8006aad78b26786dc532df/movie_600x337.jpg?t=1787730233",
-      "steamMediaCheckedAt": "2026-09-11T23:53:41.433Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:15.763Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 389750,
@@ -32012,7 +32177,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257235484/a22f212c1e4579933553746d9c7e9bd7c5abb615/movie_600x337.jpg?t=1763676380",
-      "steamMediaCheckedAt": "2026-09-11T23:53:43.260Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:17.618Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 370010,
@@ -32285,7 +32451,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257422031/9ebff182504ac74e728d3966e15e00edf62e0137/movie_600x337.jpg?t=1789055525",
-      "steamMediaCheckedAt": "2026-09-11T23:53:45.107Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:19.505Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 349982,
@@ -32373,7 +32540,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257130562/e6199d3d8d6d0e6e9d93aabca13648b7e2037063/movie_600x337.jpg?t=1746046543",
-      "steamMediaCheckedAt": "2026-09-11T23:53:46.941Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:21.340Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 343594,
@@ -32461,7 +32629,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256893327/movie.293x165.jpg?t=1656500909",
-      "steamMediaCheckedAt": "2026-09-11T23:53:48.778Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:23.179Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 333701,
@@ -32576,7 +32745,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257409022/1206600b0a77992d634a1c002ff5b02b636f2cf0/movie_600x337.jpg?t=1787755959",
-      "steamMediaCheckedAt": "2026-09-11T23:53:50.639Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:25.025Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403155,
@@ -32728,7 +32898,8 @@
       "steamId": "4520490",
       "steamMetadataCheckedAt": "2026-09-11T23:05:54.343Z",
       "earlyAccess": false,
-      "steamMediaCheckedAt": "2026-09-11T23:53:52.490Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:26.874Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414765,
@@ -32996,7 +33167,8 @@
       "earlyAccess": true,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257405200/58ada78399ebe451d409af84611645b54aaf47f8/movie_600x337.jpg?t=1787331826",
-      "steamMediaCheckedAt": "2026-09-11T23:53:54.342Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:28.716Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414237,
@@ -33320,7 +33492,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257415968/03b183f7c907bbf7eb714292c3da4104a4622c08/movie_600x337.jpg?t=1788382650",
-      "steamMediaCheckedAt": "2026-09-11T23:53:56.204Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:30.562Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414714,
@@ -33541,7 +33714,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257361461/3050cf5097a27351bdf69aa7225e4fe42e91b720/movie_600x337.jpg?t=1781735691",
-      "steamMediaCheckedAt": "2026-09-11T23:53:58.057Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:32.401Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 381023,
@@ -33692,7 +33866,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257141615/7a47e663b2f04dcaf3ce9c5060e951b3cb9b94f9/movie_600x337.jpg?t=1747914943",
-      "steamMediaCheckedAt": "2026-09-11T23:53:59.909Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:34.238Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 347337,
@@ -33809,7 +33984,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257101166/796380482c327f06e40abfddd51a897dc6cd17fa/movie_600x337.jpg?t=1776358493",
-      "steamMediaCheckedAt": "2026-09-11T23:54:01.772Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:36.082Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 297172,
@@ -33909,7 +34085,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257345847/053bb36ab8c5cf85ee8a0b0c3465cfa0cacb77f1/movie_600x337.jpg?t=1780060051",
-      "steamMediaCheckedAt": "2026-09-11T23:54:03.643Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:37.941Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392040,
@@ -34109,7 +34286,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257223396/8689a615ca850e33a07dfee466cd61b25ded1faa/movie_600x337.jpg?t=1761609690",
-      "steamMediaCheckedAt": "2026-09-11T23:54:05.484Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:39.776Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 368471,
@@ -34470,7 +34648,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257351303/a9fb4e7106de445d0441d6e90a0402de090a2ca9/movie_600x337.jpg?t=1781766403",
-      "steamMediaCheckedAt": "2026-09-11T23:54:07.340Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:41.626Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406610,
@@ -34688,7 +34867,8 @@
       "earlyAccess": false,
       "trailerUrl": "",
       "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257403808/02208f9295bacdb55434ba4051e0185a53ad09be/movie_600x337.jpg?t=1787231119",
-      "steamMediaCheckedAt": "2026-09-11T23:54:09.180Z"
+      "steamMediaCheckedAt": "2026-09-12T06:48:43.463Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392212,
@@ -101219,7 +101399,8 @@
       "announcedWindow": "",
       "steamId": "1892080",
       "steamMetadataCheckedAt": "2026-09-11T23:15:55.638Z",
-      "earlyAccess": false
+      "earlyAccess": false,
+      "contentType": "Remaster"
     },
     {
       "id": 304574,
