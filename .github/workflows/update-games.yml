@@ -9,6 +9,8 @@ on:
       - main
     paths:
       - 'fetch-games.js'
+      - 'enrich-public-metadata.js'
+      - 'package.json'
       - '.github/workflows/update-games.yml'
 
 permissions:
@@ -21,7 +23,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 55
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,6 +42,9 @@ jobs:
           STEAM_CONCURRENCY: 2
           STEAM_RETRY_DAYS: 14
         run: npm run fetch-games
+
+      - name: Improve descriptions and subscription catalogs
+        run: npm run enrich-public
 
       - name: Check JavaScript
         run: npm run check
