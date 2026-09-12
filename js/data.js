@@ -1,7 +1,7 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v6';
+const CACHE_KEY = 'games-catalog-v7';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 const LIVE_CATALOG_URL = '/games-api/catalog';
 const STATIC_CATALOG_URL = 'games.json';
