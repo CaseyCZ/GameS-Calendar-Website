@@ -3,9 +3,9 @@ const DB_VERSION = 1;
 const STORE = 'responses';
 const CACHE_KEY = 'games-catalog-v7-lite';
 const OLD_CACHE_KEY = 'games-catalog-v6';
-const CACHE_TTL = 6 * 60 * 60 * 1000;
 const LIVE_CATALOG_URL = 'games-lite.json';
 const STATIC_CATALOG_URL = 'games.json';
+let sharedLoadPromise = null;
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -312,24 +312,13 @@ function openDb() {
   });
 }
 
-async function readCache() {
-  const db = await openDb();
-  if (!db) return null;
-  return new Promise(resolve => {
-    const tx = db.transaction(STORE, 'readonly');
-    const request = tx.objectStore(STORE).get(CACHE_KEY);
-    request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => resolve(null);
-  });
-}
-
-async function writeCache(payload) {
+async function clearLargeCaches() {
   const db = await openDb();
   if (!db) return;
   await new Promise(resolve => {
     const tx = db.transaction(STORE, 'readwrite');
     const store = tx.objectStore(STORE);
-    store.put({ payload, savedAt: Date.now() }, CACHE_KEY);
+    store.delete(CACHE_KEY);
     store.delete(OLD_CACHE_KEY);
     tx.oncomplete = resolve;
     tx.onerror = resolve;
@@ -337,7 +326,7 @@ async function writeCache(payload) {
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } });
+  const response = await fetch(url, { cache: 'default', headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
 }
@@ -346,7 +335,6 @@ async function fetchPayload() {
   let liveError = null;
   try {
     const payload = await fetchJson(LIVE_CATALOG_URL);
-    await writeCache(payload);
     return { payload, source: 'web-feed' };
   } catch (error) {
     liveError = error;
@@ -354,43 +342,31 @@ async function fetchPayload() {
 
   try {
     const payload = await fetchJson(STATIC_CATALOG_URL);
-    await writeCache(payload);
     return { payload, source: 'games-json', liveError };
   } catch (fallbackError) {
     throw new Error(`Živý webový katalog i games.json selhaly: ${liveError?.message || 'feed error'}; ${fallbackError.message}`);
   }
 }
 
-export async function loadGameData({ onRevalidated } = {}) {
-  const cached = await readCache();
-  const isFresh = cached && Date.now() - cached.savedAt < CACHE_TTL;
-
-  if (isFresh) {
-    const dataset = normalizePayload(cached.payload);
-    fetchPayload().then(({ payload }) => {
-      const fresh = normalizePayload(payload);
-      const before = dataset.generatedAt || cached.savedAt;
-      const after = fresh.generatedAt || Date.now();
-      if (String(before) !== String(after)) onRevalidated?.(fresh);
-    }).catch(() => {});
-    return { dataset, rawPayload: cached.payload, source: 'cache', stale: false };
+export async function loadGameData() {
+  if (!sharedLoadPromise) {
+    sharedLoadPromise = (async () => {
+      await clearLargeCaches();
+      const { payload, source, liveError } = await fetchPayload();
+      const dataset = normalizePayload(payload);
+      return {
+        dataset,
+        rawPayload: null,
+        source,
+        stale: false,
+        liveError: liveError || null
+      };
+    })().catch(error => {
+      sharedLoadPromise = null;
+      throw error;
+    });
   }
-
-  try {
-    const { payload, source, liveError } = await fetchPayload();
-    return {
-      dataset: normalizePayload(payload),
-      rawPayload: payload,
-      source,
-      stale: false,
-      liveError: liveError || null
-    };
-  } catch (error) {
-    if (cached?.payload) {
-      return { dataset: normalizePayload(cached.payload), rawPayload: cached.payload, source: 'cache', stale: true, error };
-    }
-    throw error;
-  }
+  return sharedLoadPromise;
 }
 
 if (typeof document !== 'undefined') {
