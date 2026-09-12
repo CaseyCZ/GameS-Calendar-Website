@@ -3,35 +3,74 @@ import { cacheGet, cachePut } from '../db.js';
 import { fetchJson } from '../lib/http.js';
 import { canonicalGame, titleScore, uniq } from '../lib/normalize.js';
 
-const ENDPOINT = 'https://api-prod.nvidia.com/services/gfngames/v1/gameList';
+const PRIMARY_ENDPOINT = 'https://games.geforce.com/graphql';
+const FALLBACK_ENDPOINT = 'https://api-prod.nvidia.com/services/gfngames/v1/gameList';
 
-function query(after = null) {
-  const afterPart = after ? ` after:${JSON.stringify(after)}` : '';
-  return `{ apps(country:${JSON.stringify(config.gfnCountry)} language:${JSON.stringify(config.gfnLanguage)} orderBy:"itemMetadata.gfnPopularityRank:ASC,sortName:ASC"${afterPart}) { numberReturned pageInfo { endCursor hasNextPage } items { id title sortName images { FEATURE_IMAGE TV_BANNER GAME_ICON GAME_LOGO GAME_BOX_ART } gfn { playType minimumMembershipTierLabel } variants { appStore publisherName storeUrl minimumSizeInBytes } } } }`;
+function query(after = '') {
+  return `{ apps(country:${JSON.stringify(config.gfnCountry)} language:${JSON.stringify(config.gfnLanguage)} after:${JSON.stringify(after || '')}) { numberReturned pageInfo { endCursor hasNextPage } items { id cmsId title sortName type images { GAME_BOX_ART KEY_ART HERO_IMAGE TV_BANNER GAME_ICON GAME_LOGO } variants { id title appStore publisherName osType storeId shortName storeUrl gfn { releaseDate status } } } } }`;
+}
+
+async function fetchPage(after = '') {
+  const graph = query(after);
+  const primary = new URL(PRIMARY_ENDPOINT);
+  primary.searchParams.set('requestType', 'apps');
+  primary.searchParams.set('query', graph);
+
+  try {
+    return await fetchJson(primary, { attempts: 1, timeoutMs: 12_000 });
+  } catch (primaryError) {
+    try {
+      return await fetchJson(FALLBACK_ENDPOINT, {
+        method: 'POST',
+        attempts: 1,
+        timeoutMs: 12_000,
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+          'nv-browser-type': 'CHROME',
+          'nv-client-streamer': 'WEBRTC',
+          'nv-client-type': 'BROWSER',
+          'nv-device-os': 'LINUX',
+          'nv-device-type': 'DESKTOP'
+        },
+        body: graph
+      });
+    } catch (fallbackError) {
+      throw new Error(`GeForce NOW primary failed: ${primaryError?.message || primaryError}; fallback failed: ${fallbackError?.message || fallbackError}`);
+    }
+  }
 }
 
 function normalizeGfn(item) {
   const images = item?.images || {};
   const variants = item?.variants || [];
-  const stores = uniq(variants.map(v => v?.appStore));
+  const stores = uniq(variants.map(v => v?.appStore).filter(Boolean));
+  const publishers = uniq(variants.map(v => v?.publisherName).filter(Boolean));
+  const releases = variants.map(v => v?.gfn?.releaseDate).filter(Boolean).sort();
+  const statuses = uniq(variants.map(v => v?.gfn?.status).filter(Boolean));
   return canonicalGame('geforceNow', {
-    providerId: item?.id || item?.title,
+    providerId: item?.id || item?.cmsId || item?.title,
     title: item?.title || item?.sortName || '',
-    publishers: uniq(variants.map(v => v?.publisherName)),
+    publishers,
     platforms: stores,
+    releaseDate: releases[0] || null,
     media: {
-      cover: images.GAME_BOX_ART || images.GAME_ICON || '',
-      hero: images.FEATURE_IMAGE || images.TV_BANNER || '',
+      cover: images.GAME_BOX_ART || images.KEY_ART || images.GAME_ICON || '',
+      hero: images.HERO_IMAGE || images.FEATURE_IMAGE || images.TV_BANNER || '',
       logo: images.GAME_LOGO || ''
     },
     subscriptions: {
-      geforceNow: true,
-      geforceNowPlayType: item?.gfn?.playType || null,
-      geforceNowMinTier: item?.gfn?.minimumMembershipTierLabel || null
+      geforceNow: true
     },
     storeUrl: item?.id ? `https://play.geforcenow.com/games?game-id=${encodeURIComponent(item.id)}&utm_source=games-calendar&utm_campaign=game-detail` : '',
-    sourceUrl: ENDPOINT,
-    rawHints: { stores, variants }
+    sourceUrl: PRIMARY_ENDPOINT,
+    rawHints: {
+      cmsId: item?.cmsId || null,
+      type: item?.type || null,
+      stores,
+      statuses,
+      variants
+    }
   });
 }
 
@@ -42,15 +81,11 @@ export async function list({ force = false, maxPages = 12 } = {}) {
     if (cached) return cached;
   }
   const items = [];
-  let after = null;
+  let after = '';
   for (let page = 0; page < maxPages; page += 1) {
-    const payload = await fetchJson(ENDPOINT, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: query(after)
-    });
+    const payload = await fetchPage(after);
     const apps = payload?.data?.apps || payload?.apps;
-    if (!apps) throw new Error('Unexpected GeForce NOW gameList response');
+    if (!apps) throw new Error('Unexpected GeForce NOW catalog response');
     items.push(...(apps.items || []));
     if (!apps.pageInfo?.hasNextPage || !apps.pageInfo?.endCursor || !(apps.items || []).length) break;
     after = apps.pageInfo.endCursor;
@@ -72,11 +107,16 @@ export async function search(queryText, { force = false, limit = 8 } = {}) {
 
 export const geforceNowProvider = {
   name: 'geforceNow',
-  capabilities: ['catalog', 'search', 'playType', 'stores'],
+  capabilities: ['catalog', 'search', 'stores', 'releaseDate'],
   list,
   search,
   health: async () => {
     const all = await list({ force: true, maxPages: 1 });
-    return { ok: all.length > 0, firstPageCount: all.length, endpoint: ENDPOINT };
+    return {
+      ok: all.length > 0,
+      firstPageCount: all.length,
+      endpoint: PRIMARY_ENDPOINT,
+      fallbackEndpoint: FALLBACK_ENDPOINT
+    };
   }
 };
