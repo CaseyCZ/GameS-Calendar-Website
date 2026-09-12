@@ -36,10 +36,7 @@ async function accessToken({ force = false } = {}) {
   });
   if (!payload?.access_token) throw new Error('Twitch did not return an IGDB app access token');
   const ttlMs = Math.max(60_000, Number(payload.expires_in || 0) * 1000);
-  tokenState = {
-    token: payload.access_token,
-    expiresAt: Date.now() + ttlMs
-  };
+  tokenState = { token: payload.access_token, expiresAt: Date.now() + ttlMs };
   return tokenState.token;
 }
 
@@ -125,6 +122,32 @@ function externalIds(items = []) {
   return out;
 }
 
+function idsFromWebsites(urls = []) {
+  const out = {};
+  for (const raw of urls) {
+    let url;
+    try { url = new URL(raw); }
+    catch { continue; }
+    const href = url.href;
+
+    const steam = href.match(/store\.steampowered\.com\/app\/(\d+)/i);
+    if (steam && !out.steam) out.steam = steam[1];
+
+    const xbox = href.match(/(?:xbox\.com|apps\.microsoft\.com)\/[^?#]*\/([A-Z0-9]{10,16})(?:[/?#]|$)/i);
+    if (xbox && !out.microsoft) {
+      out.microsoft = xbox[1].toUpperCase();
+      out.xbox = out.microsoft;
+    }
+
+    const psProduct = href.match(/store\.playstation\.com\/[^?#]*\/product\/([^/?#]+)/i);
+    if (psProduct && !out.playstationProduct) out.playstationProduct = decodeURIComponent(psProduct[1]);
+
+    const psConcept = href.match(/store\.playstation\.com\/[^?#]*\/concept\/([^/?#]+)/i);
+    if (psConcept && !out.playstationConcept) out.playstationConcept = decodeURIComponent(psConcept[1]);
+  }
+  return out;
+}
+
 function companyLists(items = []) {
   const developers = [];
   const publishers = [];
@@ -153,7 +176,8 @@ function normalizeIgdb(game) {
   const firstRelease = game.first_release_date ? new Date(Number(game.first_release_date) * 1000).toISOString() : null;
   const rating = Number(game.total_rating || game.aggregated_rating || game.rating || 0) || null;
   const ratingCount = Number(game.total_rating_count || game.aggregated_rating_count || game.rating_count || 0) || null;
-  const ids = externalIds(game.external_games || []);
+  const websites = (game.websites || []).map(item => item?.url).filter(Boolean);
+  const ids = { ...externalIds(game.external_games || []), ...idsFromWebsites(websites) };
 
   const normalized = canonicalGame('igdb', {
     providerId: game.id,
@@ -175,7 +199,7 @@ function normalizeIgdb(game) {
       cover: imageUrl(game.cover?.image_id, 'cover_big_2x'),
       hero: imageUrl(game.artworks?.[0]?.image_id, '1080p_2x'),
       screenshots,
-      trailers: []
+      trailers: videos.map(item => item.url).filter(Boolean)
     },
     storeUrl: game.slug ? `https://www.igdb.com/games/${game.slug}` : '',
     sourceUrl: `${API_ROOT}/games`,
@@ -190,7 +214,7 @@ function normalizeIgdb(game) {
       themes: (game.themes || []).map(item => item?.name).filter(Boolean),
       releaseDates: releases,
       videos,
-      websites: (game.websites || []).map(item => item?.url).filter(Boolean)
+      websites
     }
   });
   normalized.externalIds = ids;
@@ -201,7 +225,7 @@ function normalizeIgdb(game) {
   normalized.themes = normalized.rawHints.themes;
   normalized.releaseDates = releases;
   normalized.videos = videos;
-  normalized.websites = normalized.rawHints.websites;
+  normalized.websites = websites;
   normalized.gameType = normalized.rawHints.gameType;
   return normalized;
 }
@@ -233,7 +257,7 @@ export async function product(id, { force = false } = {}) {
   const payload = await request('games', `fields ${GAME_FIELDS}; where id = ${numeric}; limit 1;`);
   const item = normalizeIgdb(payload?.[0]);
   if (!item) throw new Error(`IGDB game ${numeric} not found`);
-  return cachePut(key, 'igdb', item, config.ttl.product);
+  return cachePut(key, 'igdb', item, config.ttl.igdb || config.ttl.product);
 }
 
 export async function search(query, { force = false, limit = 8 } = {}) {
