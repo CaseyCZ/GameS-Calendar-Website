@@ -5,13 +5,13 @@ body.game-detail-open {
 }
 
 /*
- * Game detail is intentionally a narrow card. Keep the scroll inside this
- * card and never let long links/media widen the dialog or create a page-wide
- * horizontal scrollbar.
+ * Game detail stays card-like, but gets more room on desktop. Keep the scroll
+ * inside this card and never let long links/media widen the dialog or create
+ * a page-wide horizontal scrollbar.
  */
 .game-dialog {
-  width: min(520px, calc(100vw - 24px)) !important;
-  max-width: 520px !important;
+  width: min(720px, calc(100vw - 24px)) !important;
+  max-width: 720px !important;
   max-height: min(88dvh, 820px) !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
