@@ -1,7 +1,7 @@
 import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
-import { fetchJson, fetchResponse, fetchText } from '../lib/http.js';
+import { fetchJson, fetchText } from '../lib/http.js';
 import { canonicalGame, cleanText, slugify, titleScore, uniq } from '../lib/normalize.js';
 
 const SITE = 'https://www.nintendo.com';
@@ -46,6 +46,15 @@ function nintendoTitleId(html = '', url = '') {
   return matches.find(value => /^7001/.test(value)) || matches[0] || '';
 }
 
+function stringValues(value) {
+  if (!value) return [];
+  if (!Array.isArray(value)) value = [value];
+  return value.map(item => {
+    if (typeof item === 'string') return cleanText(item);
+    return cleanText(item?.name || item?.label || item?.title || item?.formal_name || '');
+  }).filter(Boolean);
+}
+
 function priceObject(entry) {
   if (!entry) return null;
   const regular = entry.regular_price || entry.regularPrice;
@@ -64,6 +73,65 @@ function priceObject(entry) {
   };
 }
 
+function screenshotUrls(content) {
+  const out = [];
+  for (const screenshot of content?.screenshots || []) {
+    for (const image of screenshot?.images || []) {
+      if (image?.url) out.push(image.url);
+    }
+  }
+  return uniq(out);
+}
+
+function normalizeEshopContent(content) {
+  if (!content) return null;
+  const id = String(content.id || content.title_id || '');
+  const categories = uniq([
+    ...stringValues(content.categories),
+    ...stringValues(content.tags)
+  ]);
+  const screenshots = screenshotUrls(content);
+  const rating = content?.rating_info?.rating;
+  const publisher = cleanText(content.publisher?.name || content.publisher || '');
+  const developer = cleanText(content.developer?.name || content.developer || '');
+  const description = cleanText(content.description || content.long_description || content.disclaimer || '');
+  const supportedLanguages = stringValues(content.language_availability || content.languages);
+  const platformText = cleanText(content.platform || content.platform_name || '');
+  const platforms = platformText ? [platformText] : ['Switch'];
+  const targetTitleIds = (content.target_titles || []).map(item => String(item?.id || item)).filter(Boolean);
+
+  return canonicalGame('nintendo', {
+    providerId: id,
+    title: cleanText(content.formal_name || content.title?.en || content.title?.name || content.title || ''),
+    description,
+    developers: developer ? [developer] : [],
+    publishers: publisher ? [publisher] : [],
+    genres: categories,
+    categories,
+    platforms,
+    releaseDate: content.release_date_on_eshop || content.release_date || null,
+    media: {
+      cover: content.cover_url || content.hero_banner_url || screenshots[0] || '',
+      hero: content.hero_banner_url || content.cover_url || '',
+      screenshots
+    },
+    storeUrl: id ? `${ESHOP}/${config.nintendoCountry}/${config.nintendoLanguage}/titles/${id}` : '',
+    sourceUrl: `${ESHOP}/api/${config.nintendoCountry}/${config.nintendoLanguage}/contents`,
+    rawHints: {
+      contentType: content.content_type || null,
+      publicStatus: content.public_status || null,
+      isNew: Boolean(content.is_new),
+      rating: rating ? { name: rating.name || null, age: rating.age ?? null } : null,
+      supportedLanguages,
+      targetTitleIds,
+      playersFrom: content.players_from ?? null,
+      playersTo: content.players_to ?? null,
+      totalRomSize: content.total_rom_size ?? null,
+      extraction: 'official-eshop-contents'
+    }
+  });
+}
+
 export async function price(titleIds, { force = false } = {}) {
   const ids = uniq((Array.isArray(titleIds) ? titleIds : [titleIds]).map(String).filter(id => /^7\d{13}$/.test(id))).slice(0, 50);
   if (!ids.length) return { country: config.nintendoCountry, prices: [] };
@@ -78,6 +146,21 @@ export async function price(titleIds, { force = false } = {}) {
   url.searchParams.set('lang', config.nintendoLanguage);
   const payload = await fetchJson(url);
   return cachePut(key, 'nintendo', payload, 30 * 60_000);
+}
+
+export async function contents(titleIds, { force = false } = {}) {
+  const ids = uniq((Array.isArray(titleIds) ? titleIds : [titleIds]).map(String).filter(id => /^7\d{13}$/.test(id))).slice(0, 20);
+  if (!ids.length) return [];
+  const key = `nintendo:contents:${config.nintendoCountry}:${config.nintendoLanguage}:${ids.join(',')}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached;
+  }
+  const url = new URL(`${ESHOP}/api/${config.nintendoCountry}/${config.nintendoLanguage}/contents`);
+  for (const id of ids) url.searchParams.append('id', id);
+  const payload = await fetchJson(url);
+  const items = Array.isArray(payload?.contents) ? payload.contents : [];
+  return cachePut(key, 'nintendo', items, config.ttl.nintendo);
 }
 
 export async function eshopList(kind = 'sales', { force = false, count = 30, offset = 0 } = {}) {
@@ -153,6 +236,18 @@ export async function productByUrl(url, { force = false } = {}) {
   const titleId = result.rawHints?.titleId;
   if (titleId) {
     try {
+      const official = (await contents(titleId, { force }))[0];
+      const normalized = normalizeEshopContent(official);
+      if (normalized) {
+        result.providerId = normalized.providerId || result.providerId;
+        result.releaseDate ||= normalized.releaseDate;
+        result.genres = uniq([...(result.genres || []), ...(normalized.genres || [])]);
+        result.categories = uniq([...(result.categories || []), ...(normalized.categories || [])]);
+        result.media.screenshots = uniq([...(result.media?.screenshots || []), ...(normalized.media?.screenshots || [])]);
+        result.rawHints = { ...(result.rawHints || {}), ...(normalized.rawHints || {}), extraction: 'official-html+eshop-contents' };
+      }
+    } catch {}
+    try {
       const pricing = await price(titleId, { force });
       const hit = (pricing?.prices || []).find(item => String(item?.title_id || item?.titleId) === String(titleId));
       result.price = priceObject(hit);
@@ -164,24 +259,17 @@ export async function productByUrl(url, { force = false } = {}) {
 export async function productById(titleId, { force = false } = {}) {
   const id = String(titleId || '').trim();
   if (!/^7\d{13}$/.test(id)) throw new Error('Invalid Nintendo title ID');
-  const key = `nintendo:id:${config.nintendoCountry}:${id}`;
+  const key = `nintendo:id:${config.nintendoCountry}:${config.nintendoLanguage}:${id}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached;
   }
-  const redirect = `${ESHOP}/titles/${id}/redirect`;
-  const response = await fetchResponse(redirect, { attempts: 2 });
-  if (!response.ok) throw new Error(`Nintendo redirect HTTP ${response.status}`);
-  const finalUrl = response.url || `${ESHOP}/${config.nintendoCountry}/${config.nintendoLanguage}/titles/${id}`;
-  let result;
-  if (/(^|\.)nintendo\.com$/i.test(new URL(finalUrl).hostname)) {
-    result = await productByUrl(finalUrl, { force });
-  } else {
-    const html = await response.text();
-    result = parseNintendoProduct(html, finalUrl);
-  }
+  const item = (await contents(id, { force }))[0];
+  if (!item) throw new Error(`Nintendo title ${id} not found in official contents API`);
+  const result = normalizeEshopContent(item);
+  if (!result?.title) throw new Error(`Nintendo title ${id} returned no title`);
   const pricing = await price(id, { force }).catch(() => null);
-  const hit = (pricing?.prices || []).find(item => String(item?.title_id || item?.titleId) === id);
+  const hit = (pricing?.prices || []).find(entry => String(entry?.title_id || entry?.titleId) === id);
   if (hit) result.price = priceObject(hit);
   result.providerId = id;
   result.rawHints = { ...(result.rawHints || {}), titleId: id };
@@ -269,15 +357,24 @@ export async function search(query, { force = false, limit = 6 } = {}) {
 
 export const nintendoProvider = {
   name: 'nintendo',
-  capabilities: ['searchBestEffort', 'productPage', 'titleId', 'price', 'eshopLists', 'media', 'releaseDate'],
+  capabilities: ['searchBestEffort', 'productPage', 'titleId', 'contents', 'price', 'eshopLists', 'media', 'releaseDate'],
   search,
   productByUrl,
   productById,
+  contents,
   price,
   eshopList,
   health: async () => {
-    const sample = await productById('70010000063715', { force: true });
-    const pricing = await price('70010000063715', { force: true });
-    return { ok: Boolean(sample?.title && sample?.releaseDate), sample: sample?.title || null, priced: Boolean(pricing?.prices?.length), country: config.nintendoCountry };
+    const sampleId = '70010000063715';
+    const sample = await productById(sampleId, { force: true });
+    const list = await eshopList('new', { force: true, count: 5 });
+    return {
+      ok: Boolean(sample?.title && sample?.releaseDate && Array.isArray(list?.contents)),
+      sample: sample?.title || null,
+      releaseDate: sample?.releaseDate || null,
+      priced: Boolean(sample?.price),
+      listCount: list?.contents?.length || 0,
+      country: config.nintendoCountry
+    };
   }
 };
