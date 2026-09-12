@@ -13,12 +13,6 @@ function normalizeSteam(appId, data) {
   const screenshots = (data.screenshots || []).map(item => item?.path_full || item?.path_thumbnail).filter(Boolean);
   const trailers = (data.movies || []).map(movie => movie?.mp4?.max || movie?.mp4?.['480'] || movie?.webm?.max).filter(Boolean);
   const releaseDate = data.release_date?.date || null;
-  const price = data.price_overview ? {
-    currency: data.price_overview.currency || null,
-    current: Number(data.price_overview.final || 0) / 100,
-    regular: Number(data.price_overview.initial || 0) / 100,
-    discountPercent: Number(data.price_overview.discount_percent || 0)
-  } : null;
   return canonicalGame('steam', {
     providerId: appId,
     title: data.name || '',
@@ -31,7 +25,6 @@ function normalizeSteam(appId, data) {
     platforms: Object.entries(data.platforms || {}).filter(([, enabled]) => enabled).map(([name]) => name),
     releaseDate,
     earlyAccess: genres.some(value => /early access/i.test(value)) || categories.some(value => /early access/i.test(value)),
-    price,
     media: {
       cover: data.header_image || data.capsule_image || '',
       hero: data.background_raw || data.background || '',
@@ -83,7 +76,6 @@ export async function search(query, { force = false, limit = 8 } = {}) {
       detailed.push(canonicalGame('steam', {
         providerId: item.id,
         title: item.name || '',
-        price: item.price ? { currentText: item.price } : null,
         media: { cover: item.tiny_image || '' },
         storeUrl: `https://store.steampowered.com/app/${item.id}/`,
         sourceUrl: STORE_SEARCH
@@ -118,7 +110,7 @@ export async function appList({ ifModifiedSince = 0, force = false } = {}) {
 
 export const steamProvider = {
   name: 'steam',
-  capabilities: ['search', 'product', 'price', 'media', 'trailer', 'optionalOfficialAppList'],
+  capabilities: ['search', 'product', 'media', 'trailer', 'optionalOfficialAppList'],
   search,
   product: appDetails,
   appList,
