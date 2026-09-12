@@ -1,12 +1,12 @@
 {
   "name": "games-calendar-website",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
-  "description": "Rychlý herní kalendář s termíny vydání a bezplatným obohacením metadat z Wikidata, Wikipedie, Steamu a veřejných katalogů",
+  "description": "Rychlý herní kalendář s termíny vydání a obohacením metadat z IGDB a oficiálních katalogů",
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "enrich-public": "node enrich-public-metadata.js",
-    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check filter-section-accordion.js && node --check badge-filter-controls.js && node --check platform-filter-controls.js && node --check detail-gesture-fix.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js"
+    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check filter-section-accordion.js && node --check badge-filter-controls.js && node --check platform-filter-controls.js && node --check default-view.js && node --check detail-gesture-fix.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js"
   },
   "engines": {
     "node": ">=18"
