@@ -15,9 +15,11 @@ const argValue = name => {
 
 const force = args.has('--force');
 const full = args.has('--full');
+const retryFailed = args.has('--retry-failed');
 const reviews = !args.has('--no-reviews');
 const limit = full ? Number.POSITIVE_INFINITY : Math.max(1, Number(argValue('--limit') || process.env.GAMES_METADATA_LIMIT || 300));
 const concurrency = Math.max(1, Math.min(4, Number(argValue('--concurrency') || process.env.GAMES_METADATA_CONCURRENCY || 3)));
+const steamDelayMs = Math.max(250, Number(argValue('--steam-delay') || process.env.GAMES_STEAM_METADATA_DELAY_MS || 500));
 const requested = (argValue('--providers') || 'steam,microsoft,playstation,nintendo')
   .split(',').map(value => value.trim()).filter(Boolean);
 const allowed = new Set(['steam', 'microsoft', 'playstation', 'nintendo']);
@@ -71,10 +73,10 @@ function uniqueScreenshots(values) {
 function applyCanonical(game, item, provider) {
   if (!game || !item) return false;
   if (!game.summary && (item.shortDescription || item.description)) game.summary = item.shortDescription || item.description;
-  game.developers = uniq([...(game.developers || []), ...(item.developers || [])]);
-  game.publishers = uniq([...(game.publishers || []), ...(item.publishers || [])]);
-  game.genres = uniq([...(game.genres || []), ...(item.genres || [])]);
-  game.storeCategories = uniq([...(game.storeCategories || []), ...(item.categories || [])]);
+  if (!(game.developers || []).length && (item.developers || []).length) game.developers = uniq(item.developers || []);
+  if (!(game.publishers || []).length && (item.publishers || []).length) game.publishers = uniq(item.publishers || []);
+  if (!(game.genres || []).length && (item.genres || []).length) game.genres = uniq(item.genres || []);
+  game.storeCategories = uniq([...(game.storeCategories || []), ...(item.categories || []), ...(item.genres || [])]);
   game.metadataSources = uniq([...(game.metadataSources || []), provider]);
   game.providerIds ||= {};
   if (item.providerId) game.providerIds[provider] = String(item.providerId);
@@ -112,10 +114,26 @@ function markCheck(game, provider, matched, detail = '') {
   };
 }
 
+function lastCheck(game, provider) {
+  return game.providerChecks?.[`${provider}-metadata`] || null;
+}
+
 function checkedRecently(game, provider, days = 30) {
   if (force) return false;
-  const checked = Date.parse(game.providerChecks?.[`${provider}-metadata`]?.checkedAt || '');
+  const checked = Date.parse(lastCheck(game, provider)?.checkedAt || '');
   return Number.isFinite(checked) && Date.now() - checked < days * 86_400_000;
+}
+
+function shouldProcess(game, provider) {
+  if (!directId(game, provider)) return false;
+  const check = lastCheck(game, provider);
+  if (retryFailed) return Boolean(check && check.matched === false);
+  return !checkedRecently(game, provider);
+}
+
+function isTransientError(error) {
+  const message = String(error?.message || error || '').toLowerCase();
+  return /\b429\b|too many requests|rate.?limit|\b5\d\d\b|timeout|timed out|fetch failed|econnreset|econnrefused|etimedout|socket|network/.test(message);
 }
 
 function directId(game, provider) {
@@ -177,7 +195,7 @@ async function fetchDirect(game, provider) {
   return null;
 }
 
-async function mapLimit(items, worker) {
+async function mapLimit(items, worker, poolSize) {
   let cursor = 0;
   async function run() {
     for (;;) {
@@ -186,22 +204,23 @@ async function mapLimit(items, worker) {
       await worker(items[index], index);
     }
   }
-  await Promise.all(Array.from({ length: Math.min(concurrency, Math.max(1, items.length)) }, run));
+  await Promise.all(Array.from({ length: Math.min(poolSize, Math.max(1, items.length)) }, run));
 }
 
 const providerStats = {};
 
 for (const provider of selected) {
   let queue = games
-    .filter(game => directId(game, provider) && !checkedRecently(game, provider))
+    .filter(game => shouldProcess(game, provider))
     .sort((a, b) => missingScore(b) - missingScore(a) || String(a.name).localeCompare(String(b.name), 'cs'));
   const totalEligible = queue.length;
   if (Number.isFinite(limit)) queue = queue.slice(0, limit);
+  const providerConcurrency = provider === 'steam' ? 1 : concurrency;
 
-  const stats = { eligible: totalEligible, processed: 0, matched: 0, failed: 0, ratings: 0 };
+  const stats = { eligible: totalEligible, processed: 0, matched: 0, failed: 0, transient: 0, ratings: 0 };
   providerStats[provider] = stats;
   console.log(`\n=== ${provider.toUpperCase()} ===`);
-  console.log(`eligible=${totalEligible} processing=${queue.length} concurrency=${concurrency}`);
+  console.log(`eligible=${totalEligible} processing=${queue.length} concurrency=${providerConcurrency}${provider === 'steam' ? ` delay=${steamDelayMs}ms` : ''}`);
 
   await mapLimit(queue, async (game, index) => {
     try {
@@ -225,16 +244,20 @@ for (const provider of selected) {
       markCheck(game, provider, true, item.title);
       stats.matched++;
     } catch (error) {
-      markCheck(game, provider, false, error?.message || String(error));
-      stats.failed++;
+      if (isTransientError(error)) {
+        stats.transient++;
+      } else {
+        markCheck(game, provider, false, error?.message || String(error));
+        stats.failed++;
+      }
     }
     stats.processed++;
     persistGame(game);
     if ((index + 1) % 50 === 0 || index + 1 === queue.length) {
-      console.log(`${provider}: ${index + 1}/${queue.length} matched=${stats.matched} failed=${stats.failed} newRatings=${stats.ratings}`);
+      console.log(`${provider}: ${index + 1}/${queue.length} matched=${stats.matched} failed=${stats.failed} transient=${stats.transient} newRatings=${stats.ratings}`);
     }
-    await sleep(provider === 'steam' ? 110 : 80);
-  });
+    await sleep(provider === 'steam' ? steamDelayMs : 80);
+  }, providerConcurrency);
 }
 
 const now = new Date().toISOString();
@@ -270,6 +293,6 @@ console.log(`trailer = ${count(game => game.trailerId || game.trailerUrl)}`);
 console.log(`rating = ${count(game => Number(game.rating || 0) > 0)}`);
 console.log('\n=== PROVIDERS ===');
 for (const [provider, stats] of Object.entries(providerStats)) {
-  console.log(`${provider}: eligible=${stats.eligible} processed=${stats.processed} matched=${stats.matched} failed=${stats.failed} newRatings=${stats.ratings}`);
+  console.log(`${provider}: eligible=${stats.eligible} processed=${stats.processed} matched=${stats.matched} failed=${stats.failed} transient=${stats.transient} newRatings=${stats.ratings}`);
 }
 console.log('Saved incrementally to SQLite and refreshed runtime catalog.');
