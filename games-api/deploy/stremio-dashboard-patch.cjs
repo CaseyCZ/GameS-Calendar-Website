@@ -31,6 +31,40 @@ replaceOnce('APPS games-api', `  'stremio-dashboard': {
   }
 };`);
 
+replaceOnce('APPS stremio-sosac links', `  'stremio-sosac': {
+    repo: '/home/ubuntu/stremio.sosac'
+  },`, `  'stremio-sosac': {
+    repo: '/home/ubuntu/stremio.sosac',
+    github: 'https://github.com/CaseyCZ/stremio.sosac',
+    web: 'https://130.61.49.108:8443/stremio-sosac/manifest.json'
+  },`);
+
+replaceOnce('APPS stremio-subtitles links', `  'stremio-subtitles': {
+    repo: '/home/ubuntu/stremio.sosac.subtitles'
+  },`, `  'stremio-subtitles': {
+    repo: '/home/ubuntu/stremio.sosac.subtitles',
+    github: 'https://github.com/CaseyCZ/stremio.sosac.subtitles',
+    web: 'https://130.61.49.108:8443/stremio-sosac-subtitles/manifest.json'
+  },`);
+
+replaceOnce('APPS stremio-dashboard links', `  'stremio-dashboard': {
+    repo: '/home/ubuntu/stremio-dashboard'
+  },`, `  'stremio-dashboard': {
+    repo: '/home/ubuntu/stremio-dashboard',
+    github: 'https://github.com/CaseyCZ/stremio-dashboard',
+    web: 'https://130.61.49.108:8443/dashboard/'
+  },`);
+
+replaceOnce('APPS games-api links', `  'games-api': {
+    repo: '/home/ubuntu/games-calendar/repo/games-api'
+  }
+};`, `  'games-api': {
+    repo: '/home/ubuntu/games-calendar/repo/games-api',
+    github: 'https://github.com/CaseyCZ/GameS-Calendar-Website',
+    web: 'https://130.61.49.108:8443/games/'
+  }
+};`);
+
 replaceOnce('GameS API health helper', `app.get('/api/status', async (req, res) => {`, `async function gamesApiHealth() {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 2500);
@@ -85,6 +119,14 @@ replaceOnce('status response GameS fields', `    git: {
     gamesApi: gamesHealth,
     cert,`);
 
+replaceOnce('status app links metadata', `    gamesApi: gamesHealth,
+    cert,`, `    gamesApi: gamesHealth,
+    apps: Object.fromEntries(Object.entries(APPS).map(([name, app]) => [name, {
+      github: app.github || null,
+      web: app.web || null
+    }])),
+    cert,`);
+
 replaceOnce('GameS special update', `  if (!APPS[name] || name === 'stremio-dashboard') {
     return res.status(404).json({ ok:false });
   }
@@ -133,11 +175,39 @@ replaceOnce('GameS card mapping', `  if(p.name==='stremio-dashboard') git=d.git.
     '<br>Web: <a href="/games/" target="_blank" rel="noopener" style="color:#7dd3fc">/games/</a>';
   }`);
 
+replaceOnce('dashboard card app links', `  let gamesExtra='';
+  if(p.name==='games-api'){
+   const gh=d.gamesApi||{};
+   gamesExtra='<br>Port: 8787'+
+    '<br>API: <span class="'+(gh.online?'online':'offline')+'">'+(gh.online?'online':'offline')+'</span>'+
+    (gh.providersTotal?'<br>Zdroje: '+gh.providersOk+' / '+gh.providersTotal:'')+
+    '<br>Web: <a href="/games/" target="_blank" rel="noopener" style="color:#7dd3fc">/games/</a>';
+  }`, `  let gamesExtra='';
+  if(p.name==='games-api'){
+   const gh=d.gamesApi||{};
+   gamesExtra='<br>Port: 8787'+
+    '<br>API: <span class="'+(gh.online?'online':'offline')+'">'+(gh.online?'online':'offline')+'</span>'+
+    (gh.providersTotal?'<br>Zdroje: '+gh.providersOk+' / '+gh.providersTotal:'');
+  }
+
+  const appMeta=(d.apps&&d.apps[p.name])||{};
+  const appLinks=[];
+  if(appMeta.github) appLinks.push('<a href="'+escapeHtml(appMeta.github)+'" target="_blank" rel="noopener noreferrer">GitHub</a>');
+  if(appMeta.web) appLinks.push('<a href="'+escapeHtml(appMeta.web)+'" target="_blank" rel="noopener noreferrer">Live</a>');
+  const linksExtra=appLinks.length
+   ? '<br><span class="app-links" style="display:inline-flex;gap:10px;margin-top:8px">'+appLinks.join(' · ')+'</span>'
+   : '';`);
+
 replaceOnce('GameS card extra fields', `   (git?'<br>Verze: '+escapeHtml(git.version)+
    '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
    (p.name!=='stremio-dashboard'`, `   (git?'<br>Verze: '+escapeHtml(git.version)+
    '<br>Git: '+escapeHtml(git.branch)+' / '+escapeHtml(git.commit):'')+
    gamesExtra+
+   (p.name!=='stremio-dashboard'`);
+
+replaceOnce('card app links output', `   gamesExtra+
+   (p.name!=='stremio-dashboard'`, `   gamesExtra+
+   linksExtra+
    (p.name!=='stremio-dashboard'`);
 
 replaceOnce('auditGames browser action', `function updateApp(name){
@@ -164,7 +234,7 @@ function auditGames(){
 load();`);
 
 if (text === original) {
-  console.log('Dashboard already contains the GameS integration.');
+  console.log('Dashboard already contains the GameS integration and app links.');
   process.exit(0);
 }
 
