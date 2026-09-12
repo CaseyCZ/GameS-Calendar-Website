@@ -78,32 +78,6 @@
     node.dataset.state = state;
   }
 
-  function formatPrice(price) {
-    if (!price) return '';
-    if (clean(price.currentText)) return clean(price.currentText);
-    const value = Number(price.current);
-    if (!Number.isFinite(value)) return '';
-    if (value === 0) return 'Zdarma';
-    const currency = String(price.currency || 'CZK').toUpperCase();
-    try {
-      return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency, maximumFractionDigits: 2 }).format(value);
-    } catch {
-      return `${new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 }).format(value)} ${currency}`;
-    }
-  }
-
-  function regularPrice(price, currentText) {
-    if (!price) return '';
-    if (clean(price.regularText) && clean(price.regularText) !== currentText) return clean(price.regularText);
-    const regular = Number(price.regular);
-    const current = Number(price.current);
-    if (!Number.isFinite(regular) || regular <= 0 || regular === current) return '';
-    const currency = String(price.currency || 'CZK').toUpperCase();
-    try {
-      return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency, maximumFractionDigits: 2 }).format(regular);
-    } catch { return `${regular} ${currency}`; }
-  }
-
   function addSubscriptions(merged, providers) {
     const subscriptions = { ...(merged?.subscriptions || {}) };
     for (const provider of Object.values(providers || {})) Object.assign(subscriptions, provider?.subscriptions || {});
@@ -136,52 +110,6 @@
     }
   }
 
-  function addPrices(providers) {
-    const priced = Object.entries(providers || {})
-      .filter(([, item]) => item?.price && formatPrice(item.price))
-      .map(([name, item]) => ({ name, item, current: formatPrice(item.price) }));
-    if (!priced.length) return;
-
-    content.querySelector('.live-price-section')?.remove();
-    const section = document.createElement('section');
-    section.className = 'detail-subsection live-price-section';
-    const heading = document.createElement('p');
-    heading.className = 'detail-section-label';
-    heading.textContent = 'Ceny podle obchodu / platformy';
-    const grid = document.createElement('div');
-    grid.className = 'live-price-grid';
-
-    for (const { name, item, current } of priced) {
-      const url = safeUrl(item.storeUrl);
-      const row = document.createElement(url ? 'a' : 'div');
-      row.className = 'live-price-card';
-      if (url) {
-        row.href = url;
-        row.target = '_blank';
-        row.rel = 'noopener noreferrer';
-      }
-      const label = document.createElement('span');
-      label.className = 'live-price-card__store';
-      label.textContent = PROVIDER_LABELS[name] || name;
-      const value = document.createElement('strong');
-      value.className = 'live-price-card__price';
-      value.textContent = current;
-      const regular = regularPrice(item.price, current);
-      if (regular) {
-        const old = document.createElement('del');
-        old.textContent = regular;
-        value.append(' ', old);
-      }
-      row.append(label, value);
-      grid.appendChild(row);
-    }
-
-    section.append(heading, grid);
-    const links = content.querySelector('.detail-link-section--stores, .detail-link-section');
-    if (links) links.insertAdjacentElement('beforebegin', section);
-    else content.querySelector('.detail-main')?.appendChild(section);
-  }
-
   function youtubeId(value) {
     const raw = clean(value);
     if (/^[A-Za-z0-9_-]{6,20}$/.test(raw)) return raw;
@@ -207,7 +135,7 @@
     if (!section) {
       section = document.createElement('section');
       section.className = 'detail-media-section live-media-section';
-      const links = content.querySelector('.live-price-section, .detail-link-section');
+      const links = content.querySelector('.detail-link-section');
       if (links) links.insertAdjacentElement('beforebegin', section);
       else content.querySelector('.detail-main')?.appendChild(section);
     }
@@ -247,7 +175,7 @@
     if (!section) {
       section = document.createElement('section');
       section.className = 'detail-media-section live-media-section';
-      const links = content.querySelector('.live-price-section, .detail-link-section');
+      const links = content.querySelector('.detail-link-section');
       if (links) links.insertAdjacentElement('beforebegin', section);
       else content.querySelector('.detail-main')?.appendChild(section);
     }
@@ -292,7 +220,6 @@
     const providers = result.providers || {};
     const merged = result.merged || {};
     addSubscriptions(merged, providers);
-    addPrices(providers);
     addTrailer(merged, providers);
     addScreenshots(merged, title);
     improveSummary(merged);
@@ -310,7 +237,7 @@
     if (!title || pendingTitle === title || content.dataset.liveEnrichedTitle === title) return;
     pendingTitle = title;
     content.dataset.liveEnrichedTitle = title;
-    setStatus('Ověřuji IGDB identitu, ceny, předplatné a média…', 'loading');
+    setStatus('Ověřuji IGDB identitu, předplatné a média…', 'loading');
 
     try {
       let payload = cache.get(title);
