@@ -95,8 +95,8 @@ replaceOnce('GameS special update', `  if (!APPS[name] || name === 'stremio-dash
 
   if (name === 'games-api') {
     const deploy = await run(
-      '/home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh',
-      [],
+      '/usr/bin/bash',
+      ['/home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh'],
       { timeout:180000 }
     );
     return res.json(deploy);
