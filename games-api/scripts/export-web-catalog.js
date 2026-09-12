@@ -11,7 +11,25 @@ if (!payload?.games?.length) {
   process.exit(2);
 }
 
+const text = value => String(value || '').replace(/\s+/g, ' ').trim();
 const uniq = values => [...new Set((values || []).filter(Boolean))];
+
+function shortSummary(game) {
+  const value = text(game.summary || game.storyline || '');
+  if (value.length <= 180) return value;
+  const head = value.slice(0, 180);
+  const end = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
+  return end > 100 ? head.slice(0, end + 1) : `${head.slice(0, head.lastIndexOf(' ') > 0 ? head.lastIndexOf(' ') : 177)}…`;
+}
+
+function screenshotOne(game) {
+  const first = Array.isArray(game.screenshots) ? game.screenshots.find(Boolean) : null;
+  if (!first) return [];
+  if (typeof first === 'string') return [{ full: first, thumb: first }];
+  const full = first.full || first.url || first.path_full || '';
+  if (!full) return [];
+  return [{ full, thumb: first.thumb || first.path_thumbnail || full }];
+}
 
 function platformName(platform) {
   if (typeof platform === 'string') return platform;
@@ -54,9 +72,9 @@ function compactGame(game) {
     earlyAccess: Boolean(game.earlyAccess),
     rating: Number(game.rating || 0) || 0,
     ratingCount: Number(game.ratingCount || 0) || 0,
-    hasDescription: Boolean(game.summary || game.storyline),
-    hasTrailer: Boolean(game.trailerId || game.trailerUrl),
-    hasScreenshots: Boolean(game.screenshots?.length),
+    summary: shortSummary(game),
+    trailerId: game.trailerId || '',
+    screenshots: screenshotOne(game),
     releases: (game.releases || []).map(compactRelease)
   };
   if (game.slug) out.slug = game.slug;
