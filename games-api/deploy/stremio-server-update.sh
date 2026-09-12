@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT=/home/ubuntu/games-calendar
 REPO="$ROOT/repo"
-WEB="$ROOT/web"
+WEB=/var/www/games-calendar
 API="$REPO/games-api"
 PM2_NAME=games-api
 
@@ -17,7 +17,12 @@ if [[ ! -d "$REPO/.git" ]]; then
   exit 1
 fi
 
-mkdir -p "$WEB" "$API/data"
+if [[ ! -d "$WEB" || ! -w "$WEB" ]]; then
+  echo "Web root $WEB is missing or not writable by ubuntu. Run stremio-server-install.sh first." >&2
+  exit 1
+fi
+
+mkdir -p "$API/data"
 
 git -C "$REPO" fetch origin main
 git -C "$REPO" checkout main
