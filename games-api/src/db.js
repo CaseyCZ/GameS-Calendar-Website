@@ -98,7 +98,6 @@ function trackedSnapshot(payload = {}) {
     title: payload.title || '',
     releaseDates: payload.releaseDates || {},
     subscriptions: payload.subscriptions || {},
-    prices: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.price || null])),
     providerIds: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.providerId || null]))
   };
 }
@@ -113,7 +112,7 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
   }
   const changes = [];
   if (previous) {
-    for (const field of ['title', 'releaseDates', 'subscriptions', 'prices', 'providerIds']) {
+    for (const field of ['title', 'releaseDates', 'subscriptions', 'providerIds']) {
       const change = recordChange(gameKey, field, previous[field], next[field], source);
       if (change) changes.push(change);
     }
