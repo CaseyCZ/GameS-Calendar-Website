@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.3.0';
+const VERSION = 'games-calendar-v3.4.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -48,7 +48,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
+  if (url.pathname.endsWith('/games-lite.json') || url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json') || url.pathname.includes('/games-api/catalog')) {
     event.respondWith(networkFirst(request));
     return;
   }
