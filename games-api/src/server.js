@@ -440,35 +440,32 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 100);
   if (q.length < 3) return res.status(400).json({ error: 'Search must have at least 3 characters' });
   if (!providers.igdb) return res.status(503).json({ error: 'IGDB is not configured' });
-  const limit = limitOf(req.query.limit, 5, 8);
+  const limit = limitOf(req.query.limit, 8, 12);
+  const searchLimit = Math.min(20, Math.max(12, limit * 2));
   const catalog = await readCatalog();
   const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
   const catalogIgdbIds = new Set(catalogGames.map(game => String(game.igdbId || '')).filter(Boolean));
   const catalogTitles = new Set(catalogGames.flatMap(game => [game.name, ...(game.aliases || [])]).map(normalizeTitle).filter(Boolean));
-  if (catalogTitles.has(normalizeTitle(q))) {
-    res.setHeader('Cache-Control', 'private, max-age=300');
-    return res.json({ query: q, source: 'catalog', count: 0, games: [] });
-  }
-  const saved = searchDiscoveredGames(q, limit)
+  const saved = searchDiscoveredGames(q, searchLimit)
     .filter(game => !catalogIgdbIds.has(String(game.igdbId || '')) && !catalogTitles.has(normalizeTitle(game.name)));
-  const isExact = game => [game.name, ...(game.aliases || [])].some(name => normalizeTitle(name) === normalizeTitle(q));
-  if (saved.some(isExact)) {
-    const games = saved.sort((a, b) => titleScore(q, b.name) - titleScore(q, a.name)).slice(0, limit);
-    res.setHeader('Cache-Control', 'private, max-age=300');
-    return res.json({ query: q, source: 'saved-IGDB', count: games.length, games });
+  let hits = [];
+  try {
+    hits = await providers.igdb.search(q, { limit: searchLimit });
+  } catch (error) {
+    if (!saved.length) throw error;
   }
-  const hits = await providers.igdb.search(q, { limit });
   const discovered = hits
     .filter(item => item?.providerId && item?.title)
     .filter(item => !catalogIgdbIds.has(String(item.providerId)) && !catalogTitles.has(normalizeTitle(item.title)))
     .map(catalogGameFromIgdb);
   discovered.forEach(saveDiscoveredGame);
-  const games = [...saved, ...discovered]
+  const games = [...discovered, ...saved]
     .filter((game, index, all) => all.findIndex(item => String(item.id) === String(game.id)) === index)
+    .filter((game, index, all) => all.findIndex(item => normalizeTitle(item.name) === normalizeTitle(game.name)) === index)
     .sort((a, b) => titleScore(q, b.name) - titleScore(q, a.name))
     .slice(0, limit);
   res.setHeader('Cache-Control', 'private, max-age=300');
-  res.json({ query: q, source: 'IGDB', count: games.length, games });
+  res.json({ query: q, source: hits.length ? 'IGDB' : 'saved-IGDB', count: games.length, games });
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {

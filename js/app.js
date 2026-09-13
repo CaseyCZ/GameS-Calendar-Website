@@ -123,6 +123,14 @@ function searchRelevance(game, query) {
   return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
 }
 
+function matchesSearch(game, query) {
+  const needle = normalizeSearch(query);
+  if (!needle) return true;
+  const haystack = gameSearchText(game);
+  return haystack.includes(needle)
+    || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
+}
+
 function uniqueGameCount(rows) {
   return new Set(rows.map(row => gameId(row.game))).size;
 }
@@ -200,7 +208,7 @@ function updateQuery(options) {
 function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   const game = row.game;
   const search = normalizeSearch(state.search);
-  if (search && !gameSearchText(game).includes(search)) return false;
+  if (search && !matchesSearch(game, search)) return false;
   if (search && row.onlineResult) return true;
   if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
   if (!ignoreGenres && state.genres.size) {

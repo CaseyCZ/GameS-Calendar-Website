@@ -264,7 +264,7 @@ export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
   const take = Math.max(1, Math.min(20, Number(limit) || 8));
-  const key = `igdb:search:${q.toLowerCase()}`;
+  const key = `igdb:search:${q.toLowerCase()}:${take}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, take);

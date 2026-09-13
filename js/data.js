@@ -332,7 +332,7 @@ export async function loadGameDetail(game) {
   return detailCache.get(key);
 }
 
-export async function searchOnlineGames(query, { limit = 5 } = {}) {
+export async function searchOnlineGames(query, { limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!LIVE_DISCOVER_URL || q.length < 3) return [];
   const take = Math.max(1, Math.min(8, Number(limit) || 5));

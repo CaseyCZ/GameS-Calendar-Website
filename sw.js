@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.2.17';
+const VERSION = 'games-calendar-v3.2.18';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
