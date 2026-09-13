@@ -160,13 +160,37 @@ function companyLists(items = []) {
   return { developers: uniq(developers), publishers: uniq(publishers) };
 }
 
+function releasePrecision(item = {}) {
+  const format = String(item?.date_format?.format || item?.human || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (/YYYYQ[1-4]|\bQ[1-4]\b/.test(format)) return `q${(format.match(/Q([1-4])/) || [])[1] || ''}`;
+  if (format === 'YYYY' || /^\d{4}$/.test(String(item?.human || '').trim())) return 'year';
+  if (format.includes('YYYYMMMM') && !format.includes('DD')) return 'month';
+  if (format.includes('TBD')) return 'unknown';
+  return item?.date ? 'day' : 'unknown';
+}
+
+function releaseWindow(item, precision) {
+  if (precision === 'day') return '';
+  const human = String(item?.human || '').trim();
+  if (human) return human;
+  if (/^q[1-4]$/.test(precision) && item?.y) return `Q${precision.slice(1)} ${item.y}`;
+  if (precision === 'month' && item?.y && item?.m) return `${String(item.m).padStart(2, '0')}/${item.y}`;
+  if (precision === 'year' && item?.y) return String(item.y);
+  return 'TBA';
+}
+
 function normalizeIgdb(game) {
   if (!game) return null;
   const companies = companyLists(game.involved_companies || []);
-  const releases = (game.release_dates || []).map(item => ({
-    day: item?.date ? isoDate(new Date(Number(item.date) * 1000).toISOString()) : null,
-    platform: item?.platform?.abbreviation || item?.platform?.name || ''
-  })).filter(item => item.day || item.platform);
+  const releases = (game.release_dates || []).map(item => {
+    const precision = releasePrecision(item);
+    return {
+      day: precision === 'day' && item?.date ? isoDate(new Date(Number(item.date) * 1000).toISOString()) : null,
+      window: releaseWindow(item, precision),
+      precision,
+      platform: item?.platform?.abbreviation || item?.platform?.name || ''
+    };
+  }).filter(item => item.day || item.window || item.platform);
   const screenshots = (game.screenshots || []).map(item => imageUrl(item?.image_id, 'screenshot_big_2x')).filter(Boolean);
   const videos = (game.videos || []).map(item => ({
     id: String(item?.video_id || ''),
@@ -237,7 +261,7 @@ const GAME_FIELDS = [
   'platforms.name','platforms.abbreviation','cover.image_id','artworks.image_id','screenshots.image_id',
   'videos.video_id','videos.name','alternative_names.name','collections.name','franchises.name',
   'involved_companies.company.name','involved_companies.developer','involved_companies.publisher',
-  'release_dates.date','release_dates.platform.name','release_dates.platform.abbreviation',
+  'release_dates.date','release_dates.human','release_dates.m','release_dates.y','release_dates.date_format.format','release_dates.platform.name','release_dates.platform.abbreviation',
   'external_games.uid','external_games.url','external_games.category','external_games.external_game_source.name',
   'websites.url'
 ].join(',');

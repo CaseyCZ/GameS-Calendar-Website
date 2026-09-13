@@ -51,10 +51,12 @@
   function activeFilterCount() {
     const genreCount = document.querySelectorAll('.genre-filter-chip.is-active').length;
     const status = $('status-filter');
+    const precision = $('precision-filter');
     const activePeriod = document.querySelector('[data-period].is-active');
     const contextCount = document.querySelectorAll('#active-context-filters .context-filter').length;
     let count = genreCount + contextCount;
     if (status && status.value !== 'upcoming') count += 1;
+    if (precision && precision.value !== 'all') count += 1;
     if (activePeriod && activePeriod.dataset.period !== 'month') count += 1;
     return count;
   }
@@ -130,11 +132,12 @@
     const platformRow = document.querySelector('.platform-filter-row');
     const genreWrap = document.querySelector('.genre-filter-wrap');
     const status = $('status-filter');
+    const precision = $('precision-filter');
     const period = document.querySelector('.period-control');
     const sort = $('sort-filter');
     const reset = $('reset-filters');
     const platformMemory = document.querySelector('.platform-memory');
-    if (!filters || !platformRow || !genreWrap || !status || !period || !sort || !reset) return null;
+    if (!filters || !platformRow || !genreWrap || !status || !precision || !period || !sort || !reset) return null;
 
     if (platformMemory) platformMemory.remove();
 
@@ -166,6 +169,7 @@
     const controls = details.querySelector('.filter-controls-row');
     genresSlot.appendChild(genreWrap);
     controls.appendChild(status);
+    controls.appendChild(precision);
     controls.appendChild(period);
     details.querySelector('.filter-panel-footer').insertBefore(reset, $('filters-done'));
 

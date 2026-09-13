@@ -141,8 +141,9 @@
     const row = document.querySelector('.filter-controls-row');
     if (!row || row.dataset.accordionSelection === '1') return;
     const status = row.querySelector(':scope > #status-filter');
+    const precision = row.querySelector(':scope > #precision-filter');
     const period = row.querySelector(':scope > .period-control');
-    if (!status || !period) return;
+    if (!status || !precision || !period) return;
 
     const details = makeDetails('selection', 'Vydání', 'filter-subsection--selection');
     const body = details.querySelector('.filter-subsection__body');
@@ -150,6 +151,7 @@
     inner.className = 'filter-subsection__controls';
     inner.append(
       makeChoiceGroup('Stav vydání', status),
+      makeChoiceGroup('Jistota termínu', precision),
       makePeriodGroup(period)
     );
     body.appendChild(inner);
@@ -195,13 +197,16 @@
     });
 
     const status = document.getElementById('status-filter');
+    const precision = document.getElementById('precision-filter');
     syncChoiceButtons(status);
+    syncChoiceButtons(precision);
 
     const selectionMeta = document.querySelector('[data-filter-subsection-meta="selection"]');
     if (selectionMeta) {
       const period = document.querySelector('[data-period].is-active');
       const parts = [];
       if (status?.selectedOptions?.[0]) parts.push(status.selectedOptions[0].textContent.trim());
+      if (precision?.value && precision.value !== 'all') parts.push(precision.selectedOptions[0].textContent.trim());
       if (period) parts.push(period.textContent.trim());
       selectionMeta.textContent = parts.join(' · ') || 'Nastavit';
     }

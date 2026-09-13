@@ -254,6 +254,7 @@ function readBaseState() {
   const genres = new Set([...document.querySelectorAll('#genre-filters [data-genre].is-active')].map(node => node.dataset.genre));
   const search = $('search-input')?.value?.trim() || '';
   const status = $('status-filter')?.value || 'upcoming';
+  const precision = $('precision-filter')?.value || 'all';
   const sort = $('sort-filter')?.value || 'date-asc';
   const watchlistOnly = $('watchlist-toggle')?.classList.contains('is-active') || false;
   const watchlist = readSet('games-calendar-watchlist-v2');
@@ -278,7 +279,7 @@ function readBaseState() {
     range = monthRange(now.getFullYear(), now.getMonth());
   }
 
-  return { platforms, genres, search, status, sort, watchlistOnly, watchlist, company, series, range };
+  return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, company, series, range };
 }
 
 function baseMatches(row, base, { ignoreRange = false } = {}) {
@@ -296,13 +297,17 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   }
   if (base.series && !(game.series || []).includes(base.series)) return false;
   if (base.watchlistOnly && !base.watchlist.has(String(game.id))) return false;
+  const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+  const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
+  if (base.precision !== 'all' && precisionGroup !== base.precision) return false;
 
   const today = todayLocal();
   if (!search && base.status === 'upcoming' && row.day && row.day < today) return false;
   if (!search && base.status === 'released' && (!row.day || row.day >= today)) return false;
 
   if (!search && !ignoreRange && base.range) {
-    if (!row.day || row.day < base.range.from || row.day > base.range.to) return false;
+    if (!row.day && (base.precision === 'all' || base.precision === 'day')) return false;
+    if (row.day && (row.day < base.range.from || row.day > base.range.to)) return false;
   }
   return true;
 }

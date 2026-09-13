@@ -1,6 +1,6 @@
 {
   "name": "games-calendar-api",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
   "description": "Unified game metadata API backed by official storefront/catalog endpoints.",

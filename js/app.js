@@ -66,6 +66,7 @@ const state = {
   company: null,
   series: '',
   status: 'upcoming',
+  precision: 'all',
   period: 'month',
   range: null,
   sort: 'date-asc',
@@ -154,6 +155,7 @@ function parseQuery() {
   if (query.has('publisher')) state.company = { type: 'publisher', value: query.get('publisher') || '' };
   if (query.has('series')) state.series = query.get('series') || '';
   if (['upcoming','released','all'].includes(query.get('status'))) state.status = query.get('status');
+  if (['all','day','month','quarter','year','unknown'].includes(query.get('precision'))) state.precision = query.get('precision');
   if (['date-asc','date-desc','name-asc','name-desc'].includes(query.get('sort'))) state.sort = query.get('sort');
   if (['grid','compact'].includes(query.get('view'))) state.view = query.get('view');
   state.requestedGameId = query.get('game') || '';
@@ -184,6 +186,7 @@ function buildQuery({ includeOpenGame = true } = {}) {
   if (state.company?.type === 'publisher') q.set('publisher', state.company.value);
   if (state.series) q.set('series', state.series);
   if (state.status !== 'upcoming') q.set('status', state.status);
+  if (state.precision !== 'all') q.set('precision', state.precision);
   if (state.sort !== 'date-asc') q.set('sort', state.sort);
   if (state.view !== 'grid') q.set('view', state.view);
   if (state.period === 'all') q.set('period', 'all');
@@ -220,6 +223,9 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   }
   if (state.series && !(game.series || []).includes(state.series)) return false;
   if (state.watchlistOnly && !isWatched(game)) return false;
+  const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+  const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
+  if (state.precision !== 'all' && precisionGroup !== state.precision) return false;
   if (includeStatus) {
     const today = todayLocal();
     if (state.status === 'upcoming' && row.day && row.day < today) return false;
@@ -230,7 +236,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
 
 function inActiveRange(row) {
   if (!state.range) return true;
-  if (!row.day) return false;
+  if (!row.day) return state.precision !== 'all' && state.precision !== 'day';
   return row.day >= state.range.from && row.day <= state.range.to;
 }
 
@@ -488,11 +494,13 @@ function resetFilters() {
   state.company = null;
   state.series = '';
   state.status = 'upcoming';
+  state.precision = 'all';
   state.sort = 'date-asc';
   state.watchlistOnly = false;
   setDefaultPeriod();
   $('search-input').value = '';
   $('status-filter').value = 'upcoming';
+  $('precision-filter').value = 'all';
   $('sort-filter').value = 'date-asc';
   $('sort-filter').dispatchEvent(new Event('sortsync'));
   renderPlatformFilters();
@@ -780,6 +788,7 @@ function bindEvents() {
     renderGames({resetLimit:true});
   });
   $('status-filter').addEventListener('change', event => { state.status = event.target.value; renderGames({resetLimit:true}); });
+  $('precision-filter').addEventListener('change', event => { state.precision = event.target.value; renderGames({resetLimit:true}); });
   $('sort-filter').addEventListener('change', event => { state.sort = event.target.value; renderGames({resetLimit:true}); });
   document.querySelector('.period-control').addEventListener('click', event => {
     const button = event.target.closest('[data-period]');
@@ -883,6 +892,7 @@ function bindEvents() {
 function hydrateControls() {
   $('search-input').value = state.search;
   $('status-filter').value = state.status;
+  $('precision-filter').value = state.precision;
   $('sort-filter').value = state.sort;
   $('sort-filter').dispatchEvent(new Event('sortsync'));
   renderPlatformFilters();

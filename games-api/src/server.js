@@ -131,21 +131,26 @@ function igdbContentType(value) {
 }
 
 function catalogGameFromIgdb(item) {
-  const byDay = new Map();
+  const byDate = new Map();
   for (const release of item?.releaseDates || []) {
     const day = String(release?.day || '').slice(0, 10);
-    if (!day) continue;
-    if (!byDay.has(day)) byDay.set(day, new Set());
-    if (release.platform) byDay.get(day).add(String(release.platform));
+    const window = String(release?.window || '').trim();
+    if (!day && !window) continue;
+    const precision = release?.precision || (day ? 'day' : 'unknown');
+    const key = `${day || window}|${precision}`;
+    if (!byDate.has(key)) byDate.set(key, { day: day || null, window, precision, platforms: new Set() });
+    if (release.platform) byDate.get(key).platforms.add(String(release.platform));
   }
-  if (!byDay.size && item?.releaseDate) {
-    byDay.set(String(item.releaseDate).slice(0, 10), new Set(item.platforms || []));
+  if (!byDate.size && item?.releaseDate) {
+    const day = String(item.releaseDate).slice(0, 10);
+    byDate.set(`${day}|day`, { day, window: '', precision: 'day', platforms: new Set(item.platforms || []) });
   }
-  const releases = [...byDay.entries()].map(([day, platforms]) => ({
-    day,
-    timestamp: Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000),
-    platforms: [...platforms].map(name => ({ name, abbreviation: name })),
-    precision: 'day',
+  const releases = [...byDate.values()].map(release => ({
+    day: release.day,
+    timestamp: release.day ? Math.floor(Date.parse(`${release.day}T00:00:00Z`) / 1000) : 0,
+    platforms: [...release.platforms].map(name => ({ name, abbreviation: name })),
+    window: release.window,
+    precision: release.precision,
     regions: []
   }));
   if (!releases.length) {

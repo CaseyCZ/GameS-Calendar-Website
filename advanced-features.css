@@ -55,6 +55,7 @@
 .badge--type-dlc,
 .badge--type-rozsireni { border-color: rgba(192,132,252,.45); color:#e9d5ff; background:rgba(192,132,252,.11); }
 .badge--type-demo { border-color: rgba(52,211,153,.42); color:#bbf7d0; background:rgba(52,211,153,.10); }
+.badge--precision { border-color:rgba(251,191,36,.38); color:#fde68a; background:rgba(120,53,15,.42); }
 .detail-flag--content-type { border-color: rgba(245,158,11,.4); color:#ffe0a8; background:rgba(245,158,11,.09); }
 
 .hide-badge-release .card-badges > .badge--soon,

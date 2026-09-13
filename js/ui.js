@@ -134,6 +134,15 @@ export function releaseText(row) {
   return row.window || row.game.announcedWindow || 'TBA';
 }
 
+function precisionLabel(row) {
+  const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+  if (precision === 'month') return 'Oznámený měsíc';
+  if (/^q[1-4]$|quarter|quarterly/.test(precision)) return 'Oznámené čtvrtletí';
+  if (precision === 'year') return 'Oznámený rok';
+  if (precision === 'unknown' || !row.day) return 'Datum zatím neoznámeno';
+  return 'Přesné datum';
+}
+
 function coverMarkup(game) {
   const cover = safeUrl(game.cover);
   if (!cover) return `<div class="game-card__cover" aria-hidden="true"><div class="game-card__gradient"></div></div>`;
@@ -163,7 +172,7 @@ export function rowCard(row, watched) {
   return `<article class="game-card" data-row-key="${escapeHtml(row.key)}">
     <button class="game-card__button" type="button" data-open-game="${escapeHtml(row.key)}" aria-label="Detail hry ${escapeHtml(game.name)}">
       ${coverMarkup(game)}
-      <span class="card-badges"><span class="badge ${row.day && row.day < todayLocal() ? 'badge--released' : 'badge--soon'}">${escapeHtml(countdown || releaseState)}</span>${extraBadges}</span>
+      <span class="card-badges"><span class="badge ${row.day && row.day < todayLocal() ? 'badge--released' : 'badge--soon'}" title="${escapeHtml(precisionLabel(row))}">${escapeHtml(countdown || releaseState)}</span>${!row.day || row.precision !== 'day' ? `<span class="badge badge--precision">${escapeHtml(precisionLabel(row))}</span>` : ''}${extraBadges}</span>
       <span class="game-card__body">
         <span class="game-card__title">${escapeHtml(game.name)}</span>
         <span class="game-card__meta"><time class="game-card__date" ${row.day ? `datetime="${row.day}"` : ''}>${escapeHtml(releaseText(row))}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
@@ -325,6 +334,7 @@ export function gameDialogHtml(row, watched) {
     peopleFact('Vývojář', game.developers, 'developer'),
     peopleFact('Vydavatel', game.publishers, 'publisher'),
     seriesFact(game.series),
+    `<div class="fact"><span>Jistota termínu</span><strong>${escapeHtml(precisionLabel(row))}</strong></div>`,
     rating ? `<div class="fact"><span>Hodnocení</span><strong>${escapeHtml(rating)}</strong></div>` : ''
   ].filter(Boolean).join('');
 
