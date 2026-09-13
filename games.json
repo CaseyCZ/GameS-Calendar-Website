@@ -1,7 +1,7 @@
 {
   "version": 5,
   "provider": "IGDB release data + official Steam/Xbox metadata + Microsoft Game Pass/Cloud catalog + Wikidata/Wikipedia fallback + official subscription catalogs",
-  "generatedAt": "2026-09-12T21:11:52.742Z",
+  "generatedAt": "2026-09-13T08:28:29.439Z",
   "range": {
     "from": "2026-09-01",
     "to": "2027-08-16"
@@ -5902,7 +5902,7 @@
       "announcedWindow": "",
       "steamId": "3329050",
       "steamMetadataCheckedAt": "2026-09-11T23:05:34.706Z",
-      "steamMediaCheckedAt": "2026-09-12T07:57:57.027Z"
+      "steamMediaCheckedAt": "2026-09-13T08:22:59.071Z"
     },
     {
       "id": 399257,
@@ -72224,7 +72224,7 @@
       "announcedWindow": "",
       "steamId": "1922870",
       "steamMetadataCheckedAt": "2026-09-11T23:10:50.451Z",
-      "steamMediaCheckedAt": "2026-09-12T08:01:37.827Z"
+      "steamMediaCheckedAt": "2026-09-13T08:23:00.902Z"
     },
     {
       "id": 392898,
@@ -86117,7 +86117,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:02.754Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409915,
@@ -86356,7 +86358,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:04.598Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404091,
@@ -86477,7 +86481,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:06.440Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415799,
@@ -87235,7 +87241,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:08.290Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412296,
@@ -87452,7 +87460,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:10.125Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 373303,
@@ -87638,40 +87648,40 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_0b69a477d7163799aafff994e7bbb2edc72400b4.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_0b69a477d7163799aafff994e7bbb2edc72400b4.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_0b69a477d7163799aafff994e7bbb2edc72400b4.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_0b69a477d7163799aafff994e7bbb2edc72400b4.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_94fc1479c60d6d3062611d92e301a77d85abe356.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_94fc1479c60d6d3062611d92e301a77d85abe356.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_94fc1479c60d6d3062611d92e301a77d85abe356.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_94fc1479c60d6d3062611d92e301a77d85abe356.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_d86f48ad72d71d02ec1bbb9ab8e0aceca2422956.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_d86f48ad72d71d02ec1bbb9ab8e0aceca2422956.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_d86f48ad72d71d02ec1bbb9ab8e0aceca2422956.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_d86f48ad72d71d02ec1bbb9ab8e0aceca2422956.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_6a8b4e9856763ef98ddd1d53a4c1de3040945916.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_6a8b4e9856763ef98ddd1d53a4c1de3040945916.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_6a8b4e9856763ef98ddd1d53a4c1de3040945916.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_6a8b4e9856763ef98ddd1d53a4c1de3040945916.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_319ddff88b8f7b4ffad5982b371fdbb764c6297b.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_319ddff88b8f7b4ffad5982b371fdbb764c6297b.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_319ddff88b8f7b4ffad5982b371fdbb764c6297b.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_319ddff88b8f7b4ffad5982b371fdbb764c6297b.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_68128928cd9d223e0242be20f1bba061b0d08ef2.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_68128928cd9d223e0242be20f1bba061b0d08ef2.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_68128928cd9d223e0242be20f1bba061b0d08ef2.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_68128928cd9d223e0242be20f1bba061b0d08ef2.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_eb75c884a100cd6e03349486b9b29a2df892a625.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_eb75c884a100cd6e03349486b9b29a2df892a625.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_eb75c884a100cd6e03349486b9b29a2df892a625.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_eb75c884a100cd6e03349486b9b29a2df892a625.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_b6780f4250df92a954f0fdb4368ef531647c343c.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_b6780f4250df92a954f0fdb4368ef531647c343c.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_b6780f4250df92a954f0fdb4368ef531647c343c.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_b6780f4250df92a954f0fdb4368ef531647c343c.600x338.jpg?t=1789278356"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_7a3be79997f2c4b2003cac1d9ebf113906687fae.1920x1080.jpg?t=1767760121",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_7a3be79997f2c4b2003cac1d9ebf113906687fae.600x338.jpg?t=1767760121"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_7a3be79997f2c4b2003cac1d9ebf113906687fae.1920x1080.jpg?t=1789278356",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2427550/ss_7a3be79997f2c4b2003cac1d9ebf113906687fae.600x338.jpg?t=1789278356"
         }
       ],
       "subscriptions": {
@@ -87702,7 +87712,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:11.963Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415649,
@@ -87855,6 +87867,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_d98f8339c255fd094879b67d44de6991ed428c08.1920x1080.jpg?t=1772299261",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_d98f8339c255fd094879b67d44de6991ed428c08.600x338.jpg?t=1772299261"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_5d7688bd7e4554f689e3548d041c3d85d2640ede.1920x1080.jpg?t=1772299261",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_5d7688bd7e4554f689e3548d041c3d85d2640ede.600x338.jpg?t=1772299261"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_57602a14ca0bc356873c6f6ebc3b2eec41857df7.1920x1080.jpg?t=1772299261",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2960440/ss_57602a14ca0bc356873c6f6ebc3b2eec41857df7.600x338.jpg?t=1772299261"
         }
       ],
       "subscriptions": {
@@ -87884,7 +87904,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:13.804Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413079,
@@ -88430,7 +88452,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:15.642Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408636,
@@ -89125,7 +89149,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:17.478Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409167,
@@ -89461,6 +89487,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/fa3b7809f49b7fa7b57a390591da8501724f039d/ss_fa3b7809f49b7fa7b57a390591da8501724f039d.1920x1080.jpg?t=1756922126",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/fa3b7809f49b7fa7b57a390591da8501724f039d/ss_fa3b7809f49b7fa7b57a390591da8501724f039d.600x338.jpg?t=1756922126"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/7b1762b440c5cccf934b3cf20722ae19d49a6656/ss_7b1762b440c5cccf934b3cf20722ae19d49a6656.1920x1080.jpg?t=1756922126",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/7b1762b440c5cccf934b3cf20722ae19d49a6656/ss_7b1762b440c5cccf934b3cf20722ae19d49a6656.600x338.jpg?t=1756922126"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/055d17dfc91e596e658c715d32b6318ff22c886c/ss_055d17dfc91e596e658c715d32b6318ff22c886c.1920x1080.jpg?t=1756922126",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3986230/055d17dfc91e596e658c715d32b6318ff22c886c/ss_055d17dfc91e596e658c715d32b6318ff22c886c.600x338.jpg?t=1756922126"
         }
       ],
       "subscriptions": {
@@ -89493,7 +89527,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:19.318Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410761,
@@ -89733,7 +89769,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:21.159Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 292419,
@@ -89829,6 +89867,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/ce78042543a4b68f38ae3785eef5513446f5fce7/ss_ce78042543a4b68f38ae3785eef5513446f5fce7.1920x1080.jpg?t=1788885551",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/ce78042543a4b68f38ae3785eef5513446f5fce7/ss_ce78042543a4b68f38ae3785eef5513446f5fce7.600x338.jpg?t=1788885551"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/a84d0334fad94c74dc2ffdf7e30532e4749ee582/ss_a84d0334fad94c74dc2ffdf7e30532e4749ee582.1920x1080.jpg?t=1788885551",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/a84d0334fad94c74dc2ffdf7e30532e4749ee582/ss_a84d0334fad94c74dc2ffdf7e30532e4749ee582.600x338.jpg?t=1788885551"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/bb094d74e73a84f4abb234146555eff46fc286e5/ss_bb094d74e73a84f4abb234146555eff46fc286e5.1920x1080.jpg?t=1788885551",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783280/bb094d74e73a84f4abb234146555eff46fc286e5/ss_bb094d74e73a84f4abb234146555eff46fc286e5.600x338.jpg?t=1788885551"
         }
       ],
       "subscriptions": {
@@ -89859,7 +89905,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:23.006Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408031,
@@ -90081,7 +90129,9 @@
         "Steam Input API Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:24.857Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399408,
@@ -90182,6 +90232,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/eaf33b0eed08add527516906bd377aa34eba1fa6/ss_eaf33b0eed08add527516906bd377aa34eba1fa6.1920x1080.jpg?t=1786104128",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/eaf33b0eed08add527516906bd377aa34eba1fa6/ss_eaf33b0eed08add527516906bd377aa34eba1fa6.600x338.jpg?t=1786104128"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/73de6c2b81c59794ab7d70f5fccf32e00e458b0a/ss_73de6c2b81c59794ab7d70f5fccf32e00e458b0a.1920x1080.jpg?t=1786104128",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/73de6c2b81c59794ab7d70f5fccf32e00e458b0a/ss_73de6c2b81c59794ab7d70f5fccf32e00e458b0a.600x338.jpg?t=1786104128"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/03464ab4c21c42b2522cb0e81909d923248b09d5/ss_03464ab4c21c42b2522cb0e81909d923248b09d5.1920x1080.jpg?t=1786104128",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3891160/03464ab4c21c42b2522cb0e81909d923248b09d5/ss_03464ab4c21c42b2522cb0e81909d923248b09d5.600x338.jpg?t=1786104128"
         }
       ],
       "subscriptions": {
@@ -90223,7 +90281,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:26.712Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 286226,
@@ -90348,7 +90408,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:28.549Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410907,
@@ -90523,7 +90585,9 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:30.387Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408838,
@@ -90646,7 +90710,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:32.233Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408594,
@@ -91359,7 +91425,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:34.078Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415770,
@@ -91627,6 +91695,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_dc10c0d52064081f42c97a3984b61442c2982ef9.1920x1080.jpg?t=1780686967",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_dc10c0d52064081f42c97a3984b61442c2982ef9.600x338.jpg?t=1780686967"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_9bd3d51681673209be51f7e7ea630d84496e1f75.1920x1080.jpg?t=1780686967",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_9bd3d51681673209be51f7e7ea630d84496e1f75.600x338.jpg?t=1780686967"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_a423b19e4ffed92135f8cbe936ff21644cb32ff7.1920x1080.jpg?t=1780686967",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2196060/ss_a423b19e4ffed92135f8cbe936ff21644cb32ff7.600x338.jpg?t=1780686967"
         }
       ],
       "subscriptions": {
@@ -91656,7 +91732,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:35.919Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411710,
@@ -91711,32 +91789,32 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/bda81c3dee3f91bbb167255f18c68cf876164c0e/ss_bda81c3dee3f91bbb167255f18c68cf876164c0e.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/bda81c3dee3f91bbb167255f18c68cf876164c0e/ss_bda81c3dee3f91bbb167255f18c68cf876164c0e.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/e776b444270b2fbe9a5a0faf4f48a4582e7216c7/ss_e776b444270b2fbe9a5a0faf4f48a4582e7216c7.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/e776b444270b2fbe9a5a0faf4f48a4582e7216c7/ss_e776b444270b2fbe9a5a0faf4f48a4582e7216c7.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/adb246ee2fa1a625920a8c3e11bc137adf48ebfa/ss_adb246ee2fa1a625920a8c3e11bc137adf48ebfa.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/adb246ee2fa1a625920a8c3e11bc137adf48ebfa/ss_adb246ee2fa1a625920a8c3e11bc137adf48ebfa.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/75763a0ae5bea4c54fa447b8fb4e83f7d9a4bd2e/ss_75763a0ae5bea4c54fa447b8fb4e83f7d9a4bd2e.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/75763a0ae5bea4c54fa447b8fb4e83f7d9a4bd2e/ss_75763a0ae5bea4c54fa447b8fb4e83f7d9a4bd2e.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/142604f9f0fd4fded1139489e5b5c40511cf579e/ss_142604f9f0fd4fded1139489e5b5c40511cf579e.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/142604f9f0fd4fded1139489e5b5c40511cf579e/ss_142604f9f0fd4fded1139489e5b5c40511cf579e.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/2ca98609ee2c5b9588378fe47a480644fcdb9032/ss_2ca98609ee2c5b9588378fe47a480644fcdb9032.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/2ca98609ee2c5b9588378fe47a480644fcdb9032/ss_2ca98609ee2c5b9588378fe47a480644fcdb9032.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/f65b6b45216110b883c485705c4a7710b8754fd8/ss_f65b6b45216110b883c485705c4a7710b8754fd8.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/f65b6b45216110b883c485705c4a7710b8754fd8/ss_f65b6b45216110b883c485705c4a7710b8754fd8.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/ec29c6c4e5f294de557a6b5b62515b3a9d8247dc/ss_ec29c6c4e5f294de557a6b5b62515b3a9d8247dc.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/ec29c6c4e5f294de557a6b5b62515b3a9d8247dc/ss_ec29c6c4e5f294de557a6b5b62515b3a9d8247dc.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/c2049014555d20f5d1059bf47b1e4de94dc289d3/ss_c2049014555d20f5d1059bf47b1e4de94dc289d3.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/c2049014555d20f5d1059bf47b1e4de94dc289d3/ss_c2049014555d20f5d1059bf47b1e4de94dc289d3.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/f2be002ebff865caaa00808a74b9223ca7c054cd/ss_f2be002ebff865caaa00808a74b9223ca7c054cd.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/f2be002ebff865caaa00808a74b9223ca7c054cd/ss_f2be002ebff865caaa00808a74b9223ca7c054cd.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/307008b697f0af8d293ddadded631cd3dcd7189a/ss_307008b697f0af8d293ddadded631cd3dcd7189a.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/307008b697f0af8d293ddadded631cd3dcd7189a/ss_307008b697f0af8d293ddadded631cd3dcd7189a.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/dad9eb8010b01fe6647a736ae4ebd380bcd02c6b/ss_dad9eb8010b01fe6647a736ae4ebd380bcd02c6b.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/dad9eb8010b01fe6647a736ae4ebd380bcd02c6b/ss_dad9eb8010b01fe6647a736ae4ebd380bcd02c6b.600x338.jpg?t=1789279135"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/89398e1ff5246c93eced9a6f490046b0e9e3074a/ss_89398e1ff5246c93eced9a6f490046b0e9e3074a.1920x1080.jpg?t=1789061372",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/89398e1ff5246c93eced9a6f490046b0e9e3074a/ss_89398e1ff5246c93eced9a6f490046b0e9e3074a.600x338.jpg?t=1789061372"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/42c3302a7650ed943dfb7038f7eb8751eabf7831/ss_42c3302a7650ed943dfb7038f7eb8751eabf7831.1920x1080.jpg?t=1789279135",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4876650/42c3302a7650ed943dfb7038f7eb8751eabf7831/ss_42c3302a7650ed943dfb7038f7eb8751eabf7831.600x338.jpg?t=1789279135"
         }
       ],
       "subscriptions": {
@@ -91770,7 +91848,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:37.769Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392789,
@@ -92096,6 +92176,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3475620/ss_f6618f287cac677605e691bda230abc31fc730d9.1920x1080.jpg?t=1783255448",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3475620/ss_f6618f287cac677605e691bda230abc31fc730d9.600x338.jpg?t=1783255448"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3475620/ss_0abb0217a00edc3ffdba7b18ddcd780009fb0c2a.1920x1080.jpg?t=1783255448",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3475620/ss_0abb0217a00edc3ffdba7b18ddcd780009fb0c2a.600x338.jpg?t=1783255448"
         }
       ],
       "subscriptions": {
@@ -92128,7 +92212,9 @@
         "Cross-Platform Multiplayer",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:39.609Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 394548,
@@ -92259,7 +92345,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:41.448Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 330969,
@@ -92375,7 +92463,9 @@
         "Touch Only Option",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:43.286Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410936,
@@ -92724,7 +92814,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:45.124Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415876,
@@ -92992,6 +93084,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/f0da837a65593fa15e84366457d3bf590cde2a2b/ss_f0da837a65593fa15e84366457d3bf590cde2a2b.1920x1080.jpg?t=1788702997",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/f0da837a65593fa15e84366457d3bf590cde2a2b/ss_f0da837a65593fa15e84366457d3bf590cde2a2b.600x338.jpg?t=1788702997"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/c59e72af890b609904df50e0f701638072705459/ss_c59e72af890b609904df50e0f701638072705459.1920x1080.jpg?t=1788702997",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/c59e72af890b609904df50e0f701638072705459/ss_c59e72af890b609904df50e0f701638072705459.600x338.jpg?t=1788702997"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/3563498b8c2d6947bdaeaebd3c1f086bf21d0759/ss_3563498b8c2d6947bdaeaebd3c1f086bf21d0759.1920x1080.jpg?t=1788702997",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3584060/3563498b8c2d6947bdaeaebd3c1f086bf21d0759/ss_3563498b8c2d6947bdaeaebd3c1f086bf21d0759.600x338.jpg?t=1788702997"
         }
       ],
       "subscriptions": {
@@ -93020,7 +93120,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:47.003Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406368,
@@ -93429,7 +93531,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:48.840Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 325873,
@@ -93524,6 +93628,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/ss_2daee2887a9f34c5f4d911a731145c3d185ffe6d.1920x1080.jpg?t=1787905126",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/ss_2daee2887a9f34c5f4d911a731145c3d185ffe6d.600x338.jpg?t=1787905126"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/ss_cba94773dc87b5de2ad40f727a18e1deb1e9445f.1920x1080.jpg?t=1787905126",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/ss_cba94773dc87b5de2ad40f727a18e1deb1e9445f.600x338.jpg?t=1787905126"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/c1257a17960171495260fdf7353fffe7b9c1deee/ss_c1257a17960171495260fdf7353fffe7b9c1deee.1920x1080.jpg?t=1787905126",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3372620/c1257a17960171495260fdf7353fffe7b9c1deee/ss_c1257a17960171495260fdf7353fffe7b9c1deee.600x338.jpg?t=1787905126"
         }
       ],
       "subscriptions": {
@@ -93554,7 +93666,9 @@
         "DualShock Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:50.699Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 378235,
@@ -94446,7 +94560,9 @@
         "Surround Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:52.544Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 396301,
@@ -94557,7 +94673,9 @@
         "Includes Source SDK",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:54.385Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 387321,
@@ -94933,7 +95051,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:56.225Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411245,
@@ -95158,6 +95278,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/fb15e11c9302f55be63d5df45251dc6f29efb3c9/ss_fb15e11c9302f55be63d5df45251dc6f29efb3c9.1920x1080.jpg?t=1789053183",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/fb15e11c9302f55be63d5df45251dc6f29efb3c9/ss_fb15e11c9302f55be63d5df45251dc6f29efb3c9.600x338.jpg?t=1789053183"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/dbe9db1a76af348d6369d6f7b006f6215ec23092/ss_dbe9db1a76af348d6369d6f7b006f6215ec23092.1920x1080.jpg?t=1789053183",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/dbe9db1a76af348d6369d6f7b006f6215ec23092/ss_dbe9db1a76af348d6369d6f7b006f6215ec23092.600x338.jpg?t=1789053183"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/fb0ba76e21ed70ef5ceb64ea2d27cf401011d81b/ss_fb0ba76e21ed70ef5ceb64ea2d27cf401011d81b.1920x1080.jpg?t=1789053183",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2272360/fb0ba76e21ed70ef5ceb64ea2d27cf401011d81b/ss_fb0ba76e21ed70ef5ceb64ea2d27cf401011d81b.600x338.jpg?t=1789053183"
         }
       ],
       "subscriptions": {
@@ -95191,7 +95319,9 @@
         "Co-op",
         "Online Co-op",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:23:58.071Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408915,
@@ -95399,6 +95529,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_826a9475d4a0dd69f48796ea8919db2a7df4976f.1920x1080.jpg?t=1788883627",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_826a9475d4a0dd69f48796ea8919db2a7df4976f.600x338.jpg?t=1788883627"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_88f0c8d4ed7304478f6e249c694afe7331cf1f1a.1920x1080.jpg?t=1788883627",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_88f0c8d4ed7304478f6e249c694afe7331cf1f1a.600x338.jpg?t=1788883627"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_f3bfa016980ce0e1786a648d97fc8d3ed173ad14.1920x1080.jpg?t=1788883627",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313230/ss_f3bfa016980ce0e1786a648d97fc8d3ed173ad14.600x338.jpg?t=1788883627"
         }
       ],
       "subscriptions": {
@@ -95429,7 +95567,9 @@
         "Online PvP",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:23:59.912Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 386489,
@@ -95667,7 +95807,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:01.752Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 322515,
@@ -96101,6 +96243,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1026220/ss_1cf221aed0024ed3c0ab8bff5e3f94e59cc577dc.1920x1080.jpg?t=1777195609",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1026220/ss_1cf221aed0024ed3c0ab8bff5e3f94e59cc577dc.600x338.jpg?t=1777195609"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1026220/ss_22b69e2dd5c365911744229b8111c816a032073c.1920x1080.jpg?t=1777195609",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1026220/ss_22b69e2dd5c365911744229b8111c816a032073c.600x338.jpg?t=1777195609"
         }
       ],
       "subscriptions": {
@@ -96128,7 +96274,9 @@
         "Includes level editor",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:03.586Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 371091,
@@ -96461,6 +96609,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_c3b54ef9b7654f1ddc4139ae7541d4d0d2aad985.1920x1080.jpg?t=1768314784",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_c3b54ef9b7654f1ddc4139ae7541d4d0d2aad985.600x338.jpg?t=1768314784"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_e7e45f12e1a0fda6d29065782fc0f32da92bbc46.1920x1080.jpg?t=1768314784",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_e7e45f12e1a0fda6d29065782fc0f32da92bbc46.600x338.jpg?t=1768314784"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_54e6889e85e341adf0a041a4ae3f1499c1b1d711.1920x1080.jpg?t=1768314784",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2444850/ss_54e6889e85e341adf0a041a4ae3f1499c1b1d711.600x338.jpg?t=1768314784"
         }
       ],
       "subscriptions": {
@@ -96493,7 +96649,9 @@
         "Commentary available",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:05.423Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399170,
@@ -96944,6 +97102,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/f0b27e81a7377d2f17d4ed8f1df538c0a61ad720/ss_f0b27e81a7377d2f17d4ed8f1df538c0a61ad720.1920x1080.jpg?t=1788977929",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/f0b27e81a7377d2f17d4ed8f1df538c0a61ad720/ss_f0b27e81a7377d2f17d4ed8f1df538c0a61ad720.600x338.jpg?t=1788977929"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/de7d5edd3e80dbdaa9c87d6742ddad68ec086aa0/ss_de7d5edd3e80dbdaa9c87d6742ddad68ec086aa0.1920x1080.jpg?t=1788977929",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/de7d5edd3e80dbdaa9c87d6742ddad68ec086aa0/ss_de7d5edd3e80dbdaa9c87d6742ddad68ec086aa0.600x338.jpg?t=1788977929"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/77453a107a1f4e943f369ead80b7f7b3518a70ec/ss_77453a107a1f4e943f369ead80b7f7b3518a70ec.1920x1080.jpg?t=1788977929",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3340880/77453a107a1f4e943f369ead80b7f7b3518a70ec/ss_77453a107a1f4e943f369ead80b7f7b3518a70ec.600x338.jpg?t=1788977929"
         }
       ],
       "subscriptions": {
@@ -96977,7 +97143,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:07.266Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406098,
@@ -97158,7 +97326,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:09.112Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 354760,
@@ -97253,6 +97423,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_d7fcb657b84a587a6820657f33a96db84e0920b8.1920x1080.jpg?t=1751622159",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_d7fcb657b84a587a6820657f33a96db84e0920b8.600x338.jpg?t=1751622159"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_09e10d3be2503819ed7872610fb45ffca9bf90d7.1920x1080.jpg?t=1751622159",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_09e10d3be2503819ed7872610fb45ffca9bf90d7.600x338.jpg?t=1751622159"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_09d396de4e6c584e223961028df61c7ad61d2d8b.1920x1080.jpg?t=1751622159",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3296070/ss_09d396de4e6c584e223961028df61c7ad61d2d8b.600x338.jpg?t=1751622159"
         }
       ],
       "subscriptions": {
@@ -97282,7 +97460,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:10.954Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 376003,
@@ -97396,7 +97576,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:12.810Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 347841,
@@ -97493,6 +97675,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/c14c010cf246bb023f0581042676192da8eec44c/ss_c14c010cf246bb023f0581042676192da8eec44c.1920x1080.jpg?t=1779882647",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/c14c010cf246bb023f0581042676192da8eec44c/ss_c14c010cf246bb023f0581042676192da8eec44c.600x338.jpg?t=1779882647"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/474cd4983122f1ec654c1e880adda79620e737b7/ss_474cd4983122f1ec654c1e880adda79620e737b7.1920x1080.jpg?t=1779882647",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/474cd4983122f1ec654c1e880adda79620e737b7/ss_474cd4983122f1ec654c1e880adda79620e737b7.600x338.jpg?t=1779882647"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/af7516698f5cd04c15d57508b6feaf1200349a6e/ss_af7516698f5cd04c15d57508b6feaf1200349a6e.1920x1080.jpg?t=1779882647",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3725190/af7516698f5cd04c15d57508b6feaf1200349a6e/ss_af7516698f5cd04c15d57508b6feaf1200349a6e.600x338.jpg?t=1779882647"
         }
       ],
       "subscriptions": {
@@ -97522,7 +97712,9 @@
         "Single-player",
         "Full controller support",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:24:14.658Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392135,
@@ -97626,7 +97818,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:16.500Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412065,
@@ -97855,7 +98049,9 @@
         "Stereo Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:18.339Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403174,
@@ -97995,7 +98191,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:20.241Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406115,
@@ -98099,6 +98297,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4553370/ecb82f53df4bc6fcf54f261c242f48da0639adc4/ss_ecb82f53df4bc6fcf54f261c242f48da0639adc4.1920x1080.jpg?t=1784809422",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4553370/ecb82f53df4bc6fcf54f261c242f48da0639adc4/ss_ecb82f53df4bc6fcf54f261c242f48da0639adc4.600x338.jpg?t=1784809422"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4553370/eceef4f4c3815cedac8446fb05d7ec6028afe921/ss_eceef4f4c3815cedac8446fb05d7ec6028afe921.1920x1080.jpg?t=1784809422",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4553370/eceef4f4c3815cedac8446fb05d7ec6028afe921/ss_eceef4f4c3815cedac8446fb05d7ec6028afe921.600x338.jpg?t=1784809422"
         }
       ],
       "subscriptions": {
@@ -98131,7 +98333,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:22.095Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 353364,
@@ -98242,7 +98446,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:23.931Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 389532,
@@ -98720,7 +98926,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:25.782Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404715,
@@ -98866,7 +99074,9 @@
         "HDR available",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:27.639Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 412682,
@@ -99180,7 +99390,9 @@
         "DualSense Controller Support",
         "Remote Play Together",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:24:29.471Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 377547,
@@ -99403,6 +99615,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/033b9250c0e77bf1767bd26fd104bc2680378ffe/ss_033b9250c0e77bf1767bd26fd104bc2680378ffe.1920x1080.jpg?t=1787697213",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/033b9250c0e77bf1767bd26fd104bc2680378ffe/ss_033b9250c0e77bf1767bd26fd104bc2680378ffe.600x338.jpg?t=1787697213"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/c0d1566648358ceff13c63c98addbe832a9e066d/ss_c0d1566648358ceff13c63c98addbe832a9e066d.1920x1080.jpg?t=1787697213",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/c0d1566648358ceff13c63c98addbe832a9e066d/ss_c0d1566648358ceff13c63c98addbe832a9e066d.600x338.jpg?t=1787697213"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/cfee74ea0e4abcd5617b65b789b53541df3b5a31/ss_cfee74ea0e4abcd5617b65b789b53541df3b5a31.1920x1080.jpg?t=1787697213",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2694490/cfee74ea0e4abcd5617b65b789b53541df3b5a31/ss_cfee74ea0e4abcd5617b65b789b53541df3b5a31.600x338.jpg?t=1787697213"
         }
       ],
       "subscriptions": {
@@ -99438,7 +99658,9 @@
         "DualShock Controller Support",
         "DualSense Controller Support",
         "HDR available"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:24:31.326Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415337,
@@ -99923,7 +100145,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:33.178Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 304848,
@@ -100034,7 +100258,9 @@
         "Stereo Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:35.027Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 349124,
@@ -100372,7 +100598,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:36.864Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 283041,
@@ -100482,7 +100710,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:38.699Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 283867,
@@ -100592,7 +100822,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:40.538Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 335191,
@@ -100701,7 +100933,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:42.375Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 347462,
@@ -101096,7 +101330,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:44.211Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 215455,
@@ -101217,7 +101453,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:46.047Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 272220,
@@ -101335,7 +101573,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:47.894Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 389691,
@@ -101544,6 +101784,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_84c53d8d372fadf70d4ef07974ae696b8c0c3b1b.1920x1080.jpg?t=1784931305",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_84c53d8d372fadf70d4ef07974ae696b8c0c3b1b.600x338.jpg?t=1784931305"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_842d58a272a15b64c5c367376e62f55e7eae6296.1920x1080.jpg?t=1784931305",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_842d58a272a15b64c5c367376e62f55e7eae6296.600x338.jpg?t=1784931305"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_c4d32ecad7aec06b375e6bf33486b15309b8d7cd.1920x1080.jpg?t=1784931305",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2371040/ss_c4d32ecad7aec06b375e6bf33486b15309b8d7cd.600x338.jpg?t=1784931305"
         }
       ],
       "subscriptions": {
@@ -101574,7 +101822,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:49.732Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415875,
@@ -101760,7 +102010,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:51.569Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 239125,
@@ -101890,7 +102142,9 @@
         "Includes level editor",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:53.413Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 414522,
@@ -102325,6 +102579,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2761020/ss_d049b292f19324cf85243844199a56ec8bd4a6aa.1920x1080.jpg?t=1786802701",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2761020/ss_d049b292f19324cf85243844199a56ec8bd4a6aa.600x338.jpg?t=1786802701"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2761020/ss_a1134ea9d46e00ec3cd0a63911a968d525a02f73.1920x1080.jpg?t=1786802701",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2761020/ss_a1134ea9d46e00ec3cd0a63911a968d525a02f73.600x338.jpg?t=1786802701"
         }
       ],
       "subscriptions": {
@@ -102356,7 +102614,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:55.254Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 407748,
@@ -102506,6 +102766,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/8b135a8b032fea5606868ed90fb6ee49b82ffccc/ss_8b135a8b032fea5606868ed90fb6ee49b82ffccc.1920x1080.jpg?t=1789037211",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/8b135a8b032fea5606868ed90fb6ee49b82ffccc/ss_8b135a8b032fea5606868ed90fb6ee49b82ffccc.600x338.jpg?t=1789037211"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/4c88849b5b4fa998b7c34f7bdbc20605c2eb79b3/ss_4c88849b5b4fa998b7c34f7bdbc20605c2eb79b3.1920x1080.jpg?t=1789037211",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/4c88849b5b4fa998b7c34f7bdbc20605c2eb79b3/ss_4c88849b5b4fa998b7c34f7bdbc20605c2eb79b3.600x338.jpg?t=1789037211"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/f92a4d0a274fed3113a87a0146264402bbb985eb/ss_f92a4d0a274fed3113a87a0146264402bbb985eb.1920x1080.jpg?t=1789037211",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3427370/f92a4d0a274fed3113a87a0146264402bbb985eb/ss_f92a4d0a274fed3113a87a0146264402bbb985eb.600x338.jpg?t=1789037211"
         }
       ],
       "subscriptions": {
@@ -102537,7 +102805,9 @@
         "DualShock Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:57.092Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 254020,
@@ -102663,7 +102933,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:24:58.933Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 373573,
@@ -102813,6 +103085,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_5cbab8de245f6016821374e81c295fb09cfbc0ed.1920x1080.jpg?t=1784821684",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_5cbab8de245f6016821374e81c295fb09cfbc0ed.600x338.jpg?t=1784821684"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_a4495ad5029b23a6c731e8fc549c0a37f792a4b2.1920x1080.jpg?t=1784821684",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_a4495ad5029b23a6c731e8fc549c0a37f792a4b2.600x338.jpg?t=1784821684"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_d44bb03159c63130aad747c876a1002ebc475126.1920x1080.jpg?t=1784821684",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1730790/ss_d44bb03159c63130aad747c876a1002ebc475126.600x338.jpg?t=1784821684"
         }
       ],
       "subscriptions": {
@@ -102833,7 +103113,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.243Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257383258/5ce37657c07c3ccf75f1b5e05fba4b59ea183a8e/movie_600x337.jpg?t=1784821683"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257383258/5ce37657c07c3ccf75f1b5e05fba4b59ea183a8e/movie_600x337.jpg?t=1784821683",
+      "steamMediaCheckedAt": "2026-09-13T08:25:00.776Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 349661,
@@ -102940,7 +103222,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.427Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257290734/6d038435bbe4b412dbee1b610ae549132708d5bd/movie_600x337.jpg?t=1788802944"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257290734/6d038435bbe4b412dbee1b610ae549132708d5bd/movie_600x337.jpg?t=1788802944",
+      "steamMediaCheckedAt": "2026-09-13T08:25:02.619Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 324887,
@@ -103032,6 +103316,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/5597db50a04001570b1fcd6b8ac080a3e6d61065/ss_5597db50a04001570b1fcd6b8ac080a3e6d61065.1920x1080.jpg?t=1787725292",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/5597db50a04001570b1fcd6b8ac080a3e6d61065/ss_5597db50a04001570b1fcd6b8ac080a3e6d61065.600x338.jpg?t=1787725292"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/1fab579cb3dfb16f71fdffa70b055545d066f6da/ss_1fab579cb3dfb16f71fdffa70b055545d066f6da.1920x1080.jpg?t=1787725292",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/1fab579cb3dfb16f71fdffa70b055545d066f6da/ss_1fab579cb3dfb16f71fdffa70b055545d066f6da.600x338.jpg?t=1787725292"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/d1f4f9215e4b42f7b9d936696364404962eb1c96/ss_d1f4f9215e4b42f7b9d936696364404962eb1c96.1920x1080.jpg?t=1787725292",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3260830/d1f4f9215e4b42f7b9d936696364404962eb1c96/ss_d1f4f9215e4b42f7b9d936696364404962eb1c96.600x338.jpg?t=1787725292"
         }
       ],
       "subscriptions": {
@@ -103052,7 +103344,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.447Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393087/e7ec1236de6f8f40a398769c1d93f509a1b7b4a8/movie_600x337.jpg?t=1786036044"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393087/e7ec1236de6f8f40a398769c1d93f509a1b7b4a8/movie_600x337.jpg?t=1786036044",
+      "steamMediaCheckedAt": "2026-09-13T08:25:04.461Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 395139,
@@ -103492,6 +103786,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3856530/bf88b1db9f339f828d2525ee3bcb0898723e0e3d/ss_bf88b1db9f339f828d2525ee3bcb0898723e0e3d.1920x1080.jpg?t=1788341911",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3856530/bf88b1db9f339f828d2525ee3bcb0898723e0e3d/ss_bf88b1db9f339f828d2525ee3bcb0898723e0e3d.600x338.jpg?t=1788341911"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3856530/26c15526c0db6be952f7dd28697fcd2d7a859ae8/ss_26c15526c0db6be952f7dd28697fcd2d7a859ae8.1920x1080.jpg?t=1788341911",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3856530/26c15526c0db6be952f7dd28697fcd2d7a859ae8/ss_26c15526c0db6be952f7dd28697fcd2d7a859ae8.600x338.jpg?t=1788341911"
         }
       ],
       "subscriptions": {
@@ -103512,7 +103810,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.627Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257355994/347a40ece7c4bd2b9b55882613dad11e9ad415fc/movie_600x337.jpg?t=1781595829"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257355994/347a40ece7c4bd2b9b55882613dad11e9ad415fc/movie_600x337.jpg?t=1781595829",
+      "steamMediaCheckedAt": "2026-09-13T08:25:06.312Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399971,
@@ -103616,7 +103916,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.646Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257329306/90b7b337305bc3f814acf54d57bc5db72276b6ec/movie_600x337.jpg?t=1781236133"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257329306/90b7b337305bc3f814acf54d57bc5db72276b6ec/movie_600x337.jpg?t=1781236133",
+      "steamMediaCheckedAt": "2026-09-13T08:25:08.171Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 383053,
@@ -103824,6 +104126,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/f7f4a29575cb2aa3b41cda207fc54733afabeb74/ss_f7f4a29575cb2aa3b41cda207fc54733afabeb74.1920x1080.jpg?t=1782372626",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/f7f4a29575cb2aa3b41cda207fc54733afabeb74/ss_f7f4a29575cb2aa3b41cda207fc54733afabeb74.600x338.jpg?t=1782372626"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/d3d47d0d91f469966608fdfc94564c2481a46eb1/ss_d3d47d0d91f469966608fdfc94564c2481a46eb1.1920x1080.jpg?t=1782372626",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/d3d47d0d91f469966608fdfc94564c2481a46eb1/ss_d3d47d0d91f469966608fdfc94564c2481a46eb1.600x338.jpg?t=1782372626"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/fd5f56818bd8865f9257ac5a621661c309831be5/ss_fd5f56818bd8865f9257ac5a621661c309831be5.1920x1080.jpg?t=1782372626",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2863300/fd5f56818bd8865f9257ac5a621661c309831be5/ss_fd5f56818bd8865f9257ac5a621661c309831be5.600x338.jpg?t=1782372626"
         }
       ],
       "subscriptions": {
@@ -103844,7 +104154,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.826Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257337358/62439e7eed95781d2a0d0a01f0d9c8e030103662/movie_600x337.jpg?t=1778853801"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257337358/62439e7eed95781d2a0d0a01f0d9c8e030103662/movie_600x337.jpg?t=1778853801",
+      "steamMediaCheckedAt": "2026-09-13T08:25:10.010Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 194378,
@@ -103993,7 +104305,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:57.858Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256970182/movie.293x165.jpg?t=1695270764"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256970182/movie.293x165.jpg?t=1695270764",
+      "steamMediaCheckedAt": "2026-09-13T08:25:11.851Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 374580,
@@ -104101,7 +104415,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.046Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257195167/aae5d2df9a0d6d971da4e6a6c565c8a680c1368e/movie_600x337.jpg?t=1757444622"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257195167/aae5d2df9a0d6d971da4e6a6c565c8a680c1368e/movie_600x337.jpg?t=1757444622",
+      "steamMediaCheckedAt": "2026-09-13T08:25:13.698Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 357415,
@@ -104425,6 +104741,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/9bc2420a3e0a3a7b526d02778fbde5bbac40e70c/ss_9bc2420a3e0a3a7b526d02778fbde5bbac40e70c.1920x1080.jpg?t=1774899679",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/9bc2420a3e0a3a7b526d02778fbde5bbac40e70c/ss_9bc2420a3e0a3a7b526d02778fbde5bbac40e70c.600x338.jpg?t=1774899679"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/ss_a78470af194fbeabfe0bf99b0f86ae518a029f31.1920x1080.jpg?t=1774899679",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/ss_a78470af194fbeabfe0bf99b0f86ae518a029f31.600x338.jpg?t=1774899679"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/206d344222bb4318f64fb56532ecd22585287db2/ss_206d344222bb4318f64fb56532ecd22585287db2.1920x1080.jpg?t=1774899679",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1285690/206d344222bb4318f64fb56532ecd22585287db2/ss_206d344222bb4318f64fb56532ecd22585287db2.600x338.jpg?t=1774899679"
         }
       ],
       "subscriptions": {
@@ -104445,7 +104769,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.075Z",
       "earlyAccess": true,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256868321/movie.293x165.jpg?t=1718072075"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256868321/movie.293x165.jpg?t=1718072075",
+      "steamMediaCheckedAt": "2026-09-13T08:25:15.539Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 370292,
@@ -104656,7 +104982,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.240Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257031406/movie.293x165.jpg?t=1718442442"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257031406/movie.293x165.jpg?t=1718442442",
+      "steamMediaCheckedAt": "2026-09-13T08:25:17.379Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 406419,
@@ -104819,6 +105147,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3154550/3ff2cbca35e7eee6e9a6d7b1da59866100bfc9bd/ss_3ff2cbca35e7eee6e9a6d7b1da59866100bfc9bd.1920x1080.jpg?t=1788188449",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3154550/3ff2cbca35e7eee6e9a6d7b1da59866100bfc9bd/ss_3ff2cbca35e7eee6e9a6d7b1da59866100bfc9bd.600x338.jpg?t=1788188449"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3154550/ss_1b05473e850ccb54eb784b729a229eced855cd33.1920x1080.jpg?t=1788188449",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3154550/ss_1b05473e850ccb54eb784b729a229eced855cd33.600x338.jpg?t=1788188449"
         }
       ],
       "subscriptions": {
@@ -104839,7 +105171,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.298Z",
       "earlyAccess": true,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257192241/c1bb405ae8370253a85022f3d05a6c2589cacdf3/movie_600x337.jpg?t=1756828742"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257192241/c1bb405ae8370253a85022f3d05a6c2589cacdf3/movie_600x337.jpg?t=1756828742",
+      "steamMediaCheckedAt": "2026-09-13T08:25:19.228Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 390079,
@@ -104966,10 +105300,12 @@
         "Metroidvania"
       ],
       "developers": [
-        "Aeternum Game Studios"
+        "Aeternum Game Studios",
+        "Aeternum Game Studios S.L"
       ],
       "publishers": [
-        "Aeternum Game Studios"
+        "Aeternum Game Studios",
+        "Aeternum Game Studios S.L"
       ],
       "rating": 0,
       "ratingCount": 0,
@@ -105061,6 +105397,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/9b68505098a2a014a803abc09cd17e570e34bbf3/ss_9b68505098a2a014a803abc09cd17e570e34bbf3.1920x1080.jpg?t=1789059626",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/9b68505098a2a014a803abc09cd17e570e34bbf3/ss_9b68505098a2a014a803abc09cd17e570e34bbf3.600x338.jpg?t=1789059626"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/bcd7674d681e786c52b6e1662af2dca02e33f459/ss_bcd7674d681e786c52b6e1662af2dca02e33f459.1920x1080.jpg?t=1789059626",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/bcd7674d681e786c52b6e1662af2dca02e33f459/ss_bcd7674d681e786c52b6e1662af2dca02e33f459.600x338.jpg?t=1789059626"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/93c4eb9c46d4c8b05a55dbf24bba8c121232c724/ss_93c4eb9c46d4c8b05a55dbf24bba8c121232c724.1920x1080.jpg?t=1789059626",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2710920/93c4eb9c46d4c8b05a55dbf24bba8c121232c724/ss_93c4eb9c46d4c8b05a55dbf24bba8c121232c724.600x338.jpg?t=1789059626"
         }
       ],
       "subscriptions": {
@@ -105081,7 +105425,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.437Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257422091/ccf08d64bac6d1df869e563f98c798fb0e2827e2/movie_600x337.jpg?t=1789059625"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257422091/ccf08d64bac6d1df869e563f98c798fb0e2827e2/movie_600x337.jpg?t=1789059625",
+      "steamMediaCheckedAt": "2026-09-13T08:25:21.125Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 316454,
@@ -105179,7 +105525,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.502Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257074213/5951041170b901815afd2dcf330d9eb02276c687/movie_600x337.jpg?t=1731711176"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257074213/5951041170b901815afd2dcf330d9eb02276c687/movie_600x337.jpg?t=1731711176",
+      "steamMediaCheckedAt": "2026-09-13T08:25:22.961Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 366912,
@@ -105278,7 +105626,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.646Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257125921/208cc25f86c99dc5ee93655bc2dcf9168bbb3d35/movie_600x337.jpg?t=1788512435"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257125921/208cc25f86c99dc5ee93655bc2dcf9168bbb3d35/movie_600x337.jpg?t=1788512435",
+      "steamMediaCheckedAt": "2026-09-13T08:25:24.795Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 387356,
@@ -105543,7 +105893,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.711Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257050478/bb009da014de3ff2ed8442902326c852b266c8fa/movie_600x337.jpg?t=1762364348"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257050478/bb009da014de3ff2ed8442902326c852b266c8fa/movie_600x337.jpg?t=1762364348",
+      "steamMediaCheckedAt": "2026-09-13T08:25:26.636Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 362933,
@@ -105847,7 +106199,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.835Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257340815/6be9261837209cf08557ed2cdfde2ca4553eb980/movie_600x337.jpg?t=1779383813"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257340815/6be9261837209cf08557ed2cdfde2ca4553eb980/movie_600x337.jpg?t=1779383813",
+      "steamMediaCheckedAt": "2026-09-13T08:25:28.470Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 258425,
@@ -105938,7 +106292,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:58.909Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256954070/movie.293x165.jpg?t=1722335106"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256954070/movie.293x165.jpg?t=1722335106",
+      "steamMediaCheckedAt": "2026-09-13T08:25:30.306Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 352475,
@@ -106041,7 +106397,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:59.036Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257049451/8d0c3f9f15b39600f20daffdd00dbfb8001d2ea0/movie_600x337.jpg?t=1739969341"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257049451/8d0c3f9f15b39600f20daffdd00dbfb8001d2ea0/movie_600x337.jpg?t=1739969341",
+      "steamMediaCheckedAt": "2026-09-13T08:25:32.147Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 379523,
@@ -106248,6 +106606,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/b44dac6cc91fd87816375c3e3633db985fcb9236/ss_b44dac6cc91fd87816375c3e3633db985fcb9236.1920x1080.jpg?t=1782471765",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/b44dac6cc91fd87816375c3e3633db985fcb9236/ss_b44dac6cc91fd87816375c3e3633db985fcb9236.600x338.jpg?t=1782471765"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/f3f65a006899775332e49d96d0bf7f59a0d8bf73/ss_f3f65a006899775332e49d96d0bf7f59a0d8bf73.1920x1080.jpg?t=1782471765",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/f3f65a006899775332e49d96d0bf7f59a0d8bf73/ss_f3f65a006899775332e49d96d0bf7f59a0d8bf73.600x338.jpg?t=1782471765"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/a2fc70e7f3021f15400a5705348d85c05b65b4c9/ss_a2fc70e7f3021f15400a5705348d85c05b65b4c9.1920x1080.jpg?t=1782471765",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2932450/a2fc70e7f3021f15400a5705348d85c05b65b4c9/ss_a2fc70e7f3021f15400a5705348d85c05b65b4c9.600x338.jpg?t=1782471765"
         }
       ],
       "subscriptions": {
@@ -106268,7 +106634,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:59.114Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257014308/movie.293x165.jpg?t=1712921554"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257014308/movie.293x165.jpg?t=1712921554",
+      "steamMediaCheckedAt": "2026-09-13T08:25:33.987Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 312192,
@@ -106358,7 +106726,9 @@
       "announcedWindow": "",
       "steamId": "3058230",
       "steamMetadataCheckedAt": "2026-09-12T07:32:59.238Z",
-      "earlyAccess": false
+      "earlyAccess": false,
+      "steamMediaCheckedAt": "2026-09-13T08:25:35.846Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 318123,
@@ -106465,7 +106835,9 @@
       "steamMetadataCheckedAt": "2026-09-12T07:32:59.321Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257051597/movie.293x165.jpg?t=1725987736"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257051597/movie.293x165.jpg?t=1725987736",
+      "steamMediaCheckedAt": "2026-09-13T08:25:37.682Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403244,
@@ -106575,7 +106947,9 @@
       "announcedWindow": "",
       "steamId": "2560720",
       "steamMetadataCheckedAt": "2026-09-12T07:32:59.443Z",
-      "earlyAccess": false
+      "earlyAccess": false,
+      "steamMediaCheckedAt": "2026-09-13T08:25:39.519Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 140375,
@@ -106667,6 +107041,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1442520/9d9dc11d5bcf91bcab9abd44e1eb6f83155dc50f/ss_9d9dc11d5bcf91bcab9abd44e1eb6f83155dc50f.1920x1080.jpg?t=1786474932",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1442520/9d9dc11d5bcf91bcab9abd44e1eb6f83155dc50f/ss_9d9dc11d5bcf91bcab9abd44e1eb6f83155dc50f.600x338.jpg?t=1786474932"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1442520/40f222902a0e2d9f535a86c44eab571e6a8f8829/ss_40f222902a0e2d9f535a86c44eab571e6a8f8829.1920x1080.jpg?t=1786474932",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1442520/40f222902a0e2d9f535a86c44eab571e6a8f8829/ss_40f222902a0e2d9f535a86c44eab571e6a8f8829.600x338.jpg?t=1786474932"
         }
       ],
       "subscriptions": {
@@ -106687,7 +107065,9 @@
       "steamMetadataCheckedAt": "2026-09-11T23:15:48.043Z",
       "earlyAccess": false,
       "trailerUrl": "",
-      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393175/6c8097d8fa9822c08903eccbb142ab6fca37d8e8/movie_600x337.jpg?t=1786041095"
+      "trailerPoster": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257393175/6c8097d8fa9822c08903eccbb142ab6fca37d8e8/movie_600x337.jpg?t=1786041095",
+      "steamMediaCheckedAt": "2026-09-13T08:25:41.371Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392094,
@@ -106913,7 +107293,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:43.223Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 319226,
@@ -107029,7 +107411,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:45.060Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 283903,
@@ -107143,7 +107527,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:46.901Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397497,
@@ -107259,7 +107645,9 @@
         "Stats",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:48.741Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 247917,
@@ -107381,7 +107769,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:50.582Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 210905,
@@ -107477,6 +107867,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_05d257ab208761b9aaba9208bc9795ee67458c8f.1920x1080.jpg?t=1756929845",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_05d257ab208761b9aaba9208bc9795ee67458c8f.600x338.jpg?t=1756929845"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_7f634bb2059223c269c212e87302367f370358d7.1920x1080.jpg?t=1756929845",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_7f634bb2059223c269c212e87302367f370358d7.600x338.jpg?t=1756929845"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_41e0d54b33cd4c98f4a0ea99c5da4d7053a14eec.1920x1080.jpg?t=1756929845",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2068190/ss_41e0d54b33cd4c98f4a0ea99c5da4d7053a14eec.600x338.jpg?t=1756929845"
         }
       ],
       "subscriptions": {
@@ -107507,7 +107905,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:52.442Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 293085,
@@ -107609,7 +108009,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:54.282Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 263964,
@@ -107705,6 +108107,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_7ecabff8cbd4feac820fe85fbeae225fca297bf0.1920x1080.jpg?t=1787714109",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_7ecabff8cbd4feac820fe85fbeae225fca297bf0.600x338.jpg?t=1787714109"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_01fc229e4443bd67f30758e5d1d4803025e90e1b.1920x1080.jpg?t=1787714109",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_01fc229e4443bd67f30758e5d1d4803025e90e1b.600x338.jpg?t=1787714109"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_6356c6482f18662300b91ccd98e5128fce01959a.1920x1080.jpg?t=1787714109",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2341620/ss_6356c6482f18662300b91ccd98e5128fce01959a.600x338.jpg?t=1787714109"
         }
       ],
       "subscriptions": {
@@ -107736,7 +108146,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:56.142Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 409225,
@@ -108312,6 +108724,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/aadc8e1567349a86cc0b2cd48001466fd0fcb6e7/ss_aadc8e1567349a86cc0b2cd48001466fd0fcb6e7.1920x1080.jpg?t=1777951958",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/aadc8e1567349a86cc0b2cd48001466fd0fcb6e7/ss_aadc8e1567349a86cc0b2cd48001466fd0fcb6e7.600x338.jpg?t=1777951958"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/70a06e32b1040676151042e88f24f9118cc86b3f/ss_70a06e32b1040676151042e88f24f9118cc86b3f.1920x1080.jpg?t=1777951958",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/70a06e32b1040676151042e88f24f9118cc86b3f/ss_70a06e32b1040676151042e88f24f9118cc86b3f.600x338.jpg?t=1777951958"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/9a4445b0e557e5322e330371a96af654140d7354/ss_9a4445b0e557e5322e330371a96af654140d7354.1920x1080.jpg?t=1777951958",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690100/9a4445b0e557e5322e330371a96af654140d7354/ss_9a4445b0e557e5322e330371a96af654140d7354.600x338.jpg?t=1777951958"
         }
       ],
       "subscriptions": {
@@ -108347,7 +108767,9 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:57.981Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 201754,
@@ -108445,6 +108867,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/ss_c1dce3377e3b9fde2aa97e034f4818b30370042e.1920x1080.jpg?t=1789116519",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/ss_c1dce3377e3b9fde2aa97e034f4818b30370042e.600x338.jpg?t=1789116519"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/ss_7221ebbab5e3d9cca436edff2479260f1bfcf542.1920x1080.jpg?t=1789116519",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/ss_7221ebbab5e3d9cca436edff2479260f1bfcf542.600x338.jpg?t=1789116519"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/2364bb0e84adfd84a84b89821ea213a63bd81003/ss_2364bb0e84adfd84a84b89821ea213a63bd81003.1920x1080.jpg?t=1789116519",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1675260/2364bb0e84adfd84a84b89821ea213a63bd81003/ss_2364bb0e84adfd84a84b89821ea213a63bd81003.600x338.jpg?t=1789116519"
         }
       ],
       "subscriptions": {
@@ -108482,7 +108912,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:25:59.823Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 351121,
@@ -108874,7 +109306,9 @@
         "Steam Input API Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:01.674Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 367943,
@@ -108989,7 +109423,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:03.512Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 321054,
@@ -109100,7 +109536,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:05.350Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 335259,
@@ -109214,44 +109652,52 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc/ss_fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc/ss_fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc/ss_fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc/ss_fc1d9f9aa3e0a762bcae28ef969fdff1bd8f02cc.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/623e5c376d58dd1a4962871e9d82f348f3d1a161/ss_623e5c376d58dd1a4962871e9d82f348f3d1a161.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/623e5c376d58dd1a4962871e9d82f348f3d1a161/ss_623e5c376d58dd1a4962871e9d82f348f3d1a161.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/623e5c376d58dd1a4962871e9d82f348f3d1a161/ss_623e5c376d58dd1a4962871e9d82f348f3d1a161.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/623e5c376d58dd1a4962871e9d82f348f3d1a161/ss_623e5c376d58dd1a4962871e9d82f348f3d1a161.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/c193280f6c07ed8f751e46eeb2523194f43f3ea8/ss_c193280f6c07ed8f751e46eeb2523194f43f3ea8.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/c193280f6c07ed8f751e46eeb2523194f43f3ea8/ss_c193280f6c07ed8f751e46eeb2523194f43f3ea8.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/c193280f6c07ed8f751e46eeb2523194f43f3ea8/ss_c193280f6c07ed8f751e46eeb2523194f43f3ea8.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/c193280f6c07ed8f751e46eeb2523194f43f3ea8/ss_c193280f6c07ed8f751e46eeb2523194f43f3ea8.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/b31b5d0a010376155f87e54773caed3295c85eec/ss_b31b5d0a010376155f87e54773caed3295c85eec.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/b31b5d0a010376155f87e54773caed3295c85eec/ss_b31b5d0a010376155f87e54773caed3295c85eec.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/b31b5d0a010376155f87e54773caed3295c85eec/ss_b31b5d0a010376155f87e54773caed3295c85eec.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/b31b5d0a010376155f87e54773caed3295c85eec/ss_b31b5d0a010376155f87e54773caed3295c85eec.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/0f794739869dab6cc69a0048497a5a8c8b94dae1/ss_0f794739869dab6cc69a0048497a5a8c8b94dae1.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/0f794739869dab6cc69a0048497a5a8c8b94dae1/ss_0f794739869dab6cc69a0048497a5a8c8b94dae1.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/0f794739869dab6cc69a0048497a5a8c8b94dae1/ss_0f794739869dab6cc69a0048497a5a8c8b94dae1.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/0f794739869dab6cc69a0048497a5a8c8b94dae1/ss_0f794739869dab6cc69a0048497a5a8c8b94dae1.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08/ss_a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08/ss_a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08/ss_a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08/ss_a94ae4b9b6642ed0f3d44fea3e4b474b2f9d6a08.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/5b20a3f604cacb62cae6734fb56fb0da18c2d6ce/ss_5b20a3f604cacb62cae6734fb56fb0da18c2d6ce.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/5b20a3f604cacb62cae6734fb56fb0da18c2d6ce/ss_5b20a3f604cacb62cae6734fb56fb0da18c2d6ce.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/5b20a3f604cacb62cae6734fb56fb0da18c2d6ce/ss_5b20a3f604cacb62cae6734fb56fb0da18c2d6ce.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/5b20a3f604cacb62cae6734fb56fb0da18c2d6ce/ss_5b20a3f604cacb62cae6734fb56fb0da18c2d6ce.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/8335e6d0adf557892fce08b4f8f21e9d93849416/ss_8335e6d0adf557892fce08b4f8f21e9d93849416.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/8335e6d0adf557892fce08b4f8f21e9d93849416/ss_8335e6d0adf557892fce08b4f8f21e9d93849416.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/8335e6d0adf557892fce08b4f8f21e9d93849416/ss_8335e6d0adf557892fce08b4f8f21e9d93849416.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/8335e6d0adf557892fce08b4f8f21e9d93849416/ss_8335e6d0adf557892fce08b4f8f21e9d93849416.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/318024b29c9c852a464ca727cf7820ccbb7b9675/ss_318024b29c9c852a464ca727cf7820ccbb7b9675.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/318024b29c9c852a464ca727cf7820ccbb7b9675/ss_318024b29c9c852a464ca727cf7820ccbb7b9675.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/318024b29c9c852a464ca727cf7820ccbb7b9675/ss_318024b29c9c852a464ca727cf7820ccbb7b9675.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/318024b29c9c852a464ca727cf7820ccbb7b9675/ss_318024b29c9c852a464ca727cf7820ccbb7b9675.600x338.jpg?t=1789173858"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/3e03f7a1bf1059b3442dbfead96b86dd1ccaf921/ss_3e03f7a1bf1059b3442dbfead96b86dd1ccaf921.1920x1080.jpg?t=1788775409",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/3e03f7a1bf1059b3442dbfead96b86dd1ccaf921/ss_3e03f7a1bf1059b3442dbfead96b86dd1ccaf921.600x338.jpg?t=1788775409"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/3e03f7a1bf1059b3442dbfead96b86dd1ccaf921/ss_3e03f7a1bf1059b3442dbfead96b86dd1ccaf921.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/3e03f7a1bf1059b3442dbfead96b86dd1ccaf921/ss_3e03f7a1bf1059b3442dbfead96b86dd1ccaf921.600x338.jpg?t=1789173858"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/aea697dfb8f3bf9fd89e50fcbfdb9bd4de279c62/ss_aea697dfb8f3bf9fd89e50fcbfdb9bd4de279c62.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/aea697dfb8f3bf9fd89e50fcbfdb9bd4de279c62/ss_aea697dfb8f3bf9fd89e50fcbfdb9bd4de279c62.600x338.jpg?t=1789173858"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/d5716af09405ddde293d4e68cf0bbe632b7520e0/ss_d5716af09405ddde293d4e68cf0bbe632b7520e0.1920x1080.jpg?t=1789173858",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2638080/d5716af09405ddde293d4e68cf0bbe632b7520e0/ss_d5716af09405ddde293d4e68cf0bbe632b7520e0.600x338.jpg?t=1789173858"
         }
       ],
       "subscriptions": {
@@ -109280,7 +109726,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:07.253Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 386505,
@@ -109502,7 +109950,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:09.103Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411924,
@@ -109691,7 +110141,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:10.965Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403582,
@@ -109935,7 +110387,9 @@
         "LAN Co-op",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:12.829Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399701,
@@ -110173,7 +110627,9 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:14.670Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 251841,
@@ -110294,7 +110750,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:16.506Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 413032,
@@ -110459,7 +110917,9 @@
         "LAN Co-op",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:18.343Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 348268,
@@ -110613,6 +111073,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/08af0b257b94360865b2d586b05a9241b7965ddd/ss_08af0b257b94360865b2d586b05a9241b7965ddd.1920x1080.jpg?t=1786016322",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/08af0b257b94360865b2d586b05a9241b7965ddd/ss_08af0b257b94360865b2d586b05a9241b7965ddd.600x338.jpg?t=1786016322"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/4f3215559cf14772c2b8801b799b0e7fc138f124/ss_4f3215559cf14772c2b8801b799b0e7fc138f124.1920x1080.jpg?t=1786016322",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/4f3215559cf14772c2b8801b799b0e7fc138f124/ss_4f3215559cf14772c2b8801b799b0e7fc138f124.600x338.jpg?t=1786016322"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/645799a8d5e8eac662304f13473572765bf7d2f2/ss_645799a8d5e8eac662304f13473572765bf7d2f2.1920x1080.jpg?t=1786016322",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2179480/645799a8d5e8eac662304f13473572765bf7d2f2/ss_645799a8d5e8eac662304f13473572765bf7d2f2.600x338.jpg?t=1786016322"
         }
       ],
       "subscriptions": {
@@ -110658,7 +111126,9 @@
         "Stats",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:20.204Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 191817,
@@ -110756,6 +111226,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/dc30675cf47d2eb7754d69a3d9a84860521e7cb1/ss_dc30675cf47d2eb7754d69a3d9a84860521e7cb1.1920x1080.jpg?t=1785374095",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/dc30675cf47d2eb7754d69a3d9a84860521e7cb1/ss_dc30675cf47d2eb7754d69a3d9a84860521e7cb1.600x338.jpg?t=1785374095"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/cf92d6a4d87cbc364a267318217f3c141cbffc9e/ss_cf92d6a4d87cbc364a267318217f3c141cbffc9e.1920x1080.jpg?t=1785374095",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/cf92d6a4d87cbc364a267318217f3c141cbffc9e/ss_cf92d6a4d87cbc364a267318217f3c141cbffc9e.600x338.jpg?t=1785374095"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/e36fbc5b175ce3856669feec6d0cbc9f97e4b03e/ss_e36fbc5b175ce3856669feec6d0cbc9f97e4b03e.1920x1080.jpg?t=1785374095",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1154960/e36fbc5b175ce3856669feec6d0cbc9f97e4b03e/ss_e36fbc5b175ce3856669feec6d0cbc9f97e4b03e.600x338.jpg?t=1785374095"
         }
       ],
       "subscriptions": {
@@ -110794,7 +111272,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:22.041Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 261774,
@@ -110907,7 +111387,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:23.884Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415328,
@@ -111102,36 +111584,36 @@
       ],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_68ffe4125cf76539f9193a4fadfa9c7361ea52f9.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_68ffe4125cf76539f9193a4fadfa9c7361ea52f9.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_68ffe4125cf76539f9193a4fadfa9c7361ea52f9.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_68ffe4125cf76539f9193a4fadfa9c7361ea52f9.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_b4f19cf7cd7ac9af51c08e19bac6134bb491abb6.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_b4f19cf7cd7ac9af51c08e19bac6134bb491abb6.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_b4f19cf7cd7ac9af51c08e19bac6134bb491abb6.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_b4f19cf7cd7ac9af51c08e19bac6134bb491abb6.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_483dc2f86fd1a09a9550625c6a3feae45a3910a5.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_483dc2f86fd1a09a9550625c6a3feae45a3910a5.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_483dc2f86fd1a09a9550625c6a3feae45a3910a5.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_483dc2f86fd1a09a9550625c6a3feae45a3910a5.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_f772e7fe5c0794bd63234bfd77119169bbab6560.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_f772e7fe5c0794bd63234bfd77119169bbab6560.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_f772e7fe5c0794bd63234bfd77119169bbab6560.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_f772e7fe5c0794bd63234bfd77119169bbab6560.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_17abb1f5a4a1b36ffab204f6d9344c24d3aa5f38.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_17abb1f5a4a1b36ffab204f6d9344c24d3aa5f38.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_17abb1f5a4a1b36ffab204f6d9344c24d3aa5f38.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_17abb1f5a4a1b36ffab204f6d9344c24d3aa5f38.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_59ec3772035f4311f6f7e5bc7c1781780e29e587.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_59ec3772035f4311f6f7e5bc7c1781780e29e587.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_59ec3772035f4311f6f7e5bc7c1781780e29e587.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_59ec3772035f4311f6f7e5bc7c1781780e29e587.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_a505836e0d0e689e23091b652abac6041b2008a4.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_a505836e0d0e689e23091b652abac6041b2008a4.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_a505836e0d0e689e23091b652abac6041b2008a4.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_a505836e0d0e689e23091b652abac6041b2008a4.600x338.jpg?t=1789274310"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_969bc2deca9da8f41cfcae86d3028f3d9eb54f0e.1920x1080.jpg?t=1788435219",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_969bc2deca9da8f41cfcae86d3028f3d9eb54f0e.600x338.jpg?t=1788435219"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_969bc2deca9da8f41cfcae86d3028f3d9eb54f0e.1920x1080.jpg?t=1789274310",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3218230/ss_969bc2deca9da8f41cfcae86d3028f3d9eb54f0e.600x338.jpg?t=1789274310"
         }
       ],
       "subscriptions": {
@@ -111169,7 +111651,9 @@
         "Steam Input API Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:25.720Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 264179,
@@ -111294,7 +111778,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:27.559Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 368311,
@@ -111412,7 +111898,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:29.430Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 392216,
@@ -111525,7 +112013,9 @@
         "Captions available",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:31.267Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 405578,
@@ -111680,6 +112170,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678350/79629091ece809d9a5978ad30bfc006304dad4bb/ss_79629091ece809d9a5978ad30bfc006304dad4bb.1920x1080.jpg?t=1788779227",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678350/79629091ece809d9a5978ad30bfc006304dad4bb/ss_79629091ece809d9a5978ad30bfc006304dad4bb.600x338.jpg?t=1788779227"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678350/2d99a8ca17c4775e3a6ed47d482dcbc076e92dc2/ss_2d99a8ca17c4775e3a6ed47d482dcbc076e92dc2.1920x1080.jpg?t=1788779227",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678350/2d99a8ca17c4775e3a6ed47d482dcbc076e92dc2/ss_2d99a8ca17c4775e3a6ed47d482dcbc076e92dc2.600x338.jpg?t=1788779227"
         }
       ],
       "subscriptions": {
@@ -111719,7 +112213,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:33.115Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 258241,
@@ -111957,40 +112453,40 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/d34162f0fbe3c10dc5189e2a2e3bee9829ee7567/ss_d34162f0fbe3c10dc5189e2a2e3bee9829ee7567.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/d34162f0fbe3c10dc5189e2a2e3bee9829ee7567/ss_d34162f0fbe3c10dc5189e2a2e3bee9829ee7567.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/d34162f0fbe3c10dc5189e2a2e3bee9829ee7567/ss_d34162f0fbe3c10dc5189e2a2e3bee9829ee7567.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/d34162f0fbe3c10dc5189e2a2e3bee9829ee7567/ss_d34162f0fbe3c10dc5189e2a2e3bee9829ee7567.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/419d5c6386a26e0428699bfa94d739584c21a8bd/ss_419d5c6386a26e0428699bfa94d739584c21a8bd.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/419d5c6386a26e0428699bfa94d739584c21a8bd/ss_419d5c6386a26e0428699bfa94d739584c21a8bd.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/419d5c6386a26e0428699bfa94d739584c21a8bd/ss_419d5c6386a26e0428699bfa94d739584c21a8bd.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/419d5c6386a26e0428699bfa94d739584c21a8bd/ss_419d5c6386a26e0428699bfa94d739584c21a8bd.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/17ee1dd4305c15461c010d6f8fb54c21bf6cda5f/ss_17ee1dd4305c15461c010d6f8fb54c21bf6cda5f.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/17ee1dd4305c15461c010d6f8fb54c21bf6cda5f/ss_17ee1dd4305c15461c010d6f8fb54c21bf6cda5f.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/17ee1dd4305c15461c010d6f8fb54c21bf6cda5f/ss_17ee1dd4305c15461c010d6f8fb54c21bf6cda5f.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/17ee1dd4305c15461c010d6f8fb54c21bf6cda5f/ss_17ee1dd4305c15461c010d6f8fb54c21bf6cda5f.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/b346d2eece54387bc2cca2eaffc6540343da795c/ss_b346d2eece54387bc2cca2eaffc6540343da795c.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/b346d2eece54387bc2cca2eaffc6540343da795c/ss_b346d2eece54387bc2cca2eaffc6540343da795c.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/b346d2eece54387bc2cca2eaffc6540343da795c/ss_b346d2eece54387bc2cca2eaffc6540343da795c.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/b346d2eece54387bc2cca2eaffc6540343da795c/ss_b346d2eece54387bc2cca2eaffc6540343da795c.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/3dcc93970367cb26db5eb79b9b0a825501f76146/ss_3dcc93970367cb26db5eb79b9b0a825501f76146.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/3dcc93970367cb26db5eb79b9b0a825501f76146/ss_3dcc93970367cb26db5eb79b9b0a825501f76146.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/3dcc93970367cb26db5eb79b9b0a825501f76146/ss_3dcc93970367cb26db5eb79b9b0a825501f76146.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/3dcc93970367cb26db5eb79b9b0a825501f76146/ss_3dcc93970367cb26db5eb79b9b0a825501f76146.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/15a9a08a361fdcf0bd07e4dd700d0de89fda58f2/ss_15a9a08a361fdcf0bd07e4dd700d0de89fda58f2.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/15a9a08a361fdcf0bd07e4dd700d0de89fda58f2/ss_15a9a08a361fdcf0bd07e4dd700d0de89fda58f2.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/15a9a08a361fdcf0bd07e4dd700d0de89fda58f2/ss_15a9a08a361fdcf0bd07e4dd700d0de89fda58f2.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/15a9a08a361fdcf0bd07e4dd700d0de89fda58f2/ss_15a9a08a361fdcf0bd07e4dd700d0de89fda58f2.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/a0ad49fa8f36e78d1243004fa163395fba3d2f79/ss_a0ad49fa8f36e78d1243004fa163395fba3d2f79.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/a0ad49fa8f36e78d1243004fa163395fba3d2f79/ss_a0ad49fa8f36e78d1243004fa163395fba3d2f79.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/a0ad49fa8f36e78d1243004fa163395fba3d2f79/ss_a0ad49fa8f36e78d1243004fa163395fba3d2f79.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/a0ad49fa8f36e78d1243004fa163395fba3d2f79/ss_a0ad49fa8f36e78d1243004fa163395fba3d2f79.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/faaad8a9346433efa78361b693f860dea275713c/ss_faaad8a9346433efa78361b693f860dea275713c.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/faaad8a9346433efa78361b693f860dea275713c/ss_faaad8a9346433efa78361b693f860dea275713c.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/faaad8a9346433efa78361b693f860dea275713c/ss_faaad8a9346433efa78361b693f860dea275713c.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/faaad8a9346433efa78361b693f860dea275713c/ss_faaad8a9346433efa78361b693f860dea275713c.600x338.jpg?t=1789240219"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/47f3f61519bfb068262f7d77c723204994290cbb/ss_47f3f61519bfb068262f7d77c723204994290cbb.1920x1080.jpg?t=1787716160",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/47f3f61519bfb068262f7d77c723204994290cbb/ss_47f3f61519bfb068262f7d77c723204994290cbb.600x338.jpg?t=1787716160"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/47f3f61519bfb068262f7d77c723204994290cbb/ss_47f3f61519bfb068262f7d77c723204994290cbb.1920x1080.jpg?t=1789240219",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2748420/47f3f61519bfb068262f7d77c723204994290cbb/ss_47f3f61519bfb068262f7d77c723204994290cbb.600x338.jpg?t=1789240219"
         }
       ],
       "subscriptions": {
@@ -112026,7 +112522,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:34.954Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 401989,
@@ -112327,7 +112825,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:36.799Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399363,
@@ -112422,6 +112922,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/0d7cc63466afe3a55f5e5ce40900b21649342302/ss_0d7cc63466afe3a55f5e5ce40900b21649342302.1920x1080.jpg?t=1786641258",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/0d7cc63466afe3a55f5e5ce40900b21649342302/ss_0d7cc63466afe3a55f5e5ce40900b21649342302.600x338.jpg?t=1786641258"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/a1836aa2c94e30f45319dffb2d0c4db3cfc91380/ss_a1836aa2c94e30f45319dffb2d0c4db3cfc91380.1920x1080.jpg?t=1786641258",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/a1836aa2c94e30f45319dffb2d0c4db3cfc91380/ss_a1836aa2c94e30f45319dffb2d0c4db3cfc91380.600x338.jpg?t=1786641258"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/debd392a1dff6c47c0760f7a299d65cd638c7308/ss_debd392a1dff6c47c0760f7a299d65cd638c7308.1920x1080.jpg?t=1786641258",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3577850/debd392a1dff6c47c0760f7a299d65cd638c7308/ss_debd392a1dff6c47c0760f7a299d65cd638c7308.600x338.jpg?t=1786641258"
         }
       ],
       "subscriptions": {
@@ -112453,7 +112961,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:38.649Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 358375,
@@ -112732,6 +113242,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_17989509aa1ef64640c3dff41613ff36af7379da.1920x1080.jpg?t=1783671132",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_17989509aa1ef64640c3dff41613ff36af7379da.600x338.jpg?t=1783671132"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_8b4782b4f0424ffce80421734160c8c48ff494a7.1920x1080.jpg?t=1783671132",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_8b4782b4f0424ffce80421734160c8c48ff494a7.600x338.jpg?t=1783671132"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_3b3dd363cbe9bb1379c50a60f380d4201b08a433.1920x1080.jpg?t=1783671132",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2560210/ss_3b3dd363cbe9bb1379c50a60f380d4201b08a433.600x338.jpg?t=1783671132"
         }
       ],
       "subscriptions": {
@@ -112764,7 +113282,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:40.487Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 381078,
@@ -112951,7 +113471,9 @@
         "Full controller support",
         "Steam Cloud",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:26:42.351Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 387981,
@@ -113145,7 +113667,9 @@
         "Stereo Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:44.191Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 377989,
@@ -113536,7 +114060,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:46.038Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 390049,
@@ -113895,7 +114421,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:47.884Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 407409,
@@ -114061,7 +114589,9 @@
         "Save Anytime",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:49.724Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397995,
@@ -114185,7 +114715,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:51.560Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 383672,
@@ -114351,7 +114883,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:53.396Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 283973,
@@ -115273,6 +115807,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/7ff752a641a655ab88bb7fce942377e034f90166/ss_7ff752a641a655ab88bb7fce942377e034f90166.1920x1080.jpg?t=1787517311",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/7ff752a641a655ab88bb7fce942377e034f90166/ss_7ff752a641a655ab88bb7fce942377e034f90166.600x338.jpg?t=1787517311"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/e3484b00387890567f22dcce37ff4fbb33abad51/ss_e3484b00387890567f22dcce37ff4fbb33abad51.1920x1080.jpg?t=1787517311",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/e3484b00387890567f22dcce37ff4fbb33abad51/ss_e3484b00387890567f22dcce37ff4fbb33abad51.600x338.jpg?t=1787517311"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/8e649301f192c5e226a9ecc9afb3a8b9c22fa4d2/ss_8e649301f192c5e226a9ecc9afb3a8b9c22fa4d2.1920x1080.jpg?t=1787517311",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920290/8e649301f192c5e226a9ecc9afb3a8b9c22fa4d2/ss_8e649301f192c5e226a9ecc9afb3a8b9c22fa4d2.600x338.jpg?t=1787517311"
         }
       ],
       "subscriptions": {
@@ -115306,7 +115848,9 @@
         "Stats",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:55.243Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 394231,
@@ -115583,6 +116127,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3075430/ss_72a025380bbadb102f2b5f48f8fa0b5374a70190.1920x1080.jpg?t=1763736280",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3075430/ss_72a025380bbadb102f2b5f48f8fa0b5374a70190.600x338.jpg?t=1763736280"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3075430/ss_32cc571619bd2dbfb97cdea82e14c71149a0de02.1920x1080.jpg?t=1763736280",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3075430/ss_32cc571619bd2dbfb97cdea82e14c71149a0de02.600x338.jpg?t=1763736280"
         }
       ],
       "subscriptions": {
@@ -115612,7 +116160,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:57.078Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 305029,
@@ -115712,6 +116262,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2216850/621dc34a6ec3475482597d905f9aa3281cef1d57/ss_621dc34a6ec3475482597d905f9aa3281cef1d57.1920x1080.jpg?t=1785518054",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2216850/621dc34a6ec3475482597d905f9aa3281cef1d57/ss_621dc34a6ec3475482597d905f9aa3281cef1d57.600x338.jpg?t=1785518054"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2216850/22886e81fb715e13958513686677c4514ff5ace1/ss_22886e81fb715e13958513686677c4514ff5ace1.1920x1080.jpg?t=1785518054",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2216850/22886e81fb715e13958513686677c4514ff5ace1/ss_22886e81fb715e13958513686677c4514ff5ace1.600x338.jpg?t=1785518054"
         }
       ],
       "subscriptions": {
@@ -115744,7 +116298,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:26:58.950Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 390029,
@@ -115926,7 +116482,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:00.785Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 17131,
@@ -116018,6 +116576,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_cb1441c868e71b36fa4bdb35313274a4687894de.1920x1080.jpg?t=1785357623",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_cb1441c868e71b36fa4bdb35313274a4687894de.600x338.jpg?t=1785357623"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_301f3a78e9b0d32026df499ccd3827ce4a0ea161.1920x1080.jpg?t=1785357623",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_301f3a78e9b0d32026df499ccd3827ce4a0ea161.600x338.jpg?t=1785357623"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_05f195d92421e71e7f0e1ce81420f8a1b6f2ce28.1920x1080.jpg?t=1785357623",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/ss_05f195d92421e71e7f0e1ce81420f8a1b6f2ce28.600x338.jpg?t=1785357623"
         }
       ],
       "subscriptions": {
@@ -116066,7 +116632,8 @@
         "Remote Play on Tablet",
         "Remote Play Together",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:27:02.637Z"
     },
     {
       "id": 404169,
@@ -116218,6 +116785,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3207200/271f0f77b85911402a219ab4b1bb34134e04a35c/ss_271f0f77b85911402a219ab4b1bb34134e04a35c.1920x1080.jpg?t=1782737689",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3207200/271f0f77b85911402a219ab4b1bb34134e04a35c/ss_271f0f77b85911402a219ab4b1bb34134e04a35c.600x338.jpg?t=1782737689"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3207200/a5d9b1b1f2ab59e483bed6f142c6910dbbb65ded/ss_a5d9b1b1f2ab59e483bed6f142c6910dbbb65ded.1920x1080.jpg?t=1782737689",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3207200/a5d9b1b1f2ab59e483bed6f142c6910dbbb65ded/ss_a5d9b1b1f2ab59e483bed6f142c6910dbbb65ded.600x338.jpg?t=1782737689"
         }
       ],
       "subscriptions": {
@@ -116251,7 +116822,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:04.476Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408726,
@@ -116648,6 +117221,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3710850/ba0324df25fc0f0c931c168b47a91c3615177788/ss_ba0324df25fc0f0c931c168b47a91c3615177788.1920x1080.jpg?t=1774520117",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3710850/ba0324df25fc0f0c931c168b47a91c3615177788/ss_ba0324df25fc0f0c931c168b47a91c3615177788.600x338.jpg?t=1774520117"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3710850/314ae48600e3981e4c327d8ab44f0f3dc794bc3e/ss_314ae48600e3981e4c327d8ab44f0f3dc794bc3e.1920x1080.jpg?t=1774520117",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3710850/314ae48600e3981e4c327d8ab44f0f3dc794bc3e/ss_314ae48600e3981e4c327d8ab44f0f3dc794bc3e.600x338.jpg?t=1774520117"
         }
       ],
       "subscriptions": {
@@ -116680,7 +117257,9 @@
         "Steam Cloud",
         "Stats",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:27:06.313Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 235901,
@@ -116773,6 +117352,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/4403e6cd223469748536289a481725b7baebc5e6/ss_4403e6cd223469748536289a481725b7baebc5e6.1920x1080.jpg?t=1787735562",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/4403e6cd223469748536289a481725b7baebc5e6/ss_4403e6cd223469748536289a481725b7baebc5e6.600x338.jpg?t=1787735562"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/f7b1b8cb26813046761f47e386462a5c01ea5ed4/ss_f7b1b8cb26813046761f47e386462a5c01ea5ed4.1920x1080.jpg?t=1787735562",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/f7b1b8cb26813046761f47e386462a5c01ea5ed4/ss_f7b1b8cb26813046761f47e386462a5c01ea5ed4.600x338.jpg?t=1787735562"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/fa415ff60c9badd7519f2161c59a40aa02962f5d/ss_fa415ff60c9badd7519f2161c59a40aa02962f5d.1920x1080.jpg?t=1787735562",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2266890/fa415ff60c9badd7519f2161c59a40aa02962f5d/ss_fa415ff60c9badd7519f2161c59a40aa02962f5d.600x338.jpg?t=1787735562"
         }
       ],
       "subscriptions": {
@@ -116806,7 +117393,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:08.163Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 408433,
@@ -117280,7 +117869,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:09.998Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 319187,
@@ -117375,6 +117966,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2669060/32cd4ca4cf7624c80f3056e4e4e09ee13bb55c71/ss_32cd4ca4cf7624c80f3056e4e4e09ee13bb55c71.1920x1080.jpg?t=1788967920",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2669060/32cd4ca4cf7624c80f3056e4e4e09ee13bb55c71/ss_32cd4ca4cf7624c80f3056e4e4e09ee13bb55c71.600x338.jpg?t=1788967920"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2669060/903b1798edc9050ca3f29625179d11fb4a220eb6/ss_903b1798edc9050ca3f29625179d11fb4a220eb6.1920x1080.jpg?t=1788967920",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2669060/903b1798edc9050ca3f29625179d11fb4a220eb6/ss_903b1798edc9050ca3f29625179d11fb4a220eb6.600x338.jpg?t=1788967920"
         }
       ],
       "subscriptions": {
@@ -117407,7 +118002,9 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:11.834Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 249901,
@@ -117520,7 +118117,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:13.684Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 239002,
@@ -117654,7 +118253,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:15.559Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397238,
@@ -117996,7 +118597,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:17.400Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 403910,
@@ -118231,7 +118834,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:19.273Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 404222,
@@ -118440,6 +119045,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/534659c419d900268261e9a98c19e24e28c631f6/ss_534659c419d900268261e9a98c19e24e28c631f6.1920x1080.jpg?t=1782485218",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/534659c419d900268261e9a98c19e24e28c631f6/ss_534659c419d900268261e9a98c19e24e28c631f6.600x338.jpg?t=1782485218"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/b480a9c89151e91876e6328234d6c3746fc06aa5/ss_b480a9c89151e91876e6328234d6c3746fc06aa5.1920x1080.jpg?t=1782485218",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/b480a9c89151e91876e6328234d6c3746fc06aa5/ss_b480a9c89151e91876e6328234d6c3746fc06aa5.600x338.jpg?t=1782485218"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/6ce74780b865c5e2b74a58aa8eb843e869b821d1/ss_6ce74780b865c5e2b74a58aa8eb843e869b821d1.1920x1080.jpg?t=1782485218",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3564750/6ce74780b865c5e2b74a58aa8eb843e869b821d1/ss_6ce74780b865c5e2b74a58aa8eb843e869b821d1.600x338.jpg?t=1782485218"
         }
       ],
       "subscriptions": {
@@ -118472,7 +119085,9 @@
         "HDR available",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:21.125Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 346392,
@@ -118573,7 +119188,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:22.961Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 259160,
@@ -118808,7 +119425,9 @@
         "Co-op",
         "Online Co-op",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:27:24.806Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 366037,
@@ -118961,6 +119580,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3504400/861cdb500ad109b0a2b97298fc31ab94002f171b/ss_861cdb500ad109b0a2b97298fc31ab94002f171b.1920x1080.jpg?t=1781545730",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3504400/861cdb500ad109b0a2b97298fc31ab94002f171b/ss_861cdb500ad109b0a2b97298fc31ab94002f171b.600x338.jpg?t=1781545730"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3504400/5c613dc534537949809177dd1145a3706a889b5c/ss_5c613dc534537949809177dd1145a3706a889b5c.1920x1080.jpg?t=1781545730",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3504400/5c613dc534537949809177dd1145a3706a889b5c/ss_5c613dc534537949809177dd1145a3706a889b5c.600x338.jpg?t=1781545730"
         }
       ],
       "subscriptions": {
@@ -118994,7 +119617,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:26.661Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 321243,
@@ -119105,6 +119730,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/1672a757800a4494e9b25e49f95bca827ecf4619/ss_1672a757800a4494e9b25e49f95bca827ecf4619.1920x1080.jpg?t=1788906281",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/1672a757800a4494e9b25e49f95bca827ecf4619/ss_1672a757800a4494e9b25e49f95bca827ecf4619.600x338.jpg?t=1788906281"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/98983f1297fc1617eab37366f67fd7a7ac61131e/ss_98983f1297fc1617eab37366f67fd7a7ac61131e.1920x1080.jpg?t=1788906281",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/98983f1297fc1617eab37366f67fd7a7ac61131e/ss_98983f1297fc1617eab37366f67fd7a7ac61131e.600x338.jpg?t=1788906281"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/c73fba1d7e0fa3d86cbdabec954f15fc909de350/ss_c73fba1d7e0fa3d86cbdabec954f15fc909de350.1920x1080.jpg?t=1788906281",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3284260/c73fba1d7e0fa3d86cbdabec954f15fc909de350/ss_c73fba1d7e0fa3d86cbdabec954f15fc909de350.600x338.jpg?t=1788906281"
         }
       ],
       "subscriptions": {
@@ -119143,7 +119776,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:28.498Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 379261,
@@ -119258,7 +119893,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:30.333Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 291874,
@@ -119365,7 +120002,8 @@
         "Stats",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:32.180Z"
     },
     {
       "id": 304574,
@@ -119477,7 +120115,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:34.023Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 391961,
@@ -119646,7 +120286,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:35.864Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 347662,
@@ -119741,6 +120383,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2974160/cd201ae7dc82e9925e85e66a3ef8c7b6f40432c3/ss_cd201ae7dc82e9925e85e66a3ef8c7b6f40432c3.1920x1080.jpg?t=1782504065",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2974160/cd201ae7dc82e9925e85e66a3ef8c7b6f40432c3/ss_cd201ae7dc82e9925e85e66a3ef8c7b6f40432c3.600x338.jpg?t=1782504065"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2974160/cb1294f71829d05b090beba3b2fbbd1896aa1219/ss_cb1294f71829d05b090beba3b2fbbd1896aa1219.1920x1080.jpg?t=1782504065",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2974160/cb1294f71829d05b090beba3b2fbbd1896aa1219/ss_cb1294f71829d05b090beba3b2fbbd1896aa1219.600x338.jpg?t=1782504065"
         }
       ],
       "subscriptions": {
@@ -119779,7 +120425,9 @@
         "DualSense Controller Support",
         "Remote Play Together",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:27:37.706Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 394698,
@@ -119945,7 +120593,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:39.552Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 383669,
@@ -120234,7 +120884,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:41.415Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 271878,
@@ -120328,6 +120980,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2628880/ss_ecc538efb24876d788dc043b97848cc970dad38a.1920x1080.jpg?t=1787912481",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2628880/ss_ecc538efb24876d788dc043b97848cc970dad38a.600x338.jpg?t=1787912481"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2628880/16949975bb275a519c6e08c99defff4bc54779f6/ss_16949975bb275a519c6e08c99defff4bc54779f6.1920x1080.jpg?t=1787912481",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2628880/16949975bb275a519c6e08c99defff4bc54779f6/ss_16949975bb275a519c6e08c99defff4bc54779f6.600x338.jpg?t=1787912481"
         }
       ],
       "subscriptions": {
@@ -120357,7 +121013,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:43.257Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 293106,
@@ -120452,6 +121110,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_e2b8299276d25af2ebad6038b4189712b3ec1f24.1920x1080.jpg?t=1728483925",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_e2b8299276d25af2ebad6038b4189712b3ec1f24.600x338.jpg?t=1728483925"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_b8b65c581a62516a2bf00c2834cb6e60e38dba90.1920x1080.jpg?t=1728483925",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_b8b65c581a62516a2bf00c2834cb6e60e38dba90.600x338.jpg?t=1728483925"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_67b1bc7cc1ccf1bea47c70367016f2cb78ee50b5.1920x1080.jpg?t=1728483925",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2294620/ss_67b1bc7cc1ccf1bea47c70367016f2cb78ee50b5.600x338.jpg?t=1728483925"
         }
       ],
       "subscriptions": {
@@ -120480,7 +121146,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:45.092Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 354246,
@@ -120815,6 +121483,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/17c878206cc7c052a1cb16468c5c984708bfad29/ss_17c878206cc7c052a1cb16468c5c984708bfad29.1920x1080.jpg?t=1788884396",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/17c878206cc7c052a1cb16468c5c984708bfad29/ss_17c878206cc7c052a1cb16468c5c984708bfad29.600x338.jpg?t=1788884396"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/e19554b67ca256e3d9d38e6bae3c7c657827c723/ss_e19554b67ca256e3d9d38e6bae3c7c657827c723.1920x1080.jpg?t=1788884396",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/e19554b67ca256e3d9d38e6bae3c7c657827c723/ss_e19554b67ca256e3d9d38e6bae3c7c657827c723.600x338.jpg?t=1788884396"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/f7e8aad9cd5fb9a7a2cbd817a88c929545cc9b44/ss_f7e8aad9cd5fb9a7a2cbd817a88c929545cc9b44.1920x1080.jpg?t=1788884396",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3338020/f7e8aad9cd5fb9a7a2cbd817a88c929545cc9b44/ss_f7e8aad9cd5fb9a7a2cbd817a88c929545cc9b44.600x338.jpg?t=1788884396"
         }
       ],
       "subscriptions": {
@@ -120854,7 +121530,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:47.012Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 213557,
@@ -120947,6 +121625,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2055770/ss_ae9bc42a913c9e05d6c0d90a5d5288d9ec75b97b.1920x1080.jpg?t=1787925914",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2055770/ss_ae9bc42a913c9e05d6c0d90a5d5288d9ec75b97b.600x338.jpg?t=1787925914"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2055770/ss_7aaddc0a67bddd1737b831f5f072d3956a51fa5b.1920x1080.jpg?t=1787925914",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2055770/ss_7aaddc0a67bddd1737b831f5f072d3956a51fa5b.600x338.jpg?t=1787925914"
         }
       ],
       "subscriptions": {
@@ -120976,7 +121658,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:48.887Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 239684,
@@ -121090,7 +121774,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:50.721Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415600,
@@ -121499,7 +122185,9 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:52.565Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 56884,
@@ -121631,7 +122319,9 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:54.400Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 386102,
@@ -122031,7 +122721,9 @@
         "Shared/Split Screen",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:56.240Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 361871,
@@ -122201,7 +122893,9 @@
         "Touch Only Option",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:58.078Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 405328,
@@ -122353,6 +123047,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2860780/ss_c10cc2e3f00f19e1fc429987ed6c94de7547c76a.1920x1080.jpg?t=1772835008",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2860780/ss_c10cc2e3f00f19e1fc429987ed6c94de7547c76a.600x338.jpg?t=1772835008"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2860780/ss_da91808b5e738dc7313fb3fcc7ef64a9ce9c9419.1920x1080.jpg?t=1772835008",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2860780/ss_da91808b5e738dc7313fb3fcc7ef64a9ce9c9419.600x338.jpg?t=1772835008"
         }
       ],
       "subscriptions": {
@@ -122382,7 +123080,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:27:59.909Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 379793,
@@ -122800,7 +123500,9 @@
         "Remote Play on TV",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:01.748Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 361683,
@@ -123090,7 +123792,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:03.599Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 387964,
@@ -123285,7 +123989,9 @@
         "Surround Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:05.441Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 360432,
@@ -123377,7 +124083,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:07.298Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 411184,
@@ -123527,6 +124235,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/49a5eed033f72701e3af7d9bb975bd95fd68a439/ss_49a5eed033f72701e3af7d9bb975bd95fd68a439.1920x1080.jpg?t=1788691407",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/49a5eed033f72701e3af7d9bb975bd95fd68a439/ss_49a5eed033f72701e3af7d9bb975bd95fd68a439.600x338.jpg?t=1788691407"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/ce2509846cbd37280be405a306d39291adc2de0f/ss_ce2509846cbd37280be405a306d39291adc2de0f.1920x1080.jpg?t=1788691407",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/ce2509846cbd37280be405a306d39291adc2de0f/ss_ce2509846cbd37280be405a306d39291adc2de0f.600x338.jpg?t=1788691407"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/92f8dc21881a96ea436d56db83d6d7f553e239de/ss_92f8dc21881a96ea436d56db83d6d7f553e239de.1920x1080.jpg?t=1788691407",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3384820/92f8dc21881a96ea436d56db83d6d7f553e239de/ss_92f8dc21881a96ea436d56db83d6d7f553e239de.600x338.jpg?t=1788691407"
         }
       ],
       "subscriptions": {
@@ -123565,7 +124281,9 @@
         "Touch Only Option",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:09.144Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 377235,
@@ -123670,6 +124388,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/be363838d8c7159821cf30d99626b01bd004106e/ss_be363838d8c7159821cf30d99626b01bd004106e.1920x1080.jpg?t=1786326794",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/be363838d8c7159821cf30d99626b01bd004106e/ss_be363838d8c7159821cf30d99626b01bd004106e.600x338.jpg?t=1786326794"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/c692d8bb99a632ae136c7979ef9360ae385917c5/ss_c692d8bb99a632ae136c7979ef9360ae385917c5.1920x1080.jpg?t=1786326794",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/c692d8bb99a632ae136c7979ef9360ae385917c5/ss_c692d8bb99a632ae136c7979ef9360ae385917c5.600x338.jpg?t=1786326794"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/a4a739877cfc467574150a8c4609cf53150f0f85/ss_a4a739877cfc467574150a8c4609cf53150f0f85.1920x1080.jpg?t=1786326794",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4051470/a4a739877cfc467574150a8c4609cf53150f0f85/ss_a4a739877cfc467574150a8c4609cf53150f0f85.600x338.jpg?t=1786326794"
         }
       ],
       "subscriptions": {
@@ -123700,7 +124426,9 @@
         "Gamepad Recommended",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:11.007Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 410877,
@@ -123943,7 +124671,9 @@
         "Stereo Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:12.846Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 394636,
@@ -124114,7 +124844,9 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:14.681Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 281275,
@@ -124216,6 +124948,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2835570/ss_625d682b7cdaf81d1f173d40d2dde9f6b3495313.1920x1080.jpg?t=1783085442",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2835570/ss_625d682b7cdaf81d1f173d40d2dde9f6b3495313.600x338.jpg?t=1783085442"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2835570/ss_a0b2f3ddf7fa2389fa9edbc185c54332f2c76b46.1920x1080.jpg?t=1783085442",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2835570/ss_a0b2f3ddf7fa2389fa9edbc185c54332f2c76b46.600x338.jpg?t=1783085442"
         }
       ],
       "subscriptions": {
@@ -124255,7 +124991,9 @@
         "Partial Controller Support",
         "Steam Leaderboards",
         "Family Sharing"
-      ]
+      ],
+      "steamMediaCheckedAt": "2026-09-13T08:28:16.533Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 329080,
@@ -124360,7 +125098,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:18.386Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 415336,
@@ -124551,7 +125291,9 @@
         "HDR available",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:20.237Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 388999,
@@ -124738,7 +125480,9 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:22.076Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397490,
@@ -124892,6 +125636,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_d6a1be836c58a4938bdd848d02e0d815add215b2.1920x1080.jpg?t=1783531296",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_d6a1be836c58a4938bdd848d02e0d815add215b2.600x338.jpg?t=1783531296"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_525b675ff8b42662573d34437b076bf5f88d606c.1920x1080.jpg?t=1783531296",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_525b675ff8b42662573d34437b076bf5f88d606c.600x338.jpg?t=1783531296"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_29866fd812f9a5b862f57619a343803f3fa37343.1920x1080.jpg?t=1783531296",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868210/ss_29866fd812f9a5b862f57619a343803f3fa37343.600x338.jpg?t=1783531296"
         }
       ],
       "subscriptions": {
@@ -124921,7 +125673,9 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:23.917Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 373511,
@@ -125078,6 +125832,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_b16ed864d3a639cec9cdb99f53cb518237d3cedd.1920x1080.jpg?t=1712224443",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_b16ed864d3a639cec9cdb99f53cb518237d3cedd.600x338.jpg?t=1712224443"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_6053c26a3019f76da4c2f31363a8fa48c5abacd9.1920x1080.jpg?t=1712224443",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_6053c26a3019f76da4c2f31363a8fa48c5abacd9.600x338.jpg?t=1712224443"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_c7c53228aa6b90807af3067e66231fc824fd549a.1920x1080.jpg?t=1712224443",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2815580/ss_c7c53228aa6b90807af3067e66231fc824fd549a.600x338.jpg?t=1712224443"
         }
       ],
       "subscriptions": {
@@ -125106,7 +125868,9 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:25.759Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 378417,
@@ -125583,7 +126347,9 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:27.597Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 350374,
@@ -126018,7 +126784,9 @@
         "Stats",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-13T08:28:29.439Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 345253,
@@ -131386,7 +132154,8 @@
         "Stereo Sound",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "contentType": "Demo"
     },
     {
       "id": 392037,
@@ -136167,7 +136936,8 @@
         "DualSense Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "contentType": "Demo"
     },
     {
       "id": 330753,
