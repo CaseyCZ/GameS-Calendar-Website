@@ -279,8 +279,9 @@ app.get('/api/catalog', asyncRoute(async (req, res) => {
   const catalog = await readCatalog();
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
   res.setHeader('ETag', catalog.etag);
-  const candidates = String(req.headers['if-none-match'] || '').split(/\s*,\s*/);
-  if (candidates.includes(catalog.etag)) return res.status(304).end();
+  const expected = catalog.etag.replace(/^W\//, '');
+  const candidates = String(req.headers['if-none-match'] || '').split(/\s*,\s*/).map(value => value.replace(/^W\//, ''));
+  if (candidates.includes(expected)) return res.status(304).end();
   res.type('application/json').send(catalog.body);
 }));
 
