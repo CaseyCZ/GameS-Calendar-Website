@@ -16,6 +16,10 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 
 Stejné cesty fungují také na HTTPS portu 8443. Web načte malý seznam pro karty a filtry jednou, plný detail stáhne až po otevření hry a při dalších návštěvách ověří jen verzi přes `/games-api/catalog-meta`. GitHub Pages používá stejný statický `games.json`; vlastní server nabízí navíc živé doplnění detailu z IGDB a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
 
+## Online hledání chybějících her
+
+Vyhledávání nejprve kontroluje celý místní katalog. Pokud hra chybí, server ji dohledá v IGDB, zobrazí ji se stejnou kartou a detailem a uloží ji pro rychlé další otevření.
+
 ## ✨ Co na webu najdete
 
 - 🔍 **Rychlé vyhledávání her podle názvu**

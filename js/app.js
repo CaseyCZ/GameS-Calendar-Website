@@ -5,6 +5,8 @@ import {
   loadGameData,
   loadGameDetail,
   monthRange,
+  platformGroup,
+  searchOnlineGames,
   todayLocal
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
@@ -54,6 +56,9 @@ const readPlatformPrefs = () => readJsonSet(PLATFORM_PREF_KEY);
 const state = {
   dataset: null,
   rows: [],
+  catalogRows: [],
+  onlineRows: [],
+  onlineSearchLoading: false,
   filtered: [],
   search: '',
   platforms: new Set(),
@@ -74,6 +79,8 @@ const state = {
   openRowKey: '',
   limit: PAGE_SIZE
 };
+
+let onlineSearchSequence = 0;
 
 const isWatched = game => state.watchlist.has(gameId(game));
 
@@ -100,6 +107,20 @@ function gameSearchText(game) {
     ...(game.publishers || []),
     ...(game.series || [])
   ].join(' '));
+}
+
+function searchRelevance(game, query) {
+  const q = normalizeSearch(query);
+  const name = normalizeSearch(game.name);
+  const aliases = (game.aliases || []).map(normalizeSearch);
+  if (!q) return 0;
+  if (name == q) return 100;
+  if (aliases.includes(q)) return 95;
+  if (name.startsWith(q)) return 85;
+  if (name.includes(q)) return 75;
+  if (aliases.some(alias => alias.startsWith(q))) return 70;
+  const words = q.split(' ').filter(Boolean);
+  return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
 }
 
 function uniqueGameCount(rows) {
@@ -180,6 +201,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   const game = row.game;
   const search = normalizeSearch(state.search);
   if (search && !gameSearchText(game).includes(search)) return false;
+  if (search && row.onlineResult) return true;
   if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
   if (!ignoreGenres && state.genres.size) {
     const labels = new Set((game.genres || []).map(formatGenre));
@@ -206,8 +228,16 @@ function inActiveRange(row) {
 }
 
 function filterRows() {
-  const rows = state.rows.filter(row => matchesBase(row) && inActiveRange(row));
+  const searching = Boolean(normalizeSearch(state.search));
+  const rows = state.rows.filter(row =>
+    matchesBase(row, { includeStatus: !searching && !row.onlineResult })
+    && (searching || row.onlineResult || inActiveRange(row))
+  );
   rows.sort((a, b) => {
+    if (searching) {
+      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+      if (relevance) return relevance;
+    }
     const ad = a.day || '9999-12-31';
     const bd = b.day || '9999-12-31';
     if (state.sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
@@ -307,14 +337,78 @@ function renderGames({ resetLimit = false } = {}) {
   $('games').dataset.view = state.view;
   $('games').innerHTML = shown.map(row => rowCard(row, isWatched(row.game))).join('');
   $('games').hidden = shown.length === 0;
-  $('empty-state').hidden = state.filtered.length !== 0;
+  $('empty-state').hidden = state.filtered.length !== 0 || state.onlineSearchLoading;
   $('load-more-wrap').hidden = state.filtered.length <= shown.length;
   if (!state.filtered.length) $('games').innerHTML = '';
+  if (state.onlineSearchLoading && !state.filtered.length) {
+    $('empty-state').hidden = false;
+    $('empty-state').querySelector('h2').textContent = 'Hledám také v IGDB…';
+    $('empty-state').querySelector('p').textContent = 'Kontroluji hry, které ještě nejsou v našem seznamu.';
+    $('empty-reset').hidden = true;
+  } else {
+    $('empty-state').querySelector('h2').textContent = 'Nic jsme nenašli';
+    $('empty-state').querySelector('p').textContent = state.search
+      ? 'Hra není ani v našem seznamu, ani v IGDB.'
+      : 'Zkus jinou platformu, žánr, období nebo název hry.';
+    $('empty-reset').hidden = false;
+  }
   updateSummary();
   renderMonthRail();
   renderGenres();
   renderContextFilters();
   updateQuery();
+}
+
+function makeOnlineRows(games) {
+  return games.map(game => {
+    const release = game.releases[0] || {
+      day: null, timestamp: 0, platforms: [], window: 'TBA', precision: 'unknown', regions: []
+    };
+    const platforms = [...new Map(
+      game.releases.flatMap(item => item.platforms || []).map(item => [item.name, item])
+    ).values()];
+    return {
+      key: `online:${game.id}`,
+      game,
+      day: release.day,
+      timestamp: release.timestamp,
+      platforms,
+      platformGroups: [...new Set(platforms.map(item => item.group || platformGroup(item.name)))],
+      window: release.window,
+      precision: release.precision,
+      regions: release.regions,
+      onlineResult: true
+    };
+  });
+}
+
+async function refreshOnlineSearch(query) {
+  const sequence = ++onlineSearchSequence;
+  const value = String(query || '').trim();
+  state.onlineRows = [];
+  state.rows = state.catalogRows;
+  if (value.length < 3) {
+    state.onlineSearchLoading = false;
+    renderGames({ resetLimit: true });
+    return;
+  }
+  state.onlineSearchLoading = true;
+  renderGames({ resetLimit: true });
+  try {
+    const games = await searchOnlineGames(value);
+    if (sequence !== onlineSearchSequence || value !== state.search) return;
+    state.onlineRows = makeOnlineRows(games);
+    state.rows = [...state.catalogRows, ...state.onlineRows];
+  } catch (error) {
+    if (sequence === onlineSearchSequence) console.warn('Online hledání:', error);
+  } finally {
+    if (sequence === onlineSearchSequence) {
+      state.onlineSearchLoading = false;
+      renderGames({ resetLimit: true });
+      const requested = findRequestedRow();
+      if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
+    }
+  }
 }
 
 function statBaseRows() {
@@ -371,6 +465,10 @@ function changeMonth(offset) {
 
 function resetFilters() {
   state.search = '';
+  onlineSearchSequence += 1;
+  state.onlineRows = [];
+  state.rows = state.catalogRows;
+  state.onlineSearchLoading = false;
   state.platforms.clear();
   state.genres.clear();
   state.company = null;
@@ -638,8 +736,8 @@ function bindEvents() {
 
   $('search-input').addEventListener('input', debounce(event => {
     state.search = event.target.value.trim();
-    renderGames({resetLimit:true});
-  }));
+    refreshOnlineSearch(state.search);
+  }, 350));
   $('platform-filters').addEventListener('click', event => {
     const button = event.target.closest('[data-platform]');
     if (!button) return;
@@ -780,7 +878,8 @@ function hydrateControls() {
 
 function setDataset(dataset, { quiet = false, first = false } = {}) {
   state.dataset = dataset;
-  state.rows = flattenReleases(dataset);
+  state.catalogRows = flattenReleases(dataset);
+  state.rows = [...state.catalogRows, ...state.onlineRows];
   if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
   hydrateControls();
   renderGames({resetLimit:true});
@@ -789,6 +888,7 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   if (!quiet) toast(`Načteno ${formatter.format(uniqueGameCount(state.rows))} her / ${formatter.format(state.rows.length)} vydání.`);
   const requested = findRequestedRow();
   if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
+  if (first && state.search) refreshOnlineSearch(state.search);
   maybeNotifyUpcoming();
 }
 

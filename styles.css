@@ -159,6 +159,7 @@ kbd { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; col
 .empty-state__icon { font-size: 42px; filter: grayscale(.2); }
 .empty-state h2 { margin: 10px 0 4px; color: var(--text); }
 .empty-state p { margin: 0 0 16px; }
+.badge--online { background: rgba(74, 222, 128, .16); color: #86efac; border-color: rgba(74, 222, 128, .32); }
 
 .game-dialog, .trailer-dialog { padding: 0; border: 1px solid var(--border); border-radius: 18px; color: var(--text); background: #110919; box-shadow: var(--shadow); }
 .game-dialog { width: min(920px, calc(100% - 24px)); max-height: min(90vh, 850px); overflow: auto; }

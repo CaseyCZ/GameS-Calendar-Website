@@ -38,6 +38,7 @@ GET  /health?refresh=1
 GET  /api/catalog
 GET  /api/catalog?view=list
 GET  /api/catalog/game/:gameId
+GET  /api/discover?q=Gears%20of%20War%202
 GET  /api/catalog-meta
 GET  /api/search?q=Kingdom%20Come&providers=steam,microsoft,playstation,nintendo,geforceNow
 POST /api/enrich

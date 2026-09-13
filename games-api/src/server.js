@@ -4,7 +4,15 @@ import helmet from 'helmet';
 import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
 import { config } from './config.js';
-import { historyForGame, listHealth, saveGameSnapshot, saveHealth } from './db.js';
+import {
+  getDiscoveredGame,
+  historyForGame,
+  listHealth,
+  saveDiscoveredGame,
+  saveGameSnapshot,
+  saveHealth,
+  searchDiscoveredGames
+} from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
 import { providers, providerList } from './providers/index.js';
 
@@ -98,6 +106,84 @@ function compactGame(game = {}) {
     hasScreenshots: Boolean(game.screenshots?.length),
     hasDescription: Boolean(String(game.summary || game.storyline || '').trim())
   };
+}
+
+function igdbContentType(value) {
+  const type = String(value || '').toLowerCase().replace(/_/g, ' ');
+  const labels = {
+    'main game': 'Main game',
+    'dlc addon': 'DLC / Add-on',
+    expansion: 'Expansion',
+    bundle: 'Bundle',
+    remake: 'Remake',
+    remaster: 'Remaster',
+    port: 'Port',
+    'standalone expansion': 'Standalone expansion',
+    'expanded game': 'Expanded game',
+    season: 'Season',
+    mod: 'Mod',
+    episode: 'Episode'
+  };
+  return labels[type] || (type ? type.replace(/\b\w/g, letter => letter.toUpperCase()) : 'Game');
+}
+
+function catalogGameFromIgdb(item) {
+  const byDay = new Map();
+  for (const release of item?.releaseDates || []) {
+    const day = String(release?.day || '').slice(0, 10);
+    if (!day) continue;
+    if (!byDay.has(day)) byDay.set(day, new Set());
+    if (release.platform) byDay.get(day).add(String(release.platform));
+  }
+  if (!byDay.size && item?.releaseDate) {
+    byDay.set(String(item.releaseDate).slice(0, 10), new Set(item.platforms || []));
+  }
+  const releases = [...byDay.entries()].map(([day, platforms]) => ({
+    day,
+    timestamp: Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000),
+    platforms: [...platforms].map(name => ({ name, abbreviation: name })),
+    precision: 'day',
+    regions: []
+  }));
+  if (!releases.length) {
+    releases.push({
+      day: null,
+      timestamp: 0,
+      platforms: (item?.platforms || []).map(name => ({ name, abbreviation: name })),
+      window: 'TBA',
+      precision: 'unknown',
+      regions: []
+    });
+  }
+  const websites = item?.websites || item?.rawHints?.websites || [];
+  const official = websites.find(url => !/(igdb\.com|steam|xbox|playstation|wikipedia|youtube|reddit)/i.test(url)) || '';
+  const video = item?.videos?.[0] || item?.rawHints?.videos?.[0] || null;
+  return stripPricing({
+    id: `igdb-${item.providerId}`,
+    igdbId: String(item.providerId),
+    name: item.title,
+    slug: `igdb-${item.providerId}`,
+    aliases: item.aliases || item.rawHints?.aliases || [],
+    summary: item.description || item.shortDescription || '',
+    summarySource: 'IGDB',
+    cover: item.media?.cover || '',
+    screenshots: item.media?.screenshots || [],
+    genres: item.genres || [],
+    developers: item.developers || [],
+    publishers: item.publishers || [],
+    series: item.series || [],
+    contentType: igdbContentType(item.gameType || item.rawHints?.gameType),
+    metadataSources: ['IGDB'],
+    rating: item.rating || 0,
+    ratingCount: item.ratingCount || 0,
+    igdbUrl: item.storeUrl || '',
+    trailerId: video?.id || '',
+    trailerUrl: video?.url || item.media?.trailers?.[0] || '',
+    links: { official, igdb: item.storeUrl || '' },
+    releases,
+    discoveredOnline: true,
+    discoveredAt: new Date().toISOString()
+  });
 }
 
 function responseDocument(payload) {
@@ -344,10 +430,45 @@ app.get('/api/catalog', asyncRoute(async (req, res) => {
 
 app.get('/api/catalog/game/:gameId', asyncRoute(async (req, res) => {
   const catalog = await readCatalog();
-  const game = catalog.gameById.get(String(req.params.gameId));
+  const game = catalog.gameById.get(String(req.params.gameId)) || getDiscoveredGame(req.params.gameId);
   if (!game) return res.status(404).json({ error: 'Game not found' });
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
   res.json(game);
+}));
+
+app.get('/api/discover', asyncRoute(async (req, res) => {
+  const q = String(req.query.q || '').trim().slice(0, 100);
+  if (q.length < 3) return res.status(400).json({ error: 'Search must have at least 3 characters' });
+  if (!providers.igdb) return res.status(503).json({ error: 'IGDB is not configured' });
+  const limit = limitOf(req.query.limit, 5, 8);
+  const catalog = await readCatalog();
+  const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
+  const catalogIgdbIds = new Set(catalogGames.map(game => String(game.igdbId || '')).filter(Boolean));
+  const catalogTitles = new Set(catalogGames.flatMap(game => [game.name, ...(game.aliases || [])]).map(normalizeTitle).filter(Boolean));
+  if (catalogTitles.has(normalizeTitle(q))) {
+    res.setHeader('Cache-Control', 'private, max-age=300');
+    return res.json({ query: q, source: 'catalog', count: 0, games: [] });
+  }
+  const saved = searchDiscoveredGames(q, limit)
+    .filter(game => !catalogIgdbIds.has(String(game.igdbId || '')) && !catalogTitles.has(normalizeTitle(game.name)));
+  const isExact = game => [game.name, ...(game.aliases || [])].some(name => normalizeTitle(name) === normalizeTitle(q));
+  if (saved.some(isExact)) {
+    const games = saved.sort((a, b) => titleScore(q, b.name) - titleScore(q, a.name)).slice(0, limit);
+    res.setHeader('Cache-Control', 'private, max-age=300');
+    return res.json({ query: q, source: 'saved-IGDB', count: games.length, games });
+  }
+  const hits = await providers.igdb.search(q, { limit });
+  const discovered = hits
+    .filter(item => item?.providerId && item?.title)
+    .filter(item => !catalogIgdbIds.has(String(item.providerId)) && !catalogTitles.has(normalizeTitle(item.title)))
+    .map(catalogGameFromIgdb);
+  discovered.forEach(saveDiscoveredGame);
+  const games = [...saved, ...discovered]
+    .filter((game, index, all) => all.findIndex(item => String(item.id) === String(game.id)) === index)
+    .sort((a, b) => titleScore(q, b.name) - titleScore(q, a.name))
+    .slice(0, limit);
+  res.setHeader('Cache-Control', 'private, max-age=300');
+  res.json({ query: q, source: 'IGDB', count: games.length, games });
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {

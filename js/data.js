@@ -5,6 +5,7 @@ const CACHE_KEY = 'games-catalog-v8';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 const LIVE_CATALOG_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog?view=list';
 const LIVE_DETAIL_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog/game';
+const LIVE_DISCOVER_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/discover';
 const LIVE_CATALOG_META_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog-meta';
 const STATIC_CATALOG_URL = 'games.json';
 
@@ -329,6 +330,14 @@ export async function loadGameDetail(game) {
     detailCache.set(key, request);
   }
   return detailCache.get(key);
+}
+
+export async function searchOnlineGames(query, { limit = 5 } = {}) {
+  const q = String(query || '').trim();
+  if (!LIVE_DISCOVER_URL || q.length < 3) return [];
+  const take = Math.max(1, Math.min(8, Number(limit) || 5));
+  const payload = await fetchJson(`${LIVE_DISCOVER_URL}?q=${encodeURIComponent(q)}&limit=${take}`);
+  return (payload.games || []).map(normalizeGame).filter(game => game.releases.length > 0);
 }
 
 async function fetchPayload() {

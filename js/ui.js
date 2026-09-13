@@ -156,6 +156,7 @@ export function rowCard(row, watched) {
   const platforms = row.platforms.slice(0,3).map(p => `<span class="platform-tag">${escapeHtml(p.abbreviation || p.name)}</span>`).join('');
   const releaseState = row.day ? (row.day >= todayLocal() ? 'Nadcházející' : 'Vydáno') : (row.window || game.announcedWindow || 'TBA');
   const extraBadges = [
+    row.onlineResult ? '<span class="badge badge--online">Nalezeno online</span>' : '',
     game.earlyAccess ? '<span class="badge badge--early">Early Access</span>' : '',
     game.scale ? `<span class="badge badge--scale">${escapeHtml(game.scale)}</span>` : ''
   ].filter(Boolean).join('');
