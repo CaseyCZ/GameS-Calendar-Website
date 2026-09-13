@@ -32,6 +32,10 @@
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M14 4v6M4 17h2M10 17h10M10 14v6"/></svg>';
   }
 
+  function iconSort() {
+    return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 6h11M8 12h8M8 18h5M4 4v16m0 0-2.5-2.5M4 20l2.5-2.5"/></svg>';
+  }
+
   function iconSettings() {
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 .63 1.7 1.7 0 0 0-.37 1.08V21h-4v-.08A1.7 1.7 0 0 0 8.6 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.23 15a1.7 1.7 0 0 0-.63-1 1.7 1.7 0 0 0-1.08-.37H2.5v-4h.08A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.57 4.2a1.7 1.7 0 0 0 1-.63A1.7 1.7 0 0 0 9.94 2.5V2h4v.08A1.7 1.7 0 0 0 15 3.7a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 8a1.7 1.7 0 0 0 .63 1 1.7 1.7 0 0 0 1.08.37H21.5v4h-.08A1.7 1.7 0 0 0 19.8 14a1.7 1.7 0 0 0-.4 1Z"/></svg>';
   }
@@ -47,24 +51,78 @@
   function activeFilterCount() {
     const genreCount = document.querySelectorAll('.genre-filter-chip.is-active').length;
     const status = $('status-filter');
-    const sort = $('sort-filter');
     const activePeriod = document.querySelector('[data-period].is-active');
     const contextCount = document.querySelectorAll('#active-context-filters .context-filter').length;
     let count = genreCount + contextCount;
     if (status && status.value !== 'upcoming') count += 1;
-    if (sort && sort.value !== 'date-asc') count += 1;
     if (activePeriod && activePeriod.dataset.period !== 'month') count += 1;
     return count;
   }
 
   function updateFilterBadge() {
     const badge = $('filter-summary-count');
-    const summary = document.querySelector('.filter-summary');
+    const summary = document.querySelector('.filters-disclosure > .filter-summary');
     if (!badge || !summary) return;
     const count = activeFilterCount();
     badge.dataset.count = String(count);
     badge.textContent = count ? String(count) : '';
     summary.classList.toggle('has-active', count > 0);
+  }
+
+  function setupSortMenu(select, quick) {
+    const details = document.createElement('details');
+    details.className = 'sort-disclosure';
+    details.id = 'sort-disclosure';
+    details.innerHTML = `
+      <summary class="filter-summary sort-summary" aria-label="Otevřít řazení">
+        ${iconSort()}
+        <span class="filter-summary__label">Seřadit</span>
+      </summary>
+      <div class="sort-panel" role="group" aria-label="Seřadit hry">
+        <p class="sort-panel__title">Seřadit</p>
+        <div class="sort-options">
+          <button type="button" class="sort-option" data-sort-value="name-asc"><span>Název</span><strong>A–Z</strong></button>
+          <button type="button" class="sort-option" data-sort-value="name-desc"><span>Název</span><strong>Z–A</strong></button>
+          <button type="button" class="sort-option" data-sort-value="date-desc"><span>Rok vydání</span><strong>Nejnovější</strong></button>
+          <button type="button" class="sort-option" data-sort-value="date-asc"><span>Rok vydání</span><strong>Nejstarší</strong></button>
+        </div>
+      </div>`;
+
+    select.classList.add('sort-native-select');
+    select.tabIndex = -1;
+    select.setAttribute('aria-hidden', 'true');
+    details.querySelector('.sort-panel').appendChild(select);
+
+    const sync = () => {
+      details.querySelectorAll('[data-sort-value]').forEach(button => {
+        const active = button.dataset.sortValue === select.value;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      details.classList.toggle('has-active', select.value !== 'date-asc');
+    };
+
+    details.addEventListener('click', event => {
+      const button = event.target.closest('[data-sort-value]');
+      if (!button) return;
+      select.value = button.dataset.sortValue;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      sync();
+      details.open = false;
+    });
+    select.addEventListener('change', sync);
+    select.addEventListener('sortsync', sync);
+    details.addEventListener('toggle', () => {
+      sync();
+      if (details.open) {
+        const filters = $('filters-disclosure');
+        const settings = $('settings-menu');
+        if (filters) filters.open = false;
+        if (settings) settings.open = false;
+      }
+    });
+    quick.appendChild(details);
+    sync();
   }
 
   function setupFilters() {
@@ -102,20 +160,22 @@
         </div>
       </div>`;
     quick.appendChild(details);
+    setupSortMenu(sort, quick);
 
     const genresSlot = details.querySelector('.filter-panel__genres');
     const controls = details.querySelector('.filter-controls-row');
     genresSlot.appendChild(genreWrap);
     controls.appendChild(status);
     controls.appendChild(period);
-    controls.appendChild(sort);
     details.querySelector('.filter-panel-footer').insertBefore(reset, $('filters-done'));
 
     $('filters-done').addEventListener('click', () => { details.open = false; });
     details.addEventListener('toggle', () => {
       if (details.open) {
         const settings = $('settings-menu');
+        const sorting = $('sort-disclosure');
         if (settings) settings.open = false;
+        if (sorting) sorting.open = false;
       }
     });
 
@@ -191,15 +251,19 @@
     details.addEventListener('toggle', () => {
       if (details.open) {
         const filters = $('filters-disclosure');
+        const sorting = $('sort-disclosure');
         if (filters) filters.open = false;
+        if (sorting) sorting.open = false;
       }
     });
   }
 
   function closeMenusOutside(event) {
     const filters = $('filters-disclosure');
+    const sorting = $('sort-disclosure');
     const settings = $('settings-menu');
     if (filters?.open && !filters.contains(event.target)) filters.open = false;
+    if (sorting?.open && !sorting.contains(event.target)) sorting.open = false;
     if (settings?.open && !settings.contains(event.target)) settings.open = false;
   }
 
@@ -225,8 +289,10 @@
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
       const filters = $('filters-disclosure');
+      const sorting = $('sort-disclosure');
       const settings = $('settings-menu');
       if (filters) filters.open = false;
+      if (sorting) sorting.open = false;
       if (settings) settings.open = false;
     });
   }

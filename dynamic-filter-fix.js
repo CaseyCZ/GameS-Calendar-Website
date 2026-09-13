@@ -53,19 +53,7 @@ async function syncDatasetControls() {
     const result = await loadGameData();
     const dataset = result.dataset;
     const rows = flattenReleases(dataset);
-    const games = dataset.games || [];
     const today = todayLocal();
-
-    const hasRating = games.some(game => Number(game.rating || 0) > 0);
-    const rating = $('sort-filter')?.querySelector('option[value="rating-desc"]');
-    if (rating) {
-      rating.hidden = !hasRating;
-      rating.disabled = !hasRating;
-      if (!hasRating && $('sort-filter').value === 'rating-desc') {
-        $('sort-filter').value = 'date-asc';
-        $('sort-filter').dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    }
 
     const hasUpcoming = rows.some(row => !row.day || row.day >= today);
     const hasReleased = rows.some(row => row.day && row.day < today);

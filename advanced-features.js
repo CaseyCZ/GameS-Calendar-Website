@@ -308,16 +308,14 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
 }
 
 function sortRows(items, sort) {
-  const searching = Boolean(normalizeSearch($('search-input')?.value || ''));
   return [...items].sort((a, b) => {
-    if (searching && a.onlineResult && b.onlineResult && a.onlineOrder !== b.onlineOrder) {
-      return a.onlineOrder - b.onlineOrder;
-    }
-    const ad = a.day || '9999-12-31';
-    const bd = b.day || '9999-12-31';
-    if (sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
-    if (sort === 'rating-desc') return (b.game.rating || 0) - (a.game.rating || 0) || ad.localeCompare(bd);
+    const ad = a.day || '';
+    const bd = b.day || '';
+    if (sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+    if (!ad && bd) return 1;
+    if (ad && !bd) return -1;
+    if (sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
     return ad.localeCompare(bd) || a.game.name.localeCompare(b.game.name, 'cs');
   });
 }

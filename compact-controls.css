@@ -381,3 +381,114 @@
     background: rgba(18,9,26,.98);
   }
 }
+
+/* Samostatná nabídka řazení vedle filtrů. */
+.sort-disclosure {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.sort-disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sort-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sort-disclosure[open] > .sort-summary,
+.sort-disclosure.has-active > .sort-summary {
+  color: #fff;
+  border-color: rgba(255,71,155,.5);
+  background: rgba(255,71,155,.11);
+}
+
+.sort-panel {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  z-index: 90;
+  width: min(330px, calc(100vw - 28px));
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 16px;
+  background: rgba(18,9,26,.985);
+  box-shadow: 0 28px 80px rgba(0,0,0,.52);
+  backdrop-filter: blur(24px) saturate(150%);
+}
+
+.sort-panel__title {
+  margin: 0 0 9px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sort-options {
+  display: grid;
+  gap: 6px;
+}
+
+.sort-option {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: rgba(255,255,255,.025);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sort-option span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.sort-option strong {
+  font-size: 12px;
+}
+
+.sort-option:hover,
+.sort-option.is-active {
+  border-color: rgba(255,71,155,.5);
+  background: rgba(255,71,155,.11);
+}
+
+.sort-option.is-active::after {
+  content: '✓';
+  color: var(--pink);
+  font-weight: 900;
+}
+
+.sort-native-select {
+  display: none !important;
+}
+
+html[data-theme="light"] .sort-panel {
+  border-color: rgba(62,35,72,.13);
+  background: rgba(250,247,252,.99);
+  box-shadow: 0 24px 70px rgba(53,30,61,.18);
+}
+
+@media (max-width: 760px) {
+  .sort-panel {
+    position: fixed;
+    top: auto;
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    padding: 14px;
+    border-radius: 18px;
+  }
+}

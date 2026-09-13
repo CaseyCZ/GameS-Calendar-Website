@@ -142,17 +142,15 @@
     if (!row || row.dataset.accordionSelection === '1') return;
     const status = row.querySelector(':scope > #status-filter');
     const period = row.querySelector(':scope > .period-control');
-    const sort = row.querySelector(':scope > #sort-filter');
-    if (!status || !period || !sort) return;
+    if (!status || !period) return;
 
-    const details = makeDetails('selection', 'Vydání a řazení', 'filter-subsection--selection');
+    const details = makeDetails('selection', 'Vydání', 'filter-subsection--selection');
     const body = details.querySelector('.filter-subsection__body');
     const inner = document.createElement('div');
     inner.className = 'filter-subsection__controls';
     inner.append(
       makeChoiceGroup('Stav vydání', status),
-      makePeriodGroup(period),
-      makeChoiceGroup('Řazení', sort)
+      makePeriodGroup(period)
     );
     body.appendChild(inner);
     row.appendChild(details);
@@ -197,9 +195,7 @@
     });
 
     const status = document.getElementById('status-filter');
-    const sort = document.getElementById('sort-filter');
     syncChoiceButtons(status);
-    syncChoiceButtons(sort);
 
     const selectionMeta = document.querySelector('[data-filter-subsection-meta="selection"]');
     if (selectionMeta) {
@@ -207,7 +203,6 @@
       const parts = [];
       if (status?.selectedOptions?.[0]) parts.push(status.selectedOptions[0].textContent.trim());
       if (period) parts.push(period.textContent.trim());
-      if (sort?.selectedOptions?.[0]) parts.push(sort.selectedOptions[0].textContent.trim());
       selectionMeta.textContent = parts.join(' · ') || 'Nastavit';
     }
   }
