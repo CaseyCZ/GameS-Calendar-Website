@@ -3,7 +3,7 @@ const DB_VERSION = 1;
 const STORE = 'responses';
 const CACHE_KEY = 'games-catalog-v7';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
-const LIVE_CATALOG_URL = '/games-api/catalog';
+const LIVE_CATALOG_URL = globalThis.location?.hostname.endsWith('.github.io') ? null : '/games-api/catalog';
 const STATIC_CATALOG_URL = 'games.json';
 
 const pad = value => String(value).padStart(2, '0');
@@ -309,12 +309,14 @@ async function fetchJson(url) {
 
 async function fetchPayload() {
   let liveError = null;
-  try {
-    const payload = await fetchJson(LIVE_CATALOG_URL);
-    await writeCache(payload);
-    return { payload, source: 'live-api' };
-  } catch (error) {
-    liveError = error;
+  if (LIVE_CATALOG_URL) {
+    try {
+      const payload = await fetchJson(LIVE_CATALOG_URL);
+      await writeCache(payload);
+      return { payload, source: 'live-api' };
+    } catch (error) {
+      liveError = error;
+    }
   }
 
   try {

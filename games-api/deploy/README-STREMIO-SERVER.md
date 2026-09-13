@@ -5,7 +5,7 @@ This deployment is tailored to the existing host discovered on 2026-09-12:
 - Node.js 24
 - PM2 managed by the `ubuntu` user
 - existing processes on ports 7000, 7001 and 7002
-- Nginx HTTPS listener on port 8443
+- Nginx HTTPS listeners on ports 443 and 8443
 - existing routes `/stremio-sosac/`, `/stremio-sosac-subtitles/` and `/dashboard/`
 
 The GameS deployment does **not** replace those routes or processes.
@@ -22,7 +22,7 @@ The GameS deployment does **not** replace those routes or processes.
 PM2:
   games-api -> 127.0.0.1:8787
 
-Nginx :8443:
+Nginx :443 and :8443:
   /games/       static frontend
   /games-api/   reverse proxy to the API `/api/` routes
   /games-health reverse proxy to `/health`
@@ -53,7 +53,7 @@ The existing dashboard receives a `games-api` card. Its **Update** button runs t
 
 That action:
 
-1. syncs the GameS repository to `origin/main`,
+1. refuses tracked local changes or a branch other than `main`, then fast-forwards to `origin/main` without discarding local commits,
 2. publishes browser files into `/var/www/games-calendar`,
 3. installs API production dependencies,
 4. syntax-checks the API and deployment helpers,
@@ -81,3 +81,9 @@ sudo nginx -t && sudo systemctl reload nginx
 ```
 
 Restore the matching `/home/ubuntu/stremio-dashboard/index.js.backup-games-*` file and restart `stremio-dashboard` if the dashboard patch also needs to be rolled back.
+
+## Server-specific configuration notes
+
+On the audited server, `/etc/nginx/sites-enabled/default` is a regular file, not a symlink to `sites-available/default`. Nginx loads the enabled file. Back up and update the active file, then run `sudo nginx -t` before reloading. Restoring only the available copy does not change the running site.
+
+Keep local server fixes under version control before updating. The updater stops on tracked local changes; it does not reset or automatically stash them. A GitHub push or GitHub Pages deployment does not publish the server copy.

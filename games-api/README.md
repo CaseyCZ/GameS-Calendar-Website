@@ -33,7 +33,9 @@ Node.js 22.13+ je vyžadován kvůli vestavěnému `node:sqlite`. SQLite drží 
 ## API
 
 ```text
+GET  /health
 GET  /health?refresh=1
+GET  /api/catalog
 GET  /api/search?q=Kingdom%20Come&providers=steam,microsoft,playstation,nintendo,geforceNow
 POST /api/enrich
 GET  /api/gamepass/console
@@ -55,6 +57,10 @@ GET  /api/gfn/search?q=Cyberpunk
 GET  /api/gfn/catalog
 GET  /api/history/:gameKey
 ```
+
+### Cesty na běžícím serveru
+
+Na `https://130.61.49.108` (také port 8443) používá Nginx `/games-api/` místo interního `/api/`, například `/games-api/catalog` a `/games-api/search`. Stav je na `/games-health`; samotné `/health` není veřejná cesta. `/health` bez `refresh=1` vrací dostupnost API a uložené výsledky, nikoli nový test všech zdrojů.
 
 ### Live enrichment
 

@@ -219,8 +219,7 @@ kbd { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; col
 @media (max-width: 560px) {
   .topbar__row { grid-template-columns: 1fr auto; }
   .topbar__stats { grid-column: 1/-1; grid-row: 2; justify-self: stretch; justify-content: space-between; }
-  .topbar__actions { grid-column: 2; grid-row: 1; padding: 0; }
-  .topbar__actions #share-button, .topbar__actions #calendar-all { display: none; }
+  .topbar__actions { grid-column: 1/-1; grid-row: 3; justify-content: flex-end; padding: 0; }
   .hero-strip { align-items: center; }
   .hero-strip h1 { font-size: 19px; }
   .games-grid, .skeleton-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }

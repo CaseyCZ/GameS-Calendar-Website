@@ -24,9 +24,17 @@ fi
 
 mkdir -p "$API/data"
 
+# Do not erase server fixes. Review and commit them before an update.
+if [[ -n "$(git -C "$REPO" status --porcelain --untracked-files=no)" ]]; then
+  echo "Update stopped: tracked files contain local changes. Review and commit them first." >&2
+  exit 1
+fi
+if [[ "$(git -C "$REPO" branch --show-current)" != "main" ]]; then
+  echo "Update stopped: expected the main branch." >&2
+  exit 1
+fi
 git -C "$REPO" fetch origin main
-git -C "$REPO" checkout main
-git -C "$REPO" reset --hard origin/main
+git -C "$REPO" merge --ff-only origin/main
 
 # Publish only browser-facing files. Do not expose .git, workflows, backend or build scripts.
 rsync -a --delete \

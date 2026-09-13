@@ -8,6 +8,8 @@ import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
 import { providers, providerList } from './providers/index.js';
 
 const app = express();
+// Only the local Nginx proxy may supply the client address.
+app.set('trust proxy', 'loopback');
 app.disable('x-powered-by');
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors());

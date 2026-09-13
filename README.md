@@ -8,6 +8,14 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 
 👉 **https://caseycz.github.io/GameS-Calendar-Website/**
 
+## Vlastní server
+
+- Web: https://130.61.49.108/games/
+- Katalog: https://130.61.49.108/games-api/catalog
+- Stav API: https://130.61.49.108/games-health
+
+Stejné cesty fungují také na HTTPS portu 8443. GitHub Pages používá statický `games.json`; vlastní server nabízí navíc GameS API. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
+
 ## ✨ Co na webu najdete
 
 - 🔍 **Rychlé vyhledávání her podle názvu**

@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.2.13';
+const VERSION = 'games-calendar-v3.2.14';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -46,6 +46,8 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  // API data must stay fresh and must never enter the static shell cache.
+  if (url.pathname.startsWith('/games-api/') || url.pathname.startsWith('/api/') || url.pathname === '/games-health') return;
 
   if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json')) {
     event.respondWith(networkFirst(request));
