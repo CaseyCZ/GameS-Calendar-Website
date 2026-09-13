@@ -14,7 +14,7 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 - Katalog: https://130.61.49.108/games-api/catalog
 - Stav API: https://130.61.49.108/games-health
 
-Stejné cesty fungují také na HTTPS portu 8443. GitHub Pages používá statický `games.json`; vlastní server nabízí navíc GameS API. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
+Stejné cesty fungují také na HTTPS portu 8443. Web načte společný katalog jednou a při dalších návštěvách ověří jen jeho malou verzi přes `/games-api/catalog-meta`. GitHub Pages používá stejný statický `games.json`; vlastní server nabízí navíc živé doplnění detailu z IGDB a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
 
 ## ✨ Co na webu najdete
 
@@ -48,6 +48,8 @@ Herních vydání je každý měsíc velké množství a sledovat všechny term�
 > **Co vychází? Kdy? Na čem? A kde si o hře zjistím víc?**
 
 ## 🔄 Aktuální informace
+
+Metadata pro seznam a filtry se pravidelně ukládají do `games.json`. Na serveru je lze bezpečně obnovit příkazem `npm run enrich-igdb`; přístupové údaje IGDB zůstávají v souboru `games-api/.env`. GitHub workflow provede stejný krok pouze při nastavení tajných hodnot `IGDB_CLIENT_ID` a `IGDB_CLIENT_SECRET`.
 
 Přehled her je průběžně aktualizovaný, takže se mohou měnit data vydání, platformy i další informace podle toho, jak jsou zveřejňovány nové údaje o hrách.
 

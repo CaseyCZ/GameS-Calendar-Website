@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readFile, stat } from 'node:fs/promises';
 import { config } from './config.js';
 import { historyForGame, listHealth, saveGameSnapshot, saveHealth } from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
@@ -69,15 +70,41 @@ function stripPricing(value) {
   );
 }
 
+let catalogCache = null;
+
 async function readCatalog() {
   const errors = [];
   for (const file of CATALOG_FILES) {
     try {
-      const payload = JSON.parse(await readFile(file, 'utf8'));
-      if (!Array.isArray(payload) && !Array.isArray(payload?.games)) {
+      const info = await stat(file);
+      const cacheKey = `${String(file)}:${info.size}:${info.mtimeMs}`;
+      if (catalogCache?.key === cacheKey) return catalogCache;
+
+      const sourcePayload = JSON.parse(await readFile(file, 'utf8'));
+      if (!Array.isArray(sourcePayload) && !Array.isArray(sourcePayload?.games)) {
         throw new Error('catalog has no games array');
       }
-      return stripPricing(payload);
+      const cleaned = stripPricing(sourcePayload);
+      const payload = Array.isArray(cleaned)
+        ? cleaned
+        : { ...cleaned, apiVersion: config.version, source: 'games-api-catalog' };
+      const body = JSON.stringify(payload);
+      const etag = `"${createHash('sha256').update(body).digest('base64url')}"`;
+      catalogCache = {
+        key: cacheKey,
+        payload,
+        body,
+        etag,
+        meta: {
+          version: Array.isArray(payload) ? 1 : (payload.version || 1),
+          apiVersion: config.version,
+          generatedAt: Array.isArray(payload) ? null : (payload.generatedAt || null),
+          count: Array.isArray(payload) ? payload.length : payload.games.length,
+          bytes: Buffer.byteLength(body),
+          source: 'games-api-catalog'
+        }
+      };
+      return catalogCache;
     } catch (error) {
       errors.push(`${String(file)}: ${error?.message || String(error)}`);
     }
@@ -242,11 +269,19 @@ app.get('/health', asyncRoute(async (req, res) => {
   res.status(results.every(item => item.ok) ? 200 : 207).json({ ok: results.every(item => item.ok), version: config.version, results });
 }));
 
+app.get('/api/catalog-meta', asyncRoute(async (req, res) => {
+  const catalog = await readCatalog();
+  res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+  res.json(catalog.meta);
+}));
+
 app.get('/api/catalog', asyncRoute(async (req, res) => {
-  const payload = await readCatalog();
-  res.setHeader('Cache-Control', 'no-store');
-  if (Array.isArray(payload)) return res.json(payload);
-  res.json({ ...payload, apiVersion: config.version, source: 'games-api-catalog' });
+  const catalog = await readCatalog();
+  res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+  res.setHeader('ETag', catalog.etag);
+  const candidates = String(req.headers['if-none-match'] || '').split(/\s*,\s*/);
+  if (candidates.includes(catalog.etag)) return res.status(304).end();
+  res.type('application/json').send(catalog.body);
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {

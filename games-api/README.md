@@ -36,6 +36,7 @@ Node.js 22.13+ je vyžadován kvůli vestavěnému `node:sqlite`. SQLite drží 
 GET  /health
 GET  /health?refresh=1
 GET  /api/catalog
+GET  /api/catalog-meta
 GET  /api/search?q=Kingdom%20Come&providers=steam,microsoft,playstation,nintendo,geforceNow
 POST /api/enrich
 GET  /api/gamepass/console
@@ -77,7 +78,7 @@ Pošli JSON na `POST /api/enrich`. API nejdřív použije známá provider ID. P
 
 ## Cache
 
-Cache je serverová a per-provider. Game Pass/GFN se obnovují po hodině, produktová metadata zhruba po 6 hodinách a Nintendo produktové stránky po 12 hodinách. `?refresh=1` cache obejde.
+Cache je serverová a per-provider. Game Pass/GFN se obnovují po hodině, produktová metadata zhruba po 6 hodinách a Nintendo produktové stránky po 12 hodinách. Zpracovaný katalog zůstává v paměti do změny souboru; `/api/catalog-meta` umožňuje klientovi ověřit verzi bez opakovaného stažení celého katalogu. `?refresh=1` cache providerů obejde.
 
 ## Endpoint audit
 

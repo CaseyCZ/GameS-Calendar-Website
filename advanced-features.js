@@ -169,13 +169,13 @@ function contentType(game) {
   if (/\bdlc\b|downloadable content/.test(text)) return 'DLC';
   if (/\bdemo\b/.test(text)) return 'Demo';
 
-  if (['dlc','downloadable content'].includes(raw)) return 'DLC';
-  if (['expansion','expansion pack','rozšíření'].includes(raw)) return 'Rozšíření';
+  if (['dlc','downloadable content','dlc / addon','pack / addon'].includes(raw)) return 'DLC';
+  if (['expansion','expansion pack','rozšíření','standalone expansion','expanded game'].includes(raw)) return 'Rozšíření';
   if (['remake'].includes(raw)) return 'Remake';
   if (['remaster','remastered'].includes(raw)) return 'Remaster';
   if (['demo'].includes(raw)) return 'Demo';
   if (['mod'].includes(raw)) return 'Mod';
-  if (['game','full game','plná hra','full'].includes(raw)) return 'Plná hra';
+  if (['game','full game','plná hra','full','main game','port'].includes(raw)) return 'Plná hra';
   return game.contentType || rawGame(game).contentType || '';
 }
 

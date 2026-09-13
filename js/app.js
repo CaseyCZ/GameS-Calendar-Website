@@ -21,6 +21,7 @@ import {
 
 const $ = id => document.getElementById(id);
 const PAGE_SIZE = 72;
+const MAX_GENRE_FILTERS = 32;
 const WATCH_KEY = 'games-calendar-watchlist-v2';
 const VIEW_KEY = 'games-calendar-view-v2';
 const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
@@ -244,8 +245,11 @@ function renderGenres() {
   }
   for (const [genre, ids] of seen) counts.set(genre, ids.size);
   const available = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'cs'));
+  const featured = available.filter(([genre, count]) => count > 1 || state.genres.has(genre)).slice(0, MAX_GENRE_FILTERS);
+  const selectedAvailable = available.filter(([genre]) => state.genres.has(genre));
   const selectedMissing = [...state.genres].filter(genre => !counts.has(genre)).map(genre => [genre, 0]);
-  const genres = [...available, ...selectedMissing].filter((item, index, all) => all.findIndex(other => other[0] === item[0]) === index);
+  const genres = [...featured, ...selectedAvailable, ...selectedMissing]
+    .filter((item, index, all) => all.findIndex(other => other[0] === item[0]) === index);
   $('genre-filters').innerHTML = genres.length
     ? genres.map(([genre, count]) => `<button type="button" class="genre-filter-chip ${state.genres.has(genre) ? 'is-active' : ''}" data-genre="${escapeHtml(genre)}" aria-pressed="${state.genres.has(genre)}"><span>${escapeHtml(genre)}</span><small>${formatter.format(count)}</small></button>`).join('')
     : '<span class="genre-empty">Žánry nejsou pro tento výběr dostupné.</span>';

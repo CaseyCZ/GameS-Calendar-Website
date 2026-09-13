@@ -34,6 +34,7 @@ export function formatGenre(value) {
   const raw = String(value || '').trim();
   if (!raw) return '';
   const key = raw.toLocaleLowerCase('en');
+  if (['early access', 'free to play'].includes(key)) return '';
   const exact = new Map([
     ['action game','Akční'], ['action video game','Akční'],
     ['action-adventure game','Akční adventura'], ['action-adventure video game','Akční adventura'],
@@ -57,7 +58,24 @@ export function formatGenre(value) {
     ['massively multiplayer online role-playing game','MMORPG'], ['rhythm game','Rytmická'],
     ['party game','Párty'], ['stealth game','Stealth'], ['survival game','Survival'],
     ['city-building game','Budovatelská'], ['management game','Management'],
-    ['turn-based tactics','Tahová taktika'], ['tactical role-playing game','Taktické RPG']
+    ['turn-based tactics','Tahová taktika'], ['tactical role-playing game','Taktické RPG'],
+    ['action','Akční'], ['adventure','Adventura'], ['role-playing (rpg)','RPG'], ['simulator','Simulace'],
+    ['strategy','Strategie'], ['turn-based strategy (tbs)','Tahová strategie'], ['real time strategy (rts)','RTS'],
+    ['shooter','Střílečka'], ['platform','Plošinovka'], ['puzzle','Logická'], ['racing','Závodní'],
+    ['sport','Sportovní'], ['fighting','Bojová'], ['tactical','Taktická'], ['visual novel','Vizuální novela'],
+    ['point-and-click','Point-and-click'], ['hack and slash/beat em up','Hack and slash'],
+    ['card & board game','Karetní a desková'], ['moba','MOBA'], ['music','Hudební'],
+    ['quiz/trivia','Kvíz'], ['arcade','Arkáda'], ['pinball','Pinball'], ['indie','Indie'],
+    ['akční videohra','Akční'], ['akční hra','Akční'], ['adventurní videohra','Adventura'],
+    ['nezávislá videohra','Indie'], ['videoherní simulátor','Simulace'], ['strategická videohra','Strategie'],
+    ['závodní videohra','Závodní'], ['sportovní videohra','Sportovní'], ['logická videohra','Logická'],
+    ['plošinová videohra','Plošinovka'], ['2d plošinovka','Plošinovka'], ['3d plošinovka','Plošinovka'],
+    ['bojová videohra','Bojová'], ['střílečka','Střílečka'], ['střílečka z pohledu první osoby','FPS'],
+    ['střílečka z pohledu třetí osoby','TPS'], ['akční hra na hrdiny','Akční RPG'], ['role playing','RPG'],
+    ['casual','Nenáročná'], ['nenáročná videohra','Nenáročná'], ['massively multiplayer','MMO'],
+    ['masivně multiplayerová online hra','MMO'], ['hororová videohra','Horor'], ['vizuální román','Vizuální novela'],
+    ['rytmická videohra','Rytmická'], ['hudební videohra','Hudební'], ['fotbalová videohra','Fotbal'],
+    ['hra o přežití','Survival'], ["hack and slash/beat 'em up",'Hack and slash']
   ]);
   if (exact.has(key)) return exact.get(key);
   if (/ice hockey|hockey/.test(key)) return 'Hokej';
@@ -224,11 +242,11 @@ function platformStoreLinks(row, links) {
 
 function generatedDescription(row) {
   const game = row.game;
-  const genres = game.genres || [];
+  const genres = [...new Set((game.genres || []).map(formatGenre).filter(Boolean))];
   const developers = game.developers || [];
   const platformNames = row.platforms.map(platform => platform.name).filter(Boolean);
   let text = `${game.name} je videohra`;
-  if (genres.length) text += ` v žánru ${genres.slice(0,2).map(formatGenre).join(' / ')}`;
+  if (genres.length) text += ` v žánru ${genres.slice(0,2).join(' / ')}`;
   if (developers.length) text += ` od studia ${developers[0]}`;
   if (platformNames.length) text += ` pro ${platformNames.join(', ')}`;
   return `${text}. ${row.day ? `Datum vydání: ${formatDate(row.day)}.` : `Termín vydání: ${row.window || game.announcedWindow || 'TBA'}.`}`;

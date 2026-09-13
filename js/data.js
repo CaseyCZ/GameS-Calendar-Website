@@ -3,8 +3,13 @@ const DB_VERSION = 1;
 const STORE = 'responses';
 const CACHE_KEY = 'games-catalog-v7';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
-const LIVE_CATALOG_URL = globalThis.location?.hostname.endsWith('.github.io') ? null : '/games-api/catalog';
+const LIVE_CATALOG_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog';
+const LIVE_CATALOG_META_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog-meta';
 const STATIC_CATALOG_URL = 'games.json';
+
+let sharedLoadPromise = null;
+let revalidationPromise = null;
+const revalidationCallbacks = new Set();
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -302,7 +307,7 @@ async function writeCache(payload) {
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } });
+  const response = await fetch(url, { cache: 'no-cache', headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
 }
@@ -328,18 +333,27 @@ async function fetchPayload() {
   }
 }
 
-export async function loadGameData({ onRevalidated } = {}) {
+async function revalidateCache(cached, dataset) {
+  if (!LIVE_CATALOG_META_URL || revalidationPromise) return revalidationPromise;
+  revalidationPromise = (async () => {
+    const meta = await fetchJson(LIVE_CATALOG_META_URL);
+    const before = String(dataset.generatedAt || cached.savedAt);
+    const after = String(meta.generatedAt || '');
+    if (!after || before === after) return;
+    const { payload } = await fetchPayload();
+    const fresh = normalizePayload(payload);
+    for (const callback of revalidationCallbacks) callback(fresh);
+  })().catch(() => {}).finally(() => { revalidationPromise = null; });
+  return revalidationPromise;
+}
+
+async function loadGameDataOnce() {
   const cached = await readCache();
   const isFresh = cached && Date.now() - cached.savedAt < CACHE_TTL;
 
   if (isFresh) {
     const dataset = normalizePayload(cached.payload);
-    fetchPayload().then(({ payload }) => {
-      const fresh = normalizePayload(payload);
-      const before = dataset.generatedAt || cached.savedAt;
-      const after = fresh.generatedAt || Date.now();
-      if (String(before) !== String(after)) onRevalidated?.(fresh);
-    }).catch(() => {});
+    revalidateCache(cached, dataset);
     return { dataset, rawPayload: cached.payload, source: 'cache', stale: false };
   }
 
@@ -358,4 +372,15 @@ export async function loadGameData({ onRevalidated } = {}) {
     }
     throw error;
   }
+}
+
+export function loadGameData({ onRevalidated } = {}) {
+  if (typeof onRevalidated === 'function') revalidationCallbacks.add(onRevalidated);
+  if (!sharedLoadPromise) {
+    sharedLoadPromise = loadGameDataOnce().catch(error => {
+      sharedLoadPromise = null;
+      throw error;
+    });
+  }
+  return sharedLoadPromise;
 }

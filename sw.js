@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.2.14';
+const VERSION = 'games-calendar-v3.2.15';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -26,7 +26,8 @@ const SHELL = [
   './js/calendar.js',
   './js/ui.js',
   './manifest.webmanifest',
-  './CaseyCZ.png'
+  './CaseyCZ.png',
+  './CaseyCZ.webp'
 ];
 
 self.addEventListener('install', event => {

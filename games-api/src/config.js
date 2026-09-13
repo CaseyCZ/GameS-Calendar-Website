@@ -4,12 +4,17 @@ import { readFileSync } from 'node:fs';
 const num = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const version = String(packageJson.version || '0.0.0');
+const apiRoot = path.resolve(new URL('..', import.meta.url).pathname);
+const configuredDbFile = String(process.env.GAMES_API_DB || '').trim();
+const dbFile = configuredDbFile
+  ? (path.isAbsolute(configuredDbFile) ? configuredDbFile : path.resolve(apiRoot, configuredDbFile))
+  : path.join(apiRoot, 'data/games-api.sqlite');
 
 export const config = Object.freeze({
   version,
   host: String(process.env.HOST || process.env.GAMES_API_HOST || '127.0.0.1').trim() || '127.0.0.1',
   port: num(process.env.PORT, 8787),
-  dbFile: path.resolve(process.env.GAMES_API_DB || './data/games-api.sqlite'),
+  dbFile,
   market: String(process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
   language: String(process.env.GAMES_API_LANGUAGE || 'cs-cz').toLowerCase(),
   psLocale: String(process.env.GAMES_API_PS_LOCALE || 'en-cz').toLowerCase(),
