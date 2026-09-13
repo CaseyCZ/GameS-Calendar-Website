@@ -29,7 +29,8 @@ const WATCH_KEY = 'games-calendar-watchlist-v2';
 const VIEW_KEY = 'games-calendar-view-v2';
 const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
-const NOTIFY_LAST_KEY = 'games-calendar-notified-v1';
+const PUSH_PUBLIC_KEY_URL = '/games-api/push/public-key';
+const PUSH_SUBSCRIBE_URL = '/games-api/push/subscribe';
 const DEFAULT_TITLE = 'Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo';
 const DEFAULT_DESCRIPTION = 'Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.';
 
@@ -513,6 +514,7 @@ function toggleWatch(gameIdValue) {
   const id = String(gameIdValue);
   if (state.watchlist.has(id)) state.watchlist.delete(id); else state.watchlist.add(id);
   saveJsonSet(WATCH_KEY, state.watchlist);
+  syncPushSubscription().catch(error => console.warn('Push sync:', error));
   renderGames();
   if ($('game-dialog').open) {
     const row = state.rows.find(item => item.key === state.openRowKey);
@@ -680,7 +682,46 @@ function applyMyPlatforms() {
 }
 
 function notificationSupported() {
-  return 'Notification' in window && 'serviceWorker' in navigator;
+  return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+}
+
+function urlBase64Bytes(value) {
+  const padding = '='.repeat((4 - value.length % 4) % 4);
+  const raw = atob((value + padding).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...raw].map(char => char.charCodeAt(0)));
+}
+
+async function syncPushSubscription() {
+  if (!notificationSupported() || Notification.permission !== 'granted' || localStorage.getItem(NOTIFY_KEY) !== '1') return false;
+  const registration = await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+  if (!subscription) {
+    const response = await fetch(PUSH_PUBLIC_KEY_URL, { headers:{ Accept:'application/json' } });
+    if (!response.ok) throw new Error(`Push key HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.enabled || !data.publicKey) throw new Error('Push notifications are not configured');
+    subscription = await registration.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:urlBase64Bytes(data.publicKey) });
+  }
+  const response = await fetch(PUSH_SUBSCRIBE_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Accept:'application/json' },
+    body:JSON.stringify({ subscription:subscription.toJSON(), gameIds:[...state.watchlist] })
+  });
+  if (!response.ok) throw new Error(`Push subscription HTTP ${response.status}`);
+  return true;
+}
+
+async function removePushSubscriptionFromServer() {
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription) return;
+  try {
+    await fetch(PUSH_SUBSCRIBE_URL, {
+      method:'DELETE', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ endpoint:subscription.endpoint })
+    });
+  } finally {
+    await subscription.unsubscribe();
+  }
 }
 
 function renderNotificationButton() {
@@ -695,6 +736,7 @@ function renderNotificationButton() {
 async function toggleNotifications() {
   if (!notificationSupported()) { toast('Tento prohlížeč upozornění nepodporuje.'); return; }
   if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') {
+    await removePushSubscriptionFromServer().catch(error => console.warn('Push unsubscribe:', error));
     localStorage.setItem(NOTIFY_KEY, '0');
     renderNotificationButton();
     toast('Upozornění byla vypnuta.');
@@ -703,8 +745,15 @@ async function toggleNotifications() {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') { toast('Povolení pro upozornění nebylo uděleno.'); return; }
   localStorage.setItem(NOTIFY_KEY, '1');
+  try {
+    await syncPushSubscription();
+    toast('Upozornění na pozadí jsou zapnutá.');
+  } catch (error) {
+    localStorage.setItem(NOTIFY_KEY, '0');
+    console.warn('Push subscribe:', error);
+    toast('Upozornění se nepodařilo zapnout. Zkuste to znovu.');
+  }
   renderNotificationButton();
-  await maybeNotifyUpcoming(true);
 }
 
 async function maybeNotifyUpcoming(force = false) {
@@ -916,7 +965,6 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   const requested = findRequestedRow();
   if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
   if (first && state.search) refreshOnlineSearch(state.search);
-  maybeNotifyUpcoming();
 }
 
 async function init() {
@@ -938,7 +986,10 @@ async function init() {
 
   setInterval(() => { if (state.dataset) renderGames(); }, 60_000);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('./sw.js').then(renderNotificationButton).catch(error => console.warn('Service worker:', error));
+    navigator.serviceWorker.register('./sw.js').then(async () => {
+      renderNotificationButton();
+      if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') await syncPushSubscription();
+    }).catch(error => console.warn('Service worker:', error));
   }
 }
 

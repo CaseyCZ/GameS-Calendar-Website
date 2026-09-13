@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import webpush from 'web-push';
 import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
 import { config } from './config.js';
@@ -8,18 +9,27 @@ import {
   getDiscoveredGame,
   historyStartedAt,
   historyForGame,
+  latestChangeId,
   listRecentChanges,
+  listPushSubscriptions,
+  markPushDelivered,
+  prunePushDeliveries,
+  removePushSubscription,
   listHealth,
   saveDiscoveredGame,
   saveGameSnapshot,
   saveHealth,
+  savePushSubscription,
   searchDiscoveredGames,
-  syncCatalogGames
+  syncCatalogGames,
+  wasPushDelivered
 } from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
 import { providers, providerList } from './providers/index.js';
 
 const app = express();
+const pushEnabled = Boolean(config.vapidPublicKey && config.vapidPrivateKey);
+if (pushEnabled) webpush.setVapidDetails(config.vapidSubject, config.vapidPublicKey, config.vapidPrivateKey);
 // Only the local Nginx proxy may supply the client address.
 app.set('trust proxy', 'loopback');
 app.disable('x-powered-by');
@@ -456,6 +466,27 @@ app.get('/api/changes', asyncRoute(async (req, res) => {
   res.json({ count: items.length, type, since: new Date(since).toISOString(), trackingSince: historyStartedAt(), items });
 }));
 
+app.get('/api/push/public-key', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.json({ enabled: pushEnabled, publicKey: pushEnabled ? config.vapidPublicKey : '' });
+});
+
+app.post('/api/push/subscribe', asyncRoute(async (req, res) => {
+  if (!pushEnabled) return res.status(503).json({ error: 'Push notifications are not configured' });
+  const subscription = req.body?.subscription;
+  let endpoint;
+  try { endpoint = new URL(String(subscription?.endpoint || '')); }
+  catch { return res.status(400).json({ error: 'Invalid push endpoint' }); }
+  if (endpoint.protocol !== 'https:') return res.status(400).json({ error: 'Push endpoint must use HTTPS' });
+  const result = savePushSubscription(subscription, req.body?.gameIds);
+  res.status(201).json({ ok: true, gameCount: result.gameCount, latestChangeId: latestChangeId() });
+}));
+
+app.delete('/api/push/subscribe', (req, res) => {
+  removePushSubscription(req.body?.endpoint);
+  res.json({ ok: true });
+});
+
 function titleMatchesQuery(query, title) {
   const words = normalizeTitle(query).split(' ').filter(Boolean);
   const name = normalizeTitle(title);
@@ -629,7 +660,94 @@ app.use((error, req, res, next) => {
   res.status(502).json({ error: error?.message || String(error) });
 });
 
+function utcDay(offset = 0) {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
+function releaseSummary(value) {
+  const items = Array.isArray(value) ? value : value?.releases;
+  if (!Array.isArray(items) || !items.length) return 'bez známého data';
+  const first = items[0];
+  if (first?.day) return new Date(`${first.day}T12:00:00Z`).toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric', timeZone:'UTC' });
+  return first?.window || 'bez známého data';
+}
+
+function pushEventForChange(change) {
+  const name = change.game?.name || change.gameKey;
+  if (change.field === 'gameAdded') return { key:`change:${change.id}`, title:'Nová sledovaná hra', body:`${name} byla přidána do katalogu.`, game:change.game };
+  if (change.field === 'gameRemoved') return { key:`change:${change.id}`, title:'Změna sledované hry', body:`${name} už není v aktuálním katalogu.`, game:change.game };
+  return { key:`change:${change.id}`, title:'Změna data vydání', body:`${name}: nový termín ${releaseSummary(change.newValue)}.`, game:change.game };
+}
+
+let pushRunActive = false;
+async function runPushNotifications() {
+  if (!pushEnabled || pushRunActive) return;
+  pushRunActive = true;
+  try {
+    const catalog = await readCatalog();
+    const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
+    const gameMap = new Map(catalogGames.map(game => [String(game.id), game]));
+    const today = utcDay();
+    const noticeDays = new Map([[utcDay(7), 7], [utcDay(1), 1], [today, 0]]);
+
+    for (const row of listPushSubscriptions()) {
+      const ids = [...new Set(row.gameIds.map(String))];
+      if (!ids.length) continue;
+      const pending = listRecentChanges({ since: row.createdAt, gameKeys: ids, limit: 100 }).map(pushEventForChange)
+        .filter(event => !wasPushDelivered(row.endpoint, event.key));
+
+      for (const id of ids) {
+        const game = gameMap.get(id) || getDiscoveredGame(id);
+        if (!game) continue;
+        for (const release of game.releases || []) {
+          const day = String(release.date || release.day || '').slice(0, 10);
+          if (!noticeDays.has(day)) continue;
+          const distance = noticeDays.get(day);
+          const key = `release:${id}:${day}:${distance}`;
+          if (wasPushDelivered(row.endpoint, key)) continue;
+          pending.push({
+            key,
+            title: distance === 0 ? 'Hra právě vychází' : 'Blíží se vydání hry',
+            body: distance === 0 ? `${game.name} vychází dnes.` : `${game.name} vychází ${distance === 1 ? 'zítra' : 'za 7 dní'}.`,
+            game: { id, name: game.name }
+          });
+        }
+      }
+      if (!pending.length) continue;
+
+      const first = pending[0];
+      const extra = pending.length > 1 ? `\nA ${pending.length - 1} další upozornění.` : '';
+      const query = new URLSearchParams({ game: String(first.game?.id || '') });
+      if (String(first.game?.id || '').startsWith('igdb-')) query.set('q', first.game?.name || '');
+      const payload = JSON.stringify({
+        title: first.title,
+        body: `${first.body}${extra}`,
+        url: `/games/?${query}`,
+        tag: first.key
+      });
+      try {
+        await webpush.sendNotification(row.subscription, payload, { TTL: 86_400, urgency: 'normal' });
+        markPushDelivered(row.endpoint, pending.map(event => event.key));
+      } catch (error) {
+        if ([404, 410].includes(Number(error?.statusCode))) removePushSubscription(row.endpoint);
+        else console.error('Push delivery failed:', error?.message || error);
+      }
+    }
+    prunePushDeliveries();
+  } finally {
+    pushRunActive = false;
+  }
+}
+
 app.listen(config.port, config.host, () => {
   console.log(`GameS API ${config.version} listening on http://${config.host}:${config.port}`);
   console.log(`Market=${config.market}, language=${config.language}, PS locale=${config.psLocale}`);
+  console.log(`Background push=${pushEnabled ? 'enabled' : 'disabled'}`);
 });
+
+if (pushEnabled) {
+  setTimeout(() => runPushNotifications().catch(error => console.error('Push scheduler:', error)), 10_000).unref();
+  setInterval(() => runPushNotifications().catch(error => console.error('Push scheduler:', error)), config.pushIntervalMs).unref();
+}

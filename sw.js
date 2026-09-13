@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.4.0';
+const VERSION = 'games-calendar-v3.5.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -72,6 +72,18 @@ self.addEventListener('notificationclick', event => {
     }
     return self.clients.openWindow(target);
   })());
+});
+
+self.addEventListener('push', event => {
+  let data = {};
+  try { data = event.data?.json() || {}; } catch { data = { body:event.data?.text() || '' }; }
+  event.waitUntil(self.registration.showNotification(data.title || 'Herní Kalendář', {
+    body: data.body || 'U sledované hry máme novou informaci.',
+    icon: './CaseyCZ.png',
+    badge: './CaseyCZ.png',
+    tag: data.tag || 'games-calendar-update',
+    data: { url:data.url || './' }
+  }));
 });
 
 async function networkFirst(request) {

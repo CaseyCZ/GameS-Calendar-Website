@@ -27,6 +27,10 @@ export const config = Object.freeze({
   igdbClientId: String(process.env.IGDB_CLIENT_ID || '').trim(),
   igdbClientSecret: String(process.env.IGDB_CLIENT_SECRET || '').trim(),
   igdbConfigured: Boolean(String(process.env.IGDB_CLIENT_ID || '').trim() && String(process.env.IGDB_CLIENT_SECRET || '').trim()),
+  vapidPublicKey: String(process.env.VAPID_PUBLIC_KEY || '').trim(),
+  vapidPrivateKey: String(process.env.VAPID_PRIVATE_KEY || '').trim(),
+  vapidSubject: String(process.env.VAPID_SUBJECT || 'https://caseycz.github.io/GameS-Calendar-Website/').trim(),
+  pushIntervalMs: Math.max(60_000, num(process.env.PUSH_INTERVAL_MS, 15 * 60_000)),
   rateLimitPerMinute: Math.max(30, num(process.env.GAMES_API_RATE_LIMIT_PER_MINUTE, 180)),
   userAgent: `GameS-Calendar-API/${version} (+https://github.com/CaseyCZ/GameS-Calendar-Website)`,
   ttl: Object.freeze({

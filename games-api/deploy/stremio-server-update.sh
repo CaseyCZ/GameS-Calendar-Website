@@ -60,6 +60,7 @@ fi
 if [[ ! -f .env ]]; then
   cp .env.example .env
 fi
+node scripts/ensure-vapid-keys.js .env
 
 # Keep the API private on the VM; Nginx is the only public entry point.
 if grep -q '^HOST=' .env; then

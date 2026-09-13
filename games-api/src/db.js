@@ -67,6 +67,22 @@ db.exec(`
     value TEXT NOT NULL,
     updated_at INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS push_subscriptions (
+    endpoint TEXT PRIMARY KEY,
+    payload TEXT NOT NULL,
+    game_ids TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS push_deliveries (
+    endpoint TEXT NOT NULL,
+    event_key TEXT NOT NULL,
+    sent_at INTEGER NOT NULL,
+    PRIMARY KEY(endpoint,event_key)
+  );
+  CREATE INDEX IF NOT EXISTS push_deliveries_sent_idx ON push_deliveries(sent_at);
 `);
 
 const getCacheStmt = db.prepare('SELECT payload, expires_at FROM cache WHERE cache_key = ?');
@@ -113,6 +129,14 @@ const putAppStateStmt = db.prepare(`
   INSERT INTO app_state(state_key,value,updated_at) VALUES(?,?,?)
   ON CONFLICT(state_key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at
 `);
+const putPushSubscriptionStmt = db.prepare(`
+  INSERT INTO push_subscriptions(endpoint,payload,game_ids,created_at,updated_at)
+  VALUES(?,?,?,?,?)
+  ON CONFLICT(endpoint) DO UPDATE SET payload=excluded.payload,game_ids=excluded.game_ids,updated_at=excluded.updated_at
+`);
+const removePushSubscriptionStmt = db.prepare('DELETE FROM push_subscriptions WHERE endpoint = ?');
+const hasPushDeliveryStmt = db.prepare('SELECT 1 AS found FROM push_deliveries WHERE endpoint = ? AND event_key = ?');
+const putPushDeliveryStmt = db.prepare('INSERT OR IGNORE INTO push_deliveries(endpoint,event_key,sent_at) VALUES(?,?,?)');
 
 export function cacheGet(key, { allowStale = false } = {}) {
   const row = getCacheStmt.get(key);
@@ -308,6 +332,46 @@ export function latestChangeId() {
 export function historyStartedAt() {
   const value = Number(getAppStateStmt.get('history_started_at')?.value || 0);
   return value ? new Date(value).toISOString() : null;
+}
+
+export function savePushSubscription(subscription, gameIds = []) {
+  const endpoint = String(subscription?.endpoint || '').trim();
+  if (!endpoint || !subscription?.keys?.p256dh || !subscription?.keys?.auth) throw new Error('Invalid push subscription');
+  const ids = [...new Set((gameIds || []).map(String).filter(Boolean))].slice(0, 500);
+  const now = Date.now();
+  putPushSubscriptionStmt.run(endpoint, JSON.stringify(subscription), JSON.stringify(ids), now, now);
+  return { endpoint, gameCount: ids.length };
+}
+
+export function removePushSubscription(endpoint) {
+  const value = String(endpoint || '').trim();
+  if (!value) return false;
+  removePushSubscriptionStmt.run(value);
+  db.prepare('DELETE FROM push_deliveries WHERE endpoint = ?').run(value);
+  return true;
+}
+
+export function listPushSubscriptions() {
+  return db.prepare('SELECT endpoint,payload,game_ids,created_at,updated_at FROM push_subscriptions ORDER BY updated_at').all().map(row => ({
+    endpoint: row.endpoint,
+    subscription: safeJson(row.payload, null),
+    gameIds: safeJson(row.game_ids, []),
+    createdAt: Number(row.created_at),
+    updatedAt: Number(row.updated_at)
+  })).filter(row => row.subscription && Array.isArray(row.gameIds));
+}
+
+export function wasPushDelivered(endpoint, eventKey) {
+  return Boolean(hasPushDeliveryStmt.get(String(endpoint), String(eventKey))?.found);
+}
+
+export function markPushDelivered(endpoint, eventKeys) {
+  const now = Date.now();
+  for (const eventKey of eventKeys || []) putPushDeliveryStmt.run(String(endpoint), String(eventKey), now);
+}
+
+export function prunePushDeliveries(before = Date.now() - 180 * 86_400_000) {
+  return Number(db.prepare('DELETE FROM push_deliveries WHERE sent_at < ?').run(Number(before)).changes || 0);
 }
 
 
