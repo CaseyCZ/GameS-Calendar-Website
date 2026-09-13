@@ -159,8 +159,8 @@
           <button class="filter-done" id="filters-done" type="button">Hotovo</button>
         </div>
       </div>`;
-    quick.appendChild(details);
     setupSortMenu(sort, quick);
+    quick.appendChild(details);
 
     const genresSlot = details.querySelector('.filter-panel__genres');
     const controls = details.querySelector('.filter-controls-row');
