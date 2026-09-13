@@ -188,7 +188,7 @@ export function searchDiscoveredGames(query, limit = 8) {
     .split(/\s+/)
     .filter(Boolean);
   if (!words.length) return [];
-  const take = Math.max(1, Math.min(20, Number(limit) || 8));
+  const take = Math.max(1, Math.min(500, Number(limit) || 100));
   const where = words.map(() => 'search_text LIKE ?').join(' AND ');
   const rows = db.prepare(`SELECT payload FROM discovered_games WHERE ${where} ORDER BY updated_at DESC LIMIT ?`)
     .all(...words.map(word => `%${word}%`), take);

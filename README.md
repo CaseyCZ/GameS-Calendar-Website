@@ -18,7 +18,7 @@ Stejné cesty fungují také na HTTPS portu 8443. Web načte malý seznam pro ka
 
 ## Online hledání chybějících her
 
-Vyhledávání nejprve kontroluje celý místní katalog. Pokud hra chybí, server ji dohledá v IGDB, zobrazí ji se stejnou kartou a detailem a uloží ji pro rychlé další otevření.
+Vyhledávání kontroluje názvy v celém místním katalogu i IGDB. Vrátí všechny odpovídající hry, zobrazí je se stejnou kartou a detailem a chybějící záznamy uloží pro rychlé další otevření. Delší seznamy se zobrazují postupně přes tlačítko Načíst další.
 
 ## ✨ Co na webu najdete
 

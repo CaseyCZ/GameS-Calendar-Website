@@ -155,6 +155,14 @@ function gameSearchText(game) {
   ].join(' '));
 }
 
+function matchesSearch(game, query) {
+  const needle = normalizeSearch(query);
+  if (!needle) return true;
+  const haystack = gameSearchText(game);
+  return haystack.includes(needle)
+    || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
+}
+
 function rawGame(game) {
   return rawGameMap.get(String(game?.id)) || {};
 }
@@ -276,7 +284,7 @@ function readBaseState() {
 function baseMatches(row, base, { ignoreRange = false } = {}) {
   const game = row.game;
   const search = normalizeSearch(base.search);
-  if (search && !gameSearchText(game).includes(search)) return false;
+  if (search && !matchesSearch(game, search)) return false;
   if (base.platforms.size && !row.platformGroups.some(group => base.platforms.has(group))) return false;
   if (base.genres.size) {
     const labels = new Set((game.genres || []).map(formatGenre));
@@ -290,17 +298,21 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   if (base.watchlistOnly && !base.watchlist.has(String(game.id))) return false;
 
   const today = todayLocal();
-  if (base.status === 'upcoming' && row.day && row.day < today) return false;
-  if (base.status === 'released' && (!row.day || row.day >= today)) return false;
+  if (!search && base.status === 'upcoming' && row.day && row.day < today) return false;
+  if (!search && base.status === 'released' && (!row.day || row.day >= today)) return false;
 
-  if (!ignoreRange && base.range) {
+  if (!search && !ignoreRange && base.range) {
     if (!row.day || row.day < base.range.from || row.day > base.range.to) return false;
   }
   return true;
 }
 
 function sortRows(items, sort) {
+  const searching = Boolean(normalizeSearch($('search-input')?.value || ''));
   return [...items].sort((a, b) => {
+    if (searching && a.onlineResult && b.onlineResult && a.onlineOrder !== b.onlineOrder) {
+      return a.onlineOrder - b.onlineOrder;
+    }
     const ad = a.day || '9999-12-31';
     const bd = b.day || '9999-12-31';
     if (sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
@@ -695,6 +707,16 @@ async function loadData() {
     console.warn('Advanced filters:', error);
   }
 }
+
+window.addEventListener('games:rows-updated', event => {
+  const available = Array.isArray(event.detail?.rows) ? event.detail.rows : [];
+  if (!available.length) return;
+  rows = available;
+  rowMap = new Map(rows.map(row => [row.key, row]));
+  for (const row of rows) rawGameMap.set(String(row.game.id), row.game);
+  advancedLimit = PAGE_SIZE;
+  applyAdvancedFilters();
+});
 
 function setup() {
   ensureStyles();

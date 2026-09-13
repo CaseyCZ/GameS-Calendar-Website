@@ -209,7 +209,6 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   const game = row.game;
   const search = normalizeSearch(state.search);
   if (search && !matchesSearch(game, search)) return false;
-  if (search && row.onlineResult) return true;
   if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
   if (!ignoreGenres && state.genres.size) {
     const labels = new Set((game.genres || []).map(formatGenre));
@@ -243,6 +242,7 @@ function filterRows() {
   );
   rows.sort((a, b) => {
     if (searching) {
+      if (a.onlineResult && b.onlineResult && a.onlineOrder !== b.onlineOrder) return a.onlineOrder - b.onlineOrder;
       const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
       if (relevance) return relevance;
     }
@@ -367,8 +367,14 @@ function renderGames({ resetLimit = false } = {}) {
   updateQuery();
 }
 
+function notifyAvailableRows() {
+  window.dispatchEvent(new CustomEvent('games:rows-updated', {
+    detail: { rows: state.rows, searching: Boolean(normalizeSearch(state.search)) }
+  }));
+}
+
 function makeOnlineRows(games) {
-  return games.map(game => {
+  return games.map((game, onlineOrder) => {
     const release = game.releases[0] || {
       day: null, timestamp: 0, platforms: [], window: 'TBA', precision: 'unknown', regions: []
     };
@@ -385,7 +391,8 @@ function makeOnlineRows(games) {
       window: release.window,
       precision: release.precision,
       regions: release.regions,
-      onlineResult: true
+      onlineResult: true,
+      onlineOrder
     };
   });
 }
@@ -398,6 +405,7 @@ async function refreshOnlineSearch(query) {
   if (value.length < 3) {
     state.onlineSearchLoading = false;
     renderGames({ resetLimit: true });
+    notifyAvailableRows();
     return;
   }
   state.onlineSearchLoading = true;
@@ -413,6 +421,7 @@ async function refreshOnlineSearch(query) {
     if (sequence === onlineSearchSequence) {
       state.onlineSearchLoading = false;
       renderGames({ resetLimit: true });
+      notifyAvailableRows();
       const requested = findRequestedRow();
       if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
     }
@@ -491,6 +500,7 @@ function resetFilters() {
   renderPlatformFilters();
   renderMonthSelectors();
   renderGames({resetLimit:true});
+  notifyAvailableRows();
 }
 
 function toggleWatch(gameIdValue) {

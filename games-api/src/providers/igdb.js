@@ -276,10 +276,27 @@ export async function search(query, { force = false, limit = 8 } = {}) {
   return items.slice(0, take);
 }
 
+export async function searchByName(query, { force = false, limit = 500 } = {}) {
+  const q = String(query || '').trim().replace(/[*?;]/g, ' ').replace(/\s+/g, ' ');
+  if (!q) return [];
+  const take = Math.max(1, Math.min(500, Number(limit) || 500));
+  const key = `igdb:name-search:${q.toLowerCase()}:${take}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached.slice(0, take);
+  }
+  const body = `fields ${GAME_FIELDS}; where name ~ *"${escapeSearch(q)}"* & version_parent = null; sort total_rating_count desc; limit ${take};`;
+  const payload = await request('games', body);
+  const items = (payload || []).map(normalizeIgdb).filter(Boolean);
+  cachePut(key, 'igdb', items, config.ttl.search);
+  return items.slice(0, take);
+}
+
 export const igdbProvider = {
   name: 'igdb',
-  capabilities: ['search','product','metadata','externalIds','releaseDates','media','videos'],
+  capabilities: ['search','nameSearch','product','metadata','externalIds','releaseDates','media','videos'],
   search,
+  searchByName,
   product,
   health: async () => {
     if (!configured()) return { ok: true, configured: false, skipped: true };

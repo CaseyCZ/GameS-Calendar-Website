@@ -13,6 +13,11 @@ function setHidden(node, hidden) {
 }
 
 function syncTraitFilters() {
+  const searching = String($('search-input')?.value || '').trim().length >= 3;
+  if (searching) {
+    document.querySelectorAll('[data-trait], [data-trait-group], .trait-filter-section').forEach(node => setHidden(node, false));
+    return;
+  }
   document.querySelectorAll('[data-trait]').forEach(chip => {
     const count = numberFrom(chip.querySelector('[data-trait-count]')?.textContent);
     const group = chip.closest('[data-trait-group]');

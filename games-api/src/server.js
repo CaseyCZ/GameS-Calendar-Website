@@ -436,33 +436,58 @@ app.get('/api/catalog/game/:gameId', asyncRoute(async (req, res) => {
   res.json(game);
 }));
 
+function titleMatchesQuery(query, title) {
+  const words = normalizeTitle(query).split(' ').filter(Boolean);
+  const name = normalizeTitle(title);
+  return words.length > 0 && words.every(word => name.includes(word));
+}
+
+function discoveryScore(query, game) {
+  const q = normalizeTitle(query);
+  const name = normalizeTitle(game?.name);
+  const contentType = String(game?.contentType || '').toLowerCase();
+  let score = name === q ? 1000 : name.startsWith(q) ? 800 : name.includes(q) ? 600 : titleScore(q, name) * 500;
+  if (contentType === 'main game') score += 120;
+  else if (['remake', 'remaster', 'expanded game', 'standalone expansion'].includes(contentType)) score += 70;
+  score += Math.min(99, Math.log10(Math.max(1, Number(game?.ratingCount || 0))) * 20);
+  return score;
+}
+
 app.get('/api/discover', asyncRoute(async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 100);
   if (q.length < 3) return res.status(400).json({ error: 'Search must have at least 3 characters' });
   if (!providers.igdb) return res.status(503).json({ error: 'IGDB is not configured' });
-  const limit = limitOf(req.query.limit, 8, 12);
-  const searchLimit = Math.min(20, Math.max(12, limit * 2));
+  const limit = limitOf(req.query.limit, 500, 500);
+  const searchLimit = 20;
+  const nameSearchLimit = 500;
   const catalog = await readCatalog();
   const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
   const catalogIgdbIds = new Set(catalogGames.map(game => String(game.igdbId || '')).filter(Boolean));
   const catalogTitles = new Set(catalogGames.flatMap(game => [game.name, ...(game.aliases || [])]).map(normalizeTitle).filter(Boolean));
-  const saved = searchDiscoveredGames(q, searchLimit)
+  const saved = searchDiscoveredGames(q, nameSearchLimit)
     .filter(game => !catalogIgdbIds.has(String(game.igdbId || '')) && !catalogTitles.has(normalizeTitle(game.name)));
-  let hits = [];
-  try {
-    hits = await providers.igdb.search(q, { limit: searchLimit });
-  } catch (error) {
-    if (!saved.length) throw error;
+  const searches = await Promise.allSettled([
+    providers.igdb.search(q, { limit: searchLimit }),
+    providers.igdb.searchByName(q, { limit: nameSearchLimit })
+  ]);
+  const hits = searches
+    .filter(result => result.status === 'fulfilled')
+    .flatMap(result => result.value || [])
+    .filter((item, index, all) => all.findIndex(other => String(other.providerId) === String(item.providerId)) === index);
+  if (!hits.length && !saved.length) {
+    const failed = searches.find(result => result.status === 'rejected');
+    throw failed?.reason || new Error('IGDB search failed');
   }
   const discovered = hits
     .filter(item => item?.providerId && item?.title)
+    .filter(item => titleMatchesQuery(q, item.title))
     .filter(item => !catalogIgdbIds.has(String(item.providerId)) && !catalogTitles.has(normalizeTitle(item.title)))
     .map(catalogGameFromIgdb);
   discovered.forEach(saveDiscoveredGame);
   const games = [...discovered, ...saved]
     .filter((game, index, all) => all.findIndex(item => String(item.id) === String(game.id)) === index)
     .filter((game, index, all) => all.findIndex(item => normalizeTitle(item.name) === normalizeTitle(game.name)) === index)
-    .sort((a, b) => titleScore(q, b.name) - titleScore(q, a.name))
+    .sort((a, b) => discoveryScore(q, b) - discoveryScore(q, a))
     .slice(0, limit);
   res.setHeader('Cache-Control', 'private, max-age=300');
   res.json({ query: q, source: hits.length ? 'IGDB' : 'saved-IGDB', count: games.length, games });

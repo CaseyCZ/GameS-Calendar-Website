@@ -332,10 +332,10 @@ export async function loadGameDetail(game) {
   return detailCache.get(key);
 }
 
-export async function searchOnlineGames(query, { limit = 8 } = {}) {
+export async function searchOnlineGames(query, { limit = 500 } = {}) {
   const q = String(query || '').trim();
   if (!LIVE_DISCOVER_URL || q.length < 3) return [];
-  const take = Math.max(1, Math.min(8, Number(limit) || 5));
+  const take = Math.max(1, Math.min(500, Number(limit) || 500));
   const payload = await fetchJson(`${LIVE_DISCOVER_URL}?q=${encodeURIComponent(q)}&limit=${take}`);
   return (payload.games || []).map(normalizeGame).filter(game => game.releases.length > 0);
 }

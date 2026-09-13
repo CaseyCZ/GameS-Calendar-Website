@@ -1,12 +1,12 @@
 {
   "name": "games-calendar-website",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "private": true,
   "description": "Rychlý herní kalendář s termíny vydání a ukládaným obohacením z IGDB, Wikidat, Wikipedie, Steamu a veřejných katalogů",
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "enrich-public": "node enrich-public-metadata.js",
-    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check filter-section-accordion.js && node --check badge-filter-controls.js && node --check detail-gesture-fix.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js",
+    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check filter-section-accordion.js && node --check dynamic-filter-fix.js && node --check advanced-features.js && node --check badge-filter-controls.js && node --check detail-gesture-fix.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js",
     "enrich-igdb": "node --env-file-if-exists=games-api/.env games-api/scripts/enrich-catalog-igdb.js"
   },
   "engines": {
