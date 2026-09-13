@@ -3,6 +3,7 @@ import {
   addDays,
   flattenReleases,
   loadGameData,
+  loadGameDetail,
   monthRange,
   todayLocal
 } from './data.js';
@@ -433,12 +434,21 @@ function renderGameDialog(row) {
   updateSeoForGame(row);
 }
 
-function openGame(rowKey, { updateUrl = true } = {}) {
+async function openGame(rowKey, { updateUrl = true } = {}) {
   const row = state.rows.find(item => item.key === rowKey);
   if (!row) return;
   renderGameDialog(row);
   if (!$('game-dialog').open) $('game-dialog').showModal();
   if (!updateUrl) updateSeoForGame(row);
+
+  try {
+    const detail = await loadGameDetail(row.game);
+    if (!detail || state.openRowKey !== rowKey || !$('game-dialog').open) return;
+    Object.assign(row.game, detail);
+    renderGameDialog(row);
+  } catch (error) {
+    console.warn('Detail hry:', error);
+  }
 }
 
 function closeGameDialog() {

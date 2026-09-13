@@ -214,10 +214,10 @@ function gameTraits(game) {
   if (!hasGamePass && !hasPsPlus && !hasGfn) result.add('no_service');
 
   if (game.trailerId || game.trailerUrl || raw.trailerId || raw.trailerUrl) result.add('trailer');
-  const shots = game.screenshots?.length || raw.screenshots?.length;
+  const shots = game.hasScreenshots || raw.hasScreenshots || game.screenshots?.length || raw.screenshots?.length;
   if (shots) result.add('screenshots');
   if (Number(game.rating || raw.rating || 0) > 0) result.add('rating');
-  if (String(game.summary || game.storyline || raw.summary || raw.storyline || '').trim()) result.add('description');
+  if (game.hasDescription || raw.hasDescription || String(game.summary || game.storyline || raw.summary || raw.storyline || '').trim()) result.add('description');
   return result;
 }
 

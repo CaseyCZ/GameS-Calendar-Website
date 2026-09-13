@@ -70,6 +70,49 @@ function stripPricing(value) {
   );
 }
 
+function compactGame(game = {}) {
+  return {
+    id: game.id,
+    name: game.name,
+    slug: game.slug,
+    aliases: game.aliases,
+    cover: game.cover,
+    genres: game.genres,
+    developers: game.developers,
+    publishers: game.publishers,
+    series: game.series,
+    scale: game.scale,
+    contentType: game.contentType,
+    earlyAccess: game.earlyAccess,
+    storeCategories: game.storeCategories,
+    metadataSources: game.metadataSources,
+    steamId: game.steamId,
+    rating: game.rating,
+    ratingCount: game.ratingCount,
+    igdbUrl: game.igdbUrl,
+    trailerId: game.trailerId,
+    trailerUrl: game.trailerUrl,
+    subscriptions: game.subscriptions,
+    announcedWindow: game.announcedWindow,
+    releases: game.releases,
+    hasScreenshots: Boolean(game.screenshots?.length),
+    hasDescription: Boolean(String(game.summary || game.storyline || '').trim())
+  };
+}
+
+function responseDocument(payload) {
+  const body = JSON.stringify(payload);
+  return { body, etag: `"${createHash('sha256').update(body).digest('base64url')}"` };
+}
+
+function requestMatchesEtag(req, etag) {
+  const expected = etag.replace(/^W\//, '');
+  return String(req.headers['if-none-match'] || '')
+    .split(/\s*,\s*/)
+    .map(value => value.replace(/^W\//, ''))
+    .includes(expected);
+}
+
 let catalogCache = null;
 
 async function readCatalog() {
@@ -88,19 +131,34 @@ async function readCatalog() {
       const payload = Array.isArray(cleaned)
         ? cleaned
         : { ...cleaned, apiVersion: config.version, source: 'games-api-catalog' };
-      const body = JSON.stringify(payload);
-      const etag = `"${createHash('sha256').update(body).digest('base64url')}"`;
+      const full = responseDocument(payload);
+      const listPayload = Array.isArray(payload) ? payload : {
+        version: payload.version,
+        provider: payload.provider,
+        generatedAt: payload.generatedAt,
+        range: payload.range,
+        apiVersion: config.version,
+        source: 'games-api-catalog-list',
+        games: payload.games.map(compactGame)
+      };
+      const list = responseDocument(listPayload);
+      const games = Array.isArray(payload) ? payload : payload.games;
       catalogCache = {
         key: cacheKey,
         payload,
-        body,
-        etag,
+        full,
+        list,
+        gameById: new Map(games.flatMap(game => [
+          [String(game.id), game],
+          game.slug ? [String(game.slug), game] : null
+        ].filter(Boolean))),
         meta: {
           version: Array.isArray(payload) ? 1 : (payload.version || 1),
           apiVersion: config.version,
           generatedAt: Array.isArray(payload) ? null : (payload.generatedAt || null),
-          count: Array.isArray(payload) ? payload.length : payload.games.length,
-          bytes: Buffer.byteLength(body),
+          count: games.length,
+          bytes: Buffer.byteLength(full.body),
+          listBytes: Buffer.byteLength(list.body),
           source: 'games-api-catalog'
         }
       };
@@ -277,12 +335,19 @@ app.get('/api/catalog-meta', asyncRoute(async (req, res) => {
 
 app.get('/api/catalog', asyncRoute(async (req, res) => {
   const catalog = await readCatalog();
+  const document = req.query.view === 'list' ? catalog.list : catalog.full;
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
-  res.setHeader('ETag', catalog.etag);
-  const expected = catalog.etag.replace(/^W\//, '');
-  const candidates = String(req.headers['if-none-match'] || '').split(/\s*,\s*/).map(value => value.replace(/^W\//, ''));
-  if (candidates.includes(expected)) return res.status(304).end();
-  res.type('application/json').send(catalog.body);
+  res.setHeader('ETag', document.etag);
+  if (requestMatchesEtag(req, document.etag)) return res.status(304).end();
+  res.type('application/json').send(document.body);
+}));
+
+app.get('/api/catalog/game/:gameId', asyncRoute(async (req, res) => {
+  const catalog = await readCatalog();
+  const game = catalog.gameById.get(String(req.params.gameId));
+  if (!game) return res.status(404).json({ error: 'Game not found' });
+  res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+  res.json(game);
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {

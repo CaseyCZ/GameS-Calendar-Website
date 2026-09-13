@@ -1,8 +1,8 @@
 {
   "name": "games-calendar-website",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
-  "description": "Rychlý herní kalendář s termíny vydání a bezplatným obohacením metadat z Wikidata, Wikipedie, Steamu a veřejných katalogů",
+  "description": "Rychlý herní kalendář s termíny vydání a ukládaným obohacením z IGDB, Wikidat, Wikipedie, Steamu a veřejných katalogů",
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "enrich-public": "node enrich-public-metadata.js",

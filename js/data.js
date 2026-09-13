@@ -1,15 +1,17 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v7';
+const CACHE_KEY = 'games-catalog-v8';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
-const LIVE_CATALOG_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog';
+const LIVE_CATALOG_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog?view=list';
+const LIVE_DETAIL_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog/game';
 const LIVE_CATALOG_META_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog-meta';
 const STATIC_CATALOG_URL = 'games.json';
 
 let sharedLoadPromise = null;
 let revalidationPromise = null;
 const revalidationCallbacks = new Set();
+const detailCache = new Map();
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -165,6 +167,8 @@ function normalizeGame(game = {}) {
     trailerUrl: game.trailerUrl || '',
     trailerPoster: game.trailerPoster || '',
     screenshots: uniq((game.screenshots || []).map(normalizeScreenshot).filter(Boolean).map(item => JSON.stringify(item))).map(item => JSON.parse(item)),
+    hasScreenshots: Boolean(game.hasScreenshots || (game.screenshots || []).length),
+    hasDescription: Boolean(game.hasDescription || String(game.summary || game.storyline || '').trim()),
     subscriptions: {
       gamePass: Boolean(game.subscriptions?.gamePass),
       gamePassConsole: Boolean(game.subscriptions?.gamePassConsole),
@@ -310,6 +314,21 @@ async function fetchJson(url) {
   const response = await fetch(url, { cache: 'no-cache', headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
+}
+
+export async function loadGameDetail(game) {
+  if (!LIVE_DETAIL_URL || !game?.id) return null;
+  const key = String(game.id);
+  if (!detailCache.has(key)) {
+    const request = fetchJson(`${LIVE_DETAIL_URL}/${encodeURIComponent(key)}`)
+      .then(normalizeGame)
+      .catch(error => {
+        detailCache.delete(key);
+        throw error;
+      });
+    detailCache.set(key, request);
+  }
+  return detailCache.get(key);
 }
 
 async function fetchPayload() {

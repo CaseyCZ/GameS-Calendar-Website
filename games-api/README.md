@@ -36,6 +36,8 @@ Node.js 22.13+ je vyžadován kvůli vestavěnému `node:sqlite`. SQLite drží 
 GET  /health
 GET  /health?refresh=1
 GET  /api/catalog
+GET  /api/catalog?view=list
+GET  /api/catalog/game/:gameId
 GET  /api/catalog-meta
 GET  /api/search?q=Kingdom%20Come&providers=steam,microsoft,playstation,nintendo,geforceNow
 POST /api/enrich

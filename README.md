@@ -14,7 +14,7 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 - Katalog: https://130.61.49.108/games-api/catalog
 - Stav API: https://130.61.49.108/games-health
 
-Stejné cesty fungují také na HTTPS portu 8443. Web načte společný katalog jednou a při dalších návštěvách ověří jen jeho malou verzi přes `/games-api/catalog-meta`. GitHub Pages používá stejný statický `games.json`; vlastní server nabízí navíc živé doplnění detailu z IGDB a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
+Stejné cesty fungují také na HTTPS portu 8443. Web načte malý seznam pro karty a filtry jednou, plný detail stáhne až po otevření hry a při dalších návštěvách ověří jen verzi přes `/games-api/catalog-meta`. GitHub Pages používá stejný statický `games.json`; vlastní server nabízí navíc živé doplnění detailu z IGDB a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
 
 ## ✨ Co na webu najdete
 
