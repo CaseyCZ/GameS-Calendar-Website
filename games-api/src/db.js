@@ -50,6 +50,23 @@ db.exec(`
     updated_at INTEGER NOT NULL
   );
   CREATE INDEX IF NOT EXISTS discovered_games_search_idx ON discovered_games(search_text);
+
+  CREATE TABLE IF NOT EXISTS catalog_game_state (
+    game_key TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    source TEXT,
+    active INTEGER NOT NULL DEFAULT 1,
+    first_seen INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS catalog_game_state_active_idx ON catalog_game_state(active, updated_at DESC);
+
+  CREATE TABLE IF NOT EXISTS app_state (
+    state_key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
 `);
 
 const getCacheStmt = db.prepare('SELECT payload, expires_at FROM cache WHERE cache_key = ?');
@@ -79,6 +96,22 @@ const putDiscoveredStmt = db.prepare(`
     search_text=excluded.search_text,
     payload=excluded.payload,
     updated_at=excluded.updated_at
+`);
+const getCatalogStateStmt = db.prepare('SELECT title,payload,active FROM catalog_game_state WHERE game_key = ?');
+const putCatalogStateStmt = db.prepare(`
+  INSERT INTO catalog_game_state(game_key,title,payload,source,active,first_seen,updated_at)
+  VALUES(?,?,?,?,1,?,?)
+  ON CONFLICT(game_key) DO UPDATE SET
+    title=excluded.title,
+    payload=excluded.payload,
+    source=excluded.source,
+    active=1,
+    updated_at=excluded.updated_at
+`);
+const getAppStateStmt = db.prepare('SELECT value FROM app_state WHERE state_key = ?');
+const putAppStateStmt = db.prepare(`
+  INSERT INTO app_state(state_key,value,updated_at) VALUES(?,?,?)
+  ON CONFLICT(state_key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at
 `);
 
 export function cacheGet(key, { allowStale = false } = {}) {
@@ -157,10 +190,132 @@ export function historyForGame(gameKey, limit = 100) {
   }));
 }
 
+function normalizedReleaseDates(game = {}) {
+  return (game.releases || []).map(release => ({
+    day: release.date || release.day || null,
+    window: String(release.window || release.label || '').trim(),
+    precision: release.precision || (release.date || release.day ? 'day' : 'unknown'),
+    platforms: (release.platforms || [])
+      .map(platform => typeof platform === 'string' ? platform : (platform?.abbreviation || platform?.name || ''))
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, 'en'))
+  })).sort((a, b) =>
+    String(a.day || a.window).localeCompare(String(b.day || b.window))
+    || a.platforms.join('|').localeCompare(b.platforms.join('|'))
+  );
+}
+
+function catalogSnapshot(game = {}) {
+  return {
+    id: String(game.id || game.slug || ''),
+    igdbId: String(game.igdbId || ''),
+    name: String(game.name || ''),
+    cover: String(game.cover || ''),
+    releases: normalizedReleaseDates(game)
+  };
+}
+
+function safeJson(value, fallback = null) {
+  try { return JSON.parse(value); }
+  catch { return fallback; }
+}
+
+export function syncCatalogGames(games, { fingerprint = '', source = 'catalog' } = {}) {
+  if (!Array.isArray(games)) return { baseline: false, added: 0, changed: 0 };
+  const previousFingerprint = getAppStateStmt.get('catalog_fingerprint')?.value || '';
+  if (fingerprint && previousFingerprint === fingerprint) return { baseline: false, added: 0, changed: 0, skipped: true };
+
+  const baseline = Number(db.prepare('SELECT COUNT(*) AS count FROM catalog_game_state').get()?.count || 0) === 0;
+  const previousActive = new Map(db.prepare('SELECT game_key,title,payload FROM catalog_game_state WHERE active = 1').all()
+    .map(row => [String(row.game_key), row]));
+  const now = Date.now();
+  let added = 0;
+  let changed = 0;
+
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    db.prepare('UPDATE catalog_game_state SET active = 0').run();
+    for (const game of games) {
+      const snapshot = catalogSnapshot(game);
+      if (!snapshot.id || !snapshot.name) continue;
+      const previous = getCatalogStateStmt.get(snapshot.id);
+      const previousPayload = safeJson(previous?.payload, {});
+      if (!previous) {
+        added += 1;
+        if (!baseline) recordChange(snapshot.id, 'gameAdded', null, snapshot, source);
+      } else if (JSON.stringify(previousPayload.releases || []) !== JSON.stringify(snapshot.releases)) {
+        changed += 1;
+        recordChange(snapshot.id, 'releaseDates', previousPayload.releases || [], snapshot.releases, source);
+      }
+      putCatalogStateStmt.run(snapshot.id, snapshot.name, JSON.stringify(snapshot), source, now, now);
+      previousActive.delete(snapshot.id);
+    }
+    if (!baseline) {
+      for (const [gameKey, previous] of previousActive) {
+        const payload = safeJson(previous.payload, { id: gameKey, name: previous.title });
+        recordChange(gameKey, 'gameRemoved', payload, null, source);
+      }
+    }
+    putAppStateStmt.run('catalog_fingerprint', String(fingerprint || now), now);
+    if (!getAppStateStmt.get('history_started_at')) putAppStateStmt.run('history_started_at', String(now), now);
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+  return { baseline, added, changed, removed: previousActive.size };
+}
+
+function hydrateChange(row) {
+  const payload = safeJson(row.catalog_payload, null) || safeJson(row.discovered_payload, null);
+  return {
+    id: Number(row.id),
+    gameKey: row.game_key,
+    game: payload ? { id: payload.id || row.game_key, name: payload.name || row.title || row.game_key, cover: payload.cover || '' } : { id: row.game_key, name: row.title || row.game_key, cover: '' },
+    field: row.field,
+    oldValue: safeJson(row.old_value, row.old_value),
+    newValue: safeJson(row.new_value, row.new_value),
+    source: row.source,
+    changedAt: new Date(row.changed_at).toISOString()
+  };
+}
+
+export function listRecentChanges({ limit = 100, since = 0, type = 'all', gameKeys = [] } = {}) {
+  const take = Math.max(1, Math.min(500, Number(limit) || 100));
+  const fields = type === 'new' ? ['gameAdded'] : type === 'date' ? ['releaseDates'] : ['gameAdded', 'releaseDates', 'gameRemoved'];
+  const keys = [...new Set((gameKeys || []).map(String).filter(Boolean))].slice(0, 500);
+  const clauses = [`h.field IN (${fields.map(() => '?').join(',')})`, 'h.changed_at >= ?'];
+  const params = [...fields, Math.max(0, Number(since) || 0)];
+  if (keys.length) {
+    clauses.push(`h.game_key IN (${keys.map(() => '?').join(',')})`);
+    params.push(...keys);
+  }
+  const rows = db.prepare(`
+    SELECT h.*,c.title,c.payload AS catalog_payload,d.payload AS discovered_payload
+    FROM change_history h
+    LEFT JOIN catalog_game_state c ON c.game_key = h.game_key
+    LEFT JOIN discovered_games d ON d.game_id = h.game_key
+    WHERE ${clauses.join(' AND ')}
+    ORDER BY h.changed_at DESC,h.id DESC LIMIT ?
+  `).all(...params, take);
+  return rows.map(hydrateChange);
+}
+
+export function latestChangeId() {
+  return Number(db.prepare('SELECT COALESCE(MAX(id),0) AS id FROM change_history').get()?.id || 0);
+}
+
+export function historyStartedAt() {
+  const value = Number(getAppStateStmt.get('history_started_at')?.value || 0);
+  return value ? new Date(value).toISOString() : null;
+}
+
 
 export function saveDiscoveredGame(game) {
   if (!game?.id || !game?.igdbId) return null;
   const now = Date.now();
+  const previousRow = getDiscoveredStmt.get(String(game.id), String(game.igdbId));
+  const previous = safeJson(previousRow?.payload, null);
   const searchText = [game.name, ...(game.aliases || []), ...(game.series || [])]
     .join(' ')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -168,6 +323,14 @@ export function saveDiscoveredGame(game) {
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
   putDiscoveredStmt.run(String(game.id), String(game.igdbId), searchText, JSON.stringify(game), now, now);
+  const nextSnapshot = catalogSnapshot(game);
+  if (!previous) recordChange(String(game.id), 'gameAdded', null, nextSnapshot, 'igdb-search');
+  else {
+    const previousDates = normalizedReleaseDates(previous);
+    if (JSON.stringify(previousDates) !== JSON.stringify(nextSnapshot.releases)) {
+      recordChange(String(game.id), 'releaseDates', previousDates, nextSnapshot.releases, 'igdb-search');
+    }
+  }
   return game;
 }
 

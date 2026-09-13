@@ -6,12 +6,15 @@ import { readFile, stat } from 'node:fs/promises';
 import { config } from './config.js';
 import {
   getDiscoveredGame,
+  historyStartedAt,
   historyForGame,
+  listRecentChanges,
   listHealth,
   saveDiscoveredGame,
   saveGameSnapshot,
   saveHealth,
-  searchDiscoveredGames
+  searchDiscoveredGames,
+  syncCatalogGames
 } from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
 import { providers, providerList } from './providers/index.js';
@@ -229,6 +232,7 @@ async function readCatalog() {
       };
       const list = responseDocument(listPayload);
       const games = Array.isArray(payload) ? payload : payload.games;
+      syncCatalogGames(games, { fingerprint: cacheKey, source: payload.generatedAt || 'catalog' });
       catalogCache = {
         key: cacheKey,
         payload,
@@ -434,6 +438,17 @@ app.get('/api/catalog/game/:gameId', asyncRoute(async (req, res) => {
   if (!game) return res.status(404).json({ error: 'Game not found' });
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
   res.json(game);
+}));
+
+app.get('/api/changes', asyncRoute(async (req, res) => {
+  await readCatalog();
+  const days = Math.max(1, Math.min(3650, Number(req.query.days) || 30));
+  const explicitSince = Date.parse(String(req.query.since || ''));
+  const since = Number.isFinite(explicitSince) ? explicitSince : Date.now() - days * 86_400_000;
+  const type = ['all', 'new', 'date'].includes(String(req.query.type)) ? String(req.query.type) : 'all';
+  const items = listRecentChanges({ limit: limitOf(req.query.limit, 100, 500), since, type });
+  res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+  res.json({ count: items.length, type, since: new Date(since).toISOString(), trackingSince: historyStartedAt(), items });
 }));
 
 function titleMatchesQuery(query, title) {

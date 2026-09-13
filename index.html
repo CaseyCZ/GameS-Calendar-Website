@@ -68,6 +68,9 @@
         <button class="stat-pill stat-pill--watch" type="button" id="watchlist-toggle" title="Zobrazit sledované hry">
           <strong id="stat-watchlist">0</strong><span>sledované</span>
         </button>
+        <button class="stat-pill stat-pill--changes" type="button" id="changes-toggle" title="Nové hry a změny termínů" aria-expanded="false" aria-controls="release-changes">
+          <strong id="stat-changes">0</strong><span>změny</span>
+        </button>
       </div>
 
       <div class="topbar__actions">
@@ -159,6 +162,18 @@
       </div>
     </section>
 
+    <section class="release-changes" id="release-changes" aria-label="Nové hry a změny termínů" hidden>
+      <div class="release-changes__head">
+        <div><p class="eyebrow">Co se změnilo</p><h2>Nové hry a termíny</h2></div>
+        <div class="release-changes__filters" role="group" aria-label="Druh změny">
+          <button type="button" class="chip is-active" data-change-type="all">Vše</button>
+          <button type="button" class="chip" data-change-type="date">Termíny</button>
+          <button type="button" class="chip" data-change-type="new">Nové hry</button>
+        </div>
+      </div>
+      <div class="release-changes__list" id="release-changes-list"><p class="muted">Načítám změny…</p></div>
+    </section>
+
     <section class="month-rail" id="month-rail" aria-label="Rychlý výběr měsíce"></section>
 
     <section class="skeleton-grid" id="skeleton-grid" aria-label="Načítání her">
@@ -199,6 +214,7 @@
 
   <script src="compact-controls.js"></script>
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="release-tracker.js"></script>
   <script type="module" src="advanced-features.js"></script>
   <script type="module" src="badge-filter-controls.js"></script>
   <script src="filter-section-accordion.js"></script>

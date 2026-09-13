@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.2.22';
+const VERSION = 'games-calendar-v3.3.0';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -15,6 +15,7 @@ const SHELL = [
   './detail-gesture-fix.css',
   './compact-controls.js',
   './advanced-features.js',
+  './release-tracker.js',
   './badge-filter-controls.js',
   './filter-section-accordion.js',
   './dynamic-filter-fix.js',
