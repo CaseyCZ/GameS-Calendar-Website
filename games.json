@@ -1,7 +1,7 @@
 {
   "version": 5,
   "provider": "IGDB release data + official Steam/Xbox metadata + Microsoft Game Pass/Cloud catalog + Wikidata/Wikipedia fallback + official subscription catalogs",
-  "generatedAt": "2026-09-13T21:37:07.382Z",
+  "generatedAt": "2026-09-14T09:05:57.902Z",
   "range": {
     "from": "2026-09-01",
     "to": "2027-08-16"
@@ -9371,7 +9371,8 @@
       "igdbId": "303470",
       "igdbUrl": "https://www.igdb.com/games/demon-kingdom",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:54.609Z"
+      "igdbCheckedAt": "2026-09-13T16:10:54.609Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:31.978Z"
     },
     {
       "id": 400626,
@@ -18269,7 +18270,8 @@
       "igdbId": "381619",
       "igdbUrl": "https://www.igdb.com/games/the-boo-croo",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:17:48.264Z"
+      "igdbCheckedAt": "2026-09-13T16:17:48.264Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:30.119Z"
     },
     {
       "id": 407333,
@@ -31523,6 +31525,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/703860/ss_aad3c4fff2da8240a2680bfa90f005fab55e3f13.1920x1080.jpg?t=1701446184",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/703860/ss_aad3c4fff2da8240a2680bfa90f005fab55e3f13.600x338.jpg?t=1701446184"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/703860/ss_082118d547f6f67a07e0c50f7bdf0dc649a7c7ff.1920x1080.jpg?t=1701446184",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/703860/ss_082118d547f6f67a07e0c50f7bdf0dc649a7c7ff.600x338.jpg?t=1701446184"
         }
       ],
       "subscriptions": {
@@ -31566,7 +31572,8 @@
       "igdbId": "390054",
       "igdbUrl": "https://www.igdb.com/games/grid--2",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:36.589Z"
+      "igdbCheckedAt": "2026-09-13T16:12:36.589Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:26.397Z"
     },
     {
       "id": 404252,
@@ -46417,7 +46424,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:00:28.257Z"
     },
     {
       "id": 222342,
@@ -74954,6 +74962,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/6617b8152824d0200e78755af25e122c857ce953/ss_6617b8152824d0200e78755af25e122c857ce953.1920x1080.jpg?t=1788924377",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/6617b8152824d0200e78755af25e122c857ce953/ss_6617b8152824d0200e78755af25e122c857ce953.600x338.jpg?t=1788924377"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/42be8f2bcada7fe229fa02b1b15dbf3561f27601/ss_42be8f2bcada7fe229fa02b1b15dbf3561f27601.1920x1080.jpg?t=1788924377",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/42be8f2bcada7fe229fa02b1b15dbf3561f27601/ss_42be8f2bcada7fe229fa02b1b15dbf3561f27601.600x338.jpg?t=1788924377"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/3804706f60a42820dcf5d94ba6c71510dea61341/ss_3804706f60a42820dcf5d94ba6c71510dea61341.1920x1080.jpg?t=1788924377",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3479420/3804706f60a42820dcf5d94ba6c71510dea61341/ss_3804706f60a42820dcf5d94ba6c71510dea61341.600x338.jpg?t=1788924377"
         }
       ],
       "subscriptions": {
@@ -74998,7 +75014,8 @@
       "igdbId": "338923",
       "igdbUrl": "https://www.igdb.com/games/okko-the-exiled",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:15:13.111Z"
+      "igdbCheckedAt": "2026-09-13T16:15:13.111Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:33.836Z"
     },
     {
       "id": 404154,
@@ -155423,7 +155440,8 @@
       "igdbId": "345253",
       "igdbUrl": "https://www.igdb.com/games/callmara",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:09:57.707Z"
+      "igdbCheckedAt": "2026-09-13T16:09:57.707Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:35.696Z"
     },
     {
       "id": 412062,
@@ -155692,7 +155710,8 @@
       "igdbId": "361922",
       "igdbUrl": "https://www.igdb.com/games/cant-even-see-the-sky",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:09:58.621Z"
+      "igdbCheckedAt": "2026-09-13T16:09:58.621Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:37.547Z"
     },
     {
       "id": 193258,
@@ -156119,7 +156138,8 @@
       "igdbId": "342948",
       "igdbUrl": "https://www.igdb.com/games/cappy-and-tappy-temples-of-peril",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:09:59.988Z"
+      "igdbCheckedAt": "2026-09-13T16:09:59.988Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:39.398Z"
     },
     {
       "id": 369090,
@@ -156213,6 +156233,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3131700/be8f68a564ac7228390b00b33e5130ba71b2bdce/ss_be8f68a564ac7228390b00b33e5130ba71b2bdce.1920x1080.jpg?t=1782509093",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3131700/be8f68a564ac7228390b00b33e5130ba71b2bdce/ss_be8f68a564ac7228390b00b33e5130ba71b2bdce.600x338.jpg?t=1782509093"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3131700/485c99ec784eba47476a1bb107867bbd2ca9721d/ss_485c99ec784eba47476a1bb107867bbd2ca9721d.1920x1080.jpg?t=1782509093",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3131700/485c99ec784eba47476a1bb107867bbd2ca9721d/ss_485c99ec784eba47476a1bb107867bbd2ca9721d.600x338.jpg?t=1782509093"
         }
       ],
       "subscriptions": {
@@ -156258,7 +156282,8 @@
       "igdbId": "369090",
       "igdbUrl": "https://www.igdb.com/games/captain-corgi-planetary-problem-solver",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:09:59.991Z"
+      "igdbCheckedAt": "2026-09-13T16:09:59.991Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:41.258Z"
     },
     {
       "id": 235664,
@@ -156351,6 +156376,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_f0c8cfbd79e51174e3ff8462fdcdc8bbb7c109f8.1920x1080.jpg?t=1762547751",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_f0c8cfbd79e51174e3ff8462fdcdc8bbb7c109f8.600x338.jpg?t=1762547751"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_0dcc6400ec17f23e5bc0c7d130626d8ee22cfa0a.1920x1080.jpg?t=1762547751",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_0dcc6400ec17f23e5bc0c7d130626d8ee22cfa0a.600x338.jpg?t=1762547751"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_83070f003cbf226c272ef7fdb5aa6642d0cc2ba5.1920x1080.jpg?t=1762547751",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2242270/ss_83070f003cbf226c272ef7fdb5aa6642d0cc2ba5.600x338.jpg?t=1762547751"
         }
       ],
       "subscriptions": {
@@ -156386,7 +156419,8 @@
       "igdbId": "235664",
       "igdbUrl": "https://www.igdb.com/games/captain-disaster-and-the-two-worlds-of-riskara",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:00.553Z"
+      "igdbCheckedAt": "2026-09-13T16:10:00.553Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:43.110Z"
     },
     {
       "id": 391071,
@@ -158585,7 +158619,8 @@
       "igdbId": "192647",
       "igdbUrl": "https://www.igdb.com/games/catacombs-of-the-yokai",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:07.180Z"
+      "igdbCheckedAt": "2026-09-13T16:10:07.180Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:44.970Z"
     },
     {
       "id": 392313,
@@ -159101,7 +159136,8 @@
       "igdbId": "391950",
       "igdbUrl": "https://www.igdb.com/games/catlands",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:08.843Z"
+      "igdbCheckedAt": "2026-09-13T16:10:08.843Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:46.821Z"
     },
     {
       "id": 408988,
@@ -159630,7 +159666,8 @@
       "igdbId": "380069",
       "igdbUrl": "https://www.igdb.com/games/ceaseless--1",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:09.942Z"
+      "igdbCheckedAt": "2026-09-13T16:10:09.942Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:48.664Z"
     },
     {
       "id": 402888,
@@ -160029,7 +160066,8 @@
       "igdbId": "365827",
       "igdbUrl": "https://www.igdb.com/games/cinema-manager-simulator",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:11.035Z"
+      "igdbCheckedAt": "2026-09-13T16:10:11.035Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:50.510Z"
     },
     {
       "id": 329383,
@@ -161745,7 +161783,8 @@
       "igdbId": "270492",
       "igdbUrl": "https://www.igdb.com/games/codename-incubus",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:15.443Z"
+      "igdbCheckedAt": "2026-09-13T16:10:15.443Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:52.358Z"
     },
     {
       "id": 390607,
@@ -162100,7 +162139,8 @@
       "igdbId": "336634",
       "igdbUrl": "https://www.igdb.com/games/colonisator",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:16.832Z"
+      "igdbCheckedAt": "2026-09-13T16:10:16.832Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:54.221Z"
     },
     {
       "id": 391536,
@@ -163028,6 +163068,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/e210eb9ae4245c3a6dcb26a3b1b0911fe9d7c37f/ss_e210eb9ae4245c3a6dcb26a3b1b0911fe9d7c37f.1920x1080.jpg?t=1765646619",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/e210eb9ae4245c3a6dcb26a3b1b0911fe9d7c37f/ss_e210eb9ae4245c3a6dcb26a3b1b0911fe9d7c37f.600x338.jpg?t=1765646619"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/268185e73bb92050ca7095d79503ccbc5009c21b/ss_268185e73bb92050ca7095d79503ccbc5009c21b.1920x1080.jpg?t=1765646619",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/268185e73bb92050ca7095d79503ccbc5009c21b/ss_268185e73bb92050ca7095d79503ccbc5009c21b.600x338.jpg?t=1765646619"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/e36c6796ec29576909456c73b3580316b6134ad3/ss_e36c6796ec29576909456c73b3580316b6134ad3.1920x1080.jpg?t=1765646619",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483140/e36c6796ec29576909456c73b3580316b6134ad3/ss_e36c6796ec29576909456c73b3580316b6134ad3.600x338.jpg?t=1765646619"
         }
       ],
       "subscriptions": {
@@ -163068,7 +163116,8 @@
       "igdbId": "258274",
       "igdbUrl": "https://www.igdb.com/games/containcorp",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:19.363Z"
+      "igdbCheckedAt": "2026-09-13T16:10:19.363Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:56.081Z"
     },
     {
       "id": 303426,
@@ -163191,7 +163240,8 @@
       "igdbId": "303426",
       "igdbUrl": "https://www.igdb.com/games/contract-cafe",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:19.619Z"
+      "igdbCheckedAt": "2026-09-13T16:10:19.619Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:57.935Z"
     },
     {
       "id": 403578,
@@ -163997,7 +164047,8 @@
       "igdbId": "372630",
       "igdbUrl": "https://www.igdb.com/games/cosmic-composer",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:22.286Z"
+      "igdbCheckedAt": "2026-09-13T16:10:22.286Z",
+      "steamMediaCheckedAt": "2026-09-14T09:00:59.785Z"
     },
     {
       "id": 293828,
@@ -164522,7 +164573,8 @@
       "igdbId": "325211",
       "igdbUrl": "https://www.igdb.com/games/cosmorons",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:23.477Z"
+      "igdbCheckedAt": "2026-09-13T16:10:23.477Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:01.633Z"
     },
     {
       "id": 362087,
@@ -165477,6 +165529,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/fbfc86340561689f31c0ffc264852874b56e19fb/ss_fbfc86340561689f31c0ffc264852874b56e19fb.1920x1080.jpg?t=1748643226",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/fbfc86340561689f31c0ffc264852874b56e19fb/ss_fbfc86340561689f31c0ffc264852874b56e19fb.600x338.jpg?t=1748643226"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/cc5d0b40dde9a25761fe260029b22b151d22d59a/ss_cc5d0b40dde9a25761fe260029b22b151d22d59a.1920x1080.jpg?t=1748643226",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/cc5d0b40dde9a25761fe260029b22b151d22d59a/ss_cc5d0b40dde9a25761fe260029b22b151d22d59a.600x338.jpg?t=1748643226"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/11aeba21355e7129dc969b1a577778a9f0ec64b3/ss_11aeba21355e7129dc969b1a577778a9f0ec64b3.1920x1080.jpg?t=1748643226",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3736040/11aeba21355e7129dc969b1a577778a9f0ec64b3/ss_11aeba21355e7129dc969b1a577778a9f0ec64b3.600x338.jpg?t=1748643226"
         }
       ],
       "subscriptions": {
@@ -165512,7 +165572,8 @@
       "igdbId": "389879",
       "igdbUrl": "https://www.igdb.com/games/cozy-farm",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:26.301Z"
+      "igdbCheckedAt": "2026-09-13T16:10:26.301Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:03.503Z"
     },
     {
       "id": 369084,
@@ -165865,7 +165926,8 @@
       "igdbId": "345035",
       "igdbUrl": "https://www.igdb.com/games/creature-containment",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:27.328Z"
+      "igdbCheckedAt": "2026-09-13T16:10:27.328Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:05.354Z"
     },
     {
       "id": 395346,
@@ -166202,7 +166264,8 @@
       "igdbId": "335864",
       "igdbUrl": "https://www.igdb.com/games/crimson-frontier",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:28.442Z"
+      "igdbCheckedAt": "2026-09-13T16:10:28.442Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:07.204Z"
     },
     {
       "id": 368066,
@@ -166552,7 +166615,8 @@
       "igdbId": "197123",
       "igdbUrl": "https://www.igdb.com/games/critias-empire",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:29.277Z"
+      "igdbCheckedAt": "2026-09-13T16:10:29.277Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:09.056Z"
     },
     {
       "id": 298442,
@@ -166666,7 +166730,8 @@
       "igdbId": "298442",
       "igdbUrl": "https://www.igdb.com/games/critical-upload",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:29.964Z"
+      "igdbCheckedAt": "2026-09-13T16:10:29.964Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:10.909Z"
     },
     {
       "id": 314420,
@@ -166782,7 +166847,8 @@
       "igdbId": "374489",
       "igdbUrl": "https://www.igdb.com/games/croak--2",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:29.926Z"
+      "igdbCheckedAt": "2026-09-13T16:10:29.926Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:12.762Z"
     },
     {
       "id": 330753,
@@ -166878,6 +166944,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/f8ce289f8572292b94274a99772155846ce3e3aa/ss_f8ce289f8572292b94274a99772155846ce3e3aa.1920x1080.jpg?t=1789071100",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/f8ce289f8572292b94274a99772155846ce3e3aa/ss_f8ce289f8572292b94274a99772155846ce3e3aa.600x338.jpg?t=1789071100"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/c36c559dd4e5d7181596c6defdcbbefc5e7f0b8d/ss_c36c559dd4e5d7181596c6defdcbbefc5e7f0b8d.1920x1080.jpg?t=1789071100",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/c36c559dd4e5d7181596c6defdcbbefc5e7f0b8d/ss_c36c559dd4e5d7181596c6defdcbbefc5e7f0b8d.600x338.jpg?t=1789071100"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/9648d2f16e8f5b2b9ebbe5aab6d9296495945714/ss_9648d2f16e8f5b2b9ebbe5aab6d9296495945714.1920x1080.jpg?t=1789071100",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3152060/9648d2f16e8f5b2b9ebbe5aab6d9296495945714/ss_9648d2f16e8f5b2b9ebbe5aab6d9296495945714.600x338.jpg?t=1789071100"
         }
       ],
       "subscriptions": {
@@ -166916,7 +166990,8 @@
       "igdbId": "330753",
       "igdbUrl": "https://www.igdb.com/games/croak-crusader-the-champion-of-canada",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:30.217Z"
+      "igdbCheckedAt": "2026-09-13T16:10:30.217Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:14.612Z"
     },
     {
       "id": 305069,
@@ -167655,7 +167730,8 @@
       "igdbId": "333114",
       "igdbUrl": "https://www.igdb.com/games/cryptage",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:32.562Z"
+      "igdbCheckedAt": "2026-09-13T16:10:32.562Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:16.463Z"
     },
     {
       "id": 396000,
@@ -168006,7 +168082,8 @@
       "igdbId": "292406",
       "igdbUrl": "https://www.igdb.com/games/cube-guy",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:33.666Z"
+      "igdbCheckedAt": "2026-09-13T16:10:33.666Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:18.319Z"
     },
     {
       "id": 395436,
@@ -168478,7 +168555,8 @@
       "igdbId": "370919",
       "igdbUrl": "https://www.igdb.com/games/curse-of-the-abyss",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:35.051Z"
+      "igdbCheckedAt": "2026-09-13T16:10:35.051Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:20.171Z"
     },
     {
       "id": 400795,
@@ -168971,7 +169049,8 @@
       "igdbId": "293001",
       "igdbUrl": "https://www.igdb.com/games/cut-the-cards",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:35.878Z"
+      "igdbCheckedAt": "2026-09-13T16:10:35.878Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:22.025Z"
     },
     {
       "id": 368442,
@@ -170272,6 +170351,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/9926c178ee76962653dd2c46c8e955beb8564163/ss_9926c178ee76962653dd2c46c8e955beb8564163.1920x1080.jpg?t=1787680844",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/9926c178ee76962653dd2c46c8e955beb8564163/ss_9926c178ee76962653dd2c46c8e955beb8564163.600x338.jpg?t=1787680844"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/ss_4087ab87508a5c05c4e38cfd14ef3f84591cb20f.1920x1080.jpg?t=1787680844",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/ss_4087ab87508a5c05c4e38cfd14ef3f84591cb20f.600x338.jpg?t=1787680844"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/ss_805f025489730e014fcdd7516bdd846ce6552184.1920x1080.jpg?t=1787680844",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3017820/ss_805f025489730e014fcdd7516bdd846ce6552184.600x338.jpg?t=1787680844"
         }
       ],
       "subscriptions": {
@@ -170306,7 +170393,8 @@
       "igdbId": "303452",
       "igdbUrl": "https://www.igdb.com/games/dangerous-connections",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:40.014Z"
+      "igdbCheckedAt": "2026-09-13T16:10:40.014Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:23.875Z"
     },
     {
       "id": 277021,
@@ -171227,6 +171315,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_12d1256dcca29d2b6d580b56aea8ceba676eb8c9.1920x1080.jpg?t=1765551247",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_12d1256dcca29d2b6d580b56aea8ceba676eb8c9.600x338.jpg?t=1765551247"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_124a9c72f97318c8114381bf6d65c6f2220dc4c7.1920x1080.jpg?t=1765551247",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_124a9c72f97318c8114381bf6d65c6f2220dc4c7.600x338.jpg?t=1765551247"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_96f39302e8bef21acd8e4369ddc8190931cd7405.1920x1080.jpg?t=1765551247",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2593570/ss_96f39302e8bef21acd8e4369ddc8190931cd7405.600x338.jpg?t=1765551247"
         }
       ],
       "subscriptions": {
@@ -171261,7 +171357,8 @@
       "igdbId": "277260",
       "igdbUrl": "https://www.igdb.com/games/dds-x-narcos",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:43.175Z"
+      "igdbCheckedAt": "2026-09-13T16:10:43.175Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:25.724Z"
     },
     {
       "id": 389893,
@@ -171466,7 +171563,8 @@
       "igdbId": "251768",
       "igdbUrl": "https://www.igdb.com/games/dead-detective-zombie-conspiracy",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:43.687Z"
+      "igdbCheckedAt": "2026-09-13T16:10:43.687Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:27.571Z"
     },
     {
       "id": 271654,
@@ -171879,6 +171977,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/ec818a00f5194d175c7c8366c1d0461069dcb759/ss_ec818a00f5194d175c7c8366c1d0461069dcb759.1920x1080.jpg?t=1787932315",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/ec818a00f5194d175c7c8366c1d0461069dcb759/ss_ec818a00f5194d175c7c8366c1d0461069dcb759.600x338.jpg?t=1787932315"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/bfe82902b1b01532fe96647b32efb4e67505234a/ss_bfe82902b1b01532fe96647b32efb4e67505234a.1920x1080.jpg?t=1787932315",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/bfe82902b1b01532fe96647b32efb4e67505234a/ss_bfe82902b1b01532fe96647b32efb4e67505234a.600x338.jpg?t=1787932315"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/ab14d30f0658f7f64bbdaf4722d895ccd632c38a/ss_ab14d30f0658f7f64bbdaf4722d895ccd632c38a.1920x1080.jpg?t=1787932315",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3660360/ab14d30f0658f7f64bbdaf4722d895ccd632c38a/ss_ab14d30f0658f7f64bbdaf4722d895ccd632c38a.600x338.jpg?t=1787932315"
         }
       ],
       "subscriptions": {
@@ -171913,7 +172019,8 @@
       "igdbId": "348591",
       "igdbUrl": "https://www.igdb.com/games/deadly-deals",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:44.402Z"
+      "igdbCheckedAt": "2026-09-13T16:10:44.402Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:29.422Z"
     },
     {
       "id": 403822,
@@ -172416,6 +172523,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_2fd1f9a0b1aaf3219eb781fc11eae663306e2f14.1920x1080.jpg?t=1786772278",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_2fd1f9a0b1aaf3219eb781fc11eae663306e2f14.600x338.jpg?t=1786772278"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_008fafbf1658c0c955faf9375df11d0864261660.1920x1080.jpg?t=1786772278",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_008fafbf1658c0c955faf9375df11d0864261660.600x338.jpg?t=1786772278"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_189975dcbaadc8ff89191b015de9e633be67a54d.1920x1080.jpg?t=1786772278",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3292730/ss_189975dcbaadc8ff89191b015de9e633be67a54d.600x338.jpg?t=1786772278"
         }
       ],
       "subscriptions": {
@@ -172456,7 +172571,8 @@
       "igdbId": "334740",
       "igdbUrl": "https://www.igdb.com/games/death-in-your-dice",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:46.615Z"
+      "igdbCheckedAt": "2026-09-13T16:10:46.615Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:31.278Z"
     },
     {
       "id": 346197,
@@ -172748,7 +172864,8 @@
       "igdbId": "199259",
       "igdbUrl": "https://www.igdb.com/games/death-ring",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:47.495Z"
+      "igdbCheckedAt": "2026-09-13T16:10:47.495Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:33.148Z"
     },
     {
       "id": 257925,
@@ -173051,7 +173168,8 @@
       "igdbId": "373832",
       "igdbUrl": "https://www.igdb.com/games/decay-of-worlds",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:48.341Z"
+      "igdbCheckedAt": "2026-09-13T16:10:48.341Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:35.001Z"
     },
     {
       "id": 320726,
@@ -173621,7 +173739,8 @@
       "igdbId": "285012",
       "igdbUrl": "https://www.igdb.com/games/decurion",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:49.633Z"
+      "igdbCheckedAt": "2026-09-13T16:10:49.633Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:36.857Z"
     },
     {
       "id": 207500,
@@ -173697,7 +173816,8 @@
         "IGDB"
       ],
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:49.947Z"
+      "igdbCheckedAt": "2026-09-13T16:10:49.947Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:38.693Z"
     },
     {
       "id": 390443,
@@ -173874,7 +173994,8 @@
       "igdbId": "347559",
       "igdbUrl": "https://www.igdb.com/games/deep-room",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:50.465Z"
+      "igdbCheckedAt": "2026-09-13T16:10:50.465Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:40.555Z"
     },
     {
       "id": 371010,
@@ -174054,6 +174175,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/8fa7beba3e76b81451ff3c506d882c8f253bdbd3/ss_8fa7beba3e76b81451ff3c506d882c8f253bdbd3.1920x1080.jpg?t=1788167969",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/8fa7beba3e76b81451ff3c506d882c8f253bdbd3/ss_8fa7beba3e76b81451ff3c506d882c8f253bdbd3.600x338.jpg?t=1788167969"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/42ae5619f053cebb7ce04cbbb5d3d2d8331f02d6/ss_42ae5619f053cebb7ce04cbbb5d3d2d8331f02d6.1920x1080.jpg?t=1788167969",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/42ae5619f053cebb7ce04cbbb5d3d2d8331f02d6/ss_42ae5619f053cebb7ce04cbbb5d3d2d8331f02d6.600x338.jpg?t=1788167969"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/3085a6f8364d48ac36e2ca1cfdb36b97a17ce2c0/ss_3085a6f8364d48ac36e2ca1cfdb36b97a17ce2c0.1920x1080.jpg?t=1788167969",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2484890/3085a6f8364d48ac36e2ca1cfdb36b97a17ce2c0/ss_3085a6f8364d48ac36e2ca1cfdb36b97a17ce2c0.600x338.jpg?t=1788167969"
         }
       ],
       "subscriptions": {
@@ -174096,7 +174225,8 @@
       "igdbId": "398088",
       "igdbUrl": "https://www.igdb.com/games/deeper-still",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:51.026Z"
+      "igdbCheckedAt": "2026-09-13T16:10:51.026Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:42.407Z"
     },
     {
       "id": 332569,
@@ -176264,7 +176394,8 @@
       "igdbId": "370061",
       "igdbUrl": "https://www.igdb.com/games/despa",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:57.358Z"
+      "igdbCheckedAt": "2026-09-13T16:10:57.358Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:44.255Z"
     },
     {
       "id": 358379,
@@ -176396,7 +176527,8 @@
       "igdbId": "358379",
       "igdbUrl": "https://www.igdb.com/games/destiny-code",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:57.631Z"
+      "igdbCheckedAt": "2026-09-13T16:10:57.631Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:46.113Z"
     },
     {
       "id": 274562,
@@ -176508,7 +176640,8 @@
       "igdbId": "274562",
       "igdbUrl": "https://www.igdb.com/games/detective-fantasia-excalimurder",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:57.918Z"
+      "igdbCheckedAt": "2026-09-13T16:10:57.918Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:47.976Z"
     },
     {
       "id": 318179,
@@ -176603,6 +176736,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/da30f1df724bfbcb6331cb0d6db680f3f9f21cd7/ss_da30f1df724bfbcb6331cb0d6db680f3f9f21cd7.1920x1080.jpg?t=1787784178",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/da30f1df724bfbcb6331cb0d6db680f3f9f21cd7/ss_da30f1df724bfbcb6331cb0d6db680f3f9f21cd7.600x338.jpg?t=1787784178"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/ss_a6556d550d431414c9db2d5b096565a5a60283d7.1920x1080.jpg?t=1787784178",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/ss_a6556d550d431414c9db2d5b096565a5a60283d7.600x338.jpg?t=1787784178"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/ss_f1b60095fdf6ccbfbca6ad48d262d08135c7ed24.1920x1080.jpg?t=1787784178",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3084040/ss_f1b60095fdf6ccbfbca6ad48d262d08135c7ed24.600x338.jpg?t=1787784178"
         }
       ],
       "subscriptions": {
@@ -176636,7 +176777,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:10:57.915Z"
+      "igdbCheckedAt": "2026-09-13T16:10:57.915Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:49.826Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 169826,
@@ -176896,7 +177039,8 @@
       "igdbId": "342306",
       "igdbUrl": "https://www.igdb.com/games/deus-mantle",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:10:58.746Z"
+      "igdbCheckedAt": "2026-09-13T16:10:58.746Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:51.681Z"
     },
     {
       "id": 312736,
@@ -178554,7 +178698,8 @@
       "igdbId": "337775",
       "igdbUrl": "https://www.igdb.com/games/digital-legacy-of-zero",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:03.461Z"
+      "igdbCheckedAt": "2026-09-13T16:11:03.461Z",
+      "steamMediaCheckedAt": "2026-09-14T09:01:53.530Z"
     },
     {
       "id": 334333,
@@ -179797,7 +179942,9 @@
         "Save Anytime",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:01:55.377Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 359692,
@@ -180202,7 +180349,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:01:57.241Z"
     },
     {
       "id": 263026,
@@ -180652,7 +180800,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:01:59.089Z"
     },
     {
       "id": 353153,
@@ -180776,7 +180925,8 @@
         "LAN Co-op",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:02:00.939Z"
     },
     {
       "id": 406825,
@@ -182702,6 +182852,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/85e5aa6f532c278b3838ffb78b3c7fec683a7200/ss_85e5aa6f532c278b3838ffb78b3c7fec683a7200.1920x1080.jpg?t=1785936277",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/85e5aa6f532c278b3838ffb78b3c7fec683a7200/ss_85e5aa6f532c278b3838ffb78b3c7fec683a7200.600x338.jpg?t=1785936277"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/345b29faeb725cf3eb53fccad2a60112b521e30f/ss_345b29faeb725cf3eb53fccad2a60112b521e30f.1920x1080.jpg?t=1785936277",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/345b29faeb725cf3eb53fccad2a60112b521e30f/ss_345b29faeb725cf3eb53fccad2a60112b521e30f.600x338.jpg?t=1785936277"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/ss_fc475c91d720ea46bcf88bdff320e5e65ba02234.1920x1080.jpg?t=1785936277",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2446660/ss_fc475c91d720ea46bcf88bdff320e5e65ba02234.600x338.jpg?t=1785936277"
         }
       ],
       "subscriptions": {
@@ -182740,7 +182898,8 @@
         "Save Anytime",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:02:02.792Z"
     },
     {
       "id": 345052,
@@ -182832,6 +182991,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/37f7624ccef6306974970f714190ede8ccf6cb76/ss_37f7624ccef6306974970f714190ede8ccf6cb76.1920x1080.jpg?t=1760389515",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/37f7624ccef6306974970f714190ede8ccf6cb76/ss_37f7624ccef6306974970f714190ede8ccf6cb76.600x338.jpg?t=1760389515"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/88319c738387bc0f2bd785690178319d6569818b/ss_88319c738387bc0f2bd785690178319d6569818b.1920x1080.jpg?t=1760389515",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/88319c738387bc0f2bd785690178319d6569818b/ss_88319c738387bc0f2bd785690178319d6569818b.600x338.jpg?t=1760389515"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/7f72b42117a79bf79b401fb043d512e5e89257fa/ss_7f72b42117a79bf79b401fb043d512e5e89257fa.1920x1080.jpg?t=1760389515",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3143810/7f72b42117a79bf79b401fb043d512e5e89257fa/ss_7f72b42117a79bf79b401fb043d512e5e89257fa.600x338.jpg?t=1760389515"
         }
       ],
       "subscriptions": {
@@ -182866,7 +183033,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:02:04.641Z"
     },
     {
       "id": 252854,
@@ -183646,7 +183814,8 @@
         "Full controller support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:02:06.492Z"
     },
     {
       "id": 390229,
@@ -184057,7 +184226,8 @@
         "Partial Controller Support",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:02:08.341Z"
     },
     {
       "id": 411690,
@@ -184247,7 +184417,8 @@
       "igdbId": "192930",
       "igdbUrl": "https://www.igdb.com/games/droid-escape",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:20.905Z"
+      "igdbCheckedAt": "2026-09-13T16:11:20.905Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:10.195Z"
     },
     {
       "id": 357084,
@@ -184615,6 +184786,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3647010/9f6ba5b29360d5397905e3ba13dbf0c045b5db78/ss_9f6ba5b29360d5397905e3ba13dbf0c045b5db78.1920x1080.jpg?t=1765310655",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3647010/9f6ba5b29360d5397905e3ba13dbf0c045b5db78/ss_9f6ba5b29360d5397905e3ba13dbf0c045b5db78.600x338.jpg?t=1765310655"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3647010/debd4d3f4a95094e2d7e04a21cd2409772641236/ss_debd4d3f4a95094e2d7e04a21cd2409772641236.1920x1080.jpg?t=1765310655",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3647010/debd4d3f4a95094e2d7e04a21cd2409772641236/ss_debd4d3f4a95094e2d7e04a21cd2409772641236.600x338.jpg?t=1765310655"
         }
       ],
       "subscriptions": {
@@ -184664,7 +184839,8 @@
       "igdbId": "339226",
       "igdbUrl": "https://www.igdb.com/games/drug-schedule",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:21.722Z"
+      "igdbCheckedAt": "2026-09-13T16:11:21.722Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:12.049Z"
     },
     {
       "id": 397835,
@@ -185765,7 +185941,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:11:25.398Z"
+      "igdbCheckedAt": "2026-09-13T16:11:25.398Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:13.898Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 388132,
@@ -186096,7 +186274,8 @@
       "igdbId": "291408",
       "igdbUrl": "https://www.igdb.com/games/dungeons-and-diners",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:26.577Z"
+      "igdbCheckedAt": "2026-09-13T16:11:26.577Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:15.745Z"
     },
     {
       "id": 275747,
@@ -186219,7 +186398,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:11:26.742Z"
+      "igdbCheckedAt": "2026-09-13T16:11:26.742Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:17.596Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 380425,
@@ -187189,7 +187370,8 @@
       "igdbId": "303054",
       "igdbUrl": "https://www.igdb.com/games/earthborne",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:30.050Z"
+      "igdbCheckedAt": "2026-09-13T16:11:30.050Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:19.445Z"
     },
     {
       "id": 403333,
@@ -187473,7 +187655,8 @@
       "igdbId": "251945",
       "igdbUrl": "https://www.igdb.com/games/ebola-4",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:30.883Z"
+      "igdbCheckedAt": "2026-09-13T16:11:30.883Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:21.296Z"
     },
     {
       "id": 398001,
@@ -188490,7 +188673,8 @@
       "igdbId": "409224",
       "igdbUrl": "https://www.igdb.com/games/echoes--10",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:33.496Z"
+      "igdbCheckedAt": "2026-09-13T16:11:33.496Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:23.158Z"
     },
     {
       "id": 349985,
@@ -188606,7 +188790,8 @@
       "igdbId": "349985",
       "igdbUrl": "https://www.igdb.com/games/echoes-of-night-the-exodus-of-the-stars",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:33.634Z"
+      "igdbCheckedAt": "2026-09-13T16:11:33.634Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:25.007Z"
     },
     {
       "id": 390719,
@@ -189500,7 +189685,8 @@
       "igdbId": "390275",
       "igdbUrl": "https://www.igdb.com/games/elevator--6",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:36.456Z"
+      "igdbCheckedAt": "2026-09-13T16:11:36.456Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:26.862Z"
     },
     {
       "id": 326797,
@@ -189744,6 +189930,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_402b0a6fbdcc3ff5b98f2887f6e953ac5f2c7c08.1920x1080.jpg?t=1786893896",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_402b0a6fbdcc3ff5b98f2887f6e953ac5f2c7c08.600x338.jpg?t=1786893896"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_46a692d8d8c9692fa13b67330f8758e7fdcf04ae.1920x1080.jpg?t=1786893896",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_46a692d8d8c9692fa13b67330f8758e7fdcf04ae.600x338.jpg?t=1786893896"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_69cefb724692ff8ddd6dd643026195ecb3ff86f6.1920x1080.jpg?t=1786893896",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2323780/ss_69cefb724692ff8ddd6dd643026195ecb3ff86f6.600x338.jpg?t=1786893896"
         }
       ],
       "subscriptions": {
@@ -189788,7 +189982,8 @@
       "igdbId": "271087",
       "igdbUrl": "https://www.igdb.com/games/elodya",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:37.045Z"
+      "igdbCheckedAt": "2026-09-13T16:11:37.045Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:28.715Z"
     },
     {
       "id": 340741,
@@ -190930,7 +191125,8 @@
       "igdbId": "249883",
       "igdbUrl": "https://www.igdb.com/games/enlightened",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:39.404Z"
+      "igdbCheckedAt": "2026-09-13T16:11:39.404Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:30.562Z"
     },
     {
       "id": 318349,
@@ -191057,7 +191253,8 @@
       "igdbId": "318349",
       "igdbUrl": "https://www.igdb.com/games/entwine",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:39.991Z"
+      "igdbCheckedAt": "2026-09-13T16:11:39.991Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:32.413Z"
     },
     {
       "id": 371166,
@@ -191590,6 +191787,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/6d463df4b5620bad2bbc69a7008df992e147005a/ss_6d463df4b5620bad2bbc69a7008df992e147005a.1920x1080.jpg?t=1786458728",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/6d463df4b5620bad2bbc69a7008df992e147005a/ss_6d463df4b5620bad2bbc69a7008df992e147005a.600x338.jpg?t=1786458728"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/9432b1b56e17ade2dd75a2d837f9fe1cc0bd8831/ss_9432b1b56e17ade2dd75a2d837f9fe1cc0bd8831.1920x1080.jpg?t=1786458728",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/9432b1b56e17ade2dd75a2d837f9fe1cc0bd8831/ss_9432b1b56e17ade2dd75a2d837f9fe1cc0bd8831.600x338.jpg?t=1786458728"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/ef3baac52c9282accb38de548d46b10ef210da92/ss_ef3baac52c9282accb38de548d46b10ef210da92.1920x1080.jpg?t=1786458728",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3723710/ef3baac52c9282accb38de548d46b10ef210da92/ss_ef3baac52c9282accb38de548d46b10ef210da92.600x338.jpg?t=1786458728"
         }
       ],
       "subscriptions": {
@@ -191625,7 +191830,8 @@
       "igdbId": "344625",
       "igdbUrl": "https://www.igdb.com/games/escape-the-baby-alarm",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:41.644Z"
+      "igdbCheckedAt": "2026-09-13T16:11:41.644Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:34.261Z"
     },
     {
       "id": 395623,
@@ -193018,6 +193224,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385140/e3b2532e6f85cf63fb7900686a4c024ae30fa315/ss_e3b2532e6f85cf63fb7900686a4c024ae30fa315.1920x1080.jpg?t=1787589867",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385140/e3b2532e6f85cf63fb7900686a4c024ae30fa315/ss_e3b2532e6f85cf63fb7900686a4c024ae30fa315.600x338.jpg?t=1787589867"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385140/9430e076e0fa2048fc6392abf2138c5507bb710f/ss_9430e076e0fa2048fc6392abf2138c5507bb710f.1920x1080.jpg?t=1787589867",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3385140/9430e076e0fa2048fc6392abf2138c5507bb710f/ss_9430e076e0fa2048fc6392abf2138c5507bb710f.600x338.jpg?t=1787589867"
         }
       ],
       "subscriptions": {
@@ -193052,7 +193262,8 @@
       "igdbId": "392064",
       "igdbUrl": "https://www.igdb.com/games/evercastle",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:45.213Z"
+      "igdbCheckedAt": "2026-09-13T16:11:45.213Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:36.115Z"
     },
     {
       "id": 379932,
@@ -193479,7 +193690,8 @@
       "igdbId": "345074",
       "igdbUrl": "https://www.igdb.com/games/exo-helljumper-descent-x",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:46.920Z"
+      "igdbCheckedAt": "2026-09-13T16:11:46.920Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:37.962Z"
     },
     {
       "id": 257977,
@@ -193596,7 +193808,8 @@
       "igdbId": "257977",
       "igdbUrl": "https://www.igdb.com/games/exodus-sunflower-on-the-horizon",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:47.158Z"
+      "igdbCheckedAt": "2026-09-13T16:11:47.158Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:39.806Z"
     },
     {
       "id": 390564,
@@ -193795,7 +194008,8 @@
       "igdbId": "342824",
       "igdbUrl": "https://www.igdb.com/games/exovia",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:47.702Z"
+      "igdbCheckedAt": "2026-09-13T16:11:47.702Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:41.657Z"
     },
     {
       "id": 324300,
@@ -193931,7 +194145,8 @@
       "igdbId": "324300",
       "igdbUrl": "https://www.igdb.com/games/expedition-into-darkness",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:47.971Z"
+      "igdbCheckedAt": "2026-09-13T16:11:47.971Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:43.502Z"
     },
     {
       "id": 404929,
@@ -194162,7 +194377,8 @@
       "igdbId": "269987",
       "igdbUrl": "https://www.igdb.com/games/exploration-light",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:48.288Z"
+      "igdbCheckedAt": "2026-09-13T16:11:48.288Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:45.351Z"
     },
     {
       "id": 160203,
@@ -194289,7 +194505,8 @@
       "igdbId": "160203",
       "igdbUrl": "https://www.igdb.com/games/explory-story",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:48.525Z"
+      "igdbCheckedAt": "2026-09-13T16:11:48.525Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:47.201Z"
     },
     {
       "id": 370013,
@@ -195057,6 +195274,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/8ec6b2f4c86aa97e51f4026d8bfcd09467e16dbd/ss_8ec6b2f4c86aa97e51f4026d8bfcd09467e16dbd.1920x1080.jpg?t=1787150044",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/8ec6b2f4c86aa97e51f4026d8bfcd09467e16dbd/ss_8ec6b2f4c86aa97e51f4026d8bfcd09467e16dbd.600x338.jpg?t=1787150044"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/d73a9d0d0959a02bd318f8aaa9ccf840895dfbf0/ss_d73a9d0d0959a02bd318f8aaa9ccf840895dfbf0.1920x1080.jpg?t=1787150044",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/d73a9d0d0959a02bd318f8aaa9ccf840895dfbf0/ss_d73a9d0d0959a02bd318f8aaa9ccf840895dfbf0.600x338.jpg?t=1787150044"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/7d08f17ce455a5a35094c4a136328603614dfbf7/ss_7d08f17ce455a5a35094c4a136328603614dfbf7.1920x1080.jpg?t=1787150044",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2736890/7d08f17ce455a5a35094c4a136328603614dfbf7/ss_7d08f17ce455a5a35094c4a136328603614dfbf7.600x338.jpg?t=1787150044"
         }
       ],
       "subscriptions": {
@@ -195095,7 +195320,8 @@
       "igdbId": "408987",
       "igdbUrl": "https://www.igdb.com/games/false-hope--1",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:51.284Z"
+      "igdbCheckedAt": "2026-09-13T16:11:51.284Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:49.057Z"
     },
     {
       "id": 267590,
@@ -196630,6 +196856,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_f65a1d644b5a7b805b59fac061a5e80ddbbdf82e.1920x1080.jpg?t=1754594515",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_f65a1d644b5a7b805b59fac061a5e80ddbbdf82e.600x338.jpg?t=1754594515"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_845c603813fc92478acc5cd9951011b4a16f6f6f.1920x1080.jpg?t=1754594515",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_845c603813fc92478acc5cd9951011b4a16f6f6f.600x338.jpg?t=1754594515"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_1feb4d02b60067a07fabdb6629a5ab8f62fbc0c2.1920x1080.jpg?t=1754594515",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3088760/ss_1feb4d02b60067a07fabdb6629a5ab8f62fbc0c2.600x338.jpg?t=1754594515"
         }
       ],
       "subscriptions": {
@@ -196669,7 +196903,8 @@
       "igdbId": "348361",
       "igdbUrl": "https://www.igdb.com/games/fay-keeper",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:55.955Z"
+      "igdbCheckedAt": "2026-09-13T16:11:55.955Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:50.904Z"
     },
     {
       "id": 381697,
@@ -196838,6 +197073,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_8a88c8ab070e17d1688849e3e6d9b69c22fe413d.1920x1080.jpg?t=1786345871",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_8a88c8ab070e17d1688849e3e6d9b69c22fe413d.600x338.jpg?t=1786345871"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_f9828274496b565efceb2f7cddb3bf6a5245f005.1920x1080.jpg?t=1786345871",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_f9828274496b565efceb2f7cddb3bf6a5245f005.600x338.jpg?t=1786345871"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_dcd016f313dd279391ec715acf389f73269c6b69.1920x1080.jpg?t=1786345871",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3430600/ss_dcd016f313dd279391ec715acf389f73269c6b69.600x338.jpg?t=1786345871"
         }
       ],
       "subscriptions": {
@@ -196875,7 +197118,8 @@
       "igdbId": "346888",
       "igdbUrl": "https://www.igdb.com/games/fecal-freighter",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:11:56.515Z"
+      "igdbCheckedAt": "2026-09-13T16:11:56.515Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:52.759Z"
     },
     {
       "id": 325282,
@@ -198726,6 +198970,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/1527a3c3b04c5558b9f1bd3b1dd583fadda869e5/ss_1527a3c3b04c5558b9f1bd3b1dd583fadda869e5.1920x1080.jpg?t=1787397194",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/1527a3c3b04c5558b9f1bd3b1dd583fadda869e5/ss_1527a3c3b04c5558b9f1bd3b1dd583fadda869e5.600x338.jpg?t=1787397194"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/f9dc1a0f091168e4552ae5c77ab84bf0d1041a7c/ss_f9dc1a0f091168e4552ae5c77ab84bf0d1041a7c.1920x1080.jpg?t=1787397194",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/f9dc1a0f091168e4552ae5c77ab84bf0d1041a7c/ss_f9dc1a0f091168e4552ae5c77ab84bf0d1041a7c.600x338.jpg?t=1787397194"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/c22c9d5f28fb4b3b2a25ca461754995e3601a073/ss_c22c9d5f28fb4b3b2a25ca461754995e3601a073.1920x1080.jpg?t=1787397194",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3069130/c22c9d5f28fb4b3b2a25ca461754995e3601a073/ss_c22c9d5f28fb4b3b2a25ca461754995e3601a073.600x338.jpg?t=1787397194"
         }
       ],
       "subscriptions": {
@@ -198760,7 +199012,8 @@
       "igdbId": "348337",
       "igdbUrl": "https://www.igdb.com/games/flashloop",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:01.792Z"
+      "igdbCheckedAt": "2026-09-13T16:12:01.792Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:54.606Z"
     },
     {
       "id": 408317,
@@ -199695,6 +199948,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/8049550b69c06c8f3a25d4d702f494fbde0e5b9b/ss_8049550b69c06c8f3a25d4d702f494fbde0e5b9b.1920x1080.jpg?t=1784833394",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/8049550b69c06c8f3a25d4d702f494fbde0e5b9b/ss_8049550b69c06c8f3a25d4d702f494fbde0e5b9b.600x338.jpg?t=1784833394"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/16d03413544de3be0a4a3863346acea9a23492b3/ss_16d03413544de3be0a4a3863346acea9a23492b3.1920x1080.jpg?t=1784833394",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/16d03413544de3be0a4a3863346acea9a23492b3/ss_16d03413544de3be0a4a3863346acea9a23492b3.600x338.jpg?t=1784833394"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/2cf7ef44ac54f8b2fef10d88f96d8b30dd49abc9/ss_2cf7ef44ac54f8b2fef10d88f96d8b30dd49abc9.1920x1080.jpg?t=1784833394",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3620040/2cf7ef44ac54f8b2fef10d88f96d8b30dd49abc9/ss_2cf7ef44ac54f8b2fef10d88f96d8b30dd49abc9.600x338.jpg?t=1784833394"
         }
       ],
       "subscriptions": {
@@ -199734,7 +199995,8 @@
       "igdbId": "392705",
       "igdbUrl": "https://www.igdb.com/games/fly-cowboy-online",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:04.816Z"
+      "igdbCheckedAt": "2026-09-13T16:12:04.816Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:56.455Z"
     },
     {
       "id": 414493,
@@ -200062,7 +200324,8 @@
       "igdbId": "346866",
       "igdbUrl": "https://www.igdb.com/games/followers-of-krow",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:05.641Z"
+      "igdbCheckedAt": "2026-09-13T16:12:05.641Z",
+      "steamMediaCheckedAt": "2026-09-14T09:02:58.299Z"
     },
     {
       "id": 301330,
@@ -200155,6 +200418,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/5ba683c37f092e3c1e8f3f83a8a9ca0aa287ecef/ss_5ba683c37f092e3c1e8f3f83a8a9ca0aa287ecef.1920x1080.jpg?t=1788807895",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/5ba683c37f092e3c1e8f3f83a8a9ca0aa287ecef/ss_5ba683c37f092e3c1e8f3f83a8a9ca0aa287ecef.600x338.jpg?t=1788807895"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/3bc526265a04c83c022dca9682ff01eab7a04b94/ss_3bc526265a04c83c022dca9682ff01eab7a04b94.1920x1080.jpg?t=1788807895",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/3bc526265a04c83c022dca9682ff01eab7a04b94/ss_3bc526265a04c83c022dca9682ff01eab7a04b94.600x338.jpg?t=1788807895"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/8245ed94a1b23fc40cb9a8575cb2c51ebb4fd283/ss_8245ed94a1b23fc40cb9a8575cb2c51ebb4fd283.1920x1080.jpg?t=1788807895",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2861730/8245ed94a1b23fc40cb9a8575cb2c51ebb4fd283/ss_8245ed94a1b23fc40cb9a8575cb2c51ebb4fd283.600x338.jpg?t=1788807895"
         }
       ],
       "subscriptions": {
@@ -200201,7 +200472,8 @@
       "igdbId": "301330",
       "igdbUrl": "https://www.igdb.com/games/food-devils",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:05.932Z"
+      "igdbCheckedAt": "2026-09-13T16:12:05.932Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:00.147Z"
     },
     {
       "id": 356724,
@@ -201145,6 +201417,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2240240/ss_60372dc65da1a3cec2926cca010c005ccc1fca94.1920x1080.jpg?t=1747682182",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2240240/ss_60372dc65da1a3cec2926cca010c005ccc1fca94.600x338.jpg?t=1747682182"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2240240/ss_0580988746a82aa639c7f8f658b98795cae9c018.1920x1080.jpg?t=1747682182",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2240240/ss_0580988746a82aa639c7f8f658b98795cae9c018.600x338.jpg?t=1747682182"
         }
       ],
       "subscriptions": {
@@ -201179,7 +201455,8 @@
       "igdbId": "237190",
       "igdbUrl": "https://www.igdb.com/games/four-hundred-catapults",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:08.949Z"
+      "igdbCheckedAt": "2026-09-13T16:12:08.949Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:01.995Z"
     },
     {
       "id": 386440,
@@ -201374,7 +201651,8 @@
       "igdbId": "291337",
       "igdbUrl": "https://www.igdb.com/games/fps-pro-team-manager",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:09.786Z"
+      "igdbCheckedAt": "2026-09-13T16:12:09.786Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:03.844Z"
     },
     {
       "id": 389850,
@@ -203071,7 +203349,8 @@
       "igdbId": "384057",
       "igdbUrl": "https://www.igdb.com/games/from-basement-with-love",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:15.054Z"
+      "igdbCheckedAt": "2026-09-13T16:12:15.054Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:05.696Z"
     },
     {
       "id": 400024,
@@ -203690,7 +203969,8 @@
       "igdbId": "309495",
       "igdbUrl": "https://www.igdb.com/games/fruit-of-choice",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:16.981Z"
+      "igdbCheckedAt": "2026-09-13T16:12:16.981Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:07.542Z"
     },
     {
       "id": 366251,
@@ -203952,7 +204232,8 @@
       "igdbId": "333645",
       "igdbUrl": "https://www.igdb.com/games/fungiman-2",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:18.103Z"
+      "igdbCheckedAt": "2026-09-13T16:12:18.103Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:09.392Z"
     },
     {
       "id": 217117,
@@ -204724,6 +205005,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_bca7b7b5b96ba01464290402b7cde373839d5e69.1920x1080.jpg?t=1775816615",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_bca7b7b5b96ba01464290402b7cde373839d5e69.600x338.jpg?t=1775816615"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_4c2f3149ca91b4454b989d381abe3e3020278eaa.1920x1080.jpg?t=1775816615",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_4c2f3149ca91b4454b989d381abe3e3020278eaa.600x338.jpg?t=1775816615"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_543572cfd2f0f5f737f81b6fe6fb58c8a006d64b.1920x1080.jpg?t=1775816615",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3086740/ss_543572cfd2f0f5f737f81b6fe6fb58c8a006d64b.600x338.jpg?t=1775816615"
         }
       ],
       "subscriptions": {
@@ -204758,7 +205047,8 @@
       "igdbId": "312989",
       "igdbUrl": "https://www.igdb.com/games/gaming-raiding",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:20.564Z"
+      "igdbCheckedAt": "2026-09-13T16:12:20.564Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:11.241Z"
     },
     {
       "id": 369326,
@@ -206076,7 +206366,8 @@
       "igdbId": "350721",
       "igdbUrl": "https://www.igdb.com/games/ghost-golfing",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:24.404Z"
+      "igdbCheckedAt": "2026-09-13T16:12:24.404Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:13.087Z"
     },
     {
       "id": 387168,
@@ -207290,7 +207581,8 @@
       "igdbId": "374369",
       "igdbUrl": "https://www.igdb.com/games/gladiators-of-roma-revixit",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:28.330Z"
+      "igdbCheckedAt": "2026-09-13T16:12:28.330Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:14.938Z"
     },
     {
       "id": 345682,
@@ -207436,7 +207728,8 @@
       "igdbId": "345682",
       "igdbUrl": "https://www.igdb.com/games/gloctopus",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:28.603Z"
+      "igdbCheckedAt": "2026-09-13T16:12:28.603Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:16.788Z"
     },
     {
       "id": 353979,
@@ -207627,7 +207920,8 @@
       "igdbId": "240635",
       "igdbUrl": "https://www.igdb.com/games/goblins-journey",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:28.883Z"
+      "igdbCheckedAt": "2026-09-13T16:12:28.883Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:18.640Z"
     },
     {
       "id": 412963,
@@ -207849,7 +208143,8 @@
       "igdbId": "406682",
       "igdbUrl": "https://www.igdb.com/games/god-save-the-queens",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:29.440Z"
+      "igdbCheckedAt": "2026-09-13T16:12:29.440Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:20.500Z"
     },
     {
       "id": 328104,
@@ -208784,7 +209079,8 @@
       "igdbId": "347731",
       "igdbUrl": "https://www.igdb.com/games/gourmet-steak-odyssey",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:32.460Z"
+      "igdbCheckedAt": "2026-09-13T16:12:32.460Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:22.346Z"
     },
     {
       "id": 346704,
@@ -208910,7 +209206,8 @@
       "igdbId": "346704",
       "igdbUrl": "https://www.igdb.com/games/grapple-car",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:32.742Z"
+      "igdbCheckedAt": "2026-09-13T16:12:32.742Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:24.196Z"
     },
     {
       "id": 374383,
@@ -209424,7 +209721,8 @@
       "igdbId": "349041",
       "igdbUrl": "https://www.igdb.com/games/gravitech",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:34.105Z"
+      "igdbCheckedAt": "2026-09-13T16:12:34.105Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:26.047Z"
     },
     {
       "id": 146512,
@@ -210057,7 +210355,8 @@
       "igdbId": "291781",
       "igdbUrl": "https://www.igdb.com/games/greenfeet-haven",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:36.029Z"
+      "igdbCheckedAt": "2026-09-13T16:12:36.029Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:27.893Z"
     },
     {
       "id": 348348,
@@ -210166,7 +210465,8 @@
       "igdbId": "348348",
       "igdbUrl": "https://www.igdb.com/games/greta-sees-ghosts",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:36.305Z"
+      "igdbCheckedAt": "2026-09-13T16:12:36.305Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:29.748Z"
     },
     {
       "id": 330894,
@@ -210870,7 +211170,8 @@
       "igdbId": "391148",
       "igdbUrl": "https://www.igdb.com/games/growth--7",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:38.509Z"
+      "igdbCheckedAt": "2026-09-13T16:12:38.509Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:31.611Z"
     },
     {
       "id": 377039,
@@ -211152,7 +211453,8 @@
       "igdbId": "410290",
       "igdbUrl": "https://www.igdb.com/games/guildrun",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:39.383Z"
+      "igdbCheckedAt": "2026-09-13T16:12:39.383Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:33.465Z"
     },
     {
       "id": 305743,
@@ -212935,7 +213237,8 @@
       "igdbId": "322835",
       "igdbUrl": "https://www.igdb.com/games/haunted-by-femboy",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:45.182Z"
+      "igdbCheckedAt": "2026-09-13T16:12:45.182Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:35.310Z"
     },
     {
       "id": 351785,
@@ -213413,7 +213716,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:12:46.385Z"
+      "igdbCheckedAt": "2026-09-13T16:12:46.385Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:37.174Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 292585,
@@ -215111,7 +215416,8 @@
       "igdbId": "345688",
       "igdbUrl": "https://www.igdb.com/games/herb-seek-slash",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:51.256Z"
+      "igdbCheckedAt": "2026-09-13T16:12:51.256Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:39.023Z"
     },
     {
       "id": 410923,
@@ -215414,7 +215720,8 @@
       "igdbId": "197161",
       "igdbUrl": "https://www.igdb.com/games/hero-chest",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:52.040Z"
+      "igdbCheckedAt": "2026-09-13T16:12:52.040Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:40.873Z"
     },
     {
       "id": 335866,
@@ -215882,7 +216189,8 @@
       "igdbId": "335385",
       "igdbUrl": "https://www.igdb.com/games/hexiv",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:53.485Z"
+      "igdbCheckedAt": "2026-09-13T16:12:53.485Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:42.726Z"
     },
     {
       "id": 238657,
@@ -217935,7 +218243,8 @@
       "igdbId": "392097",
       "igdbUrl": "https://www.igdb.com/games/horus-desert-survivor",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:58.971Z"
+      "igdbCheckedAt": "2026-09-13T16:12:58.971Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:44.574Z"
     },
     {
       "id": 397700,
@@ -218051,7 +218360,8 @@
       "igdbId": "397700",
       "igdbUrl": "https://www.igdb.com/games/hostyle",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:12:59.245Z"
+      "igdbCheckedAt": "2026-09-13T16:12:59.245Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:46.420Z"
     },
     {
       "id": 288954,
@@ -218694,7 +219004,8 @@
       "igdbId": "224612",
       "igdbUrl": "https://www.igdb.com/games/hyper-drill",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:01.771Z"
+      "igdbCheckedAt": "2026-09-13T16:13:01.771Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:48.270Z"
     },
     {
       "id": 303553,
@@ -219141,7 +219452,8 @@
       "igdbId": "359685",
       "igdbUrl": "https://www.igdb.com/games/hypertyper-2000",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:02.831Z"
+      "igdbCheckedAt": "2026-09-13T16:13:02.831Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:50.122Z"
     },
     {
       "id": 325366,
@@ -219901,7 +220213,8 @@
       "igdbId": "391897",
       "igdbUrl": "https://www.igdb.com/games/charlie-spotlight",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:05.320Z"
+      "igdbCheckedAt": "2026-09-13T16:13:05.320Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:51.977Z"
     },
     {
       "id": 219996,
@@ -220219,7 +220532,8 @@
       "igdbId": "163133",
       "igdbUrl": "https://www.igdb.com/games/check-x-mate",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:05.862Z"
+      "igdbCheckedAt": "2026-09-13T16:13:05.862Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:53.828Z"
     },
     {
       "id": 346441,
@@ -220282,28 +220596,28 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/9bd93533afc44a33014ee478f68e94fc8f217b71/ss_9bd93533afc44a33014ee478f68e94fc8f217b71.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/9bd93533afc44a33014ee478f68e94fc8f217b71/ss_9bd93533afc44a33014ee478f68e94fc8f217b71.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/9bd93533afc44a33014ee478f68e94fc8f217b71/ss_9bd93533afc44a33014ee478f68e94fc8f217b71.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/9bd93533afc44a33014ee478f68e94fc8f217b71/ss_9bd93533afc44a33014ee478f68e94fc8f217b71.600x338.jpg?t=1789361612"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b0611520a410af91ba844feb9143fc560b03bf1e/ss_b0611520a410af91ba844feb9143fc560b03bf1e.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b0611520a410af91ba844feb9143fc560b03bf1e/ss_b0611520a410af91ba844feb9143fc560b03bf1e.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b0611520a410af91ba844feb9143fc560b03bf1e/ss_b0611520a410af91ba844feb9143fc560b03bf1e.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b0611520a410af91ba844feb9143fc560b03bf1e/ss_b0611520a410af91ba844feb9143fc560b03bf1e.600x338.jpg?t=1789361612"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/6b447372c25dbf17aa9c00b5b127a79507eeaaf7/ss_6b447372c25dbf17aa9c00b5b127a79507eeaaf7.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/6b447372c25dbf17aa9c00b5b127a79507eeaaf7/ss_6b447372c25dbf17aa9c00b5b127a79507eeaaf7.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/6b447372c25dbf17aa9c00b5b127a79507eeaaf7/ss_6b447372c25dbf17aa9c00b5b127a79507eeaaf7.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/6b447372c25dbf17aa9c00b5b127a79507eeaaf7/ss_6b447372c25dbf17aa9c00b5b127a79507eeaaf7.600x338.jpg?t=1789361612"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/8d428da44295fc74f3b0fb901f393d0ea68c43a2/ss_8d428da44295fc74f3b0fb901f393d0ea68c43a2.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/8d428da44295fc74f3b0fb901f393d0ea68c43a2/ss_8d428da44295fc74f3b0fb901f393d0ea68c43a2.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/8d428da44295fc74f3b0fb901f393d0ea68c43a2/ss_8d428da44295fc74f3b0fb901f393d0ea68c43a2.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/8d428da44295fc74f3b0fb901f393d0ea68c43a2/ss_8d428da44295fc74f3b0fb901f393d0ea68c43a2.600x338.jpg?t=1789361612"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/efb114d37abe24ea4ba9ea78d151c26c22e55083/ss_efb114d37abe24ea4ba9ea78d151c26c22e55083.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/efb114d37abe24ea4ba9ea78d151c26c22e55083/ss_efb114d37abe24ea4ba9ea78d151c26c22e55083.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/efb114d37abe24ea4ba9ea78d151c26c22e55083/ss_efb114d37abe24ea4ba9ea78d151c26c22e55083.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/efb114d37abe24ea4ba9ea78d151c26c22e55083/ss_efb114d37abe24ea4ba9ea78d151c26c22e55083.600x338.jpg?t=1789361612"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b705dbabb9d6328d5449f71706ff07b911219ea1/ss_b705dbabb9d6328d5449f71706ff07b911219ea1.1920x1080.jpg?t=1788371029",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b705dbabb9d6328d5449f71706ff07b911219ea1/ss_b705dbabb9d6328d5449f71706ff07b911219ea1.600x338.jpg?t=1788371029"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b705dbabb9d6328d5449f71706ff07b911219ea1/ss_b705dbabb9d6328d5449f71706ff07b911219ea1.1920x1080.jpg?t=1789361612",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3613550/b705dbabb9d6328d5449f71706ff07b911219ea1/ss_b705dbabb9d6328d5449f71706ff07b911219ea1.600x338.jpg?t=1789361612"
         }
       ],
       "subscriptions": {
@@ -220339,7 +220653,8 @@
       "igdbId": "346441",
       "igdbUrl": "https://www.igdb.com/games/checkmage",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:06.460Z"
+      "igdbCheckedAt": "2026-09-13T16:13:06.460Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:55.700Z"
     },
     {
       "id": 311211,
@@ -220456,7 +220771,8 @@
       "igdbId": "311211",
       "igdbUrl": "https://www.igdb.com/games/chemist-wanted",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:06.457Z"
+      "igdbCheckedAt": "2026-09-13T16:13:06.457Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:57.551Z"
     },
     {
       "id": 399406,
@@ -220588,7 +220904,8 @@
       "igdbId": "399406",
       "igdbUrl": "https://www.igdb.com/games/chess-2--2",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:07.019Z"
+      "igdbCheckedAt": "2026-09-13T16:13:07.019Z",
+      "steamMediaCheckedAt": "2026-09-14T09:03:59.401Z"
     },
     {
       "id": 411218,
@@ -220794,7 +221111,8 @@
       "igdbId": "324315",
       "igdbUrl": "https://www.igdb.com/games/chi-project",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:07.555Z"
+      "igdbCheckedAt": "2026-09-13T16:13:07.555Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:01.248Z"
     },
     {
       "id": 393128,
@@ -223463,7 +223781,8 @@
       "igdbId": "290146",
       "igdbUrl": "https://www.igdb.com/games/ichorous-moon",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:16.384Z"
+      "igdbCheckedAt": "2026-09-13T16:13:16.384Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:03.088Z"
     },
     {
       "id": 412832,
@@ -223935,7 +224254,8 @@
       "igdbId": "368800",
       "igdbUrl": "https://www.igdb.com/games/imitation--1",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:17.801Z"
+      "igdbCheckedAt": "2026-09-13T16:13:17.801Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:04.940Z"
     },
     {
       "id": 337387,
@@ -224354,40 +224674,40 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f9dd295557c7b03200a114dced6992a0864f1127/ss_f9dd295557c7b03200a114dced6992a0864f1127.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f9dd295557c7b03200a114dced6992a0864f1127/ss_f9dd295557c7b03200a114dced6992a0864f1127.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f9dd295557c7b03200a114dced6992a0864f1127/ss_f9dd295557c7b03200a114dced6992a0864f1127.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f9dd295557c7b03200a114dced6992a0864f1127/ss_f9dd295557c7b03200a114dced6992a0864f1127.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8efad117ca69bcb326935813bb2dc03fca68ece7/ss_8efad117ca69bcb326935813bb2dc03fca68ece7.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8efad117ca69bcb326935813bb2dc03fca68ece7/ss_8efad117ca69bcb326935813bb2dc03fca68ece7.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8efad117ca69bcb326935813bb2dc03fca68ece7/ss_8efad117ca69bcb326935813bb2dc03fca68ece7.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8efad117ca69bcb326935813bb2dc03fca68ece7/ss_8efad117ca69bcb326935813bb2dc03fca68ece7.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f81703d06368e9945e90be70cd64eff8937f7635/ss_f81703d06368e9945e90be70cd64eff8937f7635.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f81703d06368e9945e90be70cd64eff8937f7635/ss_f81703d06368e9945e90be70cd64eff8937f7635.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f81703d06368e9945e90be70cd64eff8937f7635/ss_f81703d06368e9945e90be70cd64eff8937f7635.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/f81703d06368e9945e90be70cd64eff8937f7635/ss_f81703d06368e9945e90be70cd64eff8937f7635.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/6564d20d5dcc872d8ca1eb3bd042eeba2160a668/ss_6564d20d5dcc872d8ca1eb3bd042eeba2160a668.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/6564d20d5dcc872d8ca1eb3bd042eeba2160a668/ss_6564d20d5dcc872d8ca1eb3bd042eeba2160a668.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/6564d20d5dcc872d8ca1eb3bd042eeba2160a668/ss_6564d20d5dcc872d8ca1eb3bd042eeba2160a668.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/6564d20d5dcc872d8ca1eb3bd042eeba2160a668/ss_6564d20d5dcc872d8ca1eb3bd042eeba2160a668.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/046b615f503856126c6b0b8bf9758dd604e9eb47/ss_046b615f503856126c6b0b8bf9758dd604e9eb47.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/046b615f503856126c6b0b8bf9758dd604e9eb47/ss_046b615f503856126c6b0b8bf9758dd604e9eb47.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/046b615f503856126c6b0b8bf9758dd604e9eb47/ss_046b615f503856126c6b0b8bf9758dd604e9eb47.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/046b615f503856126c6b0b8bf9758dd604e9eb47/ss_046b615f503856126c6b0b8bf9758dd604e9eb47.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8e8aaadb521d19b0310acf677098b4ec15aa0618/ss_8e8aaadb521d19b0310acf677098b4ec15aa0618.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8e8aaadb521d19b0310acf677098b4ec15aa0618/ss_8e8aaadb521d19b0310acf677098b4ec15aa0618.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8e8aaadb521d19b0310acf677098b4ec15aa0618/ss_8e8aaadb521d19b0310acf677098b4ec15aa0618.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/8e8aaadb521d19b0310acf677098b4ec15aa0618/ss_8e8aaadb521d19b0310acf677098b4ec15aa0618.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7/ss_74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7/ss_74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7/ss_74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7/ss_74b84a891f9ed366800ed6b0a7a5f4f55dde0ea7.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/24404af5a30d2efe6440f7b2cd6fea3d00111ee5/ss_24404af5a30d2efe6440f7b2cd6fea3d00111ee5.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/24404af5a30d2efe6440f7b2cd6fea3d00111ee5/ss_24404af5a30d2efe6440f7b2cd6fea3d00111ee5.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/24404af5a30d2efe6440f7b2cd6fea3d00111ee5/ss_24404af5a30d2efe6440f7b2cd6fea3d00111ee5.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/24404af5a30d2efe6440f7b2cd6fea3d00111ee5/ss_24404af5a30d2efe6440f7b2cd6fea3d00111ee5.600x338.jpg?t=1789239392"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/d77b2fc5226eda582d98655bd1c5c288ea0f0192/ss_d77b2fc5226eda582d98655bd1c5c288ea0f0192.1920x1080.jpg?t=1789144373",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/d77b2fc5226eda582d98655bd1c5c288ea0f0192/ss_d77b2fc5226eda582d98655bd1c5c288ea0f0192.600x338.jpg?t=1789144373"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/d77b2fc5226eda582d98655bd1c5c288ea0f0192/ss_d77b2fc5226eda582d98655bd1c5c288ea0f0192.1920x1080.jpg?t=1789239392",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3119710/d77b2fc5226eda582d98655bd1c5c288ea0f0192/ss_d77b2fc5226eda582d98655bd1c5c288ea0f0192.600x338.jpg?t=1789239392"
         }
       ],
       "subscriptions": {
@@ -224434,7 +224754,8 @@
       "igdbId": "309678",
       "igdbUrl": "https://www.igdb.com/games/impious",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:19.143Z"
+      "igdbCheckedAt": "2026-09-13T16:13:19.143Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:06.790Z"
     },
     {
       "id": 339956,
@@ -224569,7 +224890,8 @@
       "igdbId": "339956",
       "igdbUrl": "https://www.igdb.com/games/in-a-world-after-people",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:19.130Z"
+      "igdbCheckedAt": "2026-09-13T16:13:19.130Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:08.642Z"
     },
     {
       "id": 349756,
@@ -224950,7 +225272,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:13:20.617Z"
+      "igdbCheckedAt": "2026-09-13T16:13:20.617Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:10.489Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 399437,
@@ -225484,7 +225808,8 @@
       "igdbId": "291573",
       "igdbUrl": "https://www.igdb.com/games/incoherence--3",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:21.955Z"
+      "igdbCheckedAt": "2026-09-13T16:13:21.955Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:12.362Z"
     },
     {
       "id": 403291,
@@ -225680,7 +226005,8 @@
       "igdbId": "267082",
       "igdbUrl": "https://www.igdb.com/games/infernae",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:22.504Z"
+      "igdbCheckedAt": "2026-09-13T16:13:22.504Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:14.217Z"
     },
     {
       "id": 345923,
@@ -226340,7 +226666,8 @@
       "igdbId": "278970",
       "igdbUrl": "https://www.igdb.com/games/ink-of-fate",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:24.431Z"
+      "igdbCheckedAt": "2026-09-13T16:13:24.431Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:16.065Z"
     },
     {
       "id": 380440,
@@ -226855,6 +227182,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_ac94348821a7071524333d69577af8b58876a1be.1920x1080.jpg?t=1787434748",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_ac94348821a7071524333d69577af8b58876a1be.600x338.jpg?t=1787434748"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_51b46dacbde3eba5677e86a325ec2adae6e94749.1920x1080.jpg?t=1787434748",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_51b46dacbde3eba5677e86a325ec2adae6e94749.600x338.jpg?t=1787434748"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_81f43ad448a90648cd463c23a890da31d7df3d96.1920x1080.jpg?t=1787434748",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1008340/ss_81f43ad448a90648cd463c23a890da31d7df3d96.600x338.jpg?t=1787434748"
         }
       ],
       "subscriptions": {
@@ -226901,7 +227236,8 @@
       "igdbId": "151294",
       "igdbUrl": "https://www.igdb.com/games/insect-worlds",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:26.070Z"
+      "igdbCheckedAt": "2026-09-13T16:13:26.070Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:17.916Z"
     },
     {
       "id": 339819,
@@ -227132,6 +227468,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3689840/050c1bc0d6aec71ca6f6f1f1d3dbbdd2f8d43f75/ss_050c1bc0d6aec71ca6f6f1f1d3dbbdd2f8d43f75.1920x1080.jpg?t=1770906672",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3689840/050c1bc0d6aec71ca6f6f1f1d3dbbdd2f8d43f75/ss_050c1bc0d6aec71ca6f6f1f1d3dbbdd2f8d43f75.600x338.jpg?t=1770906672"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3689840/cbf94c1a124970d7da2ed80c57fe766dc7999e65/ss_cbf94c1a124970d7da2ed80c57fe766dc7999e65.1920x1080.jpg?t=1770906672",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3689840/cbf94c1a124970d7da2ed80c57fe766dc7999e65/ss_cbf94c1a124970d7da2ed80c57fe766dc7999e65.600x338.jpg?t=1770906672"
         }
       ],
       "subscriptions": {
@@ -227168,7 +227508,8 @@
       "igdbId": "366726",
       "igdbUrl": "https://www.igdb.com/games/inspektor",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:26.634Z"
+      "igdbCheckedAt": "2026-09-13T16:13:26.634Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:19.766Z"
     },
     {
       "id": 372414,
@@ -227270,6 +227611,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_7392bb4dfe79fbc0b5da6d6c88e431a1516cf6c8.1920x1080.jpg?t=1768668328",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_7392bb4dfe79fbc0b5da6d6c88e431a1516cf6c8.600x338.jpg?t=1768668328"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_10bc33cb32392a415e09ded4f48302f1047854db.1920x1080.jpg?t=1768668328",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_10bc33cb32392a415e09ded4f48302f1047854db.600x338.jpg?t=1768668328"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_7524b9f7472412dbd2ca93ee655289d587ed55f7.1920x1080.jpg?t=1768668328",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3098420/ss_7524b9f7472412dbd2ca93ee655289d587ed55f7.600x338.jpg?t=1768668328"
         }
       ],
       "subscriptions": {
@@ -227306,7 +227655,8 @@
       "igdbId": "372414",
       "igdbUrl": "https://www.igdb.com/games/installation-19",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:26.972Z"
+      "igdbCheckedAt": "2026-09-13T16:13:26.972Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:21.612Z"
     },
     {
       "id": 395696,
@@ -227642,36 +227992,32 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7/ss_1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7/ss_1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7/ss_1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7/ss_1e9b8744840e8b8a89f6e0a0d19fa3c3ca7989b7.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/16839bacf00eacb4ba75f1b874cde822f8eabc29/ss_16839bacf00eacb4ba75f1b874cde822f8eabc29.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/16839bacf00eacb4ba75f1b874cde822f8eabc29/ss_16839bacf00eacb4ba75f1b874cde822f8eabc29.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/16839bacf00eacb4ba75f1b874cde822f8eabc29/ss_16839bacf00eacb4ba75f1b874cde822f8eabc29.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/16839bacf00eacb4ba75f1b874cde822f8eabc29/ss_16839bacf00eacb4ba75f1b874cde822f8eabc29.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b57496553c0c200e120a323ec352be417fe1e85f/ss_b57496553c0c200e120a323ec352be417fe1e85f.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b57496553c0c200e120a323ec352be417fe1e85f/ss_b57496553c0c200e120a323ec352be417fe1e85f.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b57496553c0c200e120a323ec352be417fe1e85f/ss_b57496553c0c200e120a323ec352be417fe1e85f.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b57496553c0c200e120a323ec352be417fe1e85f/ss_b57496553c0c200e120a323ec352be417fe1e85f.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/15b2215aaf2acd11dc9b694d3f0f08ba72338fc4/ss_15b2215aaf2acd11dc9b694d3f0f08ba72338fc4.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/15b2215aaf2acd11dc9b694d3f0f08ba72338fc4/ss_15b2215aaf2acd11dc9b694d3f0f08ba72338fc4.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/695121c71ca9334daad1d0cc89641d81789f715d/ss_695121c71ca9334daad1d0cc89641d81789f715d.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/695121c71ca9334daad1d0cc89641d81789f715d/ss_695121c71ca9334daad1d0cc89641d81789f715d.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/695121c71ca9334daad1d0cc89641d81789f715d/ss_695121c71ca9334daad1d0cc89641d81789f715d.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/695121c71ca9334daad1d0cc89641d81789f715d/ss_695121c71ca9334daad1d0cc89641d81789f715d.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3a1f65dbc6709a050b5df31aab3842453e47031e/ss_3a1f65dbc6709a050b5df31aab3842453e47031e.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3a1f65dbc6709a050b5df31aab3842453e47031e/ss_3a1f65dbc6709a050b5df31aab3842453e47031e.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3a1f65dbc6709a050b5df31aab3842453e47031e/ss_3a1f65dbc6709a050b5df31aab3842453e47031e.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3a1f65dbc6709a050b5df31aab3842453e47031e/ss_3a1f65dbc6709a050b5df31aab3842453e47031e.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3ef1772771c2bdbc6dc94037b64d82d1cf57b37a/ss_3ef1772771c2bdbc6dc94037b64d82d1cf57b37a.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3ef1772771c2bdbc6dc94037b64d82d1cf57b37a/ss_3ef1772771c2bdbc6dc94037b64d82d1cf57b37a.600x338.jpg?t=1789273169"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3ef1772771c2bdbc6dc94037b64d82d1cf57b37a/ss_3ef1772771c2bdbc6dc94037b64d82d1cf57b37a.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/3ef1772771c2bdbc6dc94037b64d82d1cf57b37a/ss_3ef1772771c2bdbc6dc94037b64d82d1cf57b37a.600x338.jpg?t=1788847048"
-        },
-        {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1/ss_b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1.1920x1080.jpg?t=1788847048",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1/ss_b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1.600x338.jpg?t=1788847048"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1/ss_b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1.1920x1080.jpg?t=1789273169",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3575500/b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1/ss_b08e666b711fa2dbb4be3b2c3384c5f681c1d4d1.600x338.jpg?t=1789273169"
         }
       ],
       "subscriptions": {
@@ -227708,7 +228054,8 @@
       "igdbId": "335212",
       "igdbUrl": "https://www.igdb.com/games/invasion-survivors",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:28.285Z"
+      "igdbCheckedAt": "2026-09-13T16:13:28.285Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:23.461Z"
     },
     {
       "id": 404345,
@@ -228565,7 +228912,8 @@
       "igdbId": "310160",
       "igdbUrl": "https://www.igdb.com/games/iso-core",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:31.489Z"
+      "igdbCheckedAt": "2026-09-13T16:13:31.489Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:25.309Z"
     },
     {
       "id": 412908,
@@ -228731,6 +229079,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_2f640c12a2a2290349bbf1cccc5fb5f98a3f2ebe.1920x1080.jpg?t=1784465568",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_2f640c12a2a2290349bbf1cccc5fb5f98a3f2ebe.600x338.jpg?t=1784465568"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_a307b04b4cee1ef2d890d9fbff94e020b612c2ac.1920x1080.jpg?t=1784465568",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_a307b04b4cee1ef2d890d9fbff94e020b612c2ac.600x338.jpg?t=1784465568"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_51e9834994166731bda7a9b0dca2647c83fb5a9e.1920x1080.jpg?t=1784465568",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2523800/ss_51e9834994166731bda7a9b0dca2647c83fb5a9e.600x338.jpg?t=1784465568"
         }
       ],
       "subscriptions": {
@@ -228772,7 +229128,8 @@
       "igdbId": "274385",
       "igdbUrl": "https://www.igdb.com/games/isolation-one",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:31.869Z"
+      "igdbCheckedAt": "2026-09-13T16:13:31.869Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:27.158Z"
     },
     {
       "id": 352231,
@@ -229104,7 +229461,8 @@
       "igdbId": "391789",
       "igdbUrl": "https://www.igdb.com/games/jacmena",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:32.969Z"
+      "igdbCheckedAt": "2026-09-13T16:13:32.969Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:29.003Z"
     },
     {
       "id": 363166,
@@ -229877,7 +230235,8 @@
       "igdbId": "303593",
       "igdbUrl": "https://www.igdb.com/games/jordi-and-oslo-the-lost-tail",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:35.205Z"
+      "igdbCheckedAt": "2026-09-13T16:13:35.205Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:30.852Z"
     },
     {
       "id": 347590,
@@ -230507,7 +230866,8 @@
       "igdbId": "356045",
       "igdbUrl": "https://www.igdb.com/games/junkyard-space-agency",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:37.152Z"
+      "igdbCheckedAt": "2026-09-13T16:13:37.152Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:32.703Z"
     },
     {
       "id": 304932,
@@ -230730,6 +231090,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/8dd2bff99b81184444e86b8845fc09ff0b36f77c/ss_8dd2bff99b81184444e86b8845fc09ff0b36f77c.1920x1080.jpg?t=1785338363",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/8dd2bff99b81184444e86b8845fc09ff0b36f77c/ss_8dd2bff99b81184444e86b8845fc09ff0b36f77c.600x338.jpg?t=1785338363"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/2cc424dbe242e27f85b62bc7bf2a79de3f15cc3b/ss_2cc424dbe242e27f85b62bc7bf2a79de3f15cc3b.1920x1080.jpg?t=1785338363",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/2cc424dbe242e27f85b62bc7bf2a79de3f15cc3b/ss_2cc424dbe242e27f85b62bc7bf2a79de3f15cc3b.600x338.jpg?t=1785338363"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/ss_1b07ff0acd413dbdfe3a02ca82154924c60168d7.1920x1080.jpg?t=1785338363",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1389140/ss_1b07ff0acd413dbdfe3a02ca82154924c60168d7.600x338.jpg?t=1785338363"
         }
       ],
       "subscriptions": {
@@ -230767,7 +231135,8 @@
         "Includes level editor",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:34.549Z"
     },
     {
       "id": 403620,
@@ -231733,6 +232102,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/735b0624d3d2f7dd603a0016b2e608da73f63014/ss_735b0624d3d2f7dd603a0016b2e608da73f63014.1920x1080.jpg?t=1788989382",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/735b0624d3d2f7dd603a0016b2e608da73f63014/ss_735b0624d3d2f7dd603a0016b2e608da73f63014.600x338.jpg?t=1788989382"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/bed09bab1fdb9aec58994a6ecf94c7558a77d4f8/ss_bed09bab1fdb9aec58994a6ecf94c7558a77d4f8.1920x1080.jpg?t=1788989382",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/bed09bab1fdb9aec58994a6ecf94c7558a77d4f8/ss_bed09bab1fdb9aec58994a6ecf94c7558a77d4f8.600x338.jpg?t=1788989382"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/1d0438365622b64746532c710fb4e049129f3fc2/ss_1d0438365622b64746532c710fb4e049129f3fc2.1920x1080.jpg?t=1788989382",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2385970/1d0438365622b64746532c710fb4e049129f3fc2/ss_1d0438365622b64746532c710fb4e049129f3fc2.600x338.jpg?t=1788989382"
         }
       ],
       "subscriptions": {
@@ -231771,7 +232148,8 @@
         "Steam Cloud",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:36.402Z"
     },
     {
       "id": 324816,
@@ -232952,7 +233330,8 @@
         "Online PvP",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:38.248Z"
     },
     {
       "id": 371165,
@@ -233154,7 +233533,8 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:40.099Z"
     },
     {
       "id": 394914,
@@ -233688,7 +234068,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:41.947Z"
     },
     {
       "id": 403556,
@@ -233855,6 +234236,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2754870/ss_81dceaf7acb8ee6ed26176f4e96cdd76d6e22364.1920x1080.jpg?t=1719933036",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2754870/ss_81dceaf7acb8ee6ed26176f4e96cdd76d6e22364.600x338.jpg?t=1719933036"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2754870/ss_d6096cb1b25bf69df17e3efe9248728f0d3f46db.1920x1080.jpg?t=1719933036",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2754870/ss_d6096cb1b25bf69df17e3efe9248728f0d3f46db.600x338.jpg?t=1719933036"
         }
       ],
       "subscriptions": {
@@ -233891,7 +234276,8 @@
         "Steam Leaderboards",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:43.800Z"
     },
     {
       "id": 266985,
@@ -234892,7 +235278,8 @@
         "Remote Play Together",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:45.647Z"
     },
     {
       "id": 334698,
@@ -235018,7 +235405,8 @@
         "Steam Achievements",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:47.494Z"
     },
     {
       "id": 399364,
@@ -235111,6 +235499,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667380/0fdc5b8e6a7bffa3f6e5d5c05cd3001283cda47c/ss_0fdc5b8e6a7bffa3f6e5d5c05cd3001283cda47c.1920x1080.jpg?t=1787563103",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667380/0fdc5b8e6a7bffa3f6e5d5c05cd3001283cda47c/ss_0fdc5b8e6a7bffa3f6e5d5c05cd3001283cda47c.600x338.jpg?t=1787563103"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667380/a1d343799af4f39b84d84e14f0478c979bb245ad/ss_a1d343799af4f39b84d84e14f0478c979bb245ad.1920x1080.jpg?t=1787563103",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3667380/a1d343799af4f39b84d84e14f0478c979bb245ad/ss_a1d343799af4f39b84d84e14f0478c979bb245ad.600x338.jpg?t=1787563103"
         }
       ],
       "subscriptions": {
@@ -235148,7 +235540,8 @@
         "Online Co-op",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:49.349Z"
     },
     {
       "id": 389490,
@@ -235631,7 +236024,8 @@
         "Single-player",
         "Family Sharing"
       ],
-      "summarySource": "steam-store"
+      "summarySource": "steam-store",
+      "steamMediaCheckedAt": "2026-09-14T09:04:51.209Z"
     },
     {
       "id": 404087,
@@ -235871,6 +236265,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/4bb68234e1a88ca5dd5543c1c666b7b58f0616f2/ss_4bb68234e1a88ca5dd5543c1c666b7b58f0616f2.1920x1080.jpg?t=1787979037",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/4bb68234e1a88ca5dd5543c1c666b7b58f0616f2/ss_4bb68234e1a88ca5dd5543c1c666b7b58f0616f2.600x338.jpg?t=1787979037"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/b7c7b58a8c6854dbf8a512da3ec59d1cc874da7c/ss_b7c7b58a8c6854dbf8a512da3ec59d1cc874da7c.1920x1080.jpg?t=1787979037",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/b7c7b58a8c6854dbf8a512da3ec59d1cc874da7c/ss_b7c7b58a8c6854dbf8a512da3ec59d1cc874da7c.600x338.jpg?t=1787979037"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/baab79a25ca95a95b075df30d6d7aa588875a73d/ss_baab79a25ca95a95b075df30d6d7aa588875a73d.1920x1080.jpg?t=1787979037",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3690400/baab79a25ca95a95b075df30d6d7aa588875a73d/ss_baab79a25ca95a95b075df30d6d7aa588875a73d.600x338.jpg?t=1787979037"
         }
       ],
       "subscriptions": {
@@ -235905,7 +236307,8 @@
       "igdbId": "391734",
       "igdbUrl": "https://www.igdb.com/games/last-term-first-love",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:52.637Z"
+      "igdbCheckedAt": "2026-09-13T16:13:52.637Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:53.056Z"
     },
     {
       "id": 361821,
@@ -236294,7 +236697,8 @@
       "igdbId": "244399",
       "igdbUrl": "https://www.igdb.com/games/laws-of-nadragia",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:54.286Z"
+      "igdbCheckedAt": "2026-09-13T16:13:54.286Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:54.914Z"
     },
     {
       "id": 412167,
@@ -236483,7 +236887,8 @@
       "igdbId": "259048",
       "igdbUrl": "https://www.igdb.com/games/lazy-jiangshi",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:54.983Z"
+      "igdbCheckedAt": "2026-09-13T16:13:54.983Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:56.763Z"
     },
     {
       "id": 356349,
@@ -237092,7 +237497,8 @@
       "igdbId": "384742",
       "igdbUrl": "https://www.igdb.com/games/legacy-of-ashes",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:56.483Z"
+      "igdbCheckedAt": "2026-09-13T16:13:56.483Z",
+      "steamMediaCheckedAt": "2026-09-14T09:04:58.618Z"
     },
     {
       "id": 240636,
@@ -237925,6 +238331,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_c1f5d7190664da0fba0eca20eb2c42acabf4566b.1920x1080.jpg?t=1771406843",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_c1f5d7190664da0fba0eca20eb2c42acabf4566b.600x338.jpg?t=1771406843"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_e7de212afd56437f18110c08413320f02ca6530c.1920x1080.jpg?t=1771406843",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_e7de212afd56437f18110c08413320f02ca6530c.600x338.jpg?t=1771406843"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_e1b5eb35260e9d230f9e048c9dd0795570aa0fd9.1920x1080.jpg?t=1771406843",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1792390/ss_e1b5eb35260e9d230f9e048c9dd0795570aa0fd9.600x338.jpg?t=1771406843"
         }
       ],
       "subscriptions": {
@@ -237967,7 +238381,8 @@
       "igdbId": "233957",
       "igdbUrl": "https://www.igdb.com/games/life-after-end",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:58.409Z"
+      "igdbCheckedAt": "2026-09-13T16:13:58.409Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:00.466Z"
     },
     {
       "id": 398904,
@@ -238174,7 +238589,8 @@
       "igdbId": "324888",
       "igdbUrl": "https://www.igdb.com/games/life-of-a-lonely-indie-game-developer",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:13:59.239Z"
+      "igdbCheckedAt": "2026-09-13T16:13:59.239Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:02.323Z"
     },
     {
       "id": 252347,
@@ -240543,7 +240959,8 @@
       "igdbId": "346643",
       "igdbUrl": "https://www.igdb.com/games/loot-profit",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:06.201Z"
+      "igdbCheckedAt": "2026-09-13T16:14:06.201Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:04.166Z"
     },
     {
       "id": 370125,
@@ -241100,7 +241517,8 @@
       "igdbId": "347397",
       "igdbUrl": "https://www.igdb.com/games/lost-ground",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:08.262Z"
+      "igdbCheckedAt": "2026-09-13T16:14:08.262Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:06.018Z"
     },
     {
       "id": 285768,
@@ -242299,7 +242717,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:14:11.419Z"
+      "igdbCheckedAt": "2026-09-13T16:14:11.419Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:07.887Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 397408,
@@ -242619,6 +243039,10 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1551190/ss_bbe5f0576e31fefa2607fb7da2fb9bc94aa33b5f.1920x1080.jpg?t=1769363620",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1551190/ss_bbe5f0576e31fefa2607fb7da2fb9bc94aa33b5f.600x338.jpg?t=1769363620"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1551190/ss_c614d7a93594bf176e0f31b6bbbb26d6ea1a79f2.1920x1080.jpg?t=1769363620",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1551190/ss_c614d7a93594bf176e0f31b6bbbb26d6ea1a79f2.600x338.jpg?t=1769363620"
         }
       ],
       "subscriptions": {
@@ -242659,7 +243083,8 @@
       "igdbId": "155921",
       "igdbUrl": "https://www.igdb.com/games/mad-chess",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:12.792Z"
+      "igdbCheckedAt": "2026-09-13T16:14:12.792Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:09.735Z"
     },
     {
       "id": 393292,
@@ -242919,7 +243344,8 @@
       "igdbId": "347726",
       "igdbUrl": "https://www.igdb.com/games/magic-scavenger",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:13.673Z"
+      "igdbCheckedAt": "2026-09-13T16:14:13.673Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:11.585Z"
     },
     {
       "id": 362038,
@@ -243291,7 +243717,8 @@
       "igdbId": "347725",
       "igdbUrl": "https://www.igdb.com/games/machine-of-the-wasteland",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:14.441Z"
+      "igdbCheckedAt": "2026-09-13T16:14:14.441Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:13.430Z"
     },
     {
       "id": 348322,
@@ -243610,6 +244037,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_0e15cb2e784bed13d5a183cf5304e44b06de881a.1920x1080.jpg?t=1754508173",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_0e15cb2e784bed13d5a183cf5304e44b06de881a.600x338.jpg?t=1754508173"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_e43c35f8f2a41c782c0f2fc6e638c07b2a6c38e6.1920x1080.jpg?t=1754508173",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_e43c35f8f2a41c782c0f2fc6e638c07b2a6c38e6.600x338.jpg?t=1754508173"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_73a3cb047ff78a67022eadd53530054f40d2375d.1920x1080.jpg?t=1754508173",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2584740/ss_73a3cb047ff78a67022eadd53530054f40d2375d.600x338.jpg?t=1754508173"
         }
       ],
       "subscriptions": {
@@ -243644,7 +244079,8 @@
       "igdbId": "303645",
       "igdbUrl": "https://www.igdb.com/games/malvinas-la-ultima-carta",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:15.866Z"
+      "igdbCheckedAt": "2026-09-13T16:14:15.866Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:15.296Z"
     },
     {
       "id": 272201,
@@ -243743,6 +244179,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_9a746cc212c4c84d9a99f9e622021f53e89591ab.1920x1080.jpg?t=1782747734",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_9a746cc212c4c84d9a99f9e622021f53e89591ab.600x338.jpg?t=1782747734"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_c19d0732fd8b4a322dce50ae1fc89f3e2a8e0085.1920x1080.jpg?t=1782747734",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_c19d0732fd8b4a322dce50ae1fc89f3e2a8e0085.600x338.jpg?t=1782747734"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_34601843079f032b38ec16c4b32515ca820e5ca2.1920x1080.jpg?t=1782747734",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2519650/ss_34601843079f032b38ec16c4b32515ca820e5ca2.600x338.jpg?t=1782747734"
         }
       ],
       "subscriptions": {
@@ -243777,7 +244221,8 @@
       "igdbId": "272201",
       "igdbUrl": "https://www.igdb.com/games/mana-quest",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:16.182Z"
+      "igdbCheckedAt": "2026-09-13T16:14:16.182Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:17.170Z"
     },
     {
       "id": 369157,
@@ -244345,7 +244790,8 @@
       "igdbId": "346878",
       "igdbUrl": "https://www.igdb.com/games/marble-run-maker",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:17.794Z"
+      "igdbCheckedAt": "2026-09-13T16:14:17.794Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:19.021Z"
     },
     {
       "id": 412504,
@@ -244537,7 +244983,8 @@
       "igdbId": "360016",
       "igdbUrl": "https://www.igdb.com/games/mark-my-words--1",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:18.659Z"
+      "igdbCheckedAt": "2026-09-13T16:14:18.659Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:20.885Z"
     },
     {
       "id": 412597,
@@ -245309,7 +245756,8 @@
       "igdbId": "391632",
       "igdbUrl": "https://www.igdb.com/games/math-is-hard",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:21.369Z"
+      "igdbCheckedAt": "2026-09-13T16:14:21.369Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:22.731Z"
     },
     {
       "id": 315342,
@@ -245412,6 +245860,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/7b7da9ea1b6bd71b3083b73e54f40fc8d07a0629/ss_7b7da9ea1b6bd71b3083b73e54f40fc8d07a0629.1920x1080.jpg?t=1788809804",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/7b7da9ea1b6bd71b3083b73e54f40fc8d07a0629/ss_7b7da9ea1b6bd71b3083b73e54f40fc8d07a0629.600x338.jpg?t=1788809804"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/729325397e32cec9e6a272e7a15e309666e17ad0/ss_729325397e32cec9e6a272e7a15e309666e17ad0.1920x1080.jpg?t=1788809804",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/729325397e32cec9e6a272e7a15e309666e17ad0/ss_729325397e32cec9e6a272e7a15e309666e17ad0.600x338.jpg?t=1788809804"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/b1fe4f960e8c4a038220013d93f3ad8af43e3f83/ss_b1fe4f960e8c4a038220013d93f3ad8af43e3f83.1920x1080.jpg?t=1788809804",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159350/b1fe4f960e8c4a038220013d93f3ad8af43e3f83/ss_b1fe4f960e8c4a038220013d93f3ad8af43e3f83.600x338.jpg?t=1788809804"
         }
       ],
       "subscriptions": {
@@ -245452,7 +245908,8 @@
       "igdbId": "315342",
       "igdbUrl": "https://www.igdb.com/games/match-in-peace",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:21.364Z"
+      "igdbCheckedAt": "2026-09-13T16:14:21.364Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:24.583Z"
     },
     {
       "id": 282693,
@@ -245579,7 +246036,8 @@
       "igdbId": "282693",
       "igdbUrl": "https://www.igdb.com/games/match-tree",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:21.649Z"
+      "igdbCheckedAt": "2026-09-13T16:14:21.649Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:26.434Z"
     },
     {
       "id": 350396,
@@ -245942,7 +246400,8 @@
       "igdbId": "264802",
       "igdbUrl": "https://www.igdb.com/games/mayhem-brawler-ii-best-of-both-worlds",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:22.496Z"
+      "igdbCheckedAt": "2026-09-13T16:14:22.496Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:28.277Z"
     },
     {
       "id": 388696,
@@ -246255,7 +246714,8 @@
       "igdbId": "280126",
       "igdbUrl": "https://www.igdb.com/games/meat-grinder",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:23.585Z"
+      "igdbCheckedAt": "2026-09-13T16:14:23.585Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:30.126Z"
     },
     {
       "id": 376350,
@@ -246513,7 +246973,8 @@
       "igdbId": "356338",
       "igdbUrl": "https://www.igdb.com/games/mech-log-zero",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:24.687Z"
+      "igdbCheckedAt": "2026-09-13T16:14:24.687Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:31.973Z"
     },
     {
       "id": 293671,
@@ -246648,7 +247109,8 @@
       "igdbId": "293671",
       "igdbUrl": "https://www.igdb.com/games/mecha-simultactics",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:24.939Z"
+      "igdbCheckedAt": "2026-09-13T16:14:24.939Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:33.825Z"
     },
     {
       "id": 384809,
@@ -246924,7 +247386,8 @@
       "igdbId": "356337",
       "igdbUrl": "https://www.igdb.com/games/mechs-and-muskets",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:25.503Z"
+      "igdbCheckedAt": "2026-09-13T16:14:25.503Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:35.675Z"
     },
     {
       "id": 330896,
@@ -247365,7 +247828,8 @@
       "igdbId": "336481",
       "igdbUrl": "https://www.igdb.com/games/memory-adventures-in-the-jungle",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:26.617Z"
+      "igdbCheckedAt": "2026-09-13T16:14:26.617Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:37.536Z"
     },
     {
       "id": 381280,
@@ -247717,7 +248181,8 @@
       "igdbId": "312984",
       "igdbUrl": "https://www.igdb.com/games/meowmentum",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:27.709Z"
+      "igdbCheckedAt": "2026-09-13T16:14:27.709Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:39.393Z"
     },
     {
       "id": 391584,
@@ -247856,44 +248321,44 @@
       "series": [],
       "screenshots": [
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/19038934b8a1537aed01c9f2b7eadf27d18a86f7/ss_19038934b8a1537aed01c9f2b7eadf27d18a86f7.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/19038934b8a1537aed01c9f2b7eadf27d18a86f7/ss_19038934b8a1537aed01c9f2b7eadf27d18a86f7.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/19038934b8a1537aed01c9f2b7eadf27d18a86f7/ss_19038934b8a1537aed01c9f2b7eadf27d18a86f7.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/19038934b8a1537aed01c9f2b7eadf27d18a86f7/ss_19038934b8a1537aed01c9f2b7eadf27d18a86f7.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/5b095bdba4ad7eab72786ae3377e8938d2d7472a/ss_5b095bdba4ad7eab72786ae3377e8938d2d7472a.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/5b095bdba4ad7eab72786ae3377e8938d2d7472a/ss_5b095bdba4ad7eab72786ae3377e8938d2d7472a.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/5b095bdba4ad7eab72786ae3377e8938d2d7472a/ss_5b095bdba4ad7eab72786ae3377e8938d2d7472a.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/5b095bdba4ad7eab72786ae3377e8938d2d7472a/ss_5b095bdba4ad7eab72786ae3377e8938d2d7472a.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/6ed76e399e4c8ab1af475040765412957c578d43/ss_6ed76e399e4c8ab1af475040765412957c578d43.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/6ed76e399e4c8ab1af475040765412957c578d43/ss_6ed76e399e4c8ab1af475040765412957c578d43.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/6ed76e399e4c8ab1af475040765412957c578d43/ss_6ed76e399e4c8ab1af475040765412957c578d43.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/6ed76e399e4c8ab1af475040765412957c578d43/ss_6ed76e399e4c8ab1af475040765412957c578d43.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/4e9bbe0b7b48963861b9595828d9ed42ced7dc50/ss_4e9bbe0b7b48963861b9595828d9ed42ced7dc50.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/4e9bbe0b7b48963861b9595828d9ed42ced7dc50/ss_4e9bbe0b7b48963861b9595828d9ed42ced7dc50.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/4e9bbe0b7b48963861b9595828d9ed42ced7dc50/ss_4e9bbe0b7b48963861b9595828d9ed42ced7dc50.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/4e9bbe0b7b48963861b9595828d9ed42ced7dc50/ss_4e9bbe0b7b48963861b9595828d9ed42ced7dc50.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/a82403029f0231fd8fc9296c18eb0e6b83bff9f1/ss_a82403029f0231fd8fc9296c18eb0e6b83bff9f1.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/a82403029f0231fd8fc9296c18eb0e6b83bff9f1/ss_a82403029f0231fd8fc9296c18eb0e6b83bff9f1.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/a82403029f0231fd8fc9296c18eb0e6b83bff9f1/ss_a82403029f0231fd8fc9296c18eb0e6b83bff9f1.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/a82403029f0231fd8fc9296c18eb0e6b83bff9f1/ss_a82403029f0231fd8fc9296c18eb0e6b83bff9f1.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/525314b45ba098991a0f7e1e35dc4b02da7c8d90/ss_525314b45ba098991a0f7e1e35dc4b02da7c8d90.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/525314b45ba098991a0f7e1e35dc4b02da7c8d90/ss_525314b45ba098991a0f7e1e35dc4b02da7c8d90.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/525314b45ba098991a0f7e1e35dc4b02da7c8d90/ss_525314b45ba098991a0f7e1e35dc4b02da7c8d90.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/525314b45ba098991a0f7e1e35dc4b02da7c8d90/ss_525314b45ba098991a0f7e1e35dc4b02da7c8d90.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ab429b96e1a7319a18682713d44995dd4ee211a0/ss_ab429b96e1a7319a18682713d44995dd4ee211a0.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ab429b96e1a7319a18682713d44995dd4ee211a0/ss_ab429b96e1a7319a18682713d44995dd4ee211a0.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ab429b96e1a7319a18682713d44995dd4ee211a0/ss_ab429b96e1a7319a18682713d44995dd4ee211a0.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ab429b96e1a7319a18682713d44995dd4ee211a0/ss_ab429b96e1a7319a18682713d44995dd4ee211a0.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/93067c62caabc56237929a1478e4c7fb5c792e03/ss_93067c62caabc56237929a1478e4c7fb5c792e03.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/93067c62caabc56237929a1478e4c7fb5c792e03/ss_93067c62caabc56237929a1478e4c7fb5c792e03.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/93067c62caabc56237929a1478e4c7fb5c792e03/ss_93067c62caabc56237929a1478e4c7fb5c792e03.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/93067c62caabc56237929a1478e4c7fb5c792e03/ss_93067c62caabc56237929a1478e4c7fb5c792e03.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ee92688b6fa625fa7f70a6040ec17df7436347df/ss_ee92688b6fa625fa7f70a6040ec17df7436347df.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ee92688b6fa625fa7f70a6040ec17df7436347df/ss_ee92688b6fa625fa7f70a6040ec17df7436347df.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ee92688b6fa625fa7f70a6040ec17df7436347df/ss_ee92688b6fa625fa7f70a6040ec17df7436347df.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/ee92688b6fa625fa7f70a6040ec17df7436347df/ss_ee92688b6fa625fa7f70a6040ec17df7436347df.600x338.jpg?t=1789276381"
         },
         {
-          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/095d0c7b40f38186fbbd173a5adad0b18d186631/ss_095d0c7b40f38186fbbd173a5adad0b18d186631.1920x1080.jpg?t=1786348147",
-          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/095d0c7b40f38186fbbd173a5adad0b18d186631/ss_095d0c7b40f38186fbbd173a5adad0b18d186631.600x338.jpg?t=1786348147"
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/095d0c7b40f38186fbbd173a5adad0b18d186631/ss_095d0c7b40f38186fbbd173a5adad0b18d186631.1920x1080.jpg?t=1789276381",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2885530/095d0c7b40f38186fbbd173a5adad0b18d186631/ss_095d0c7b40f38186fbbd173a5adad0b18d186631.600x338.jpg?t=1789276381"
         }
       ],
       "subscriptions": {
@@ -247934,7 +248399,8 @@
       "igdbId": "373500",
       "igdbUrl": "https://www.igdb.com/games/meowpower-yachiyo",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:28.357Z"
+      "igdbCheckedAt": "2026-09-13T16:14:28.357Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:41.247Z"
     },
     {
       "id": 415327,
@@ -248334,7 +248800,8 @@
       "igdbId": "335256",
       "igdbUrl": "https://www.igdb.com/games/metal-coffin",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:29.425Z"
+      "igdbCheckedAt": "2026-09-13T16:14:29.425Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:43.095Z"
     },
     {
       "id": 149823,
@@ -248912,6 +249379,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_183c7a2e4263a534e78d12f3befe7ed52131d3f1.1920x1080.jpg?t=1525221968",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_183c7a2e4263a534e78d12f3befe7ed52131d3f1.600x338.jpg?t=1525221968"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_c6cb60ab79ccc297a683ca0ecb80f22436fcd006.1920x1080.jpg?t=1525221968",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_c6cb60ab79ccc297a683ca0ecb80f22436fcd006.600x338.jpg?t=1525221968"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_275932447389cc7611fc8fa3cd4ebf7b424fdf52.1920x1080.jpg?t=1525221968",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/759980/ss_275932447389cc7611fc8fa3cd4ebf7b424fdf52.600x338.jpg?t=1525221968"
         }
       ],
       "subscriptions": {
@@ -248951,7 +249426,8 @@
       "igdbId": "268062",
       "igdbUrl": "https://www.igdb.com/games/mimic--3",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:31.361Z"
+      "igdbCheckedAt": "2026-09-13T16:14:31.361Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:44.955Z"
     },
     {
       "id": 415080,
@@ -249171,7 +249647,9 @@
       ],
       "summarySource": "steam-store",
       "igdbStatus": "not-found",
-      "igdbCheckedAt": "2026-09-13T16:14:32.181Z"
+      "igdbCheckedAt": "2026-09-13T16:14:32.181Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:46.805Z",
+      "contentType": "Plná hra"
     },
     {
       "id": 311893,
@@ -249502,7 +249980,8 @@
       "igdbId": "372711",
       "igdbUrl": "https://www.igdb.com/games/minute-man",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:33.019Z"
+      "igdbCheckedAt": "2026-09-13T16:14:33.019Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:48.652Z"
     },
     {
       "id": 390577,
@@ -250407,7 +250886,8 @@
       "igdbId": "345670",
       "igdbUrl": "https://www.igdb.com/games/misty-garden",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:35.497Z"
+      "igdbCheckedAt": "2026-09-13T16:14:35.497Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:50.494Z"
     },
     {
       "id": 349134,
@@ -250502,6 +250982,14 @@
         {
           "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/fedcfbab867c574dd8f0904ef5cb5700d883b392/ss_fedcfbab867c574dd8f0904ef5cb5700d883b392.1920x1080.jpg?t=1788808457",
           "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/fedcfbab867c574dd8f0904ef5cb5700d883b392/ss_fedcfbab867c574dd8f0904ef5cb5700d883b392.600x338.jpg?t=1788808457"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/dcd55e8d537ef478bd5dd6220a1dd0ba12421e6d/ss_dcd55e8d537ef478bd5dd6220a1dd0ba12421e6d.1920x1080.jpg?t=1788808457",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/dcd55e8d537ef478bd5dd6220a1dd0ba12421e6d/ss_dcd55e8d537ef478bd5dd6220a1dd0ba12421e6d.600x338.jpg?t=1788808457"
+        },
+        {
+          "full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/fdf11a9617a2c1a2d7680d1e984a36851612eb73/ss_fdf11a9617a2c1a2d7680d1e984a36851612eb73.1920x1080.jpg?t=1788808457",
+          "thumb": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3677310/fdf11a9617a2c1a2d7680d1e984a36851612eb73/ss_fdf11a9617a2c1a2d7680d1e984a36851612eb73.600x338.jpg?t=1788808457"
         }
       ],
       "subscriptions": {
@@ -250539,7 +251027,8 @@
       "igdbId": "349134",
       "igdbUrl": "https://www.igdb.com/games/misty-valley-a-cozy-fishing-tale",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:35.795Z"
+      "igdbCheckedAt": "2026-09-13T16:14:35.795Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:52.349Z"
     },
     {
       "id": 393980,
@@ -251301,7 +251790,8 @@
       "igdbId": "343261",
       "igdbUrl": "https://www.igdb.com/games/monoliths-dreamers",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:38.326Z"
+      "igdbCheckedAt": "2026-09-13T16:14:38.326Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:54.194Z"
     },
     {
       "id": 270069,
@@ -252545,7 +253035,8 @@
       "igdbId": "333130",
       "igdbUrl": "https://www.igdb.com/games/mortal-quest",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:43.088Z"
+      "igdbCheckedAt": "2026-09-13T16:14:43.088Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:56.055Z"
     },
     {
       "id": 373515,
@@ -253026,7 +253517,8 @@
       "igdbId": "348199",
       "igdbUrl": "https://www.igdb.com/games/mudang-two-hearts",
       "igdbStatus": "matched",
-      "igdbCheckedAt": "2026-09-13T16:14:44.994Z"
+      "igdbCheckedAt": "2026-09-13T16:14:44.994Z",
+      "steamMediaCheckedAt": "2026-09-14T09:05:57.902Z"
     },
     {
       "id": 197175,
