@@ -329,8 +329,8 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   if (base.watchlistOnly && !base.watchlist.has(String(game.id))) return false;
   const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
   const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
-  if (base.precision !== 'all' && precisionGroup !== base.precision) return false;
-  if (base.period === 'undated' && row.day) return false;
+  if (!search && base.precision !== 'all' && precisionGroup !== base.precision) return false;
+  if (!search && base.period === 'undated' && row.day) return false;
 
   const today = todayLocal();
   if (!search && base.status === 'upcoming' && row.day && row.day < today) return false;

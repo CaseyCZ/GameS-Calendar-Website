@@ -241,7 +241,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   if (state.watchlistOnly && !isWatched(game)) return false;
   const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
   const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
-  if (state.precision !== 'all' && precisionGroup !== state.precision) return false;
+  if (!search && state.precision !== 'all' && precisionGroup !== state.precision) return false;
   if (includeStatus) {
     const today = todayLocal();
     if (state.status === 'upcoming' && row.day && row.day < today) return false;
@@ -261,7 +261,7 @@ function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
   const rows = state.rows.filter(row =>
     matchesBase(row, { includeStatus: !searching && !row.onlineResult })
-    && (state.period === 'undated' ? inActiveRange(row) : searching || row.onlineResult || inActiveRange(row))
+    && (searching || row.onlineResult || inActiveRange(row))
   );
   rows.sort((a, b) => {
     const ad = a.day || '';
