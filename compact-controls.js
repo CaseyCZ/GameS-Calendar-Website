@@ -66,9 +66,10 @@
     const summary = document.querySelector('.filters-disclosure > .filter-summary');
     if (!badge || !summary) return;
     const count = activeFilterCount();
-    badge.dataset.count = String(count);
-    badge.textContent = count ? String(count) : '';
-    summary.classList.toggle('has-active', count > 0);
+    const countText = count ? String(count) : '';
+    if (badge.dataset.count !== String(count)) badge.dataset.count = String(count);
+    if (badge.textContent !== countText) badge.textContent = countText;
+    if (summary.classList.contains('has-active') !== (count > 0)) summary.classList.toggle('has-active', count > 0);
   }
 
   function setupSortMenu(select, quick) {
@@ -274,11 +275,20 @@
   function observeFilterState() {
     const root = document.querySelector('.filters-wrap');
     if (!root) return;
-    const observer = new MutationObserver(() => requestAnimationFrame(updateFilterBadge));
+    let updateScheduled = false;
+    const scheduleUpdate = () => {
+      if (updateScheduled) return;
+      updateScheduled = true;
+      requestAnimationFrame(() => {
+        updateScheduled = false;
+        updateFilterBadge();
+      });
+    };
+    const observer = new MutationObserver(scheduleUpdate);
     observer.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'hidden'] });
-    root.addEventListener('click', () => setTimeout(updateFilterBadge, 0), true);
-    root.addEventListener('change', () => setTimeout(updateFilterBadge, 0), true);
-    setTimeout(updateFilterBadge, 0);
+    root.addEventListener('click', () => setTimeout(scheduleUpdate, 0), true);
+    root.addEventListener('change', () => setTimeout(scheduleUpdate, 0), true);
+    setTimeout(scheduleUpdate, 0);
   }
 
   function setup() {

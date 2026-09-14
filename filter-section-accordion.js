@@ -8,6 +8,10 @@
 
   const state = readState();
 
+  function setText(node, value) {
+    if (node && node.textContent !== value) node.textContent = value;
+  }
+
   function saveState(key, open) {
     state[key] = Boolean(open);
     try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch {}
@@ -172,7 +176,7 @@
     const genreMeta = document.querySelector('[data-filter-subsection-meta="genres"]');
     if (genreMeta) {
       const selected = activeCount('#genre-filters .genre-filter-chip.is-active');
-      genreMeta.textContent = selected ? `${selected} vybráno` : 'Vše';
+      setText(genreMeta, selected ? `${selected} vybráno` : 'Vše');
     }
 
     document.querySelectorAll('.filter-subsection--traits').forEach(details => {
@@ -180,7 +184,7 @@
       if (!meta) return;
       const selected = details.querySelectorAll('[data-trait].is-active').length;
       if (selected) {
-        meta.textContent = `${selected} vybráno`;
+        setText(meta, `${selected} vybráno`);
         return;
       }
 
@@ -188,12 +192,12 @@
       const total = numeric(details.dataset.filterTotal);
       const partition = details.dataset.traitPartition === '1';
       if (total) {
-        meta.textContent = partition ? `${coverage} / ${total} her` : `${coverage} z ${total} her`;
+        setText(meta, partition ? `${coverage} / ${total} her` : `${coverage} z ${total} her`);
         return;
       }
 
       const available = [...details.querySelectorAll('[data-trait]')].filter(node => !node.classList.contains('is-empty')).length;
-      meta.textContent = `${available} možností`;
+      setText(meta, `${available} možností`);
     });
 
     const status = document.getElementById('status-filter');
@@ -208,7 +212,7 @@
       if (status?.selectedOptions?.[0]) parts.push(status.selectedOptions[0].textContent.trim());
       if (precision?.value && precision.value !== 'all') parts.push(precision.selectedOptions[0].textContent.trim());
       if (period) parts.push(period.textContent.trim());
-      selectionMeta.textContent = parts.join(' · ') || 'Nastavit';
+      setText(selectionMeta, parts.join(' · ') || 'Nastavit');
     }
   }
 
@@ -219,15 +223,22 @@
     updateMeta();
   }
 
-  const observer = new MutationObserver(() => requestAnimationFrame(() => {
-    setup();
-    updateMeta();
-  }));
+  let updateScheduled = false;
+  const scheduleUpdate = () => {
+    if (updateScheduled) return;
+    updateScheduled = true;
+    requestAnimationFrame(() => {
+      updateScheduled = false;
+      setup();
+      updateMeta();
+    });
+  };
+  const observer = new MutationObserver(scheduleUpdate);
 
   const root = document.querySelector('.filter-panel') || document.querySelector('.filters-wrap');
   if (root) observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'data-filter-coverage', 'data-filter-total'] });
-  root?.addEventListener('click', () => setTimeout(updateMeta, 0), true);
-  root?.addEventListener('change', () => setTimeout(updateMeta, 0), true);
+  root?.addEventListener('click', () => setTimeout(scheduleUpdate, 0), true);
+  root?.addEventListener('change', () => setTimeout(scheduleUpdate, 0), true);
   setup();
 })();
 
