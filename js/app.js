@@ -145,6 +145,22 @@ function setDefaultPeriod() {
   state.range = monthRange(now.getFullYear(), now.getMonth());
 }
 
+function rangeForPeriod(kind) {
+  const today = todayLocal();
+  const now = new Date(`${today}T00:00:00Z`);
+  if (kind === 'week') {
+    const weekday = now.getUTCDay() || 7;
+    const from = addDays(today, 1 - weekday);
+    return { from, to:addDays(from, 6) };
+  }
+  if (kind === '30') return { from:today, to:addDays(today, 29) };
+  if (kind === '90') return { from:today, to:addDays(today, 89) };
+  if (kind === 'year') return { from:`${now.getUTCFullYear()}-01-01`, to:`${now.getUTCFullYear()}-12-31` };
+  if (kind === 'next') return monthRange(now.getUTCFullYear(), now.getUTCMonth() + 1);
+  if (kind === 'month') return monthRange(now.getUTCFullYear(), now.getUTCMonth());
+  return null;
+}
+
 function parseQuery() {
   const query = new URLSearchParams(location.search);
   if (query.has('q')) state.search = query.get('q') || '';
@@ -172,11 +188,9 @@ function parseQuery() {
   } else if (/^\d{4}-\d{2}$/.test(month || '')) {
     const [year, m] = month.split('-').map(Number);
     state.period = 'month'; state.range = monthRange(year, m - 1);
-  } else if (query.get('period') === 'all') {
-    state.period = 'all'; state.range = null;
-  } else if (query.get('period') === 'next') {
-    const now = new Date();
-    state.period = 'next'; state.range = monthRange(now.getFullYear(), now.getMonth() + 1);
+  } else if (['all','next','week','30','90','year','undated'].includes(query.get('period'))) {
+    state.period = query.get('period');
+    state.range = rangeForPeriod(state.period);
   }
 }
 
@@ -192,8 +206,7 @@ function buildQuery({ includeOpenGame = true } = {}) {
   if (state.precision !== 'all') q.set('precision', state.precision);
   if (state.sort !== 'date-asc') q.set('sort', state.sort);
   if (state.view !== 'grid') q.set('view', state.view);
-  if (state.period === 'all') q.set('period', 'all');
-  else if (state.period === 'next') q.set('period', 'next');
+  if (['all','next','week','30','90','year','undated'].includes(state.period)) q.set('period', state.period);
   else if (state.period === 'custom' && state.range) { q.set('from', state.range.from); q.set('to', state.range.to); }
   else if (state.range?.from) q.set('month', state.range.from.slice(0, 7));
   if (includeOpenGame && state.openRowKey) {
@@ -238,6 +251,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
 }
 
 function inActiveRange(row) {
+  if (state.period === 'undated') return !row.day;
   if (!state.range) return true;
   if (!row.day) return state.precision !== 'all' && state.precision !== 'day';
   return row.day >= state.range.from && row.day <= state.range.to;
@@ -247,7 +261,7 @@ function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
   const rows = state.rows.filter(row =>
     matchesBase(row, { includeStatus: !searching && !row.onlineResult })
-    && (searching || row.onlineResult || inActiveRange(row))
+    && (state.period === 'undated' ? inActiveRange(row) : searching || row.onlineResult || inActiveRange(row))
   );
   rows.sort((a, b) => {
     const ad = a.day || '';
@@ -451,7 +465,17 @@ function updateSummary() {
   $('stat-next').textContent = formatter.format(uniqueGameCount(base.filter(row => row.day && row.day >= nextMonth.from && row.day <= nextMonth.to)));
   $('stat-watchlist').textContent = formatter.format(state.watchlist.size);
 
-  const rangeTitle = state.watchlistOnly ? 'Moje sledované hry' : state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : 'Všechna dostupná vydání';
+  const periodTitles = {
+    week: 'Vydání tento týden',
+    '30': 'Vydání během příštích 30 dní',
+    '90': 'Vydání během příštích 90 dní',
+    year: `Vydání v roce ${new Date().getFullYear()}`,
+    undated: 'Hry bez přesného data',
+    all: 'Všechna dostupná vydání'
+  };
+  const rangeTitle = state.watchlistOnly
+    ? 'Moje sledované hry'
+    : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
   $('range-title').textContent = rangeTitle;
   const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(state.filtered.length)} vydání`];
   if (state.platforms.size) parts.push([...state.platforms].join(', '));
@@ -463,11 +487,8 @@ function updateSummary() {
 }
 
 function setPeriod(kind) {
-  const now = new Date();
   state.period = kind;
-  if (kind === 'all') state.range = null;
-  else if (kind === 'next') state.range = monthRange(now.getFullYear(), now.getMonth() + 1);
-  else state.range = monthRange(now.getFullYear(), now.getMonth());
+  state.range = rangeForPeriod(kind);
   renderMonthSelectors();
   renderGames({resetLimit:true});
 }
@@ -903,8 +924,9 @@ function bindEvents() {
   document.querySelectorAll('[data-stat-jump]').forEach(button => button.addEventListener('click', () => {
     const action = button.dataset.statJump;
     if (action === '30') {
-      state.status = 'upcoming'; state.period = 'custom'; state.range = {from:todayLocal(), to:addDays(todayLocal(),29)};
-      $('status-filter').value = 'upcoming'; renderMonthSelectors(); renderGames({resetLimit:true});
+      state.status = 'upcoming';
+      $('status-filter').value = 'upcoming';
+      setPeriod('30');
     } else if (action === 'next') setPeriod('next');
     else $('games').scrollIntoView({behavior:'smooth', block:'start'});
   }));

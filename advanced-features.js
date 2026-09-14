@@ -1,4 +1,4 @@
-import { flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
+import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
 
 const $ = id => document.getElementById(id);
@@ -262,15 +262,31 @@ function readBaseState() {
   const series = query.get('series') || '';
 
   let range = null;
+  let period = 'month';
   const from = query.get('from');
   const to = query.get('to');
   if (/^\d{4}-\d{2}-\d{2}$/.test(from || '') && /^\d{4}-\d{2}-\d{2}$/.test(to || '')) {
+    period = 'custom';
     range = {from, to};
   } else if (query.get('period') === 'all') {
+    period = 'all';
     range = null;
   } else if (query.get('period') === 'next') {
+    period = 'next';
     const now = new Date();
     range = monthRange(now.getFullYear(), now.getMonth() + 1);
+  } else if (['week','30','90','year','undated'].includes(query.get('period'))) {
+    period = query.get('period');
+    const today = todayLocal();
+    const now = new Date(`${today}T00:00:00Z`);
+    if (period === 'week') {
+      const weekday = now.getUTCDay() || 7;
+      const start = addDays(today, 1 - weekday);
+      range = {from:start, to:addDays(start, 6)};
+    } else if (period === '30') range = {from:today, to:addDays(today, 29)};
+    else if (period === '90') range = {from:today, to:addDays(today, 89)};
+    else if (period === 'year') range = {from:`${now.getUTCFullYear()}-01-01`, to:`${now.getUTCFullYear()}-12-31`};
+    else range = null;
   } else if (/^\d{4}-\d{2}$/.test(query.get('month') || '')) {
     const [year, month] = query.get('month').split('-').map(Number);
     range = monthRange(year, month - 1);
@@ -279,7 +295,7 @@ function readBaseState() {
     range = monthRange(now.getFullYear(), now.getMonth());
   }
 
-  return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, company, series, range };
+  return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, company, series, range, period };
 }
 
 function baseMatches(row, base, { ignoreRange = false } = {}) {
@@ -300,6 +316,7 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
   const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
   if (base.precision !== 'all' && precisionGroup !== base.precision) return false;
+  if (base.period === 'undated' && row.day) return false;
 
   const today = todayLocal();
   if (!search && base.status === 'upcoming' && row.day && row.day < today) return false;
