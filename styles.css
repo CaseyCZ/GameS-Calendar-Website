@@ -151,7 +151,7 @@ kbd { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; col
 .games-grid[data-view="compact"] .game-card__actions { display: none; }
 .games-grid[data-view="compact"] .card-platforms { display: none; }
 
-.skeleton-card { overflow: hidden; aspect-ratio: 3 / 5.1; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(100deg, rgba(255,255,255,.025) 20%, rgba(255,255,255,.07) 40%, rgba(255,255,255,.025) 60%); background-size: 220% 100%; animation: shimmer 1.2s linear infinite; }
+.skeleton-card { overflow: hidden; aspect-ratio: 3 / 5.75; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(100deg, rgba(255,255,255,.025) 20%, rgba(255,255,255,.07) 40%, rgba(255,255,255,.025) 60%); background-size: 220% 100%; animation: shimmer 1.2s linear infinite; }
 @keyframes shimmer { to { background-position-x: -220%; } }
 
 .load-more-wrap { display: flex; justify-content: center; padding: 22px 0 0; }
