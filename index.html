@@ -86,7 +86,7 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V3m0 0 4 4m-4-4L8 7M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
           <span class="sr-only">Sdílet</span>
         </button>
-        <button class="primary-btn" id="calendar-all" type="button" title="Stáhnout aktuální výběr jako .ics">
+        <button class="primary-btn" id="calendar-all" type="button" title="Přidat průběžně aktualizovaný kalendář">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
           <span>Přidat výběr</span>
         </button>
@@ -211,6 +211,34 @@
   <dialog class="game-dialog" id="game-dialog">
     <button class="dialog-close icon-btn" id="dialog-close" type="button" aria-label="Zavřít">×</button>
     <div id="dialog-content"></div>
+  </dialog>
+
+  <dialog class="calendar-dialog" id="calendar-dialog">
+    <button class="dialog-close icon-btn" id="calendar-dialog-close" type="button" aria-label="Zavřít">×</button>
+    <div class="calendar-dialog__content">
+      <p class="eyebrow">Živý kalendář</p>
+      <h2>Přidat herní vydání</h2>
+      <p class="muted">Kalendář si změny a nově přidané termíny pravidelně načte sám.</p>
+      <div class="calendar-feed-choices" role="group" aria-label="Obsah kalendáře">
+        <button class="calendar-feed-choice is-active" type="button" data-calendar-feed="watch">
+          <strong>Moje sledované hry</strong>
+          <span id="calendar-watch-count">0 sledovaných her</span>
+        </button>
+        <button class="calendar-feed-choice" type="button" data-calendar-feed="filters">
+          <strong>Aktuální platformy a filtry</strong>
+          <span>Budoucí vydání podle tohoto výběru</span>
+        </button>
+      </div>
+      <div class="calendar-subscribe-actions">
+        <a class="primary-btn" id="calendar-google" href="#" target="_blank" rel="noopener noreferrer">Google Kalendář</a>
+        <a class="secondary-btn" id="calendar-webcal" href="#">Apple / Outlook</a>
+        <button class="secondary-btn" id="calendar-copy" type="button">Kopírovat adresu</button>
+      </div>
+      <div class="calendar-download-row">
+        <span>Chceš jen dnešní podobu výběru?</span>
+        <button class="text-btn" id="calendar-download" type="button">Stáhnout jednorázový .ics soubor</button>
+      </div>
+    </div>
   </dialog>
 
   <dialog class="image-dialog" id="image-dialog">

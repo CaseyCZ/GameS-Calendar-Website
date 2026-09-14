@@ -31,6 +31,7 @@ const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
 const PUSH_PUBLIC_KEY_URL = '/games-api/push/public-key';
 const PUSH_SUBSCRIBE_URL = '/games-api/push/subscribe';
+const CALENDAR_FEED_URL = '/games-api/calendar.ics';
 const DEFAULT_TITLE = 'Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo';
 const DEFAULT_DESCRIPTION = 'Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.';
 
@@ -83,6 +84,7 @@ const state = {
 };
 
 let onlineSearchSequence = 0;
+let calendarFeedMode = 'watch';
 
 const isWatched = game => state.watchlist.has(gameId(game));
 
@@ -526,6 +528,47 @@ function slugify(value) {
   return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70) || 'hra';
 }
 
+function calendarFeedUrl(mode = calendarFeedMode) {
+  const url = new URL(CALENDAR_FEED_URL, location.origin);
+  if (mode === 'watch') {
+    if (state.watchlist.size) url.searchParams.set('ids', [...state.watchlist].slice(0, 500).join(','));
+  } else {
+    if (state.platforms.size) url.searchParams.set('platforms', [...state.platforms].join(','));
+    if (state.genres.size) {
+      const rawGenres = new Set();
+      for (const row of state.rows) {
+        for (const genre of row.game.genres || []) if (state.genres.has(formatGenre(genre))) rawGenres.add(genre);
+      }
+      if (rawGenres.size) url.searchParams.set('genres', [...rawGenres].join(','));
+    }
+    if (state.company?.type === 'developer') url.searchParams.set('developer', state.company.value);
+    if (state.company?.type === 'publisher') url.searchParams.set('publisher', state.company.value);
+    if (state.series) url.searchParams.set('series', state.series);
+  }
+  url.searchParams.set('status', 'upcoming');
+  return url;
+}
+
+function setCalendarFeedMode(mode) {
+  calendarFeedMode = mode === 'filters' ? 'filters' : 'watch';
+  document.querySelectorAll('[data-calendar-feed]').forEach(button => {
+    const active = button.dataset.calendarFeed === calendarFeedMode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  const url = calendarFeedUrl();
+  const webcal = `webcal://${url.host}${url.pathname}${url.search}`;
+  $('calendar-google').href = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+  $('calendar-webcal').href = webcal;
+}
+
+function openCalendarDialog() {
+  const count = state.watchlist.size;
+  $('calendar-watch-count').textContent = `${formatter.format(count)} ${count === 1 ? 'sledovaná hra' : count > 1 && count < 5 ? 'sledované hry' : 'sledovaných her'}`;
+  setCalendarFeedMode(count ? 'watch' : 'filters');
+  if (!$('calendar-dialog').open) $('calendar-dialog').showModal();
+}
+
 function setMeta(selector, value) {
   const node = document.querySelector(selector);
   if (node) node.setAttribute('content', value);
@@ -867,7 +910,22 @@ function bindEvents() {
   }));
   $('share-button').addEventListener('click', shareCurrent);
   $('notification-toggle').addEventListener('click', toggleNotifications);
-  $('calendar-all').addEventListener('click', () => {
+  $('calendar-all').addEventListener('click', openCalendarDialog);
+  $('calendar-dialog-close').addEventListener('click', () => $('calendar-dialog').close());
+  $('calendar-dialog').addEventListener('click', event => {
+    if (event.target === $('calendar-dialog')) $('calendar-dialog').close();
+    const choice = event.target.closest('[data-calendar-feed]');
+    if (choice) setCalendarFeedMode(choice.dataset.calendarFeed);
+  });
+  $('calendar-copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(calendarFeedUrl().href);
+      toast('Adresa živého kalendáře byla zkopírována.');
+    } catch {
+      toast('Adresu se nepodařilo zkopírovat.');
+    }
+  });
+  $('calendar-download').addEventListener('click', () => {
     const dated = state.filtered.filter(row => row.day);
     if (!downloadIcs(dated, `herni-kalendar-${state.range?.from || 'vse'}.ics`)) toast('Aktuální výběr nemá žádné přesné datum.');
   });

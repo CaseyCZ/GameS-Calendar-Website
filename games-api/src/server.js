@@ -25,6 +25,7 @@ import {
   wasPushDelivered
 } from './db.js';
 import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
+import { buildCalendarFeed } from './lib/calendar.js';
 import { providers, providerList } from './providers/index.js';
 
 const app = express();
@@ -453,6 +454,42 @@ app.get('/api/catalog/game/:gameId', asyncRoute(async (req, res) => {
   if (!game) return res.status(404).json({ error: 'Game not found' });
   res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
   res.json(game);
+}));
+
+app.get('/api/calendar.ics', asyncRoute(async (req, res) => {
+  const catalog = await readCatalog();
+  const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
+  const ids = String(req.query.ids || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 500);
+  const gameMap = new Map(catalogGames.map(game => [String(game.id), game]));
+  for (const id of ids) {
+    if (!gameMap.has(id)) {
+      const discovered = getDiscoveredGame(id);
+      if (discovered) gameMap.set(id, discovered);
+    }
+  }
+  const forwardedProtocol = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+  const protocol = forwardedProtocol === 'https' ? 'https' : req.protocol;
+  const result = buildCalendarFeed([...gameMap.values()], {
+    ids,
+    platforms: req.query.platforms,
+    genres: req.query.genres,
+    developer: req.query.developer,
+    publisher: req.query.publisher,
+    series: req.query.series,
+    status: req.query.status,
+    from: req.query.from,
+    to: req.query.to,
+    generatedAt: catalog.meta.generatedAt,
+    webBaseUrl: `${protocol}://${req.get('host')}/games`,
+    name: ids.length ? 'Herní Kalendář – sledované hry' : 'Herní Kalendář – vlastní výběr'
+  });
+  const etag = `"${createHash('sha256').update(result.body).digest('base64url')}"`;
+  res.setHeader('Cache-Control', 'public, max-age=900, stale-while-revalidate=3600');
+  res.setHeader('ETag', etag);
+  res.setHeader('X-Calendar-Events', String(result.count));
+  res.setHeader('Content-Disposition', 'inline; filename="herni-kalendar.ics"');
+  if (requestMatchesEtag(req, etag)) return res.status(304).end();
+  res.type('text/calendar; charset=utf-8').send(result.body);
 }));
 
 app.get('/api/changes', asyncRoute(async (req, res) => {
