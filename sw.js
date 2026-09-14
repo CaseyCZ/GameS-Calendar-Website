@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.7.5';
+const VERSION = 'games-calendar-v3.7.6';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -60,7 +60,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  event.respondWith(staleWhileRevalidate(request));
+  const isShellAsset = SHELL.some(asset => new URL(asset, self.location.href).pathname === url.pathname);
+  event.respondWith(isShellAsset ? cacheFirst(request) : staleWhileRevalidate(request));
 });
 
 self.addEventListener('notificationclick', event => {
@@ -112,4 +113,13 @@ async function staleWhileRevalidate(request) {
     return response;
   }).catch(() => null);
   return cached || (await network) || Response.error();
+}
+
+async function cacheFirst(request) {
+  const cache = await caches.open(SHELL_CACHE);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response.ok) await cache.put(request, response.clone());
+  return response;
 }
