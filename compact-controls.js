@@ -295,10 +295,10 @@
     ensureUpgradeStyles();
     applyTheme(preferredTheme());
     if (document.documentElement.dataset.compactControls === '1') return;
-    document.documentElement.dataset.compactControls = '1';
     const platformMemory = setupFilters();
     setupSettings(platformMemory);
     observeFilterState();
+    document.documentElement.dataset.compactControls = '1';
     document.addEventListener('pointerdown', closeMenusOutside);
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;

@@ -62,7 +62,7 @@ img { max-width: 100%; }
 .brand__copy small { color: var(--muted); font-size: 11px; white-space: nowrap; }
 
 .topbar__stats { justify-self: center; display: flex; align-items: center; gap: 4px; min-width: 0; }
-.stat-pill { min-width: 85px; padding: 7px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); text-align: center; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+.stat-pill { width: 85px; flex: 0 0 85px; padding: 7px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); text-align: center; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
 .stat-pill:hover { background: rgba(255,255,255,.035); border-color: var(--border); transform: translateY(-1px); }
 .stat-pill strong { display: block; color: var(--pink); font-size: 19px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .stat-pill span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .055em; white-space: nowrap; }
