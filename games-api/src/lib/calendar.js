@@ -31,13 +31,13 @@ function foldIcs(line) {
 }
 
 function platformGroup(name = '') {
-  const value = String(name).toLowerCase();
-  if (value.includes('switch 2')) return 'Switch 2';
+  const value = String(name).trim().toLowerCase();
+  if (value.includes('switch 2') || value === 'nsw2') return 'Switch 2';
   if (value.includes('playstation 5') || value === 'ps5') return 'PS5';
-  if (value.includes('xbox series')) return 'Xbox Series';
-  if (value.includes('nintendo switch')) return 'Switch';
+  if (value.includes('xbox') || /^(xone|x360|xsx|xb1)$/.test(value)) return 'Xbox Series';
+  if (value.includes('nintendo switch') || value === 'switch' || value === 'nsw') return 'Switch';
   if (/quest|rift|steamvr|playstation vr|\bvr\b|virtual reality/.test(value)) return 'VR';
-  if (/pc|windows|linux|mac|steam/.test(value)) return 'PC';
+  if (/\bpc\b|windows|linux|mac|steam|^win$/.test(value)) return 'PC';
   return 'Other';
 }
 

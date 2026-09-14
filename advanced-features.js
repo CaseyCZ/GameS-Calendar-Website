@@ -163,6 +163,20 @@ function matchesSearch(game, query) {
     || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
 }
 
+function searchRelevance(game, query) {
+  const needle = normalizeSearch(query);
+  const name = normalizeSearch(game.name);
+  const aliases = (game.aliases || []).map(normalizeSearch);
+  if (!needle) return 0;
+  if (name === needle) return 100;
+  if (aliases.includes(needle)) return 95;
+  if (name.startsWith(needle)) return 85;
+  if (name.includes(needle)) return 75;
+  if (aliases.some(alias => alias.startsWith(needle))) return 70;
+  const words = needle.split(' ').filter(Boolean);
+  return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
+}
+
 function rawGame(game) {
   return rawGameMap.get(String(game?.id)) || {};
 }
@@ -329,10 +343,16 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   return true;
 }
 
-function sortRows(items, sort) {
+function sortRows(items, sort, search = '') {
   return [...items].sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
+    if (normalizeSearch(search) && sort === 'date-asc') {
+      const relevance = searchRelevance(b.game, search) - searchRelevance(a.game, search);
+      if (relevance) return relevance;
+      const onlineOrder = (a.onlineOrder ?? Number.MAX_SAFE_INTEGER) - (b.onlineOrder ?? Number.MAX_SAFE_INTEGER);
+      if (onlineOrder) return onlineOrder;
+    }
     if (sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     if (!ad && bd) return 1;
@@ -440,7 +460,10 @@ function renderAdvancedSummary(filtered) {
   const marker = ' · vlastnosti: ';
   const current = summary.textContent || '';
   const baseText = current.includes(marker) ? current.split(marker)[0] : current;
-  summary.textContent = `${baseText}${marker}${selectedTraitLabels().join(' + ')}`;
+  const parts = baseText.split(' · ');
+  parts[0] = `${formatter.format(uniqueGameCount(filtered))} her`;
+  if (parts.length > 1) parts[1] = `${formatter.format(filtered.length)} vydání`;
+  summary.textContent = `${parts.join(' · ')}${marker}${selectedTraitLabels().join(' + ')}`;
 }
 
 function updateMonthCounts(base) {
@@ -539,7 +562,7 @@ function applyAdvancedFilters() {
     return;
   }
 
-  const filtered = sortRows(baseRows.filter(row => matchesSelectedTraits(row.game)), base.sort);
+  const filtered = sortRows(baseRows.filter(row => matchesSelectedTraits(row.game)), base.sort, base.search);
   const shown = filtered.slice(0, advancedLimit);
   const games = $('games');
   if (!games) return;
@@ -606,7 +629,7 @@ function currentAdvancedRows() {
   const base = readBaseState();
   let list = rows.filter(row => baseMatches(row, base));
   if (traits.size) list = list.filter(row => matchesSelectedTraits(row.game));
-  return sortRows(list, base.sort);
+  return sortRows(list, base.sort, base.search);
 }
 
 function openRowThroughApp(rowKey) {

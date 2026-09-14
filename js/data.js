@@ -58,13 +58,13 @@ export function monthRange(year, monthIndex) {
 }
 
 export function platformGroup(name = '') {
-  const n = String(name).toLowerCase();
-  if (n.includes('switch 2')) return 'Switch 2';
+  const n = String(name).trim().toLowerCase();
+  if (n.includes('switch 2') || n === 'nsw2') return 'Switch 2';
   if (n.includes('playstation 5') || n === 'ps5') return 'PS5';
-  if (n.includes('xbox series')) return 'Xbox Series';
-  if (n.includes('nintendo switch')) return 'Switch';
+  if (n.includes('xbox') || /^(xone|x360|xsx|xb1)$/.test(n)) return 'Xbox Series';
+  if (n.includes('nintendo switch') || n === 'switch' || n === 'nsw') return 'Switch';
   if (/quest|rift|steamvr|playstation vr|\bvr\b|virtual reality/.test(n)) return 'VR';
-  if (/pc|windows|linux|mac|steam/.test(n)) return 'PC';
+  if (/\bpc\b|windows|linux|mac|steam|^win$/.test(n)) return 'PC';
   return 'Other';
 }
 

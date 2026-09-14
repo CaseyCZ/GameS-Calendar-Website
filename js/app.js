@@ -266,6 +266,12 @@ function filterRows() {
   rows.sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
+    if (searching && state.sort === 'date-asc') {
+      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+      if (relevance) return relevance;
+      const onlineOrder = (a.onlineOrder ?? Number.MAX_SAFE_INTEGER) - (b.onlineOrder ?? Number.MAX_SAFE_INTEGER);
+      if (onlineOrder) return onlineOrder;
+    }
     if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     if (!ad && bd) return 1;
@@ -394,15 +400,10 @@ function notifyAvailableRows() {
 }
 
 function makeOnlineRows(games) {
-  return games.map((game, onlineOrder) => {
-    const release = game.releases[0] || {
-      day: null, timestamp: 0, platforms: [], window: 'TBA', precision: 'unknown', regions: []
-    };
-    const platforms = [...new Map(
-      game.releases.flatMap(item => item.platforms || []).map(item => [item.name, item])
-    ).values()];
+  return games.flatMap((game, onlineOrder) => game.releases.map((release, releaseIndex) => {
+    const platforms = release.platforms || [];
     return {
-      key: `online:${game.id}`,
+      key: `online:${game.id}:${release.day || `window-${releaseIndex}`}`,
       game,
       day: release.day,
       timestamp: release.timestamp,
@@ -414,7 +415,7 @@ function makeOnlineRows(games) {
       onlineResult: true,
       onlineOrder
     };
-  });
+  }));
 }
 
 async function refreshOnlineSearch(query) {
@@ -473,12 +474,14 @@ function updateSummary() {
     undated: 'Hry bez přesného data',
     all: 'Všechna dostupná vydání'
   };
-  const rangeTitle = state.watchlistOnly
+  const rangeTitle = state.search
+    ? `Výsledky hledání „${state.search}“`
+    : state.watchlistOnly
     ? 'Moje sledované hry'
     : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
   $('range-title').textContent = rangeTitle;
   const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(state.filtered.length)} vydání`];
-  if (state.platforms.size) parts.push([...state.platforms].join(', '));
+  if (state.platforms.size) parts.push([...state.platforms].map(value => value === 'Xbox Series' ? 'Xbox' : value).join(', '));
   if (state.genres.size) parts.push([...state.genres].join(' + '));
   if (state.search) parts.push(`„${state.search}“`);
   if (state.dataset?.generatedAt) parts.push(`data ${new Date(state.dataset.generatedAt).toLocaleString('cs-CZ')}`);
