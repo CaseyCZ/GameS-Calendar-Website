@@ -259,10 +259,13 @@ function inActiveRange(row) {
 
 function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  const rows = state.rows.filter(row =>
+  const filtered = state.rows.filter(row =>
     matchesBase(row, { includeStatus: !searching && !row.onlineResult })
     && (searching || row.onlineResult || inActiveRange(row))
   );
+  const rows = searching
+    ? [...new Map(filtered.map(row => [gameId(row.game), row])).values()]
+    : filtered;
   rows.sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
@@ -400,22 +403,24 @@ function notifyAvailableRows() {
 }
 
 function makeOnlineRows(games) {
-  return games.flatMap((game, onlineOrder) => game.releases.map((release, releaseIndex) => {
-    const platforms = release.platforms || [];
+  return games.map((game, onlineOrder) => {
+    const releases = game.releases || [];
+    const first = releases[0] || {};
+    const platforms = [...new Map(releases.flatMap(release => release.platforms || []).map(platform => [platform.name || platform.id, platform])).values()];
     return {
-      key: `online:${game.id}:${release.day || `window-${releaseIndex}`}`,
+      key: `online:${game.id}`,
       game,
-      day: release.day,
-      timestamp: release.timestamp,
+      day: first.day,
+      timestamp: first.timestamp,
       platforms,
       platformGroups: [...new Set(platforms.map(item => item.group || platformGroup(item.name)))],
-      window: release.window,
-      precision: release.precision,
-      regions: release.regions,
+      window: first.window,
+      precision: first.precision,
+      regions: [...new Set(releases.flatMap(release => release.regions || []))],
       onlineResult: true,
       onlineOrder
     };
-  }));
+  });
 }
 
 async function refreshOnlineSearch(query) {
