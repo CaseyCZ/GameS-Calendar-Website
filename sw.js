@@ -1,4 +1,4 @@
-const VERSION = 'games-calendar-v3.7.4';
+const VERSION = 'games-calendar-v3.7.5';
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -27,6 +27,10 @@ const SHELL = [
   './js/calendar.js',
   './js/ui.js',
   './manifest.webmanifest',
+  './pwa-desktop.png',
+  './pwa-mobile.png',
+  './CaseyCZ-192.png',
+  './CaseyCZ-512.png',
   './CaseyCZ.png',
   './CaseyCZ.webp'
 ];
