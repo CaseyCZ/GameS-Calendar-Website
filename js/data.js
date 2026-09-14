@@ -311,8 +311,12 @@ async function writeCache(payload) {
   });
 }
 
-async function fetchJson(url) {
+async function fetchJson(url, retry = 0) {
   const response = await fetch(url, { cache: 'no-cache', headers: { Accept: 'application/json' } });
+  if (!response.ok && [502, 503, 504].includes(response.status) && retry < 2) {
+    await new Promise(resolve => setTimeout(resolve, 250 * (retry + 1)));
+    return fetchJson(url, retry + 1);
+  }
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
 }

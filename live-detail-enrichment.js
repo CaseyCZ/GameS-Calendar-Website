@@ -243,11 +243,16 @@
       let payload = cache.get(title);
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
-        const response = await fetch(`${API_ROOT}/enrich`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', accept: 'application/json' },
-          body: JSON.stringify({ game: { title }, providers })
-        });
+        let response;
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          response = await fetch(`${API_ROOT}/enrich`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify({ game: { title }, providers })
+          });
+          if (response.ok || ![502, 503, 504].includes(response.status) || attempt === 2) break;
+          await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
+        }
         if (!response.ok) throw new Error(`API ${response.status}`);
         payload = await response.json();
         cache.set(title, payload);
