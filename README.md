@@ -6,7 +6,7 @@ GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vych
 
 ## 🌐 Otevřít web
 
-👉 **https://caseycz.github.io/GameS-Calendar-Website/**
+👉 **130.61.49.108/games/**
 
 ## Vlastní server
 
@@ -61,4 +61,4 @@ Přehled her je průběžně aktualizovaný, takže se mohou měnit data vydán�
 
 ### 🎮 Najděte si svou další hru
 
-👉 **https://caseycz.github.io/GameS-Calendar-Website/**
+👉 **130.61.49.108/games/**
