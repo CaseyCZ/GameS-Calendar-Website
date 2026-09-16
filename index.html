@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="cs">
+<html lang="cs" data-theme="manager-dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#100719">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="color-scheme" content="dark light">
   <meta name="description" content="Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="cs_CZ">
@@ -29,6 +29,8 @@
   <link rel="stylesheet" href="badge-filter-controls.css">
   <link rel="stylesheet" href="filter-section-accordion.css">
   <link rel="stylesheet" href="detail-gesture-fix.css">
+  <link rel="stylesheet" href="themes.css">
+  <script src="themes.js"></script>
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -74,6 +76,10 @@
       </div>
 
       <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-picker" title="Vzhled">
+          <span aria-hidden="true">◐</span>
+          <span class="sr-only">Vzhled</span>
+        </button>
         <button class="icon-btn" id="search-toggle" type="button" aria-expanded="false" aria-controls="search-popover" title="Hledat">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
           <span class="sr-only">Hledat</span>

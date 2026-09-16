@@ -1,0 +1,442 @@
+/* GameS Calendar themes v1
+   4 vzhledy: 2 tmavé + 2 světlé.
+   Výchozí vzhled vychází z Homebridge Manageru. */
+
+html[data-theme="manager-dark"] {
+  color-scheme: dark;
+  --bg: #070b14;
+  --bg-elevated: #0b1020;
+  --panel: rgba(17, 24, 39, .86);
+  --panel-solid: #111827;
+  --panel-hover: #172033;
+  --input: #0b1220;
+  --border: #2a3850;
+  --border-strong: rgba(56, 189, 248, .52);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --pink: #38bdf8;
+  --pink-soft: rgba(56, 189, 248, .14);
+  --purple: #60a5fa;
+  --blue: #38bdf8;
+  --green: #86efac;
+  --danger: #fca5a5;
+  --shadow: 0 18px 48px rgba(0, 0, 0, .34);
+  --surface-soft: rgba(255, 255, 255, .035);
+  --surface-hover: rgba(56, 189, 248, .08);
+  --theme-topbar: rgba(7, 11, 20, .90);
+  --theme-body-bg: radial-gradient(circle at top, #172554 0, #0b1020 38%, #070b14 100%);
+}
+
+html[data-theme="games-dark"] {
+  color-scheme: dark;
+  --bg: #08040d;
+  --bg-elevated: #110919;
+  --panel: rgba(24, 13, 34, .78);
+  --panel-solid: #180d22;
+  --panel-hover: #21112e;
+  --input: #160b20;
+  --border: rgba(255, 255, 255, .09);
+  --border-strong: rgba(255, 71, 155, .38);
+  --text: #f8f3fb;
+  --muted: #a99cb4;
+  --pink: #ff479b;
+  --pink-soft: rgba(255, 71, 155, .14);
+  --purple: #c084fc;
+  --blue: #38bdf8;
+  --green: #34d399;
+  --danger: #fb7185;
+  --shadow: 0 22px 70px rgba(0, 0, 0, .35);
+  --surface-soft: rgba(255, 255, 255, .035);
+  --surface-hover: rgba(255, 71, 155, .07);
+  --theme-topbar: rgba(8, 4, 13, .86);
+  --theme-body-bg:
+    radial-gradient(circle at 15% -10%, rgba(192, 132, 252, .14), transparent 30rem),
+    radial-gradient(circle at 85% -10%, rgba(255, 71, 155, .12), transparent 34rem),
+    var(--bg);
+}
+
+html[data-theme="manager-light"] {
+  color-scheme: light;
+  --bg: #f1f5f9;
+  --bg-elevated: #f8fafc;
+  --panel: rgba(255, 255, 255, .90);
+  --panel-solid: #ffffff;
+  --panel-hover: #f1f5f9;
+  --input: #f8fafc;
+  --border: #d9e2ee;
+  --border-strong: rgba(2, 132, 199, .42);
+  --text: #0f172a;
+  --muted: #64748b;
+  --pink: #0284c7;
+  --pink-soft: #e0f2fe;
+  --purple: #0369a1;
+  --blue: #0284c7;
+  --green: #15803d;
+  --danger: #b91c1c;
+  --shadow: 0 14px 36px rgba(15, 23, 42, .09);
+  --surface-soft: rgba(15, 23, 42, .035);
+  --surface-hover: rgba(2, 132, 199, .08);
+  --theme-topbar: rgba(248, 250, 252, .92);
+  --theme-body-bg: radial-gradient(circle at top, #dbeafe 0, #f8fafc 38%, #f1f5f9 100%);
+}
+
+html[data-theme="games-light"] {
+  color-scheme: light;
+  --bg: #fff7fb;
+  --bg-elevated: #fffafd;
+  --panel: rgba(255, 255, 255, .91);
+  --panel-solid: #ffffff;
+  --panel-hover: #fdf2f8;
+  --input: #fffafd;
+  --border: #eadbe8;
+  --border-strong: rgba(219, 39, 119, .38);
+  --text: #241725;
+  --muted: #7d6679;
+  --pink: #db2777;
+  --pink-soft: rgba(219, 39, 119, .10);
+  --purple: #9333ea;
+  --blue: #0284c7;
+  --green: #15803d;
+  --danger: #be123c;
+  --shadow: 0 14px 36px rgba(76, 29, 63, .10);
+  --surface-soft: rgba(76, 29, 63, .035);
+  --surface-hover: rgba(219, 39, 119, .07);
+  --theme-topbar: rgba(255, 250, 253, .93);
+  --theme-body-bg:
+    radial-gradient(circle at 16% -10%, rgba(147, 51, 234, .10), transparent 30rem),
+    radial-gradient(circle at 84% -10%, rgba(219, 39, 119, .10), transparent 34rem),
+    #fff7fb;
+}
+
+html[data-theme] body {
+  background: var(--theme-body-bg);
+}
+
+html[data-theme] .topbar {
+  background: var(--theme-topbar);
+  border-bottom-color: var(--border);
+}
+
+html[data-theme] .filters-wrap {
+  border-top-color: var(--border);
+}
+
+html[data-theme] .brand__logo {
+  border-color: color-mix(in srgb, var(--pink) 65%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pink) 9%, transparent);
+}
+
+html[data-theme] .brand__copy strong {
+  background: linear-gradient(100deg, var(--pink), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html[data-theme] .stat-pill:hover,
+html[data-theme] .month-tile,
+html[data-theme] .card-action,
+html[data-theme] .calendar-feed-choice,
+html[data-theme] .fact,
+html[data-theme] .store-link {
+  background: var(--surface-soft);
+}
+
+html[data-theme] .icon-btn,
+html[data-theme] .secondary-btn,
+html[data-theme] .chip {
+  background: var(--surface-soft);
+}
+
+html[data-theme] .control {
+  background-color: var(--input);
+}
+
+html[data-theme] .icon-btn:hover,
+html[data-theme] .secondary-btn:hover,
+html[data-theme] .chip:hover,
+html[data-theme] .control:hover,
+html[data-theme] .month-tile:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+
+html[data-theme] .primary-btn {
+  background: linear-gradient(105deg, var(--pink), var(--purple));
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--pink) 20%, transparent);
+}
+
+html[data-theme] .primary-btn:hover {
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--pink) 28%, transparent);
+}
+
+html[data-theme] .chip.is-active {
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--pink) 22%, transparent);
+}
+
+html[data-theme] .chip--platform.is-active,
+html[data-theme] .month-tile.is-active,
+html[data-theme] .calendar-feed-choice.is-active {
+  background: var(--pink-soft);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .month-tile strong,
+html[data-theme] .stat-pill strong,
+html[data-theme] .eyebrow,
+html[data-theme] .detail-kicker,
+html[data-theme] .calendar-download-row .text-btn {
+  color: var(--pink);
+}
+
+html[data-theme] .game-card {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--panel-solid) 94%, var(--pink) 6%),
+    var(--panel-solid)
+  );
+}
+
+html[data-theme] .game-card:hover {
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .platform-tag {
+  border-color: color-mix(in srgb, var(--purple) 30%, transparent);
+  color: var(--purple);
+  background: color-mix(in srgb, var(--purple) 9%, transparent);
+}
+
+html[data-theme] .watch-btn.is-active {
+  color: var(--green);
+  border-color: color-mix(in srgb, var(--green) 40%, var(--border));
+  background: color-mix(in srgb, var(--green) 9%, transparent);
+}
+
+html[data-theme] .search-field input::placeholder {
+  color: var(--muted);
+}
+
+html[data-theme] kbd {
+  background: var(--surface-soft);
+}
+
+html[data-theme] .skeleton-card {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--panel-solid) 96%, var(--text) 4%) 20%,
+    color-mix(in srgb, var(--panel-solid) 88%, var(--text) 12%) 40%,
+    color-mix(in srgb, var(--panel-solid) 96%, var(--text) 4%) 60%
+  );
+  background-size: 220% 100%;
+}
+
+html[data-theme] .game-dialog,
+html[data-theme] .trailer-dialog,
+html[data-theme] .calendar-dialog {
+  background: var(--panel-solid);
+}
+
+html[data-theme] .dialog-close {
+  background: color-mix(in srgb, var(--panel-solid) 92%, transparent);
+}
+
+html[data-theme] .detail-summary,
+html[data-theme] .game-card__date,
+html[data-theme] .store-link {
+  color: color-mix(in srgb, var(--text) 78%, var(--muted));
+}
+
+html[data-theme] .store-link:hover {
+  color: var(--text);
+}
+
+html[data-theme] .toast {
+  background: color-mix(in srgb, var(--panel-solid) 96%, transparent);
+}
+
+html[data-theme="manager-dark"] .game-card__cover,
+html[data-theme="manager-light"] .game-card__cover,
+html[data-theme="manager-dark"] .detail-cover,
+html[data-theme="manager-light"] .detail-cover {
+  background: linear-gradient(135deg, #0f172a, #172554);
+}
+
+html[data-theme="manager-dark"] .game-card__gradient,
+html[data-theme="manager-light"] .game-card__gradient {
+  background: linear-gradient(transparent, rgba(7, 11, 20, .94));
+}
+
+html[data-theme="games-dark"] .game-card__cover,
+html[data-theme="games-light"] .game-card__cover,
+html[data-theme="games-dark"] .detail-cover,
+html[data-theme="games-light"] .detail-cover {
+  background: linear-gradient(135deg, #1b1025, #251130);
+}
+
+html[data-theme="games-dark"] .game-card__gradient,
+html[data-theme="games-light"] .game-card__gradient {
+  background: linear-gradient(transparent, rgba(8, 4, 13, .94));
+}
+
+/* Vzhledy – ovladač v horní liště */
+.topbar__actions {
+  position: relative;
+}
+
+.theme-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 120;
+  width: min(360px, calc(100vw - 20px));
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel-solid) 97%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+
+.theme-picker__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.theme-picker__head strong {
+  font-size: 13px;
+}
+
+.theme-picker__head span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.theme-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.theme-choice {
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  background: var(--input);
+  text-align: left;
+  transition: border-color .15s ease, transform .15s ease, background .15s ease;
+}
+
+.theme-choice:hover {
+  border-color: var(--border-strong);
+  background: var(--panel-hover);
+  transform: translateY(-1px);
+}
+
+.theme-choice.is-active {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pink) 28%, transparent);
+}
+
+.theme-choice__preview {
+  position: relative;
+  display: block;
+  height: 48px;
+  overflow: hidden;
+  margin-bottom: 7px;
+  border: 1px solid rgba(127, 127, 127, .18);
+  border-radius: 8px;
+}
+
+.theme-choice__preview::before,
+.theme-choice__preview::after {
+  content: "";
+  position: absolute;
+  border-radius: 5px;
+}
+
+.theme-choice__preview::before {
+  left: 8px;
+  right: 8px;
+  top: 8px;
+  height: 8px;
+  background: var(--preview-accent);
+}
+
+.theme-choice__preview::after {
+  left: 8px;
+  right: 26px;
+  bottom: 8px;
+  height: 16px;
+  border: 1px solid var(--preview-border);
+  background: var(--preview-panel);
+}
+
+.theme-preview--manager-dark {
+  background: linear-gradient(145deg, #070b14, #172554);
+  --preview-accent: #38bdf8;
+  --preview-panel: #111827;
+  --preview-border: #2a3850;
+}
+
+.theme-preview--games-dark {
+  background: linear-gradient(145deg, #08040d, #251130);
+  --preview-accent: #ff479b;
+  --preview-panel: #180d22;
+  --preview-border: rgba(255,255,255,.13);
+}
+
+.theme-preview--manager-light {
+  background: linear-gradient(145deg, #f8fafc, #dbeafe);
+  --preview-accent: #0284c7;
+  --preview-panel: #fff;
+  --preview-border: #d9e2ee;
+}
+
+.theme-preview--games-light {
+  background: linear-gradient(145deg, #fff, #fce7f3);
+  --preview-accent: #db2777;
+  --preview-panel: #fff;
+  --preview-border: #eadbe8;
+}
+
+.theme-choice strong,
+.theme-choice small {
+  display: block;
+}
+
+.theme-choice strong {
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.theme-choice small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+#theme-toggle[aria-expanded="true"] {
+  color: var(--pink);
+  border-color: var(--border-strong);
+  background: var(--pink-soft);
+}
+
+@media (max-width: 560px) {
+  .theme-picker {
+    width: min(340px, calc(100vw - 18px));
+  }
+}
+
+@media (max-width: 390px) {
+  .theme-picker__grid {
+    grid-template-columns: 1fr;
+  }
+}
