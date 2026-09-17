@@ -1,64 +1,96 @@
-# 🎮 GameS Calendar
+<p align="center">
+  <img src="assets/games-readme-header.svg" alt="GameS Calendar by CaseyCZ" width="100%" />
+</p>
 
-**Přehledný herní kalendář a vyhledávač připravovaných i vydaných her.**
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/CZ-%C4%8Ce%C5%A1tina-38BDF8?style=for-the-badge&labelColor=0284C7" alt="Čeština" /></a>
+  <a href="README_EN.md"><img src="https://img.shields.io/badge/EN-English-172033?style=for-the-badge&labelColor=111827" alt="English" /></a>
+</p>
 
-GameS Calendar vznikl pro každého, kdo chce mít rychle jasno v tom, **co vychází, kdy to vychází a na jaké platformě** — bez zdlouhavého hledání na několika různých webech.
+<p align="center">
+  Přehledný herní kalendář a vyhledávač připravovaných i vydaných her. Rychle zjistíš <strong>co vychází, kdy to vychází a na jaké platformě</strong>.
+</p>
 
-## 🌐 Otevřít web
+<p align="center">
+  <a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/GameS%20Calendar-OTEV%C5%98%C3%8DT-38BDF8?style=for-the-badge&labelColor=0284C7" alt="Otevřít GameS Calendar" /></a>
+  <a href="https://caseycz.github.io/"><img src="https://img.shields.io/badge/CaseyCZ%20Website-OTEV%C5%98%C3%8DT-38BDF8?style=for-the-badge&labelColor=0284C7" alt="CaseyCZ Website" /></a>
+  <a href="https://www.buymeacoffee.com/caseycz"><img src="https://img.shields.io/badge/Podpo%C5%99it%20CaseyCZ-OTEV%C5%98%C3%8DT-38BDF8?style=for-the-badge&labelColor=0284C7&logo=buymeacoffee&logoColor=white" alt="Podpořit CaseyCZ" /></a>
+</p>
 
-👉 **130.61.49.108/games/**
+## Co GameS umí
 
-## Vlastní server
+| Funkce | Popis |
+| --- | --- |
+| 🔍 **Vyhledávání** | Hledání v lokálním katalogu i online přes IGDB, včetně chybějících titulů. |
+| 🎮 **Platformy** | Filtrování PC, PlayStation, Xbox, Nintendo a dalších platforem. |
+| 🗓️ **Vydání** | Přehled podle měsíců, data vydání, stavu a žánru. |
+| ❤️ **Oblíbené hry** | Vlastní seznam sledovaných titulů. |
+| ⏳ **Odpočty** | Přehled času zbývajícího do vydání. |
+| 📖 **Detail hry** | Popis, žánr, vývojář, vydavatel, hodnocení, obaly a další metadata. |
+| 🔗 **Externí zdroje** | Odkazy na obchody, oficiální weby, databáze, Reddit a YouTube. |
+| 📅 **Kalendář** | Přidání jedné nebo více her do Google Calendar, Apple Calendar nebo Outlooku. |
+| 🔁 **Sdílení** | Sdílení aktuálního výběru a filtrů pomocí odkazu. |
+| 📱 **Responsive UI** | Pohodlné použití na desktopu i telefonu. |
 
-- Web: https://130.61.49.108/games/
-- Katalog: https://130.61.49.108/games-api/catalog
-- Stav API: https://130.61.49.108/games-health
+## Odkazy & API
 
-Stejné cesty fungují také na HTTPS portu 8443. Web načte malý seznam pro karty a filtry jednou, plný detail stáhne až po otevření hry a při dalších návštěvách ověří jen verzi přes `/games-api/catalog-meta`. GitHub Pages používá stejný statický `games.json`; vlastní server nabízí navíc živé doplnění detailu z IGDB a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje kopii na serveru.
+<table>
+  <thead><tr><th>Služba</th><th>Adresa</th><th>Akce</th></tr></thead>
+  <tbody>
+    <tr><td><strong>GameS web</strong></td><td><code>130.61.49.108/games/</code></td><td><a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/Web-OTEV%C5%98%C3%8DT-38BDF8?style=flat-square&labelColor=0284C7" alt="Otevřít web" /></a></td></tr>
+    <tr><td><strong>Katalog API</strong></td><td><code>/games-api/catalog</code></td><td><a href="https://130.61.49.108/games-api/catalog"><img src="https://img.shields.io/badge/API-OTEV%C5%98%C3%8DT-38BDF8?style=flat-square&labelColor=0284C7" alt="Otevřít API" /></a></td></tr>
+    <tr><td><strong>Stav API</strong></td><td><code>/games-health</code></td><td><a href="https://130.61.49.108/games-health"><img src="https://img.shields.io/badge/Health-OTEV%C5%98%C3%8DT-38BDF8?style=flat-square&labelColor=0284C7" alt="Otevřít health endpoint" /></a></td></tr>
+  </tbody>
+</table>
 
-## Online hledání chybějících her
+Stejné cesty fungují také na HTTPS portu `8443`.
 
-Vyhledávání kontroluje názvy v celém místním katalogu i IGDB. Vrátí všechny odpovídající hry, zobrazí je se stejnou kartou a detailem a chybějící záznamy uloží pro rychlé další otevření. Delší seznamy se zobrazují postupně přes tlačítko Načíst další.
+## Jak data fungují
 
-## ✨ Co na webu najdete
+Web při běžném načtení stáhne malý seznam potřebný pro karty a filtry. Plný detail hry se načte až po jejím otevření a při dalších návštěvách se kontroluje pouze verze katalogu přes `/games-api/catalog-meta`.
 
-- 🔍 **Rychlé vyhledávání her podle názvu**
-- 🎮 **Filtrování podle platforem** — PC, PlayStation, Xbox, Nintendo a další
-- 🗓️ **Přehled podle měsíců a data vydání**
-- 🎯 **Filtry podle žánru a stavu vydání**
-- ❤️ **Sledované / oblíbené hry** pro vlastní seznam
-- ⏳ **Odpočet do vydání** u připravovaných titulů
-- 🖼️ **Obaly her a přehledné karty**
-- 📖 **Detail hry** s popisem, žánrem, vývojářem, vydavatelem a hodnocením
-- 🔗 **Odkazy na herní obchody, oficiální stránky, databázi hry, Reddit a YouTube**
-- 📅 **Přidání hry do kalendáře** — Google Calendar, Apple Calendar nebo Outlook
-- 📥 **Stažení více vybraných vydání do kalendáře najednou**
-- 🔗 **Sdílení aktuálního výběru a filtrů pomocí odkazu**
-- 🇨🇿 **České prostředí a český formát data**
-- 📱 **Pohodlné použití na počítači i telefonu**
+GitHub Pages používá statický `games.json`. Vlastní server navíc umí živě doplnit detail z **IGDB** a oficiálních obchodů. Aktualizace katalogu v GitHubu sama neaktualizuje serverovou kopii.
 
-## 🕹️ Jak GameS Calendar používat
+Online vyhledávání kontroluje celý místní katalog i IGDB. Chybějící záznamy se po načtení uloží pro rychlejší další otevření a delší výsledky se zobrazují postupně.
 
-Vyberte platformu nebo období, případně napište název hry do vyhledávání. Výsledky se okamžitě přizpůsobí vašemu výběru.
+## Jak GameS používat
 
-Kliknutím na hru otevřete její detail, kde najdete další informace a odkazy. Hru si můžete uložit mezi sledované nebo ji rovnou přidat do svého kalendáře, abyste na vydání nezapomněli.
+Vyber platformu nebo období, případně napiš název hry. Výsledky se okamžitě přizpůsobí aktivním filtrům.
 
-Pokud chcete vidět jen hry, které vás skutečně zajímají, můžete kombinovat více filtrů současně.
+Po otevření hry získáš detail, odkazy na další zdroje, možnost uložit titul mezi oblíbené a přidat datum vydání do kalendáře. Filtry lze kombinovat a výsledný výběr sdílet odkazem.
 
-## ❤️ Proč projekt vznikl
+## Aktualizace katalogu
 
-Herních vydání je každý měsíc velké množství a sledovat všechny termíny na různých stránkách je nepraktické. Cílem GameS Calendar je nabídnout **jedno rychlé a přehledné místo**, kde se dá během několika sekund zjistit:
+Metadata pro seznam a filtry se ukládají do `games.json`. Na serveru je lze obnovit příkazem:
+
+```bash
+npm run enrich-igdb
+```
+
+Přístupové údaje IGDB zůstávají v `games-api/.env`. GitHub workflow provede stejný krok pouze při nastavení tajných hodnot `IGDB_CLIENT_ID` a `IGDB_CLIENT_SECRET`.
+
+Data vydání, platformy a další metadata se mohou průběžně měnit podle nově zveřejněných informací.
+
+## Proč GameS vznikl
+
+Herních vydání je každý měsíc velké množství a sledovat termíny na několika různých webech je nepraktické. GameS má být jedno rychlé místo pro odpověď na čtyři otázky:
 
 > **Co vychází? Kdy? Na čem? A kde si o hře zjistím víc?**
 
-## 🔄 Aktuální informace
+## Technologie
 
-Metadata pro seznam a filtry se pravidelně ukládají do `games.json`. Na serveru je lze bezpečně obnovit příkazem `npm run enrich-igdb`; přístupové údaje IGDB zůstávají v souboru `games-api/.env`. GitHub workflow provede stejný krok pouze při nastavení tajných hodnot `IGDB_CLIENT_ID` a `IGDB_CLIENT_SECRET`.
+<p>
+  <img src="https://img.shields.io/badge/JavaScript-111827?style=flat-square&logo=javascript&logoColor=38BDF8" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/HTML5-111827?style=flat-square&logo=html5&logoColor=38BDF8" alt="HTML5" />
+  <img src="https://img.shields.io/badge/CSS3-111827?style=flat-square&logo=css3&logoColor=38BDF8" alt="CSS3" />
+  <img src="https://img.shields.io/badge/Node.js-111827?style=flat-square&logo=nodedotjs&logoColor=38BDF8" alt="Node.js" />
+  <img src="https://img.shields.io/badge/IGDB-111827?style=flat-square&logoColor=38BDF8" alt="IGDB" />
+  <img src="https://img.shields.io/badge/GitHub-111827?style=flat-square&logo=github&logoColor=38BDF8" alt="GitHub" />
+</p>
 
-Přehled her je průběžně aktualizovaný, takže se mohou měnit data vydání, platformy i další informace podle toho, jak jsou zveřejňovány nové údaje o hrách.
+## CaseyCZ
 
----
-
-### 🎮 Najděte si svou další hru
-
-👉 **130.61.49.108/games/**
+<p align="center">
+  <a href="https://caseycz.github.io/"><img src="https://img.shields.io/badge/CaseyCZ%20Website-OTEV%C5%98%C3%8DT-38BDF8?style=for-the-badge&labelColor=0284C7" alt="CaseyCZ Website" /></a>
+  <a href="https://www.buymeacoffee.com/caseycz"><img src="https://img.shields.io/badge/Podpo%C5%99it%20CaseyCZ-Buy%20Me%20a%20Coffee-38BDF8?style=for-the-badge&labelColor=0284C7&logo=buymeacoffee&logoColor=white" alt="Podpořit CaseyCZ" /></a>
+</p>
