@@ -12,13 +12,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-v3.1.5-111827?style=flat-square&labelColor=111827&color=38BDF8" alt="GameS version 3.1.5" />
+  <img src="https://img.shields.io/badge/VERSION-v3.1.5-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.1.5" />
 </p>
 
 <p align="center">
-  <a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/GameS%20Calendar-OPEN-38BDF8?style=for-the-badge&labelColor=0284C7" alt="Open GameS Calendar" /></a>
-  <a href="https://caseycz.github.io/"><img src="https://img.shields.io/badge/CaseyCZ%20Website-OPEN-38BDF8?style=for-the-badge&labelColor=0284C7" alt="CaseyCZ Website" /></a>
-  <a href="https://www.buymeacoffee.com/caseycz"><img src="https://img.shields.io/badge/Support%20CaseyCZ-OPEN-38BDF8?style=for-the-badge&labelColor=0284C7&logo=buymeacoffee&logoColor=white" alt="Support CaseyCZ" /></a>
+  <a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/Website-Open-38BDF8?style=for-the-badge&labelColor=0284C7&logo=googlechrome&logoColor=white" alt="Open GameS Calendar" /></a>
+  <a href="https://github.com/CaseyCZ/GameS-Calendar-Website"><img src="https://img.shields.io/badge/GitHub-Repository-38BDF8?style=for-the-badge&labelColor=0284C7&logo=github&logoColor=white" alt="GameS GitHub repository" /></a>
 </p>
 
 ## About
@@ -37,16 +36,17 @@
 - 🔁 share the current selection and filters
 - 📱 comfortable on mobile and desktop
 
-## Links
-
-<p>
-  <a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/Web-GameS%20Calendar-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS Calendar" /></a>
-  <a href="https://github.com/CaseyCZ/GameS-Calendar-Website"><img src="https://img.shields.io/badge/GitHub-Repository-38BDF8?style=for-the-badge&labelColor=0284C7&logo=github&logoColor=white" alt="GitHub repository" /></a>
-</p>
-
-## CaseyCZ
+## Support
 
 <p align="center">
-  <a href="https://caseycz.github.io/"><img src="https://img.shields.io/badge/CaseyCZ%20Website-OPEN-38BDF8?style=for-the-badge&labelColor=0284C7" alt="CaseyCZ Website" /></a>
   <a href="https://www.buymeacoffee.com/caseycz"><img src="https://img.shields.io/badge/Support%20CaseyCZ-Buy%20Me%20a%20Coffee-38BDF8?style=for-the-badge&labelColor=0284C7&logo=buymeacoffee&logoColor=white" alt="Support CaseyCZ" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/caseycz"><img src="https://caseycz.github.io/support-qr.svg" width="150" alt="Buy Me a Coffee CaseyCZ QR code" /></a><br>
+  <sub>Scan the QR code or click the button.</sub>
+</p>
+
+<p align="center">
+  <a href="https://caseycz.github.io/"><img src="https://img.shields.io/badge/CaseyCZ%20Website-Open-172033?style=flat-square&labelColor=111827" alt="CaseyCZ Website" /></a>
 </p>
