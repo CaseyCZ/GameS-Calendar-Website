@@ -176,6 +176,7 @@ function parseQuery() {
   if (['upcoming','released','all'].includes(query.get('status'))) state.status = query.get('status');
   if (['all','day','month','quarter','year','unknown'].includes(query.get('precision'))) state.precision = query.get('precision');
   if (['date-asc','date-desc','name-asc','name-desc'].includes(query.get('sort'))) state.sort = query.get('sort');
+  else if (state.search) state.sort = 'date-desc';
   if (['grid','compact'].includes(query.get('view'))) state.view = query.get('view');
   state.requestedGameId = query.get('game') || '';
   state.requestedRelease = query.get('release') || '';
@@ -269,12 +270,6 @@ function filterRows() {
   rows.sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
-    if (searching && state.sort === 'date-asc') {
-      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
-      if (relevance) return relevance;
-      const onlineOrder = (a.onlineOrder ?? Number.MAX_SAFE_INTEGER) - (b.onlineOrder ?? Number.MAX_SAFE_INTEGER);
-      if (onlineOrder) return onlineOrder;
-    }
     if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     if (!ad && bd) return 1;
@@ -880,7 +875,20 @@ function bindEvents() {
   });
 
   $('search-input').addEventListener('input', debounce(event => {
+    const wasSearching = Boolean(normalizeSearch(state.search));
     state.search = event.target.value.trim();
+    const isSearching = Boolean(normalizeSearch(state.search));
+
+    if (!wasSearching && isSearching) {
+      state.sort = 'date-desc';
+      $('sort-filter').value = 'date-desc';
+      $('sort-filter').dispatchEvent(new Event('sortsync'));
+    } else if (wasSearching && !isSearching) {
+      state.sort = 'date-asc';
+      $('sort-filter').value = 'date-asc';
+      $('sort-filter').dispatchEvent(new Event('sortsync'));
+    }
+
     refreshOnlineSearch(state.search);
   }, 350));
   $('platform-filters').addEventListener('click', event => {

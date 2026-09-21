@@ -1,7 +1,5 @@
 (() => {
   const $ = id => document.getElementById(id);
-  const THEME_KEY = 'games-calendar-theme';
-
   function ensureUpgradeStyles() {
     if (document.querySelector('link[data-ui-upgrades]')) return;
     const link = document.createElement('link');
@@ -11,22 +9,6 @@
     document.head.appendChild(link);
   }
 
-  function preferredTheme() {
-    return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark';
-  }
-
-  function applyTheme(theme, persist = false) {
-    const next = theme === 'light' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    if (persist) localStorage.setItem(THEME_KEY, next);
-    const color = next === 'light' ? '#f7f4f9' : '#100719';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
-    document.querySelectorAll('[data-theme-option]').forEach(button => {
-      const active = button.dataset.themeOption === next;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-    });
-  }
 
   function iconSliders() {
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M14 4v6M4 17h2M10 17h10M10 14v6"/></svg>';
@@ -209,16 +191,23 @@
 
     const appearanceGroup = document.createElement('div');
     appearanceGroup.className = 'settings-group';
+    const availableThemes = window.GameSThemes?.themes || [];
     appearanceGroup.innerHTML = `
       <span class="settings-group__label">Vzhled</span>
-      <div class="theme-choice" role="group" aria-label="Vzhled stránky">
-        <button class="theme-choice__button" type="button" data-theme-option="dark" aria-pressed="false">${iconMoon()}<span>Tmavý</span></button>
-        <button class="theme-choice__button" type="button" data-theme-option="light" aria-pressed="false">${iconSun()}<span>Světlý</span></button>
+      <div class="settings-theme-grid" role="group" aria-label="Vzhled stránky">
+        ${availableThemes.map(theme => `
+          <button class="theme-choice" type="button" data-theme-choice="${theme.id}" aria-pressed="false">
+            <span class="theme-choice__preview theme-preview--${theme.id}" aria-hidden="true"></span>
+            <strong>${theme.name}</strong>
+            <small>${theme.note}</small>
+          </button>
+        `).join('')}
       </div>`;
-    appearanceGroup.querySelectorAll('[data-theme-option]').forEach(button => {
-      button.addEventListener('click', () => applyTheme(button.dataset.themeOption, true));
+    appearanceGroup.querySelectorAll('[data-theme-choice]').forEach(button => {
+      button.addEventListener('click', () => window.GameSThemes?.apply(button.dataset.themeChoice, true));
     });
     popover.appendChild(appearanceGroup);
+    window.GameSThemes?.apply(window.GameSThemes.getCurrent(), false);
 
     if (platformMemory) {
       const group = document.createElement('div');
@@ -249,9 +238,18 @@
       popover.appendChild(group);
     }
 
+    const versionGroup = document.createElement('div');
+    versionGroup.className = 'settings-group settings-version';
+    versionGroup.innerHTML = `
+      <span class="settings-group__label">Verze webu</span>
+      <div class="settings-version__row">
+        <strong>v${window.GAMES_APP_VERSION || '—'}</strong>
+        <span>aktuální nasazená verze</span>
+      </div>`;
+    popover.appendChild(versionGroup);
+
     details.append(summary, popover);
-    actions.insertBefore(details, actions.firstChild?.nextSibling || null);
-    applyTheme(preferredTheme());
+    actions.insertBefore(details, actions.firstElementChild || null);
 
     details.addEventListener('toggle', () => {
       if (details.open) {
@@ -293,7 +291,6 @@
 
   function setup() {
     ensureUpgradeStyles();
-    applyTheme(preferredTheme());
     if (document.documentElement.dataset.compactControls === '1') return;
     const platformMemory = setupFilters();
     setupSettings(platformMemory);

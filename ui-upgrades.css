@@ -208,13 +208,13 @@
 }
 
 /* Appearance controls in Settings. */
-.theme-choice {
+.legacy-theme-choice {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
 }
 
-.theme-choice__button {
+.legacy-theme-choice__button {
   min-height: 38px;
   display: inline-flex;
   align-items: center;
@@ -231,7 +231,7 @@
   cursor: pointer;
 }
 
-.theme-choice__button svg {
+.legacy-theme-choice__button svg {
   width: 17px;
   height: 17px;
   fill: none;
@@ -241,7 +241,7 @@
   stroke-linejoin: round;
 }
 
-.theme-choice__button.is-active {
+.legacy-theme-choice__button.is-active {
   color: var(--pink);
   border-color: rgba(255,71,155,.5);
   background: rgba(255,71,155,.1);
@@ -314,7 +314,7 @@ html[data-theme="light"] .store-link,
 html[data-theme="light"] .card-action,
 html[data-theme="light"] .filter-summary,
 html[data-theme="light"] .settings-summary,
-html[data-theme="light"] .theme-choice__button,
+html[data-theme="light"] .legacy-theme-choice__button,
 html[data-theme="light"] .genre-filter-chip {
   background: rgba(255,255,255,.78);
 }
@@ -395,3 +395,38 @@ html[data-theme="light"] .service-badge--gfn { color:#527d14; }
 html[data-theme="light"] .badge--early,
 html[data-theme="light"] .detail-flag--early { color:#9a5b00!important; }
 html[data-theme="light"] .badge--scale { color:#14734f!important; }
+
+
+/* Unified four-theme selector inside Settings. */
+.settings-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.settings-theme-grid .theme-choice {
+  width: 100%;
+}
+.settings-version {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.settings-version__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.settings-version__row strong {
+  color: var(--pink);
+  font-size: 13px;
+}
+.settings-version__row span {
+  color: var(--muted);
+  font-size: 10px;
+  text-align: right;
+}
+@media (max-width: 390px) {
+  .settings-theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
