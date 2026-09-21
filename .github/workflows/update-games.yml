@@ -11,7 +11,6 @@ on:
       - 'fetch-games.js'
       - 'enrich-public-metadata.js'
       - 'games-api/scripts/enrich-catalog-igdb.js'
-      - 'package.json'
       - '.github/workflows/update-games.yml'
 
 permissions:
@@ -30,12 +29,12 @@ jobs:
       IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -45,7 +44,20 @@ jobs:
           METADATA_RETRY_DAYS: 30
           STEAM_CONCURRENCY: 2
           STEAM_RETRY_DAYS: 14
-        run: npm run fetch-games
+        run: |
+          set -o pipefail
+          log="$(mktemp)"
+          if npm run fetch-games 2>&1 | tee "$log"; then
+            rm -f "$log"
+            exit 0
+          fi
+          if grep -q 'maxlag: Waiting for wdqs' "$log"; then
+            echo "::warning::Wikidata Query Service is temporarily lagged; keeping the current games.json and continuing."
+            rm -f "$log"
+            exit 0
+          fi
+          rm -f "$log"
+          exit 1
 
       - name: Improve descriptions and subscription catalogs
         run: npm run enrich-public
