@@ -20,26 +20,26 @@ jobs:
 
     steps:
       - name: Check deployment configuration
-        id: config
         env:
-          DEPLOY_KEY: ${{ secrets.GAMES_DEPLOY_SSH_KEY }}
+          DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
         run: |
-          if [[ -z "$DEPLOY_KEY" ]]; then
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Automatic server deployment is not configured yet. Add the GAMES_DEPLOY_SSH_KEY repository secret."
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          if [[ -z "$DEPLOY_KEY_B64" ]]; then
+            echo "::error::Missing repository secret GAMES_DEPLOY_SSH_KEY_B64."
+            exit 1
           fi
 
       - name: Configure SSH
-        if: steps.config.outputs.ready == 'true'
         env:
-          DEPLOY_KEY: ${{ secrets.GAMES_DEPLOY_SSH_KEY }}
+          DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
         run: |
           set -euo pipefail
           install -d -m 700 ~/.ssh
-          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/games-deploy
+          printf '%s' "$DEPLOY_KEY_B64" | base64 --decode > ~/.ssh/games-deploy
           chmod 600 ~/.ssh/games-deploy
+
+          # Fail early with a clear message if the secret is damaged.
+          ssh-keygen -y -f ~/.ssh/games-deploy >/dev/null
 
           ssh-keyscan -T 10 -p 22 130.61.49.108 > /tmp/games-host-keys 2>/dev/null
           test -s /tmp/games-host-keys
@@ -53,7 +53,6 @@ jobs:
           ssh-keyscan -T 10 -p 22 -H 130.61.49.108 >> ~/.ssh/known_hosts
 
       - name: Deploy current main to server
-        if: steps.config.outputs.ready == 'true'
         run: |
           ssh \
             -i ~/.ssh/games-deploy \
@@ -65,7 +64,6 @@ jobs:
             'bash /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh'
 
       - name: Deployment summary
-        if: steps.config.outputs.ready == 'true'
         run: |
           {
             echo "### GameS deployment"
