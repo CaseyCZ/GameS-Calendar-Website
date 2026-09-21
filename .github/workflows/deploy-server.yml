@@ -1,0 +1,66 @@
+name: Deploy GameS to server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-games-stremio-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check deployment configuration
+        id: config
+        env:
+          DEPLOY_KEY: ${{ secrets.GAMES_DEPLOY_SSH_KEY }}
+        run: |
+          if [[ -z "$DEPLOY_KEY" ]]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Automatic server deployment is not configured yet. Add the GAMES_DEPLOY_SSH_KEY repository secret."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure SSH
+        if: steps.config.outputs.ready == 'true'
+        env:
+          DEPLOY_KEY: ${{ secrets.GAMES_DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/games-deploy
+          chmod 600 ~/.ssh/games-deploy
+          ssh-keyscan -T 10 -p 22 -H 130.61.49.108 >> ~/.ssh/known_hosts
+
+      - name: Deploy current main to server
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          ssh \
+            -i ~/.ssh/games-deploy \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=3 \
+            ubuntu@130.61.49.108 \
+            'bash /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh'
+
+      - name: Deployment summary
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          {
+            echo "### GameS deployment"
+            echo
+            echo "- GitHub commit: \`${GITHUB_SHA}\`"
+            echo "- Server: \`130.61.49.108\`"
+            echo "- Web: \`/games/\`"
+            echo "- Result: deployment script completed successfully"
+          } >> "$GITHUB_STEP_SUMMARY"
