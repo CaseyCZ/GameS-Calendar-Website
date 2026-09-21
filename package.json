@@ -1,6 +1,6 @@
 {
   "name": "games-calendar-website",
-  "version": "3.8.1",
+  "version": "3.8.2",
   "private": true,
   "description": "Rychlý herní kalendář s termíny vydání a ukládaným obohacením z IGDB, Wikidat, Wikipedie, Steamu a veřejných katalogů",
   "scripts": {

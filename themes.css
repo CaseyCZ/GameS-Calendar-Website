@@ -440,3 +440,194 @@ html[data-theme="games-light"] .game-card__gradient {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Unified component colors for all four themes */
+html[data-theme] .filter-panel,
+html[data-theme] .settings-popover,
+html[data-theme] .sort-panel,
+html[data-theme] .filter-panel-footer {
+  color: var(--text);
+  background: var(--panel-solid);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+html[data-theme] .filter-controls-row,
+html[data-theme] .filter-panel-footer,
+html[data-theme] .settings-group,
+html[data-theme] .trait-filter-section,
+html[data-theme] .detail-subsection,
+html[data-theme] .detail-media-section,
+html[data-theme] .detail-link-section {
+  border-color: var(--border);
+}
+
+html[data-theme] .filter-summary,
+html[data-theme] .settings-summary,
+html[data-theme] .sort-option,
+html[data-theme] .genre-filter-chip,
+html[data-theme] .release-changes,
+html[data-theme] .release-change,
+html[data-theme] .region-release,
+html[data-theme] .gallery-item,
+html[data-theme] .advanced-setting i {
+  color: var(--text);
+  background: var(--surface-soft);
+  border-color: var(--border);
+}
+
+html[data-theme] .filter-summary:hover,
+html[data-theme] .settings-summary:hover,
+html[data-theme] .sort-option:hover,
+html[data-theme] .genre-filter-chip:hover,
+html[data-theme] .release-change:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .filters-disclosure[open] > .filter-summary,
+html[data-theme] .filter-summary.has-active,
+html[data-theme] .sort-disclosure[open] > .sort-summary,
+html[data-theme] .sort-disclosure.has-active > .sort-summary,
+html[data-theme] .sort-option.is-active,
+html[data-theme] .settings-menu[open] > .settings-summary,
+html[data-theme] .icon-btn.is-active {
+  color: var(--pink);
+  background: var(--pink-soft);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .settings-notification-row,
+html[data-theme] .advanced-setting,
+html[data-theme] .region-release strong,
+html[data-theme] .text-filter-link {
+  color: var(--text);
+}
+
+html[data-theme] .genre-filter-chip small,
+html[data-theme] .region-release span {
+  color: var(--muted);
+}
+
+html[data-theme] .genre-filter-chip.is-active {
+  color: var(--text);
+  background: var(--pink-soft);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .genre-filter-chip.is-active small {
+  color: var(--pink);
+  background: color-mix(in srgb, var(--pink) 12%, transparent);
+}
+
+html[data-theme] .context-filter {
+  color: var(--text);
+  background: var(--pink-soft);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .advanced-setting i {
+  background: var(--surface-soft);
+}
+
+html[data-theme] .advanced-setting input:checked + i {
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--pink) 20%, transparent);
+}
+
+html[data-theme] .settings-popover .chip:disabled {
+  opacity: .62;
+  color: var(--muted);
+  background: var(--surface-soft);
+}
+
+html[data-theme] .settings-theme-grid .theme-choice {
+  color: var(--text);
+  background: var(--input);
+  border-color: var(--border);
+}
+
+html[data-theme] .settings-theme-grid .theme-choice:hover {
+  background: var(--panel-hover);
+  border-color: var(--border-strong);
+}
+
+html[data-theme] .settings-theme-grid .theme-choice.is-active {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pink) 28%, transparent);
+}
+
+html[data-theme] .settings-version__row strong {
+  color: var(--pink);
+}
+
+html[data-theme] .settings-version__row span {
+  color: var(--muted);
+}
+
+/* Keep light themes readable in components that historically used dark-only colors. */
+html[data-theme$="-light"] .badge {
+  color: #fff;
+  background: color-mix(in srgb, var(--text) 78%, transparent);
+  border-color: color-mix(in srgb, var(--text) 20%, transparent);
+}
+
+html[data-theme$="-light"] .detail-meta .badge {
+  color: var(--text);
+  background: var(--surface-soft);
+  border-color: var(--border);
+}
+
+html[data-theme$="-light"] .badge--content-type,
+html[data-theme$="-light"] .detail-flag--content-type {
+  color: #8a5300;
+}
+
+html[data-theme$="-light"] .badge--precision,
+html[data-theme$="-light"] .badge--early,
+html[data-theme$="-light"] .detail-flag--early {
+  color: #9a5b00 !important;
+}
+
+html[data-theme$="-light"] .badge--scale {
+  color: #14734f !important;
+}
+
+html[data-theme$="-light"] .service-badge--gamepass { color: #397d25; }
+html[data-theme$="-light"] .service-badge--psplus { color: #315da8; }
+html[data-theme$="-light"] .service-badge--gfn { color: #527d14; }
+
+html[data-theme$="-light"] .detail-flag,
+html[data-theme$="-light"] .genre-chip {
+  color: var(--purple);
+}
+
+html[data-theme$="-light"] .dialog-close {
+  color: #fff;
+  background: color-mix(in srgb, var(--text) 78%, transparent);
+}
+
+html[data-theme$="-light"] .game-dialog,
+html[data-theme$="-light"] .trailer-dialog,
+html[data-theme$="-light"] .calendar-dialog {
+  color: var(--text);
+  background: var(--panel-solid);
+}
+
+html[data-theme$="-light"] .search-field,
+html[data-theme$="-light"] .control {
+  color: var(--text);
+  background: var(--input);
+}
+
+@media (max-width: 760px) {
+  html[data-theme] .topbar {
+    background: var(--theme-topbar);
+  }
+
+  html[data-theme] .filter-panel-footer {
+    background: var(--panel-solid);
+  }
+}
