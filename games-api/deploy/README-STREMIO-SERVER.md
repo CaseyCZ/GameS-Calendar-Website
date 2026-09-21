@@ -45,13 +45,15 @@ The installer creates timestamped backups before changing the current dashboard 
 
 ## Updates
 
-The existing dashboard receives a `games-api` card. Its **Update** button runs the fixed GameS updater through Bash:
+Every push to `main` automatically runs `.github/workflows/deploy-server.yml`. GitHub Actions connects with a restricted SSH deployment key and executes:
 
 ```text
 /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh
 ```
 
-That action:
+The existing dashboard also keeps a manual **Update** button as a fallback.
+
+The updater:
 
 1. refuses tracked local changes or a branch other than `main`, then fast-forwards to `origin/main` without discarding local commits,
 2. publishes browser files into `/var/www/games-calendar`,
@@ -86,4 +88,4 @@ Restore the matching `/home/ubuntu/stremio-dashboard/index.js.backup-games-*` fi
 
 On the audited server, `/etc/nginx/sites-enabled/default` is a regular file, not a symlink to `sites-available/default`. Nginx loads the enabled file. Back up and update the active file, then run `sudo nginx -t` before reloading. Restoring only the available copy does not change the running site.
 
-Keep local server fixes under version control before updating. The updater stops on tracked local changes; it does not reset or automatically stash them. A GitHub push or GitHub Pages deployment does not publish the server copy.
+Keep local server fixes under version control before updating. The updater stops on tracked local changes; it does not reset or automatically stash them. Pushes to `main` deploy the server automatically; GitHub Pages remains a separate publication path.
