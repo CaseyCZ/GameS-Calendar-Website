@@ -637,41 +637,110 @@ function discoveryScore(query, game) {
 app.get('/api/discover', asyncRoute(async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 100);
   if (q.length < 3) return res.status(400).json({ error: 'Search must have at least 3 characters' });
-  if (!providers.igdb) return res.status(503).json({ error: 'IGDB is not configured' });
+
   const limit = limitOf(req.query.limit, 500, 500);
-  const searchLimit = 20;
+  const providerLimit = Math.min(20, Math.max(8, limit));
   const nameSearchLimit = 500;
   const catalog = await readCatalog();
   const catalogGames = Array.isArray(catalog.payload) ? catalog.payload : catalog.payload.games;
   const catalogIgdbIds = new Set(catalogGames.map(game => String(game.igdbId || '')).filter(Boolean));
-  const catalogTitles = new Set(catalogGames.flatMap(game => [game.name, ...(game.aliases || [])]).map(normalizeTitle).filter(Boolean));
+  const catalogTitles = new Set(
+    catalogGames
+      .flatMap(game => [game.name, ...(game.aliases || [])])
+      .map(normalizeTitle)
+      .filter(Boolean)
+  );
+
   const saved = searchDiscoveredGames(q, nameSearchLimit)
     .filter(game => !catalogIgdbIds.has(String(game.igdbId || '')) && !catalogTitles.has(normalizeTitle(game.name)));
-  const searches = await Promise.allSettled([
-    providers.igdb.search(q, { limit: searchLimit }),
-    providers.igdb.searchByName(q, { limit: nameSearchLimit })
-  ]);
-  const hits = searches
-    .filter(result => result.status === 'fulfilled')
-    .flatMap(result => result.value || [])
-    .filter((item, index, all) => all.findIndex(other => String(other.providerId) === String(item.providerId)) === index);
-  if (!hits.length && !saved.length) {
-    const failed = searches.find(result => result.status === 'rejected');
-    throw failed?.reason || new Error('IGDB search failed');
+
+  const searches = [];
+  if (providers.igdb) {
+    searches.push(
+      ['igdb', providers.igdb.search(q, { limit: providerLimit })],
+      ['igdb-name', providers.igdb.searchByName(q, { limit: nameSearchLimit })]
+    );
   }
-  const discovered = hits
-    .filter(item => item?.providerId && item?.title)
+  if (providers.steam) searches.push(['steam', providers.steam.search(q, { limit: providerLimit })]);
+  if (providers.microsoft) searches.push(['microsoft', providers.microsoft.search(q, { limit: providerLimit })]);
+  if (providers.playstation) searches.push(['playstation', providers.playstation.search(q, { limit: providerLimit })]);
+  if (providers.nintendo) searches.push(['nintendo', providers.nintendo.search(q, { limit: providerLimit })]);
+
+  const settled = await Promise.allSettled(searches.map(([, promise]) => promise));
+  const providerHits = new Map();
+  for (let index = 0; index < settled.length; index += 1) {
+    const result = settled[index];
+    const providerName = searches[index][0];
+    if (result.status !== 'fulfilled') continue;
+    providerHits.set(providerName, result.value || []);
+  }
+
+  const igdbHits = [
+    ...(providerHits.get('igdb') || []),
+    ...(providerHits.get('igdb-name') || [])
+  ].filter((item, index, all) =>
+    item?.providerId
+    && item?.title
+    && all.findIndex(other => String(other.providerId) === String(item.providerId)) === index
+  );
+
+  const igdbDiscovered = igdbHits
     .filter(item => titleMatchesQuery(q, item.title))
     .filter(item => !catalogIgdbIds.has(String(item.providerId)) && !catalogTitles.has(normalizeTitle(item.title)))
     .map(catalogGameFromIgdb);
-  discovered.forEach(saveDiscoveredGame);
-  const games = [...discovered, ...saved]
-    .filter((game, index, all) => all.findIndex(item => String(item.id) === String(game.id)) === index)
+
+  igdbDiscovered.forEach(saveDiscoveredGame);
+
+  const igdbTitles = new Set(igdbDiscovered.map(game => normalizeTitle(game.name)));
+  const storeGroups = new Map();
+  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo']) {
+    for (const item of providerHits.get(providerName) || []) {
+      if (!item?.title || !titleMatchesQuery(q, item.title)) continue;
+      const titleKey = normalizeTitle(item.title);
+      if (!titleKey || catalogTitles.has(titleKey) || igdbTitles.has(titleKey)) continue;
+      if (!storeGroups.has(titleKey)) storeGroups.set(titleKey, []);
+      storeGroups.get(titleKey).push(item);
+    }
+  }
+
+  const storeDiscovered = [...storeGroups.values()]
+    .map(catalogGameFromProviders)
+    .filter(Boolean);
+
+  const games = [...igdbDiscovered, ...storeDiscovered, ...saved]
     .filter((game, index, all) => all.findIndex(item => normalizeTitle(item.name) === normalizeTitle(game.name)) === index)
     .sort((a, b) => discoveryScore(q, b) - discoveryScore(q, a))
     .slice(0, limit);
-  res.setHeader('Cache-Control', 'private, max-age=300');
-  res.json({ query: q, source: hits.length ? 'IGDB' : 'saved-IGDB', count: games.length, games });
+
+  const sources = [];
+  if (igdbHits.length) sources.push('IGDB');
+  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo']) {
+    if ((providerHits.get(providerName) || []).length) sources.push(providerLabel(providerName));
+  }
+  if (saved.length) sources.push('saved-IGDB');
+
+  const failures = settled
+    .map((result, index) => result.status === 'rejected' ? {
+      provider: searches[index][0],
+      error: String(result.reason?.message || result.reason || 'Search failed').slice(0, 300)
+    } : null)
+    .filter(Boolean);
+
+  if (!games.length && failures.length === settled.length && settled.length) {
+    throw new Error(`All discovery providers failed: ${failures.map(item => `${item.provider}: ${item.error}`).join('; ')}`);
+  }
+
+  res.setHeader('Cache-Control', 'private, max-age=180');
+  res.json({
+    query: q,
+    source: sources.join(', ') || 'none',
+    count: games.length,
+    games,
+    providers: Object.fromEntries(
+      [...providerHits.entries()].map(([name, items]) => [name, items.length])
+    ),
+    failures
+  });
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {
