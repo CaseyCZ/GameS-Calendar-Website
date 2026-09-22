@@ -36,6 +36,16 @@
     return clean(content.querySelector('.detail-main h2')?.textContent);
   }
 
+  function currentGameId() {
+    const queryId = clean(new URLSearchParams(location.search).get('game'));
+    if (queryId) return queryId;
+    const rowKey = clean(dialog.dataset.rowKey);
+    if (!rowKey) return '';
+    if (rowKey.startsWith('online:')) return rowKey.slice('online:'.length);
+    const lastColon = rowKey.lastIndexOf(':');
+    return lastColon > 0 ? rowKey.slice(0, lastColon) : rowKey;
+  }
+
   function platformTexts() {
     return [...content.querySelectorAll('.detail-meta .badge')]
       .map(node => clean(node.textContent))
@@ -399,7 +409,7 @@
           response = await fetch(`${API_ROOT}/enrich`, {
             method: 'POST',
             headers: { 'content-type': 'application/json', accept: 'application/json' },
-            body: JSON.stringify({ game: { title }, providers })
+            body: JSON.stringify({ game: { id: currentGameId(), title }, providers })
           });
           if (response.ok || ![502, 503, 504].includes(response.status) || attempt === 2) break;
           await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
