@@ -46,3 +46,21 @@ export function searchRelevance(game = {}, query = '') {
   const words = needle.split(' ').filter(Boolean);
   return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
 }
+
+export function gameIdentity(game = {}) {
+  const igdbId = String(game.igdbId || '').trim();
+  if (igdbId) return `igdb:${igdbId}`;
+  const id = String(game.id || '').trim();
+  if (id) return `id:${id}`;
+  return `title:${normalizeSearch(game.name || '')}`;
+}
+
+export function collapseGameRows(rows = [], prefer = (current) => current) {
+  const unique = new Map();
+  for (const row of rows || []) {
+    const key = gameIdentity(row?.game);
+    const current = unique.get(key);
+    unique.set(key, current ? prefer(current, row) : row);
+  }
+  return [...unique.values()];
+}
