@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://130.61.49.108/games/"><img src="https://img.shields.io/badge/Web-Otev%C5%99%C3%ADt-38BDF8?style=for-the-badge&labelColor=0284C7&logo=googlechrome&logoColor=white" alt="Otevřít GameS Calendar" /></a>
+  <a href="https://caseycz.github.io/GameS-Calendar-Website/"><img src="https://img.shields.io/badge/Web-Otev%C5%99%C3%ADt-38BDF8?style=for-the-badge&labelColor=0284C7&logo=googlechrome&logoColor=white" alt="Otevřít GameS Calendar" /></a>
 </p>
 
 ## O projektu
