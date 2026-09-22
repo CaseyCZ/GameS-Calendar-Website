@@ -668,7 +668,19 @@ function resetFilters() {
 
 function toggleWatch(gameIdValue) {
   const id = String(gameIdValue);
-  if (state.watchlist.has(id)) state.watchlist.delete(id); else state.watchlist.add(id);
+  const sourceRow = state.rows.find(row => gameId(row.game) === id);
+  const familyKey = sourceRow ? displayFamilyKey(sourceRow) : '';
+  const familyIds = familyKey
+    ? [...new Set(state.rows.filter(row => displayFamilyKey(row) === familyKey).map(row => gameId(row.game)))]
+    : [id];
+  const watchedFamilyIds = familyIds.filter(value => state.watchlist.has(value));
+
+  if (watchedFamilyIds.length) {
+    watchedFamilyIds.forEach(value => state.watchlist.delete(value));
+  } else {
+    state.watchlist.add(id);
+  }
+
   saveJsonSet(WATCH_KEY, state.watchlist);
   syncPushSubscription().catch(error => console.warn('Push sync:', error));
   renderGames();
