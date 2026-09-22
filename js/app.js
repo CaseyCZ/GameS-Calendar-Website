@@ -69,7 +69,7 @@ const state = {
   series: '',
   status: 'upcoming',
   precision: 'all',
-  period: 'month',
+  period: 'all',
   range: null,
   sort: 'date-asc',
   view: localStorage.getItem(VIEW_KEY) || 'grid',
@@ -140,9 +140,8 @@ function uniqueGameCount(rows) {
 }
 
 function setDefaultPeriod() {
-  const now = new Date();
-  state.period = 'month';
-  state.range = monthRange(now.getFullYear(), now.getMonth());
+  state.period = 'all';
+  state.range = null;
 }
 
 function rangeForPeriod(kind) {
@@ -207,7 +206,7 @@ function buildQuery({ includeOpenGame = true } = {}) {
   if (state.precision !== 'all') q.set('precision', state.precision);
   if (state.sort !== 'date-asc') q.set('sort', state.sort);
   if (state.view !== 'grid') q.set('view', state.view);
-  if (['all','next','week','30','90','year','undated'].includes(state.period)) q.set('period', state.period);
+  if (['next','week','30','90','year','undated'].includes(state.period)) q.set('period', state.period);
   else if (state.period === 'custom' && state.range) { q.set('from', state.range.from); q.set('to', state.range.to); }
   else if (state.range?.from) q.set('month', state.range.from.slice(0, 7));
   if (includeOpenGame && state.openRowKey) {
@@ -480,6 +479,8 @@ function updateSummary() {
     ? `Výsledky hledání „${state.search}“`
     : state.watchlistOnly
     ? 'Moje sledované hry'
+    : state.period === 'all' && state.status === 'upcoming'
+    ? 'Nadcházející hry'
     : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
   $('range-title').textContent = rangeTitle;
   const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(state.filtered.length)} vydání`];
