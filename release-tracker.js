@@ -13,9 +13,37 @@ function releaseLabel(value) {
   return first.window || 'bez oznámeného termínu';
 }
 
+function priceSummary(value) {
+  const entries = Object.entries(value || {}).filter(([, price]) => price && (price.currentText || price.current != null));
+  if (!entries.length) return 'bez ceny';
+  return entries.map(([provider, price]) => {
+    const label = provider === 'microsoft' ? 'Xbox' : provider === 'playstation' ? 'PlayStation' : provider === 'nintendo' ? 'Nintendo' : provider === 'steam' ? 'Steam' : provider;
+    const text = String(price.currentText || '').trim();
+    if (text) return `${label}: ${text}`;
+    const current = Number(price.current);
+    const currency = String(price.currency || '').trim();
+    return Number.isFinite(current) ? `${label}: ${current}${currency ? ` ${currency}` : ''}` : label;
+  }).join(' · ');
+}
+
+function subscriptionSummary(value) {
+  const s = value || {};
+  const items = [];
+  if (s.gamePassConsole) items.push('Game Pass Console');
+  if (s.gamePassPc) items.push('PC Game Pass');
+  if (s.cloudGaming) items.push('Xbox Cloud Gaming');
+  if (s.gamePass && !s.gamePassConsole && !s.gamePassPc) items.push('Game Pass');
+  if (s.psPlus) items.push('PS Plus');
+  if (s.geforceNow) items.push('GeForce NOW');
+  if (s.eaPlay) items.push('EA Play');
+  return items.length ? items.join(', ') : 'bez předplatného';
+}
+
 function itemText(item) {
   if (item.field === 'gameAdded') return { badge: 'Nová hra', text: `Přidána do katalogu · ${releaseLabel(item.newValue)}`, kind: 'new' };
   if (item.field === 'gameRemoved') return { badge: 'Odebráno', text: 'Hra už není v aktuálním katalogu', kind: 'removed' };
+  if (item.field === 'prices') return { badge: 'Cena', text: `${priceSummary(item.oldValue)} → ${priceSummary(item.newValue)}`, kind: 'price' };
+  if (item.field === 'subscriptions') return { badge: 'Předplatné', text: `${subscriptionSummary(item.oldValue)} → ${subscriptionSummary(item.newValue)}`, kind: 'subscription' };
   return { badge: 'Změna termínu', text: `${releaseLabel(item.oldValue)} → ${releaseLabel(item.newValue)}`, kind: 'date' };
 }
 
