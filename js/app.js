@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { matchesSearch, normalizeSearch, searchRelevance } from './search.js';
+import { collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -93,9 +93,7 @@ let calendarFeedMode = 'watch';
 const isWatched = game => state.watchlist.has(gameId(game));
 
 function searchResultKey(row) {
-  const game = row?.game || {};
-  if (game.igdbId) return `igdb:${game.igdbId}`;
-  return `id:${gameId(game)}`;
+  return gameIdentity(row?.game);
 }
 
 function searchReleaseKey(row) {
@@ -146,12 +144,7 @@ function preferSearchRow(current, candidate) {
 }
 
 function collapseSearchRows(rows) {
-  const unique = new Map();
-  for (const row of rows) {
-    const key = searchResultKey(row);
-    unique.set(key, preferSearchRow(unique.get(key), row));
-  }
-  return [...unique.values()];
+  return collapseGameRows(rows, preferSearchRow);
 }
 
 function uniqueGameCount(rows, { byTitle = false } = {}) {
