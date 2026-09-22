@@ -291,17 +291,21 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
   if (!search && state.precision !== 'all' && precisionGroup !== state.precision) return false;
   if (includeStatus) {
     const today = todayLocal();
-    if (state.status === 'upcoming' && row.day && row.day < today) return false;
-    if (state.status === 'released' && (!row.day || row.day >= today)) return false;
+    const from = row.from || row.day || null;
+    const to = row.to || row.day || null;
+    if (state.status === 'upcoming' && to && to < today) return false;
+    if (state.status === 'released' && (!from || from >= today)) return false;
   }
   return true;
 }
 
 function inActiveRange(row) {
-  if (state.period === 'undated') return !row.day;
+  const from = row.from || row.day || null;
+  const to = row.to || row.day || null;
+  if (state.period === 'undated') return !from && !to;
   if (!state.range) return true;
-  if (!row.day) return state.precision !== 'all' && state.precision !== 'day';
-  return row.day >= state.range.from && row.day <= state.range.to;
+  if (!from || !to) return false;
+  return to >= state.range.from && from <= state.range.to;
 }
 
 function ratingValue(row) {
@@ -330,8 +334,8 @@ function filterRows() {
     ? collapseSearchRows(filtered)
     : filtered;
   rows.sort((a, b) => {
-    const ad = a.day || '';
-    const bd = b.day || '';
+    const ad = a.sortDay || a.day || '';
+    const bd = b.sortDay || b.day || '';
 
     if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
@@ -413,7 +417,7 @@ function renderMonthSelectors() {
   const reference = state.range?.from || todayLocal();
   const [year, month] = reference.split('-').map(Number);
   $('month-filter').innerHTML = MONTHS.map((name, index) => `<option value="${index}" ${index === month - 1 ? 'selected' : ''}>${name}</option>`).join('');
-  const days = state.rows.map(row => row.day).filter(Boolean).sort();
+  const days = state.rows.map(row => row.sortDay || row.day || row.from).filter(Boolean).sort();
   const minYear = Math.min(year - 1, Number(days[0]?.slice(0,4) || year));
   const maxYear = Math.max(year + 2, Number(days.at(-1)?.slice(0,4) || year));
   $('year-filter').innerHTML = Array.from({length: maxYear - minYear + 1}, (_, i) => minYear + i).map(value => `<option value="${value}" ${value === year ? 'selected' : ''}>${value}</option>`).join('');
@@ -424,9 +428,11 @@ function monthCounts() {
   const map = new Map();
   const searching = Boolean(normalizeSearch(state.search));
   for (const row of state.rows) {
-    if (!row.day) continue;
     if (searching ? !matchesSearch(row.game, state.search) : !matchesBase(row)) continue;
-    const key = row.day.slice(0,7);
+    const from = row.from || row.day || null;
+    const to = row.to || row.day || null;
+    if (!from || !to || from.slice(0,7) !== to.slice(0,7)) continue;
+    const key = from.slice(0,7);
     if (!map.has(key)) map.set(key, { releases: 0, games: new Set() });
     const item = map.get(key);
     item.releases += 1;
@@ -497,6 +503,9 @@ function makeOnlineRows(games) {
         window: release.window,
         precision: release.precision,
         regions: [...new Set(release.regions || [])],
+        from: release.from,
+        to: release.to,
+        sortDay: release.sortDay,
         onlineResult: true,
         onlineOrder,
         onlineReleaseOrder: releaseOrder
@@ -555,11 +564,19 @@ function updateSummary() {
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(
-    base.filter(row => row.day && row.day >= today && row.day <= next30End),
+    base.filter(row => {
+      const from = row.from || row.day || null;
+      const to = row.to || row.day || null;
+      return from && to && to >= today && from <= next30End;
+    }),
     { byTitle: searching }
   ));
   $('stat-next').textContent = formatter.format(uniqueGameCount(
-    base.filter(row => row.day && row.day >= nextMonth.from && row.day <= nextMonth.to),
+    base.filter(row => {
+      const from = row.from || row.day || null;
+      const to = row.to || row.day || null;
+      return from && to && to >= nextMonth.from && from <= nextMonth.to;
+    }),
     { byTitle: searching }
   ));
   $('stat-watchlist').textContent = formatter.format(state.watchlist.size);
