@@ -21,6 +21,7 @@ const PLATFORM_BRANDS = Object.freeze({
   PS4: 'playstation',
   'Xbox Series': 'xbox',
   'Xbox One': 'xbox',
+  'Xbox 360': 'xbox',
   Switch: 'nintendo',
   'Switch 2': 'nintendo',
   VR: 'vr'
