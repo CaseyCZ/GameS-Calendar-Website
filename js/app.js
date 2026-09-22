@@ -140,6 +140,19 @@ function searchResultKey(row) {
   return normalizeSearch(row?.game?.name) || gameId(row.game);
 }
 
+function searchReleaseKey(row) {
+  return [
+    searchResultKey(row),
+    row?.day || row?.window || '',
+    String(row?.precision || (row?.day ? 'day' : 'unknown')).toLowerCase()
+  ].join('|');
+}
+
+function uniqueReleaseCount(rows, { byTitle = false } = {}) {
+  if (!byTitle) return rows.length;
+  return new Set(rows.map(searchReleaseKey)).size;
+}
+
 function preferSearchRow(current, candidate) {
   if (!current) return candidate;
 
@@ -434,9 +447,14 @@ function monthCounts() {
     const to = row.to || row.day || null;
     if (!from || !to || from.slice(0,7) !== to.slice(0,7)) continue;
     const key = from.slice(0,7);
-    if (!map.has(key)) map.set(key, { releases: 0, games: new Set() });
+    if (!map.has(key)) map.set(key, { releases: 0, releaseKeys: new Set(), games: new Set() });
     const item = map.get(key);
-    item.releases += 1;
+    if (searching) {
+      item.releaseKeys.add(searchReleaseKey(row));
+      item.releases = item.releaseKeys.size;
+    } else {
+      item.releases += 1;
+    }
     item.games.add(searching ? searchResultKey(row) : gameId(row.game));
   }
   return [...map.entries()].sort(([a],[b]) => a.localeCompare(b));
@@ -561,7 +579,7 @@ function updateSummary() {
   const base = statBaseRows();
   const searching = Boolean(normalizeSearch(state.search));
   const visibleGames = uniqueGameCount(state.filtered);
-  const visibleReleases = searching ? base.length : state.filtered.length;
+  const visibleReleases = searching ? uniqueReleaseCount(base, { byTitle: true }) : state.filtered.length;
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(
