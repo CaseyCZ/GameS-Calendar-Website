@@ -30,6 +30,9 @@ jobs:
       - name: Validate JavaScript
         run: npm run check
 
+      - name: Run regression tests
+        run: npm test
+
       - name: Audit catalog quality
         run: npm run audit-data
 
