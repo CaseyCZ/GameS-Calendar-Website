@@ -62,9 +62,6 @@ jobs:
           rm -f "$log"
           exit 1
 
-      - name: Improve descriptions and subscription catalogs
-        run: npm run enrich-public
-
       - name: Enrich catalog from IGDB
         if: ${{ env.IGDB_CLIENT_ID != '' && env.IGDB_CLIENT_SECRET != '' }}
         env:
@@ -72,12 +69,15 @@ jobs:
           IGDB_ENRICH_RETRY_DAYS: 30
         run: npm run enrich-igdb
 
-      - name: Enrich catalog through live GameS IGDB API
+      - name: Refresh rolling catalog through live GameS IGDB API
         env:
           GAMES_LIVE_API: https://130.61.49.108/games-api
           IGDB_LIVE_BATCH_SIZE: 500
           IGDB_LIVE_RETRIES: 6
         run: npm run enrich-live-igdb
+
+      - name: Improve descriptions and subscription catalogs
+        run: npm run enrich-public
 
       - name: Repair and normalize catalog
         run: npm run repair-catalog
