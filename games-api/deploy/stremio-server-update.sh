@@ -6,6 +6,7 @@ REPO="$ROOT/repo"
 WEB=/var/www/games-calendar
 API="$REPO/games-api"
 PM2_NAME=games-api
+EXPECTED_SHA="${1:-}"
 
 if [[ "$(id -un)" != "ubuntu" ]]; then
   echo "Run this script as the ubuntu user, not as root." >&2
@@ -34,7 +35,16 @@ if [[ "$(git -C "$REPO" branch --show-current)" != "main" ]]; then
   exit 1
 fi
 git -C "$REPO" fetch origin main
+REMOTE_SHA="$(git -C "$REPO" rev-parse origin/main)"
+if [[ -n "$EXPECTED_SHA" && "$REMOTE_SHA" != "$EXPECTED_SHA" ]]; then
+  echo "Deployment skipped: workflow commit $EXPECTED_SHA was superseded by origin/main $REMOTE_SHA."
+  exit 0
+fi
 git -C "$REPO" merge --ff-only origin/main
+if [[ -n "$EXPECTED_SHA" && "$(git -C "$REPO" rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
+  echo "Deployment stopped: checked-out commit does not match workflow commit $EXPECTED_SHA." >&2
+  exit 1
+fi
 
 # Publish only browser-facing files. Do not expose .git, workflows, backend or build scripts.
 rsync -a --delete \
