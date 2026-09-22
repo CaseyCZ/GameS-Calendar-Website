@@ -396,8 +396,8 @@ function collapseSearchCards(items) {
   return collapseDisplayRows(items, preferSearchCard);
 }
 
-function uniqueGameCount(items, { byTitle = false } = {}) {
-  return new Set(items.map(row => byTitle ? searchCardKey(row) : String(row.game.id))).size;
+function uniqueGameCount(items) {
+  return new Set(items.map(displayFamilyKey)).size;
 }
 
 function selectedTraitLabels() {
@@ -487,8 +487,7 @@ function renderTraitCounts(baseRows) {
 }
 
 function renderAdvancedSummary(filtered, releaseCount = filtered.length, search = '') {
-  const byTitle = Boolean(normalizeSearch(search));
-  const gameCount = uniqueGameCount(filtered, { byTitle });
+  const gameCount = uniqueGameCount(filtered);
   const stat = $('stat-visible');
   if (stat) stat.textContent = formatter.format(gameCount);
   const summary = $('result-summary');
