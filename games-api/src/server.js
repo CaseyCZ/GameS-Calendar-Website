@@ -81,6 +81,7 @@ function expensiveRateLimit(limit = 30) {
 app.use('/api/enrich', expensiveRateLimit(30));
 app.use('/api/search', expensiveRateLimit(60));
 app.use('/api/igdb/catalog-batch', expensiveRateLimit(12));
+app.use('/api/igdb/catalog-range', expensiveRateLimit(12));
 
 const asyncRoute = handler => async (req, res, next) => {
   try { await handler(req, res, next); }
@@ -771,6 +772,21 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
     ),
     failures
   });
+}));
+
+app.get('/api/igdb/catalog-range', asyncRoute(async (req, res) => {
+  if (!providers.igdb?.catalogRange) return res.status(503).json({ error: 'IGDB is not configured' });
+  const from = String(req.query.from || '').trim();
+  const to = String(req.query.to || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(to)) {
+    return res.status(400).json({ error: 'from and to must use YYYY-MM-DD' });
+  }
+  const limit = limitOf(req.query.limit, 500, 500);
+  const offset = Math.max(0, Math.min(10000, Number(req.query.offset) || 0));
+  const force = bool(req.query.refresh);
+  const items = await providers.igdb.catalogRange(from, to, { force, limit, offset });
+  res.setHeader('Cache-Control', 'private, max-age=300');
+  res.json({ from, to, offset, limit, count: items.length, items });
 }));
 
 app.post('/api/igdb/catalog-batch', asyncRoute(async (req, res) => {
