@@ -169,8 +169,25 @@ function placeholderDates(games = []) {
 function fuzzifySuspicious(release = {}, placeholders = new Set()) {
   const precision = String(release.precision || (release.date || release.day ? 'day' : 'unknown')).toLowerCase();
   const date = String(release.date || release.day || '');
-  if (precision !== 'day' || !placeholders.has(date)) return release;
-  if (String(release.precisionSource || '').startsWith('igdb-date-format')) return release;
+  const precisionSource = String(release.precisionSource || '').trim();
+
+  if (precision !== 'day' || !date) {
+    return precisionSource ? release : {
+      ...release,
+      precisionSource:'catalog-legacy-preserved'
+    };
+  }
+
+  const trustedExact = precisionSource.startsWith('igdb-date-format');
+  const boundary = /^20\d{2}-(03-31|06-30|09-30|12-31)$/.test(date);
+  const suspicious = placeholders.has(date) || (boundary && !trustedExact);
+
+  if (!suspicious || trustedExact) {
+    return precisionSource ? release : {
+      ...release,
+      precisionSource:'catalog-legacy-exact'
+    };
+  }
 
   const [year, month] = date.split('-');
   const yearOnly = date.endsWith('-12-31') && Number(month) === 12;
