@@ -351,16 +351,6 @@ function sortRows(items, sort, search = '') {
   });
 }
 
-function searchCardKey(row) {
-  const game = row?.game || {};
-  if (game.igdbId) return `igdb:${game.igdbId}`;
-  return `id:${String(game.id || '')}`;
-}
-
-function searchReleaseKey(row) {
-  return releaseRecordKey(row);
-}
-
 function uniqueReleaseCount(items) {
   return new Set(items.map(releaseRecordKey)).size;
 }
