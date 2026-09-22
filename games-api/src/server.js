@@ -147,7 +147,8 @@ function providerLabel(name = '') {
     steam: 'Steam',
     microsoft: 'Xbox',
     playstation: 'PlayStation',
-    nintendo: 'Nintendo'
+    nintendo: 'Nintendo',
+    geforceNow: 'GeForce NOW'
   }[name] || name;
 }
 
@@ -157,6 +158,7 @@ function providerLinkKey(name = '') {
     microsoft: 'xbox',
     playstation: 'playstation',
     nintendo: 'nintendo',
+    geforceNow: 'geforceNow',
     igdb: 'igdb'
   }[name] || '';
 }
@@ -666,6 +668,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
   if (providers.microsoft) searches.push(['microsoft', providers.microsoft.search(q, { limit: providerLimit })]);
   if (providers.playstation) searches.push(['playstation', providers.playstation.search(q, { limit: providerLimit })]);
   if (providers.nintendo) searches.push(['nintendo', providers.nintendo.search(q, { limit: providerLimit })]);
+  if (providers.geforceNow) searches.push(['geforceNow', providers.geforceNow.search(q, { limit: providerLimit })]);
 
   const settled = await Promise.allSettled(searches.map(([, promise]) => promise));
   const providerHits = new Map();
@@ -695,7 +698,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
 
   const igdbTitles = new Set(igdbDiscovered.map(game => normalizeTitle(game.name)));
   const storeGroups = new Map();
-  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo']) {
+  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo', 'geforceNow']) {
     for (const item of providerHits.get(providerName) || []) {
       if (!item?.title || !titleMatchesQuery(q, item.title)) continue;
       const titleKey = normalizeTitle(item.title);
@@ -716,7 +719,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
 
   const sources = [];
   if (igdbHits.length) sources.push('IGDB');
-  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo']) {
+  for (const providerName of ['steam', 'microsoft', 'playstation', 'nintendo', 'geforceNow']) {
     if ((providerHits.get(providerName) || []).length) sources.push(providerLabel(providerName));
   }
   if (saved.length) sources.push('saved-IGDB');
