@@ -388,22 +388,29 @@ async function writeCache(payload) {
   });
 }
 
-async function fetchJson(url, retry = 0) {
-  const response = await fetch(url, { cache: 'no-cache', headers: { Accept: 'application/json' } });
+async function fetchJson(url, retry = 0, signal = null) {
+  const response = await fetch(url, { cache: 'no-cache', signal, headers: { Accept: 'application/json' } });
   if (!response.ok && [502, 503, 504].includes(response.status) && retry < 2) {
-    await new Promise(resolve => setTimeout(resolve, 250 * (retry + 1)));
-    return fetchJson(url, retry + 1);
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(resolve, 250 * (retry + 1));
+      if (signal) signal.addEventListener('abort', () => {
+        clearTimeout(timeout);
+        reject(new DOMException('Aborted', 'AbortError'));
+      }, { once:true });
+    });
+    return fetchJson(url, retry + 1, signal);
   }
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
   return response.json();
 }
 
-async function fetchFirstJson(urls) {
+async function fetchFirstJson(urls, signal = null) {
   let lastError = null;
   for (const url of urls) {
     try {
-      return await fetchJson(url);
+      return await fetchJson(url, 0, signal);
     } catch (error) {
+      if (error?.name === 'AbortError') throw error;
       lastError = error;
     }
   }
@@ -448,12 +455,12 @@ export async function loadGameDetail(game) {
   return detailCache.get(key);
 }
 
-export async function searchOnlineGames(query, { limit = 500 } = {}) {
+export async function searchOnlineGames(query, { limit = 500, signal = null } = {}) {
   const q = String(query || '').trim();
   if (!LIVE_DISCOVER_URLS.length || q.length < 2) return [];
   const take = Math.max(1, Math.min(500, Number(limit) || 500));
   const suffix = `?q=${encodeURIComponent(q)}&limit=${take}`;
-  const payload = await fetchFirstJson(LIVE_DISCOVER_URLS.map(base => `${base}${suffix}`));
+  const payload = await fetchFirstJson(LIVE_DISCOVER_URLS.map(base => `${base}${suffix}`), signal);
   return [...new Map(
     (payload.games || [])
       .map(normalizeGame)
