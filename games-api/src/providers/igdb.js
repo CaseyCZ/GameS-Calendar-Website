@@ -172,9 +172,12 @@ function releasePrecision(item = {}) {
   if (format.includes('TBD') || /\b(TBD|TBA|TO BE ANNOUNCED)\b/i.test(human)) return 'unknown';
   if (format === 'YYYY' || /^\d{4}$/.test(human)) return 'year';
 
-  const hasYear = format.includes('YYYY') || Boolean(item?.y);
-  const hasMonth = format.includes('MMMM') || format.includes('MMM') || format.includes('MM') || Boolean(item?.m);
-  const hasDay = format.includes('DD');
+  // IGDB date_format uses tokens such as YYYY, MMMM YYYY and DD MMMM YYYY.
+  // Test the original token sequence so month-only dates never become exact days
+  // just because IGDB also supplies a Unix timestamp.
+  const hasYear = /Y{2,4}/.test(rawFormat) || Boolean(item?.y);
+  const hasMonth = /M{2,4}/.test(rawFormat) || Boolean(item?.m);
+  const hasDay = /D{1,2}/.test(rawFormat);
   if (hasYear && hasMonth && !hasDay) return 'month';
 
   if (/\b(?:JAN(?:UARY)?|FEB(?:RUARY)?|MAR(?:CH)?|APR(?:IL)?|MAY|JUN(?:E)?|JUL(?:Y)?|AUG(?:UST)?|SEP(?:T(?:EMBER)?)?|OCT(?:OBER)?|NOV(?:EMBER)?|DEC(?:EMBER)?)\b/i.test(human)
