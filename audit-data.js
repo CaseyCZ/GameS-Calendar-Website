@@ -29,6 +29,7 @@ let screenshots = 0;
 let genres = 0;
 let developers = 0;
 let publishers = 0;
+const platformAliasCounts = new Map();
 
 for (const game of games) {
   if (!game?.id || !String(game.name || '').trim() || !Array.isArray(game.releases)) invalid += 1;
@@ -73,6 +74,12 @@ for (const game of games) {
       boundary += 1;
       if (!String(release.precisionSource || '').startsWith('igdb-date-format')) {
         untrustedBoundaryCounts.set(date, (untrustedBoundaryCounts.get(date) || 0) + 1);
+      }
+    }
+    for (const platform of release.platforms || []) {
+      const name = String(platform?.name || platform?.abbreviation || '').trim();
+      if (['Series X|S','XONE','browser'].includes(name)) {
+        platformAliasCounts.set(name, (platformAliasCounts.get(name) || 0) + 1);
       }
     }
   }
@@ -121,7 +128,11 @@ const report = {
     suspiciousBoundaryPct: releasePct(boundary),
     massPlaceholderDates,
     topExactDates,
-    missingPrecisionSource
+    missingPrecisionSource,
+    untrustedBoundaryDays: [...untrustedBoundaryCounts.entries()].map(([date, count]) => ({ date, count }))
+  },
+  platformQuality: {
+    legacyAliases: Object.fromEntries(platformAliasCounts)
   },
   duplicates: {
     ids: duplicateIds,
@@ -139,6 +150,8 @@ if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
 if (missingPrecisionSource > Math.max(100, Math.ceil(releases * 0.03))) hardFailures.push(`missingPrecisionSource=${missingPrecisionSource}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
 if (massPlaceholderDates.length) hardFailures.push(`massPlaceholderDates=${massPlaceholderDates.map(item => `${item.date}:${item.count}`).join(',')}`);
+if (untrustedBoundaryCounts.size) hardFailures.push(`untrustedBoundaryDates=${[...untrustedBoundaryCounts.entries()].map(([date,count]) => `${date}:${count}`).join(',')}`);
+if ([...platformAliasCounts.values()].reduce((sum, count) => sum + count, 0)) hardFailures.push(`legacyPlatformAliases=${JSON.stringify(Object.fromEntries(platformAliasCounts))}`);
 if (pct(covers) < 95) hardFailures.push(`coverCoverage=${pct(covers)}%`);
 if (pct(genres) < 90) hardFailures.push(`genreCoverage=${pct(genres)}%`);
 
