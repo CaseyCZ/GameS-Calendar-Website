@@ -305,6 +305,8 @@ function renderPlatformFilters() {
 }
 
 function genreCountRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  if (searching) return state.rows.filter(row => matchesSearch(row.game, state.search));
   return state.rows.filter(row => matchesBase(row, { ignoreGenres: true }) && inActiveRange(row));
 }
 
@@ -351,8 +353,10 @@ function renderMonthSelectors() {
 
 function monthCounts() {
   const map = new Map();
+  const searching = Boolean(normalizeSearch(state.search));
   for (const row of state.rows) {
-    if (!row.day || !matchesBase(row)) continue;
+    if (!row.day) continue;
+    if (searching ? !matchesSearch(row.game, state.search) : !matchesBase(row)) continue;
     const key = row.day.slice(0,7);
     if (!map.has(key)) map.set(key, { releases: 0, games: new Set() });
     const item = map.get(key);
@@ -409,24 +413,28 @@ function notifyAvailableRows() {
 }
 
 function makeOnlineRows(games) {
-  return games.map((game, onlineOrder) => {
-    const releases = game.releases || [];
-    const first = releases[0] || {};
-    const platforms = [...new Map(releases.flatMap(release => release.platforms || []).map(platform => [platform.name || platform.id, platform])).values()];
-    return {
-      key: `online:${game.id}`,
-      game,
-      day: first.day,
-      timestamp: first.timestamp,
-      platforms,
-      platformGroups: [...new Set(platforms.map(item => item.group || platformGroup(item.name)))],
-      window: first.window,
-      precision: first.precision,
-      regions: [...new Set(releases.flatMap(release => release.regions || []))],
-      onlineResult: true,
-      onlineOrder
-    };
+  const rows = [];
+  games.forEach((game, onlineOrder) => {
+    const releases = game.releases?.length ? game.releases : [{}];
+    releases.forEach((release, releaseOrder) => {
+      const platforms = release.platforms || [];
+      rows.push({
+        key: `online:${game.id}:${release.day || release.window || releaseOrder}`,
+        game,
+        day: release.day,
+        timestamp: release.timestamp,
+        platforms,
+        platformGroups: [...new Set(platforms.map(item => item.group || platformGroup(item.name)))],
+        window: release.window,
+        precision: release.precision,
+        regions: [...new Set(release.regions || [])],
+        onlineResult: true,
+        onlineOrder,
+        onlineReleaseOrder: releaseOrder
+      });
+    });
   });
+  return rows;
 }
 
 async function refreshOnlineSearch(query) {
@@ -461,6 +469,8 @@ async function refreshOnlineSearch(query) {
 }
 
 function statBaseRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  if (searching) return state.rows.filter(row => matchesSearch(row.game, state.search));
   return state.rows.filter(row => matchesBase(row, { includeStatus: false }));
 }
 
@@ -470,7 +480,9 @@ function updateSummary() {
   const now = new Date();
   const nextMonth = monthRange(now.getFullYear(), now.getMonth() + 1);
   const base = statBaseRows();
+  const searching = Boolean(normalizeSearch(state.search));
   const visibleGames = uniqueGameCount(state.filtered);
+  const visibleReleases = searching ? base.length : state.filtered.length;
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(base.filter(row => row.day && row.day >= today && row.day <= next30End)));
@@ -493,7 +505,7 @@ function updateSummary() {
     ? 'Nadcházející hry'
     : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
   $('range-title').textContent = rangeTitle;
-  const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(state.filtered.length)} vydání`];
+  const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(visibleReleases)} vydání`];
   if (state.platforms.size) parts.push([...state.platforms].map(value => value === 'Xbox Series' ? 'Xbox' : value).join(', '));
   if (state.genres.size) parts.push([...state.genres].join(' + '));
   if (state.search) parts.push(`„${state.search}“`);
