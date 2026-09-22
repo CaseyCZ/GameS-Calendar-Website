@@ -113,8 +113,8 @@
   transition:.16s ease;
 }
 .advanced-setting input:checked + i {
-  border-color:rgba(255,71,155,.5);
-  background:rgba(255,71,155,.2);
+  border-color:color-mix(in srgb,var(--pink) 50%,transparent);
+  background:color-mix(in srgb,var(--pink) 20%,transparent);
 }
 .advanced-setting input:checked + i::after {
   transform:translateX(14px);
