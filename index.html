@@ -227,16 +227,16 @@
     Hry nalezené přes vyhledávání a doplňující informace čerpají z IGDB. Další údaje pocházejí z <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikidata</a>, české i anglické <a href="https://www.wikipedia.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikipedie</a>, Steamu a veřejného katalogu Microsoftu. Dostupnost v předplatných je zobrazena jen tehdy, když ji lze ověřit v katalogu.
   </footer>
 
-  <dialog class="game-dialog" id="game-dialog">
+  <dialog class="game-dialog" id="game-dialog" aria-label="Detail hry">
     <button class="dialog-close icon-btn" id="dialog-close" type="button" aria-label="Zavřít">×</button>
     <div id="dialog-content"></div>
   </dialog>
 
-  <dialog class="calendar-dialog" id="calendar-dialog">
+  <dialog class="calendar-dialog" id="calendar-dialog" aria-labelledby="calendar-dialog-title">
     <button class="dialog-close icon-btn" id="calendar-dialog-close" type="button" aria-label="Zavřít">×</button>
     <div class="calendar-dialog__content">
       <p class="eyebrow">Živý kalendář</p>
-      <h2>Přidat herní vydání</h2>
+      <h2 id="calendar-dialog-title">Přidat herní vydání</h2>
       <p class="muted">Kalendář si změny a nově přidané termíny pravidelně načte sám.</p>
       <div class="calendar-feed-choices" role="group" aria-label="Obsah kalendáře">
         <button class="calendar-feed-choice is-active" type="button" data-calendar-feed="watch">
@@ -260,7 +260,7 @@
     </div>
   </dialog>
 
-  <dialog class="image-dialog" id="image-dialog">
+  <dialog class="image-dialog" id="image-dialog" aria-label="Náhled screenshotu">
     <button class="dialog-close icon-btn" id="image-dialog-close" type="button" aria-label="Zavřít">×</button>
     <img id="image-dialog-img" alt="Screenshot hry">
   </dialog>
