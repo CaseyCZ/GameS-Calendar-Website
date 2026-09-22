@@ -92,6 +92,22 @@ let calendarFeedMode = 'watch';
 
 const isWatched = game => state.watchlist.has(gameId(game));
 
+function rowByKey(rowKey) {
+  return state.filtered.find(row => row.key === rowKey)
+    || state.rows.find(row => row.key === rowKey)
+    || null;
+}
+
+function isFamilyWatched(row) {
+  if (!row) return false;
+  if (isWatched(row.game)) return true;
+  const familyKey = displayFamilyKey(row);
+  return state.rows.some(item =>
+    displayFamilyKey(item) === familyKey
+    && state.watchlist.has(gameId(item.game))
+  );
+}
+
 function searchResultKey(row) {
   return gameIdentity(row?.game);
 }
@@ -222,7 +238,7 @@ function buildQuery({ includeOpenGame = true } = {}) {
   else if (state.period === 'custom' && state.range) { q.set('from', state.range.from); q.set('to', state.range.to); }
   else if (state.range?.from) q.set('month', state.range.from.slice(0, 7));
   if (includeOpenGame && state.openRowKey) {
-    const row = state.rows.find(item => item.key === state.openRowKey);
+    const row = rowByKey(state.openRowKey);
     if (row) {
       q.set('game', gameId(row.game));
       if (row.day) q.set('release', row.day);
@@ -677,7 +693,7 @@ function toggleWatch(gameIdValue) {
   syncPushSubscription().catch(error => console.warn('Push sync:', error));
   renderGames();
   if ($('game-dialog').open) {
-    const row = state.rows.find(item => item.key === state.openRowKey);
+    const row = rowByKey(state.openRowKey);
     if (row) renderGameDialog(row);
   }
 }
@@ -754,13 +770,13 @@ function restoreSeo() {
 function renderGameDialog(row) {
   state.openRowKey = row.key;
   $('game-dialog').dataset.rowKey = row.key;
-  $('dialog-content').innerHTML = gameDialogHtml(row, isWatched(row.game));
+  $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
   updateQuery();
   updateSeoForGame(row);
 }
 
 async function openGame(rowKey, { updateUrl = true } = {}) {
-  const row = state.rows.find(item => item.key === rowKey);
+  const row = rowByKey(rowKey);
   if (!row) return;
   renderGameDialog(row);
   if (!$('game-dialog').open) $('game-dialog').showModal();
@@ -1117,7 +1133,7 @@ function bindEvents() {
     if (watch) { toggleWatch(watch.dataset.watch); return; }
     const calendar = event.target.closest('[data-calendar]');
     if (calendar) {
-      const row = state.rows.find(item => item.key === calendar.dataset.calendar);
+      const row = rowByKey(calendar.dataset.calendar);
       if (row) openCalendarMenu(row);
     }
   });
@@ -1136,13 +1152,13 @@ function bindEvents() {
     if (watch) { toggleWatch(watch.dataset.dialogWatch); return; }
     const calendar = event.target.closest('[data-dialog-calendar]');
     if (calendar) {
-      const row = state.rows.find(item => item.key === calendar.dataset.dialogCalendar);
+      const row = rowByKey(calendar.dataset.dialogCalendar);
       if (row) openCalendarMenu(row);
       return;
     }
     const share = event.target.closest('[data-dialog-share]');
     if (share) {
-      const row = state.rows.find(item => item.key === share.dataset.dialogShare);
+      const row = rowByKey(share.dataset.dialogShare);
       if (row) shareGame(row);
       return;
     }
@@ -1189,6 +1205,7 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
   hydrateControls();
   renderGames({resetLimit:true});
+  notifyAvailableRows();
   $('skeleton-grid').hidden = true;
   $('games').hidden = state.filtered.length === 0;
   if (!quiet) toast(`Načteno ${formatter.format(uniqueGameCount(state.rows))} her / ${formatter.format(state.rows.length)} vydání.`);
