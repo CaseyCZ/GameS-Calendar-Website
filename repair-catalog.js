@@ -225,14 +225,41 @@ async function main() {
   const identity = new Map();
   let merged = 0;
   for (const game of source) {
-    const key = game.igdbId ? `igdb:${game.igdbId}` : `id:${game.id}`;
-    if (!identity.has(key)) {
-      identity.set(key, result.length);
+    const keys = new Set();
+    const rawId = String(game.id ?? '').trim();
+    const igdbId = String(game.igdbId ?? '').trim();
+    if (igdbId) keys.add(`igdb:${igdbId}`);
+    if (rawId) {
+      keys.add(`id:${rawId}`);
+      const legacyIgdbId = rawId.match(/^igdb-(\d+)$/)?.[1];
+      if (legacyIgdbId) keys.add(`igdb:${legacyIgdbId}`);
+      if (/^\d+$/.test(rawId)) keys.add(`igdb:${rawId}`);
+    }
+
+    const existingIndexes = [...keys]
+      .map(key => identity.get(key))
+      .filter(index => Number.isInteger(index));
+    const index = existingIndexes.length ? Math.min(...existingIndexes) : -1;
+
+    if (index < 0) {
+      const nextIndex = result.length;
       result.push(game);
+      for (const key of keys) identity.set(key, nextIndex);
       continue;
     }
-    const index = identity.get(key);
+
     result[index] = mergeGame(result[index], game);
+    const mergedGame = result[index];
+    const mergedRawId = String(mergedGame.id ?? '').trim();
+    const mergedIgdbId = String(mergedGame.igdbId ?? '').trim();
+    for (const key of keys) identity.set(key, index);
+    if (mergedIgdbId) identity.set(`igdb:${mergedIgdbId}`, index);
+    if (mergedRawId) {
+      identity.set(`id:${mergedRawId}`, index);
+      const legacyIgdbId = mergedRawId.match(/^igdb-(\d+)$/)?.[1];
+      if (legacyIgdbId) identity.set(`igdb:${legacyIgdbId}`, index);
+      if (/^\d+$/.test(mergedRawId)) identity.set(`igdb:${mergedRawId}`, index);
+    }
     merged += 1;
   }
   const usedIds = new Set();
