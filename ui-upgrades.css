@@ -34,7 +34,7 @@
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     padding: 12px;
-    border-radius: 18px;
+    border-radius: var(--radius-lg);
   }
 
   .filter-panel .genre-filter-wrap {
@@ -222,9 +222,9 @@
   gap: 7px;
   padding: 7px 10px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: var(--text);
-  background: rgba(255,255,255,.035);
+  background: var(--surface-soft);
   font: inherit;
   font-size: 11px;
   font-weight: 760;
