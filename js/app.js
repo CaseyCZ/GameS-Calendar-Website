@@ -609,7 +609,7 @@ function updateSummary() {
     : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
   $('range-title').textContent = rangeTitle;
   const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(visibleReleases)} vydání`];
-  if (state.platforms.size) parts.push([...state.platforms].map(value => value === 'Xbox Series' ? 'Xbox' : value).join(', '));
+  if (state.platforms.size) parts.push([...state.platforms].join(', '));
   if (state.genres.size) parts.push([...state.genres].join(' + '));
   if (state.search) parts.push(`„${state.search}“`);
   if (state.search && state.onlineSearchError) parts.push('online zdroje momentálně nedostupné');
