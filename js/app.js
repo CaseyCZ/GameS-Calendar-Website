@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseDisplayRows, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -578,20 +578,12 @@ function updateSummary() {
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(
-    base.filter(row => {
-      const from = row.from || row.day || null;
-      const to = row.to || row.day || null;
-      return from && to && to >= today && from <= next30End;
-    })
+    base.filter(row => row.day && row.day >= today && row.day <= next30End)
   ));
   $('stat-next').textContent = formatter.format(uniqueGameCount(
-    base.filter(row => {
-      const from = row.from || row.day || null;
-      const to = row.to || row.day || null;
-      return from && to && to >= nextMonth.from && from <= nextMonth.to;
-    })
+    base.filter(row => matchesReleaseRange(row, nextMonth, 'next'))
   ));
-  $('stat-watchlist').textContent = formatter.format(state.watchlist.size);
+  $('stat-watchlist').textContent = formatter.format(countWatchedFamilies(state.rows, state.watchlist));
 
   const periodTitles = {
     week: 'Vydání tento týden',
@@ -729,7 +721,7 @@ function setCalendarFeedMode(mode) {
 }
 
 function openCalendarDialog() {
-  const count = state.watchlist.size;
+  const count = countWatchedFamilies(state.rows, state.watchlist);
   $('calendar-watch-count').textContent = `${formatter.format(count)} ${count === 1 ? 'sledovaná hra' : count > 1 && count < 5 ? 'sledované hry' : 'sledovaných her'}`;
   setCalendarFeedMode(count ? 'watch' : 'filters');
   if (!$('calendar-dialog').open) $('calendar-dialog').showModal();
@@ -1106,7 +1098,7 @@ function bindEvents() {
     }
   });
   $('calendar-download').addEventListener('click', () => {
-    const dated = state.filtered.filter(row => row.day);
+    const dated = collapseCalendarRows(visibleReleaseRows().filter(row => row.day));
     if (!downloadIcs(dated, `herni-kalendar-${state.range?.from || 'vse'}.ics`)) toast('Aktuální výběr nemá žádné přesné datum.');
   });
   document.querySelector('.view-toggle').addEventListener('click', event => {

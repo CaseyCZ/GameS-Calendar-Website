@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { collapseDisplayRows, collapseGameRows, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
+import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
@@ -25,6 +25,14 @@ const collapsedPlatformGame = collapseDisplayRows(multiPlatformRows, (current, c
 assert.equal(collapsedPlatformGame.platforms.length, 2);
 assert.deepEqual(new Set(collapsedPlatformGame.platformGroups), new Set(['PS5','PC']));
 
+const calendarRows = collapseCalendarRows([
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PlayStation 5', abbreviation:'PS5', group:'PS5' }], platformGroups:['PS5'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-11-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] }
+]);
+assert.equal(calendarRows.length, 2);
+assert.equal(calendarRows.find(row => row.day === '2026-10-01').platforms.length, 2);
+
 const distinctSameTitleRows = [
   { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
   { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
@@ -41,6 +49,9 @@ const reskinRows = [
   { game:{ id:'cats-barcelona', name:'100 Barcelona Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
 ];
 assert.equal(collapseDisplayRows(reskinRows).length, 1);
+
+assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','cats-gr'])), 1);
+assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','missing-old-id'])), 2);
 
 const unrelatedNumericRows = [
   ...reskinRows.slice(0, 1),

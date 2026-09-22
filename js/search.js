@@ -139,3 +139,49 @@ export function matchesReleaseRange(row = {}, range = null, period = 'all') {
 
   return to >= range.from && from <= range.to;
 }
+
+export function collapseCalendarRows(rows = []) {
+  const unique = new Map();
+  const platformsByKey = new Map();
+  const groupsByKey = new Map();
+
+  for (const row of rows || []) {
+    if (!row?.day) continue;
+    const key = `${gameIdentity(row.game)}|${row.day}`;
+    if (!unique.has(key)) unique.set(key, row);
+
+    if (!platformsByKey.has(key)) platformsByKey.set(key, new Map());
+    for (const platform of row.platforms || []) {
+      const platformKey = String(platform?.group || platform?.abbreviation || platform?.name || platform || '').trim();
+      if (platformKey && !platformsByKey.get(key).has(platformKey)) platformsByKey.get(key).set(platformKey, platform);
+    }
+
+    if (!groupsByKey.has(key)) groupsByKey.set(key, new Set());
+    for (const group of row.platformGroups || []) if (group) groupsByKey.get(key).add(group);
+  }
+
+  return [...unique.entries()].map(([key, row]) => ({
+    ...row,
+    platforms: platformsByKey.get(key)?.size ? [...platformsByKey.get(key).values()] : (row.platforms || []),
+    platformGroups: groupsByKey.get(key)?.size ? [...groupsByKey.get(key)] : (row.platformGroups || [])
+  }));
+}
+
+export function countWatchedFamilies(rows = [], watchedIds = []) {
+  const watched = watchedIds instanceof Set
+    ? new Set([...watchedIds].map(String))
+    : new Set((watchedIds || []).map(String));
+  const matchedIds = new Set();
+  const families = new Set();
+
+  for (const row of rows || []) {
+    const id = String(row?.game?.id || '');
+    if (!id || !watched.has(id)) continue;
+    matchedIds.add(id);
+    families.add(displayFamilyKey(row));
+  }
+
+  let count = families.size;
+  for (const id of watched) if (!matchedIds.has(id)) count += 1;
+  return count;
+}
