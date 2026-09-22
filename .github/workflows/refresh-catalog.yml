@@ -4,6 +4,15 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '15 5 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'enrich-live-igdb.js'
+      - 'repair-catalog.js'
+      - 'audit-data.js'
+      - 'build-web-index.js'
+      - '.github/workflows/refresh-catalog.yml'
 
 permissions:
   contents: write
