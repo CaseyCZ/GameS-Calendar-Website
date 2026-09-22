@@ -113,3 +113,24 @@
     flex-basis: 22px;
   }
 }
+
+
+/* Brand tokens consumed by store links and service badges. */
+.store-link--steam { --store-accent: #66c0f4; }
+.store-link--epic { --store-accent: #e5e7eb; }
+.store-link--playstation { --store-accent: #4b82ff; }
+.store-link--xbox { --store-accent: #52c41a; }
+.store-link--nintendo { --store-accent: #ff4b55; }
+.store-link--meta { --store-accent: #5f85ff; }
+
+.service-badge--gamepass { --service-accent: #52c41a; }
+.service-badge--psplus { --service-accent: #4b82ff; }
+.service-badge--gfn { --service-accent: #76b900; }
+.service-badge--eaplay { --service-accent: #ff6b35; }
+.service-badge--cloud { --service-accent: #38bdf8; }
+
+.service-badge[class*="service-badge--"] {
+  color: color-mix(in srgb, var(--service-accent, #c4b5fd) 78%, white);
+  border-color: color-mix(in srgb, var(--service-accent, #c4b5fd) 36%, transparent);
+  background: color-mix(in srgb, var(--service-accent, #c4b5fd) 8%, transparent);
+}
