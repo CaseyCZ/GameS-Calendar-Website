@@ -1,1 +1,1 @@
-globalThis.GAMES_APP_VERSION = '3.8.3';
+globalThis.GAMES_APP_VERSION = '3.8.4';
