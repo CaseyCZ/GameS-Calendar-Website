@@ -11,6 +11,8 @@ on:
       - 'fetch-games.js'
       - 'enrich-public-metadata.js'
       - 'games-api/scripts/enrich-catalog-igdb.js'
+      - 'enrich-live-igdb.js'
+      - 'repair-catalog.js'
       - 'build-web-index.js'
       - '.github/workflows/update-games.yml'
 
@@ -70,11 +72,24 @@ jobs:
           IGDB_ENRICH_RETRY_DAYS: 30
         run: npm run enrich-igdb
 
+      - name: Enrich catalog through live GameS IGDB API
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+          IGDB_LIVE_BATCH_SIZE: 500
+          IGDB_LIVE_RETRIES: 6
+        run: npm run enrich-live-igdb
+
+      - name: Repair and normalize catalog
+        run: npm run repair-catalog
+
       - name: Build compact web catalog
         run: npm run build-index
 
       - name: Check JavaScript
         run: npm run check
+
+      - name: Audit repaired catalog
+        run: npm run audit-data
 
       - name: Commit changed data
         if: github.ref == 'refs/heads/main'
