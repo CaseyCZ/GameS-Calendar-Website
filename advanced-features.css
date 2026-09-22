@@ -97,7 +97,7 @@
   height:20px;
   flex:0 0 34px;
   border:1px solid var(--border);
-  border-radius:999px;
+  border-radius:var(--radius-pill);
   background:rgba(255,255,255,.055);
   transition:.16s ease;
 }
@@ -146,7 +146,7 @@ html[data-theme="light"] .advanced-setting i { background:rgba(70,45,78,.08); }
   margin: 0 0 18px;
   padding: 16px;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius);
   background: rgba(255,255,255,.025);
   scroll-margin-top: 150px;
 }
