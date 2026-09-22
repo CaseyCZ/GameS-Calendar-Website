@@ -18,8 +18,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: refresh-live-game-catalog
-  cancel-in-progress: true
+  group: game-catalog-writer
+  cancel-in-progress: false
 
 jobs:
   refresh:
