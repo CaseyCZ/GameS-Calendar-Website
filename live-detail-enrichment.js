@@ -214,6 +214,59 @@
     if (current.length < 110 || /\bje videohra\b/i.test(current)) summary.textContent = text.length > 850 ? `${text.slice(0, 847)}…` : text;
   }
 
+  function historyText(item) {
+    if (item.field === 'releaseDates') return 'Změna termínu vydání';
+    if (item.field === 'prices') return 'Změna ceny';
+    if (item.field === 'subscriptions') return 'Změna předplatného';
+    if (item.field === 'earlyAccess') {
+      if (item.oldValue === true && item.newValue === false) return 'Early Access byl ukončen';
+      if (item.oldValue === false && item.newValue === true) return 'Hra vstoupila do Early Access';
+      return 'Změna Early Access stavu';
+    }
+    if (item.field === 'gameAdded') return 'Hra přidána do katalogu';
+    if (item.field === 'gameRemoved') return 'Hra odebrána z katalogu';
+    return '';
+  }
+
+  async function addHistory(gameKey) {
+    const key = clean(gameKey);
+    if (!key || !API_ROOT || content.querySelector('.detail-history-section')) return;
+    try {
+      const response = await fetch(`${API_ROOT}/history/${encodeURIComponent(key)}?limit=12`, { headers: { accept: 'application/json' } });
+      if (!response.ok) return;
+      const data = await response.json();
+      const items = (data.items || []).map(item => ({ ...item, text: historyText(item) })).filter(item => item.text);
+      if (!items.length) return;
+
+      const section = document.createElement('section');
+      section.className = 'detail-link-section detail-history-section';
+      section.setAttribute('aria-label', 'Historie změn hry');
+
+      const label = document.createElement('p');
+      label.className = 'detail-section-label';
+      label.textContent = 'Historie změn';
+
+      const list = document.createElement('div');
+      list.className = 'detail-history-list';
+
+      for (const item of items.slice(0, 8)) {
+        const row = document.createElement('div');
+        row.className = 'detail-history-item';
+        const strong = document.createElement('strong');
+        strong.textContent = item.text;
+        const time = document.createElement('time');
+        const date = new Date(item.changedAt);
+        time.textContent = Number.isNaN(date.getTime()) ? '' : date.toLocaleString('cs-CZ', { dateStyle: 'medium', timeStyle: 'short' });
+        row.append(strong, time);
+        list.appendChild(row);
+      }
+
+      section.append(label, list);
+      const main = content.querySelector('.detail-main');
+      if (main) main.appendChild(section);
+    } catch {}
+  }
+
   function formattedPrice(provider) {
     const price = provider?.price;
     if (!price) return '';
@@ -273,6 +326,7 @@
     addSubscriptions(merged, providers);
     improveStoreLinks(providers);
     addTrailer(merged, providers);
+    addHistory(result.gameKey || result.query?.id || '');
     addScreenshots(merged, title);
     improveSummary(merged);
 
