@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseDisplayRows, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
+import { collapseDisplayRows, displayFamilyKey, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -147,8 +147,8 @@ function collapseSearchRows(rows) {
   return collapseDisplayRows(rows, preferSearchRow);
 }
 
-function uniqueGameCount(rows, { byTitle = false } = {}) {
-  return new Set(rows.map(row => byTitle ? searchResultKey(row) : gameId(row.game))).size;
+function uniqueGameCount(rows) {
+  return new Set(rows.map(displayFamilyKey)).size;
 }
 
 function setDefaultPeriod() {
@@ -381,7 +381,7 @@ function renderGenres() {
   for (const row of genreCountRows()) {
     for (const genre of [...new Set((row.game.genres || []).map(formatGenre).filter(Boolean))]) {
       if (!seen.has(genre)) seen.set(genre, new Set());
-      seen.get(genre).add(normalizeSearch(state.search) ? searchResultKey(row) : gameId(row.game));
+      seen.get(genre).add(displayFamilyKey(row));
     }
   }
   for (const [genre, ids] of seen) counts.set(genre, ids.size);
@@ -433,7 +433,7 @@ function monthCounts() {
     } else {
       item.releases += 1;
     }
-    item.games.add(searching ? searchResultKey(row) : gameId(row.game));
+    item.games.add(displayFamilyKey(row));
   }
   return [...map.entries()].sort(([a],[b]) => a.localeCompare(b));
 }
@@ -579,16 +579,14 @@ function updateSummary() {
       const from = row.from || row.day || null;
       const to = row.to || row.day || null;
       return from && to && to >= today && from <= next30End;
-    }),
-    { byTitle: searching }
+    })
   ));
   $('stat-next').textContent = formatter.format(uniqueGameCount(
     base.filter(row => {
       const from = row.from || row.day || null;
       const to = row.to || row.day || null;
       return from && to && to >= nextMonth.from && from <= nextMonth.to;
-    }),
-    { byTitle: searching }
+    })
   ));
   $('stat-watchlist').textContent = formatter.format(state.watchlist.size);
 
