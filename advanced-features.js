@@ -229,7 +229,7 @@ function readBaseState() {
   const series = query.get('series') || '';
 
   let range = null;
-  let period = 'month';
+  let period = 'all';
   const from = query.get('from');
   const to = query.get('to');
   if (/^\d{4}-\d{2}-\d{2}$/.test(from || '') && /^\d{4}-\d{2}-\d{2}$/.test(to || '')) {
@@ -255,11 +255,9 @@ function readBaseState() {
     else if (period === 'year') range = {from:`${now.getUTCFullYear()}-01-01`, to:`${now.getUTCFullYear()}-12-31`};
     else range = null;
   } else if (/^\d{4}-\d{2}$/.test(query.get('month') || '')) {
+    period = 'month';
     const [year, month] = query.get('month').split('-').map(Number);
     range = monthRange(year, month - 1);
-  } else {
-    const now = new Date();
-    range = monthRange(now.getFullYear(), now.getMonth());
   }
 
   return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, company, series, range, period };
