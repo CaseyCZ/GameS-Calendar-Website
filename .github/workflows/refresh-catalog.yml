@@ -1,0 +1,65 @@
+name: Refresh live game catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 5 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-live-game-catalog
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Refresh rolling catalog from live IGDB API
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+          IGDB_LIVE_BATCH_SIZE: 500
+          IGDB_LIVE_RETRIES: 6
+        run: npm run enrich-live-igdb
+
+      - name: Repair and normalize catalog
+        run: npm run repair-catalog
+
+      - name: Build compact web catalog
+        run: npm run build-index
+
+      - name: Validate JavaScript
+        run: npm run check
+
+      - name: Run smoke tests
+        run: npm test
+
+      - name: Audit catalog quality
+        run: npm run audit-data
+
+      - name: Commit refreshed catalog
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if [[ -z "$(git status --porcelain -- games.json games-index.json)" ]]; then
+            echo "catalog files are unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games.json games-index.json
+          git commit -m "chore: refresh live game catalog"
+          git pull --rebase origin main
+          git push origin HEAD:main
