@@ -1,3 +1,4 @@
+import { platformIcon, serviceIcon, storeIcon as sharedStoreIcon } from './icons.js';
 import { todayLocal } from './data.js';
 
 const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
@@ -107,16 +108,7 @@ export function formatGenre(value) {
   return cleaned ? cleaned.charAt(0).toLocaleUpperCase('cs') + cleaned.slice(1) : raw;
 }
 
-export function platformIcon(key) {
-  const common = 'viewBox="0 0 24 24" aria-hidden="true"';
-  if (key === 'PC') return `<svg ${common}><path d="M3 5.5 10.5 4v7H3v-5.5Zm9-1.8L21 2v9h-9V3.7ZM3 13h7.5v7L3 18.5V13Zm9 0h9v9l-9-1.7V13Z" fill="currentColor"/></svg>`;
-  if (key === 'Xbox Series') return `<svg ${common}><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7.5 7.8c3 1.2 6 4.6 8.8 9.2M16.5 7.8c-3 1.2-6 4.6-8.8 9.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
-  if (key === 'PS5') return `<svg ${common}><path d="M8 5v14m0-14c4 0 7 1 7 4.2 0 2.6-2.3 3.6-5.2 3.6M4 16c3-1.8 6-2.4 9.2-2.5 3.2-.1 5.5.6 6.8 1.6-2.7 1.2-5.4 2-8 2.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
-  if (key === 'Switch' || key === 'Switch 2') return `<svg ${common}><path d="M8.5 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2.5V3Zm7 0H18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2.5V3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6.4" cy="8" r="1" fill="currentColor"/><circle cx="17.6" cy="15.7" r="1" fill="currentColor"/></svg>`;
-  if (key === 'VR') return `<svg ${common}><path d="M4 9.5A2.5 2.5 0 0 1 6.5 7h11A2.5 2.5 0 0 1 20 9.5v5a2.5 2.5 0 0 1-2.5 2.5H15l-2-2h-2l-2 2H6.5A2.5 2.5 0 0 1 4 14.5v-5Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11.5h2m-1-1v2m5-1h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
-  return `<span aria-hidden="true">🎮</span>`;
-}
-
+export { platformIcon };
 export function releaseCountdown(day) {
   if (!day) return null;
   const target = new Date(`${day}T00:00:00`);
@@ -155,14 +147,17 @@ function serviceBadges(game, compact = false) {
   if (game.subscriptions?.psPlus) services.push(['PS Plus','psplus']);
   if (game.subscriptions?.geforceNow) services.push(['GeForce NOW','gfn']);
   if (!services.length) return '';
-  return `<span class="service-badges ${compact ? 'service-badges--compact' : ''}">${services.map(([label, key]) => `<span class="service-badge service-badge--${key}">${escapeHtml(label)}</span>`).join('')}</span>`;
+  return `<span class="service-badges ${compact ? 'service-badges--compact' : ''}">${services.map(([label, key]) => `<span class="service-badge service-badge--${key}">${serviceIcon(key, { className:'brand-icon--service' })}<span>${escapeHtml(label)}</span></span>`).join('')}</span>`;
 }
 
 export function rowCard(row, watched) {
   const game = row.game;
   const countdown = releaseCountdown(row.day);
   const rating = game.rating ? Math.round(game.rating) : 0;
-  const platforms = row.platforms.slice(0,3).map(p => `<span class="platform-tag">${escapeHtml(p.abbreviation || p.name)}</span>`).join('');
+  const platforms = row.platforms.slice(0,3).map(p => {
+    const key = p.group || p.name || p.abbreviation || '';
+    return `<span class="platform-tag">${platformIcon(key, { className:'brand-icon--tag' })}<span>${escapeHtml(p.abbreviation || p.name)}</span></span>`;
+  }).join('');
   const releaseState = row.day ? (row.day >= todayLocal() ? 'Nadcházející' : 'Vydáno') : (row.window || game.announcedWindow || 'TBA');
   const extraBadges = [
     row.onlineResult ? '<span class="badge badge--online">Nalezeno online</span>' : '',
@@ -205,17 +200,12 @@ export function fallbackLinks(game) {
 }
 
 function storeIcon(kind) {
-  if (kind === 'playstation') return platformIcon('PS5');
-  if (kind === 'xbox') return platformIcon('Xbox Series');
-  if (kind === 'nintendo') return platformIcon('Switch');
-  if (kind === 'meta') return platformIcon('VR');
-  if (kind === 'steam') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="15" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16.8" cy="7.5" r="2.7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m11.7 13.4 3.1-3.4M4 13.5l2.7 1.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  if (['steam','epic','playstation','xbox','nintendo','meta'].includes(kind)) return sharedStoreIcon(kind);
   if (kind === 'youtube') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 8.2v7.6l6.2-3.8-6.2-3.8Z" fill="currentColor"/><rect x="3" y="5.5" width="18" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   if (kind === 'official') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.3-5.1-3.3-8.5S9.8 5.8 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   if (kind === 'reddit') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9.2" cy="12" r=".9" fill="currentColor"/><circle cx="14.8" cy="12" r=".9" fill="currentColor"/><path d="M9 15c1.8 1.1 4.2 1.1 6 0M14.2 6.8l1-3.1 3.2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
   if (kind === 'database') return '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   if (kind === 'wikipedia') return '<span class="store-link__monogram">W</span>';
-  if (kind === 'epic') return '<span class="store-link__monogram">E</span>';
   return '<span class="store-link__monogram">↗</span>';
 }
 
