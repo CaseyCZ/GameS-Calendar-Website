@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseDisplayRows, displayFamilyKey, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
+import { collapseDisplayRows, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -265,21 +265,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
 }
 
 function inActiveRange(row) {
-  const from = row.from || row.day || null;
-  const to = row.to || row.day || null;
-  if (state.period === 'undated') return !from && !to;
-  if (!state.range) return true;
-  if (!from || !to) return false;
-
-  // A year/quarter window overlaps every month it spans, but that does not
-  // mean the game is announced for each of those months. Keep month views
-  // focused on releases actually assigned to that month.
-  if (state.period === 'month' || state.period === 'next') {
-    const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
-    if (precision !== 'day' && precision !== 'month') return false;
-  }
-
-  return to >= state.range.from && from <= state.range.to;
+  return matchesReleaseRange(row, state.range, state.period);
 }
 
 function matchesSearchContext(row, { ignoreGenres = false } = {}) {
