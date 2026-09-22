@@ -141,6 +141,99 @@ function igdbContentType(value) {
   return labels[type] || (type ? type.replace(/\b\w/g, letter => letter.toUpperCase()) : 'Game');
 }
 
+function providerLabel(name = '') {
+  return {
+    igdb: 'IGDB',
+    steam: 'Steam',
+    microsoft: 'Xbox',
+    playstation: 'PlayStation',
+    nintendo: 'Nintendo'
+  }[name] || name;
+}
+
+function providerLinkKey(name = '') {
+  return {
+    steam: 'steam',
+    microsoft: 'xbox',
+    playstation: 'playstation',
+    nintendo: 'nintendo',
+    igdb: 'igdb'
+  }[name] || '';
+}
+
+function catalogGameFromProviders(items = []) {
+  const valid = (items || []).filter(item => item?.title);
+  const merged = mergeGames(valid);
+  if (!merged?.title) return null;
+
+  const providersByName = merged.providers || {};
+  const links = {};
+  for (const [provider, item] of Object.entries(providersByName)) {
+    const key = providerLinkKey(provider);
+    if (key && item?.storeUrl) links[key] = item.storeUrl;
+  }
+
+  const byDate = new Map();
+  for (const item of valid) {
+    const day = String(item.releaseDate || '').slice(0, 10);
+    if (!day) continue;
+    if (!byDate.has(day)) byDate.set(day, { day, platforms: new Set() });
+    for (const platform of item.platforms || []) byDate.get(day).platforms.add(String(platform));
+  }
+
+  const releases = [...byDate.values()].map(release => ({
+    day: release.day,
+    timestamp: Math.floor(Date.parse(`${release.day}T00:00:00Z`) / 1000),
+    platforms: [...release.platforms].map(name => ({ name, abbreviation: name })),
+    window: '',
+    precision: 'day',
+    regions: []
+  }));
+
+  if (!releases.length) {
+    releases.push({
+      day: null,
+      timestamp: 0,
+      platforms: (merged.platforms || []).map(name => ({ name, abbreviation: name })),
+      window: 'TBA',
+      precision: 'unknown',
+      regions: []
+    });
+  }
+
+  const normalized = normalizeTitle(merged.title);
+  const id = `store-${normalized.replace(/\s+/g, '-') || 'game'}`;
+  const sourceNames = Object.keys(providersByName).map(providerLabel);
+  const primaryProvider = valid[0]?.provider || '';
+  const primary = providersByName[primaryProvider] || valid[0];
+
+  return stripPricing({
+    id,
+    name: merged.title,
+    slug: id,
+    aliases: merged.aliases || [],
+    summary: merged.description || merged.shortDescription || '',
+    summarySource: providerLabel(merged.fieldSources?.description || merged.fieldSources?.shortDescription || primaryProvider),
+    cover: merged.media?.cover || '',
+    screenshots: merged.media?.screenshots || [],
+    genres: merged.genres || [],
+    developers: merged.developers || [],
+    publishers: merged.publishers || [],
+    series: merged.series || [],
+    contentType: 'Game',
+    earlyAccess: Boolean(providersByName.steam?.earlyAccess),
+    metadataSources: sourceNames,
+    steamId: providersByName.steam?.providerId ? String(providersByName.steam.providerId) : '',
+    rating: merged.rating || primary?.rating || 0,
+    ratingCount: primary?.ratingCount || 0,
+    subscriptions: merged.subscriptions || {},
+    links,
+    releases,
+    discoveredOnline: true,
+    discoveredAt: new Date().toISOString()
+  });
+}
+
 function catalogGameFromIgdb(item) {
   const byDate = new Map();
   for (const release of item?.releaseDates || []) {
