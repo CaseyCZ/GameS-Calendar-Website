@@ -676,7 +676,7 @@ function currentAdvancedRows() {
   const base = readBaseState();
   let list = rows.filter(row => baseMatches(row, base));
   if (traits.size) list = list.filter(row => matchesSelectedTraits(row.game));
-  return sortRows(list, base.sort, base.search);
+  return sortRows(collapseSearchCards(list, base.search), base.sort, base.search);
 }
 
 function openRowThroughApp(rowKey) {
