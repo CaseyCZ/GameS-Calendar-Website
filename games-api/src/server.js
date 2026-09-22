@@ -57,6 +57,30 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+const expensiveRateBuckets = new Map();
+function expensiveRateLimit(limit = 30) {
+  return (req, res, next) => {
+    const minute = Math.floor(Date.now() / 60_000);
+    const key = `${req.ip || req.socket.remoteAddress || 'unknown'}:${minute}`;
+    const used = (expensiveRateBuckets.get(key) || 0) + 1;
+    expensiveRateBuckets.set(key, used);
+    if (expensiveRateBuckets.size > 5000) {
+      for (const bucket of expensiveRateBuckets.keys()) {
+        const bucketMinute = Number(bucket.slice(bucket.lastIndexOf(':') + 1));
+        if (bucketMinute < minute - 1) expensiveRateBuckets.delete(bucket);
+      }
+    }
+    if (used > limit) {
+      res.setHeader('Retry-After', '60');
+      return res.status(429).json({ error: 'Expensive API rate limit exceeded' });
+    }
+    next();
+  };
+}
+
+app.use('/api/enrich', expensiveRateLimit(30));
+app.use('/api/search', expensiveRateLimit(60));
+
 const asyncRoute = handler => async (req, res, next) => {
   try { await handler(req, res, next); }
   catch (error) { next(error); }
@@ -749,7 +773,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
 }));
 
 app.get('/api/search', asyncRoute(async (req, res) => {
-  const q = String(req.query.q || '').trim();
+  const q = String(req.query.q || '').trim().slice(0, 120);
   if (!q) return res.status(400).json({ error: 'Missing q' });
   const selected = providerList(req.query.providers);
   const force = bool(req.query.refresh);
