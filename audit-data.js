@@ -17,6 +17,8 @@ let releases = 0;
 let invalid = 0;
 let fuzzy = 0;
 let boundary = 0;
+const exactDateCounts = new Map();
+const untrustedBoundaryCounts = new Map();
 let covers = 0;
 let ratings = 0;
 let generated = 0;
@@ -49,7 +51,13 @@ for (const game of games) {
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) invalid += 1;
     if (precision === 'day' && !date) invalid += 1;
     if (precision !== 'day' && date) invalid += 1;
-    if (precision === 'day' && /-(03-31|06-30|09-30|12-31)$/.test(date)) boundary += 1;
+    if (precision === 'day' && date) exactDateCounts.set(date, (exactDateCounts.get(date) || 0) + 1);
+    if (precision === 'day' && /-(03-31|06-30|09-30|12-31)$/.test(date)) {
+      boundary += 1;
+      if (!String(release.precisionSource || '').startsWith('igdb-date-format')) {
+        untrustedBoundaryCounts.set(date, (untrustedBoundaryCounts.get(date) || 0) + 1);
+      }
+    }
   }
 }
 
@@ -57,6 +65,18 @@ const duplicateIds = [...ids.values()].filter(count => count > 1).length;
 const duplicateIgdbIds = [...igdbIds.values()].filter(count => count > 1).length;
 const pct = value => Number((value / games.length * 100).toFixed(1));
 const releasePct = value => Number((value / Math.max(1, releases) * 100).toFixed(1));
+const placeholderThreshold = Math.max(25, Math.ceil(games.length * 0.006));
+const massPlaceholderDates = [...exactDateCounts.entries()]
+  .filter(([date, count]) => {
+    const match = date.match(/^(20\d{2})-(\d{2})-(\d{2})$/);
+    if (!match || count < placeholderThreshold) return false;
+    const [, year, month, day] = match;
+    const last = new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
+    const boundaryDay = Number(day) === 1 || Number(day) === last;
+    const trusted = String(untrustedBoundaryCounts.get(date) || 0) === '0';
+    return boundaryDay && !trusted;
+  })
+  .map(([date, count]) => ({ date, count }));
 
 const report = {
   generatedAt: payload.generatedAt || null,
@@ -73,8 +93,10 @@ const report = {
   },
   releaseQuality: {
     fuzzy,
+    fuzzyPct: releasePct(fuzzy),
     suspiciousBoundaryDays: boundary,
-    suspiciousBoundaryPct: releasePct(boundary)
+    suspiciousBoundaryPct: releasePct(boundary),
+    massPlaceholderDates
   },
   duplicates: {
     ids: duplicateIds,
@@ -89,13 +111,15 @@ const hardFailures = [];
 if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
 if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
-if (releasePct(boundary) > 5) hardFailures.push(`suspiciousBoundaryDays=${boundary} (${releasePct(boundary)}%)`);
+if (massPlaceholderDates.length) hardFailures.push(`massPlaceholderDates=${massPlaceholderDates.map(item => `${item.date}:${item.count}`).join(',')}`);
 if (pct(covers) < 95) hardFailures.push(`coverCoverage=${pct(covers)}%`);
 if (pct(genres) < 90) hardFailures.push(`genreCoverage=${pct(genres)}%`);
 
 if (pct(generated) > 20) console.warn(`::warning::${pct(generated)}% of descriptions are generated fallbacks`);
 if (pct(developers) < 60) console.warn(`::warning::developer coverage is only ${pct(developers)}%`);
 if (pct(publishers) < 55) console.warn(`::warning::publisher coverage is only ${pct(publishers)}%`);
+if (pct(ratings) < 10) console.warn(`::warning::rating coverage is only ${pct(ratings)}%; rating sorting will be sparse for upcoming games`);
+if (releasePct(fuzzy) < 1) console.warn('::warning::almost all releases are marked as exact days; verify IGDB date precision mapping');
 
 if (hardFailures.length) {
   console.error(`catalog quality gate failed: ${hardFailures.join(', ')}`);
