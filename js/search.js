@@ -64,3 +64,39 @@ export function collapseGameRows(rows = [], prefer = (current) => current) {
   }
   return [...unique.values()];
 }
+
+export function releaseCertaintyRank(row = {}) {
+  const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+  if (row.day && precision === 'day') return 0;
+  if (precision === 'month') return 1;
+  if (/^q[1-4]$|quarter|quarterly/.test(precision)) return 2;
+  if (precision === 'year') return 3;
+  return 4;
+}
+
+export function displayFamilyKey(row = {}) {
+  const game = row.game || {};
+  const name = normalizeSearch(game.name || '');
+  const tokens = name.split(' ').filter(Boolean);
+  const developer = normalizeSearch((game.developers || [])[0] || '');
+  const type = normalizeSearch(game.contentType || 'main game') || 'main game';
+  const dateText = String(row.day || row.sortDay || row.window || '');
+  const year = dateText.match(/\b(20\d{2})\b/)?.[1] || '';
+
+  // Collapse narrow reskin families such as "100 Cats Argentina/Greece/...":
+  // same numeric prefix, same base noun, same developer, same content type and year.
+  if (tokens.length >= 3 && /^\d+$/.test(tokens[0]) && developer && year) {
+    return `variant:${tokens.slice(0, 2).join(' ')}|${developer}|${type}|${year}`;
+  }
+  return gameIdentity(game);
+}
+
+export function collapseDisplayRows(rows = [], prefer = current => current) {
+  const unique = new Map();
+  for (const row of rows || []) {
+    const key = displayFamilyKey(row);
+    const current = unique.get(key);
+    unique.set(key, current ? prefer(current, row) : row);
+  }
+  return [...unique.values()];
+}
