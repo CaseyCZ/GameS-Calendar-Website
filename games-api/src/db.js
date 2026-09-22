@@ -171,12 +171,14 @@ export function recordChange(gameKey, field, oldValue, newValue, source) {
 }
 
 function trackedSnapshot(payload = {}) {
+  const steam = payload.providers?.steam || null;
   return {
     title: payload.title || '',
     releaseDates: payload.releaseDates || {},
     subscriptions: payload.subscriptions || {},
     prices: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.price || null])),
-    providerIds: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.providerId || null]))
+    providerIds: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.providerId || null])),
+    earlyAccess: steam ? Boolean(steam.earlyAccess) : null
   };
 }
 
@@ -190,7 +192,7 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
   }
   const changes = [];
   if (previous) {
-    for (const field of ['title', 'releaseDates', 'subscriptions', 'prices', 'providerIds']) {
+    for (const field of ['title', 'releaseDates', 'subscriptions', 'prices', 'providerIds', 'earlyAccess']) {
       const change = recordChange(gameKey, field, previous[field], next[field], source);
       if (change) changes.push(change);
     }
@@ -314,7 +316,9 @@ export function listRecentChanges({ limit = 100, since = 0, type = 'all', gameKe
         ? ['prices']
         : type === 'subscription'
           ? ['subscriptions']
-          : ['gameAdded', 'releaseDates', 'gameRemoved'];
+          : type === 'early'
+            ? ['earlyAccess']
+            : ['gameAdded', 'releaseDates', 'gameRemoved'];
   const keys = [...new Set((gameKeys || []).map(String).filter(Boolean))].slice(0, 500);
   const clauses = [`h.field IN (${fields.map(() => '?').join(',')})`, 'h.changed_at >= ?'];
   const params = [...fields, Math.max(0, Number(since) || 0)];
