@@ -3,10 +3,16 @@ const DB_VERSION = 1;
 const STORE = 'responses';
 const CACHE_KEY = 'games-catalog-v8';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
-const LIVE_CATALOG_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog?view=list';
-const LIVE_DETAIL_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog/game';
-const LIVE_DISCOVER_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/discover';
-const LIVE_CATALOG_META_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/catalog-meta';
+const IS_GITHUB_PAGES = Boolean(globalThis.location?.hostname?.endsWith('.github.io'));
+const REMOTE_API_ROOTS = [
+  'https://130.61.49.108/games-api',
+  'https://130.61.49.108:8443/games-api'
+];
+const LIVE_API_ROOTS = IS_GITHUB_PAGES ? REMOTE_API_ROOTS : ['/games-api'];
+const LIVE_CATALOG_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog?view=list`;
+const LIVE_DETAIL_URLS = LIVE_API_ROOTS.map(root => `${root}/catalog/game`);
+const LIVE_DISCOVER_URLS = LIVE_API_ROOTS.map(root => `${root}/discover`);
+const LIVE_CATALOG_META_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog-meta`;
 const STATIC_CATALOG_URL = 'games.json';
 
 let sharedLoadPromise = null;
@@ -324,11 +330,25 @@ async function fetchJson(url, retry = 0) {
   return response.json();
 }
 
+async function fetchFirstJson(urls) {
+  let lastError = null;
+  for (const url of urls) {
+    try {
+      return await fetchJson(url);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error('Live API endpoint is not available');
+}
+
 export async function loadGameDetail(game) {
-  if (!LIVE_DETAIL_URL || !game?.id) return null;
+  if (!LIVE_DETAIL_URLS.length || !game?.id) return null;
   const key = String(game.id);
   if (!detailCache.has(key)) {
-    const request = fetchJson(`${LIVE_DETAIL_URL}/${encodeURIComponent(key)}`)
+    const request = fetchFirstJson(
+      LIVE_DETAIL_URLS.map(base => `${base}/${encodeURIComponent(key)}`)
+    )
       .then(normalizeGame)
       .catch(error => {
         detailCache.delete(key);
@@ -341,10 +361,16 @@ export async function loadGameDetail(game) {
 
 export async function searchOnlineGames(query, { limit = 500 } = {}) {
   const q = String(query || '').trim();
-  if (!LIVE_DISCOVER_URL || q.length < 3) return [];
+  if (!LIVE_DISCOVER_URLS.length || q.length < 2) return [];
   const take = Math.max(1, Math.min(500, Number(limit) || 500));
-  const payload = await fetchJson(`${LIVE_DISCOVER_URL}?q=${encodeURIComponent(q)}&limit=${take}`);
-  return (payload.games || []).map(normalizeGame).filter(game => game.releases.length > 0);
+  const suffix = `?q=${encodeURIComponent(q)}&limit=${take}`;
+  const payload = await fetchFirstJson(LIVE_DISCOVER_URLS.map(base => `${base}${suffix}`));
+  return [...new Map(
+    (payload.games || [])
+      .map(normalizeGame)
+      .filter(Boolean)
+      .map(game => [String(game.id), game])
+  ).values()];
 }
 
 async function fetchPayload() {
