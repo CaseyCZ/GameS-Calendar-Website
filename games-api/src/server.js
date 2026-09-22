@@ -497,7 +497,7 @@ app.get('/api/changes', asyncRoute(async (req, res) => {
   const days = Math.max(1, Math.min(3650, Number(req.query.days) || 30));
   const explicitSince = Date.parse(String(req.query.since || ''));
   const since = Number.isFinite(explicitSince) ? explicitSince : Date.now() - days * 86_400_000;
-  const type = ['all', 'new', 'date', 'price', 'subscription'].includes(String(req.query.type)) ? String(req.query.type) : 'all';
+  const type = ['all', 'new', 'date', 'price', 'subscription', 'early'].includes(String(req.query.type)) ? String(req.query.type) : 'all';
   const items = listRecentChanges({ limit: limitOf(req.query.limit, 100, 500), since, type });
   res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
   res.json({ count: items.length, type, since: new Date(since).toISOString(), trackingSince: historyStartedAt(), items });
