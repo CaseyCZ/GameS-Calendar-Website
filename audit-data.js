@@ -21,7 +21,6 @@ let boundary = 0;
 const exactDateCounts = new Map();
 const untrustedBoundaryCounts = new Map();
 const untrustedExactDateCounts = new Map();
-const normalizedTitles = new Map();
 let missingPrecisionSource = 0;
 let covers = 0;
 let ratings = 0;
@@ -34,14 +33,6 @@ const platformAliasCounts = new Map();
 
 for (const game of games) {
   if (!game?.id || !String(game.name || '').trim() || !Array.isArray(game.releases)) invalid += 1;
-  const titleKey = String(game.name || '')
-    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase().replace(/[™®©]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ').trim();
-  if (titleKey) {
-    if (!normalizedTitles.has(titleKey)) normalizedTitles.set(titleKey, new Set());
-    normalizedTitles.get(titleKey).add(String(game.igdbId || game.id || ''));
-  }
   const id = String(game.id || '');
   ids.set(id, (ids.get(id) || 0) + 1);
   const normalizedTitle = String(game.name || '')
