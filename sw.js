@@ -35,8 +35,6 @@ const SHELL = [
   './js/icons.js',
   './js/ui.js',
   './manifest.webmanifest',
-  './pwa-desktop.png',
-  './pwa-mobile.png',
   './CaseyCZ-192.png',
   './CaseyCZ-512.png',
   './CaseyCZ.png',
