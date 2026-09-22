@@ -1,6 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
-import { collapseDisplayRows, displayFamilyKey, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './js/search.js';
+import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -292,13 +292,7 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   if (!search && base.status === 'released' && (!to || to >= today)) return false;
 
   if (!search && base.period === 'undated') return !from && !to;
-  if (!search && !ignoreRange && base.range) {
-    if (!from || !to) return false;
-    if (base.period === 'month' || base.period === 'next') {
-      if (precisionGroup !== 'day' && precisionGroup !== 'month') return false;
-    }
-    if (to < base.range.from || from > base.range.to) return false;
-  }
+  if (!search && !ignoreRange && !matchesReleaseRange(row, base.range, base.period)) return false;
   return true;
 }
 
