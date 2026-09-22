@@ -232,6 +232,54 @@
     return first.window || 'bez oznámeného termínu';
   }
 
+  function historyPlatformLabel(value = '') {
+    const normalized = String(value || '').trim().toLowerCase();
+    if (!normalized) return '';
+    if (/playstation 5|\bps5\b/.test(normalized)) return 'PS5';
+    if (/playstation 4|\bps4\b/.test(normalized)) return 'PS4';
+    if (/xbox series/.test(normalized)) return 'Xbox Series';
+    if (/xbox one/.test(normalized)) return 'Xbox One';
+    if (/switch 2/.test(normalized)) return 'Switch 2';
+    if (/nintendo switch|\bswitch\b/.test(normalized)) return 'Switch';
+    if (/windows|\bpc\b/.test(normalized)) return 'PC';
+    return String(value || '').trim();
+  }
+
+  function historyReleaseItemLabel(item = {}) {
+    if (item.day) return new Date(`${item.day}T12:00:00Z`).toLocaleDateString('cs-CZ', { day:'numeric', month:'short', year:'numeric', timeZone:'UTC' });
+    return item.window || 'bez oznámeného termínu';
+  }
+
+  function historyPlatformReleaseMap(value) {
+    const items = Array.isArray(value) ? value : value?.releases;
+    const map = new Map();
+    if (!Array.isArray(items)) return map;
+    for (const item of items) {
+      for (const platform of Array.isArray(item?.platforms) ? item.platforms : []) {
+        const label = historyPlatformLabel(platform);
+        if (!label || map.has(label)) continue;
+        map.set(label, historyReleaseItemLabel(item));
+      }
+    }
+    return map;
+  }
+
+  function historyReleaseChange(oldValue, newValue) {
+    const before = historyPlatformReleaseMap(oldValue);
+    const after = historyPlatformReleaseMap(newValue);
+    const changed = [];
+    for (const [platform, oldLabel] of before) {
+      if (!after.has(platform)) continue;
+      const newLabel = after.get(platform);
+      if (oldLabel !== newLabel) changed.push({ platform, oldLabel, newLabel });
+    }
+    if (changed.length === 1) {
+      const item = changed[0];
+      return `${item.platform}: ${item.oldLabel} → ${item.newLabel}`;
+    }
+    return `${historyReleaseLabel(oldValue)} → ${historyReleaseLabel(newValue)}`;
+  }
+
   function historyPriceSummary(value) {
     const entries = Object.entries(value || {}).filter(([, price]) => price && (price.currentText || price.current != null));
     if (!entries.length) return 'bez ceny';
@@ -307,7 +355,7 @@
   }
 
   function historyText(item) {
-    if (item.field === 'releaseDates') return `Změna termínu · ${historyReleaseLabel(item.oldValue)} → ${historyReleaseLabel(item.newValue)}`;
+    if (item.field === 'releaseDates') return `Změna termínu · ${historyReleaseChange(item.oldValue, item.newValue)}`;
     if (item.field === 'prices') return `${historyPriceTrend(item.oldValue, item.newValue)} · ${historyPriceSummary(item.oldValue)} → ${historyPriceSummary(item.newValue)}`;
     if (item.field === 'subscriptions') {
       const change = historySubscriptionChange(item.oldValue, item.newValue);
