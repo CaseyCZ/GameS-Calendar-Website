@@ -157,7 +157,11 @@ function fuzzifySuspicious(release = {}) {
 }
 
 function repairGame(game) {
-  const releases = mergeReleases((game.releases || []).map(fuzzifySuspicious));
+  const checkedAt = Date.parse(game.igdbCheckedAt || '');
+  const authoritativeIgdb = game.igdbStatus === 'matched'
+    && Number.isFinite(checkedAt)
+    && Date.now() - checkedAt < 24 * 60 * 60 * 1000;
+  const releases = mergeReleases((game.releases || []).map(release => authoritativeIgdb ? release : fuzzifySuspicious(release)));
   const repaired = {
     ...game,
     genres:canonicalGenres(game.genres || []),
