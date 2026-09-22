@@ -318,6 +318,16 @@
     }
   }
 
+  function fieldSourceSummary(merged) {
+    const fields = merged?.fieldSources || {};
+    const parts = [];
+    const label = source => PROVIDER_LABELS[source] || source || '';
+    if (fields.description) parts.push(`Popis: ${label(fields.description)}`);
+    if (fields.cover) parts.push(`Obal: ${label(fields.cover)}`);
+    if (fields.metadata) parts.push(`Metadata: ${label(fields.metadata)}`);
+    return parts.join(' · ');
+  }
+
   function applyLiveData(title, payload) {
     const result = payload?.results?.[0];
     if (!result) throw new Error('API nevrátilo detail hry');
@@ -332,8 +342,9 @@
 
     const matched = Object.keys(providers).map(name => PROVIDER_LABELS[name] || name);
     const identity = result.identity?.igdbId ? ` · IGDB #${result.identity.igdbId}` : '';
+    const fieldSources = fieldSourceSummary(merged);
     setStatus(matched.length
-      ? `Živě ověřeno: ${matched.join(' · ')}${identity}`
+      ? `Živě ověřeno: ${matched.join(' · ')}${identity}${fieldSources ? ` · ${fieldSources}` : ''}`
       : 'Živé zdroje pro tuto hru nenašly jistou shodu.', matched.length ? 'ok' : 'empty');
   }
 
