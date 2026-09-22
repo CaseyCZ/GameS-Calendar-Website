@@ -22,8 +22,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: enrich-game-metadata
-  cancel-in-progress: true
+  group: game-catalog-writer
+  cancel-in-progress: false
 
 jobs:
   update:
