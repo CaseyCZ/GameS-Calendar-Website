@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, searchRelevance } from '../js/search.js';
 
@@ -53,6 +53,25 @@ assert.equal(dataset.games[0].releases[0].from, '2026-10-01');
 assert.equal(dataset.games[0].releases[0].to, '2026-12-31');
 
 
+
+const moduleSources = [
+  '../compact-controls.js',
+  '../advanced-features.js',
+  '../badge-filter-controls.js',
+  '../detail-gesture-fix.js',
+  '../live-detail-enrichment.js',
+  '../release-tracker.js',
+  '../js/app.js'
+];
+for (const source of moduleSources) {
+  const url = new URL(source, import.meta.url);
+  const text = readFileSync(url, 'utf8');
+  for (const match of text.matchAll(/import\(\s*['"]([^'"]+)['"]\s*\)/g)) {
+    const specifier = match[1];
+    if (!specifier.startsWith('.')) continue;
+    assert.equal(existsSync(new URL(specifier, url)), true, `Missing local import ${specifier} from ${source}`);
+  }
+}
 
 const compactPayload = JSON.parse(readFileSync(new URL('../games-index.json', import.meta.url), 'utf8'));
 assert.equal(compactPayload.compact, true);
