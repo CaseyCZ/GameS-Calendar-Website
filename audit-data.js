@@ -20,6 +20,8 @@ let boundary = 0;
 const exactDateCounts = new Map();
 const untrustedBoundaryCounts = new Map();
 const untrustedExactDateCounts = new Map();
+const normalizedTitles = new Map();
+let missingPrecisionSource = 0;
 let covers = 0;
 let ratings = 0;
 let generated = 0;
@@ -30,6 +32,14 @@ let publishers = 0;
 
 for (const game of games) {
   if (!game?.id || !String(game.name || '').trim() || !Array.isArray(game.releases)) invalid += 1;
+  const titleKey = String(game.name || '')
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[™®©]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+  if (titleKey) {
+    if (!normalizedTitles.has(titleKey)) normalizedTitles.set(titleKey, new Set());
+    normalizedTitles.get(titleKey).add(String(game.igdbId || game.id || ''));
+  }
   const id = String(game.id || '');
   ids.set(id, (ids.get(id) || 0) + 1);
   if (game.igdbId) {
@@ -49,6 +59,7 @@ for (const game of games) {
     const date = String(release.date || release.day || '');
     const precision = String(release.precision || (date ? 'day' : 'unknown')).toLowerCase();
     if (precision !== 'day') fuzzy += 1;
+    if (!release.precisionSource) missingPrecisionSource += 1;
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) invalid += 1;
     if (precision === 'day' && !date) invalid += 1;
     if (precision !== 'day' && date) invalid += 1;
@@ -69,6 +80,7 @@ for (const game of games) {
 
 const duplicateIds = [...ids.values()].filter(count => count > 1).length;
 const duplicateIgdbIds = [...igdbIds.values()].filter(count => count > 1).length;
+const duplicateTitleGroups = [...normalizedTitles.values()].filter(values => values.size > 1).length;
 const exactDateTotal = [...exactDateCounts.values()].reduce((sum, count) => sum + count, 0);
 const topExactDates = [...exactDateCounts.entries()]
   .sort((a, b) => b[1] - a[1])
@@ -108,11 +120,13 @@ const report = {
     suspiciousBoundaryDays: boundary,
     suspiciousBoundaryPct: releasePct(boundary),
     massPlaceholderDates,
-    topExactDates
+    topExactDates,
+    missingPrecisionSource
   },
   duplicates: {
     ids: duplicateIds,
-    igdbIds: duplicateIgdbIds
+    igdbIds: duplicateIgdbIds,
+    normalizedTitleGroups: duplicateTitleGroups
   },
   invalid
 };
@@ -122,11 +136,13 @@ console.log(JSON.stringify(report, null, 2));
 const hardFailures = [];
 if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
 if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
+if (missingPrecisionSource > Math.max(100, Math.ceil(releases * 0.03))) hardFailures.push(`missingPrecisionSource=${missingPrecisionSource}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
 if (massPlaceholderDates.length) hardFailures.push(`massPlaceholderDates=${massPlaceholderDates.map(item => `${item.date}:${item.count}`).join(',')}`);
 if (pct(covers) < 95) hardFailures.push(`coverCoverage=${pct(covers)}%`);
 if (pct(genres) < 90) hardFailures.push(`genreCoverage=${pct(genres)}%`);
 
+if (duplicateTitleGroups > Math.ceil(games.length * 0.03)) console.warn(`::warning::${duplicateTitleGroups} normalized title groups map to multiple game IDs; review editions/remasters`);
 if (pct(generated) > 20) console.warn(`::warning::${pct(generated)}% of descriptions are generated fallbacks`);
 if (pct(developers) < 60) console.warn(`::warning::developer coverage is only ${pct(developers)}%`);
 if (pct(publishers) < 55) console.warn(`::warning::publisher coverage is only ${pct(publishers)}%`);
