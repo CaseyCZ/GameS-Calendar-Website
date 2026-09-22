@@ -126,7 +126,7 @@ export function platformGroup(name = '') {
   if (n.includes('switch 2') || n === 'nsw2') return 'Switch 2';
   if (n.includes('playstation 5') || n === 'ps5') return 'PS5';
   if (n.includes('playstation 4') || n === 'ps4') return 'PS4';
-  if (n.includes('xbox series') || /^(xsx|xss)$/.test(n)) return 'Xbox Series';
+  if (n.includes('xbox series') || n === 'series x|s' || n.includes('series x|s') || /^(xsx|xss)$/.test(n)) return 'Xbox Series';
   if (n.includes('xbox one') || /^(xone|xb1)$/.test(n)) return 'Xbox One';
   if (n.includes('xbox 360') || n === 'x360') return 'Xbox 360';
   if (n.includes('nintendo switch') || n === 'switch' || n === 'nsw') return 'Switch';
