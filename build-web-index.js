@@ -7,6 +7,36 @@ const path = require('node:path');
 const INPUT = path.resolve(process.env.GAMES_INPUT || 'games.json');
 const OUTPUT = path.resolve(process.env.GAMES_INDEX_OUTPUT || 'games-index.json');
 
+function richness(game = {}) {
+  return [
+    game.cover,
+    game.summary,
+    Number(game.rating || 0) > 0,
+    Number(game.ratingCount || 0) > 0,
+    (game.screenshots || []).length,
+    game.trailerId || game.trailerUrl,
+    (game.developers || []).length,
+    (game.publishers || []).length,
+    game.steamId
+  ].reduce((score, value) => score + (value ? 1 : 0), 0);
+}
+
+function dedupeGames(games = []) {
+  const out = [];
+  const indexByIdentity = new Map();
+  for (const game of games) {
+    const identity = game.igdbId ? `igdb:${game.igdbId}` : `id:${game.id}`;
+    if (!indexByIdentity.has(identity)) {
+      indexByIdentity.set(identity, out.length);
+      out.push(game);
+      continue;
+    }
+    const index = indexByIdentity.get(identity);
+    if (richness(game) > richness(out[index])) out[index] = game;
+  }
+  return out;
+}
+
 function compactGame(game = {}) {
   const links = {
     official: game.links?.official || '',
@@ -56,13 +86,13 @@ async function main() {
     generatedAt: payload.generatedAt || null,
     range: payload.range || null,
     provider: payload.provider || '',
-    games: payload.games.map(compactGame)
+    games: dedupeGames(payload.games).map(compactGame)
   };
   const tmp = `${OUTPUT}.tmp`;
   await fs.writeFile(tmp, JSON.stringify(compact));
   await fs.rename(tmp, OUTPUT);
   const stat = await fs.stat(OUTPUT);
-  console.log(`Web index: ${compact.games.length} games, ${Math.round(stat.size / 1024)} KiB`);
+  console.log(`Web index: ${compact.games.length}/${payload.games.length} unique games, ${Math.round(stat.size / 1024)} KiB`);
 }
 
 main().catch(error => {
