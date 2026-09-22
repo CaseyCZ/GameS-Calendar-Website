@@ -204,6 +204,7 @@ function normalizeIgdb(game) {
       day: precision === 'day' && item?.date ? isoDate(new Date(Number(item.date) * 1000).toISOString()) : null,
       window: releaseWindow(item, precision),
       precision,
+      precisionSource: item?.date_format?.format ? 'igdb-date-format' : 'igdb-inferred',
       platform: item?.platform?.abbreviation || item?.platform?.name || ''
     };
   }).filter(item => item.day || item.window || item.platform);
