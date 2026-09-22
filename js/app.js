@@ -93,9 +93,15 @@ let calendarFeedMode = 'watch';
 const isWatched = game => state.watchlist.has(gameId(game));
 
 function rowByKey(rowKey) {
-  return state.filtered.find(row => row.key === rowKey)
-    || state.rows.find(row => row.key === rowKey)
-    || null;
+  const visible = state.filtered.find(row => row.key === rowKey);
+  if (visible) return visible;
+
+  const source = state.rows.find(row => row.key === rowKey);
+  if (!source) return null;
+
+  const familyKey = displayFamilyKey(source);
+  const familyRows = state.rows.filter(row => displayFamilyKey(row) === familyKey);
+  return collapseDisplayRows(familyRows, preferDisplayRow)[0] || source;
 }
 
 function isFamilyWatched(row) {

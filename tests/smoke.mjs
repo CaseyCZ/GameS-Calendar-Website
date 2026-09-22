@@ -25,6 +25,10 @@ const collapsedPlatformGame = collapseDisplayRows(multiPlatformRows, (current, c
 assert.equal(collapsedPlatformGame.platforms.length, 2);
 assert.deepEqual(new Set(collapsedPlatformGame.platformGroups), new Set(['PS5','PC']));
 
+const reconstructedFamilyCard = collapseDisplayRows(multiPlatformRows, preferDisplayRow)[0];
+assert.equal(reconstructedFamilyCard.platforms.length, 2);
+assert.deepEqual(new Set(reconstructedFamilyCard.platformGroups), new Set(['PS5','PC']));
+
 const calendarRows = collapseCalendarRows([
   { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PlayStation 5', abbreviation:'PS5', group:'PS5' }], platformGroups:['PS5'] },
   { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] },
