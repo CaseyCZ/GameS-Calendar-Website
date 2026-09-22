@@ -61,6 +61,8 @@
           <button type="button" class="sort-option" data-sort-value="name-desc"><span>Název</span><strong>Z–A</strong></button>
           <button type="button" class="sort-option" data-sort-value="date-desc"><span>Rok vydání</span><strong>Nejnovější</strong></button>
           <button type="button" class="sort-option" data-sort-value="date-asc"><span>Rok vydání</span><strong>Nejstarší</strong></button>
+          <button type="button" class="sort-option" data-sort-value="rating-desc"><span>Hodnocení</span><strong>Nejvyšší</strong></button>
+          <button type="button" class="sort-option" data-sort-value="rating-asc"><span>Hodnocení</span><strong>Nejnižší</strong></button>
         </div>
       </div>`;
 
