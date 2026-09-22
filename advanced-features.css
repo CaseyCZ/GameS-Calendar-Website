@@ -137,11 +137,6 @@
   .trait-filter-chip { max-width:100%; }
 }
 
-html[data-theme="light"] .trait-filter-section { border-color: rgba(62,35,72,.09); }
-html[data-theme="light"] .badge--content-type,
-html[data-theme="light"] .detail-flag--content-type { color:#8a5300; }
-html[data-theme="light"] .advanced-setting i { background:rgba(70,45,78,.08); }
-
 .release-changes {
   margin: 0 0 18px;
   padding: 16px;
