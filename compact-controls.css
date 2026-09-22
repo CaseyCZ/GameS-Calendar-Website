@@ -181,7 +181,7 @@ html:not([data-compact-controls="1"]) .filters {
   border: 0;
   border-radius: var(--radius-sm);
   color: #fff;
-  background: linear-gradient(105deg,#ff479b,#c065f2);
+  background: linear-gradient(105deg,var(--pink),var(--purple));
   font: inherit;
   font-weight: 800;
   cursor: pointer;
