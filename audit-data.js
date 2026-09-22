@@ -19,6 +19,7 @@ let fuzzy = 0;
 let boundary = 0;
 const exactDateCounts = new Map();
 const untrustedBoundaryCounts = new Map();
+const untrustedExactDateCounts = new Map();
 let covers = 0;
 let ratings = 0;
 let generated = 0;
@@ -51,7 +52,12 @@ for (const game of games) {
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) invalid += 1;
     if (precision === 'day' && !date) invalid += 1;
     if (precision !== 'day' && date) invalid += 1;
-    if (precision === 'day' && date) exactDateCounts.set(date, (exactDateCounts.get(date) || 0) + 1);
+    if (precision === 'day' && date) {
+      exactDateCounts.set(date, (exactDateCounts.get(date) || 0) + 1);
+      if (!String(release.precisionSource || '').startsWith('igdb-date-format')) {
+        untrustedExactDateCounts.set(date, (untrustedExactDateCounts.get(date) || 0) + 1);
+      }
+    }
     if (precision === 'day' && /-(03-31|06-30|09-30|12-31)$/.test(date)) {
       boundary += 1;
       if (!String(release.precisionSource || '').startsWith('igdb-date-format')) {
@@ -73,8 +79,8 @@ const massPlaceholderDates = [...exactDateCounts.entries()]
     const [, year, month, day] = match;
     const last = new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
     const boundaryDay = Number(day) === 1 || Number(day) === last;
-    const trusted = String(untrustedBoundaryCounts.get(date) || 0) === '0';
-    return boundaryDay && !trusted;
+    const untrusted = Number(untrustedExactDateCounts.get(date) || 0);
+    return boundaryDay && untrusted > 0;
   })
   .map(([date, count]) => ({ date, count }));
 
