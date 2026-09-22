@@ -44,6 +44,11 @@ function itemText(item) {
   if (item.field === 'gameRemoved') return { badge: 'Odebráno', text: 'Hra už není v aktuálním katalogu', kind: 'removed' };
   if (item.field === 'prices') return { badge: 'Cena', text: `${priceSummary(item.oldValue)} → ${priceSummary(item.newValue)}`, kind: 'price' };
   if (item.field === 'subscriptions') return { badge: 'Předplatné', text: `${subscriptionSummary(item.oldValue)} → ${subscriptionSummary(item.newValue)}`, kind: 'subscription' };
+  if (item.field === 'earlyAccess') {
+    if (item.oldValue === true && item.newValue === false) return { badge: 'Early Access', text: 'Early Access byl ukončen', kind: 'early' };
+    if (item.oldValue === false && item.newValue === true) return { badge: 'Early Access', text: 'Hra vstoupila do Early Access', kind: 'early' };
+    return { badge: 'Early Access', text: 'Stav Early Access se změnil', kind: 'early' };
+  }
   return { badge: 'Změna termínu', text: `${releaseLabel(item.oldValue)} → ${releaseLabel(item.newValue)}`, kind: 'date' };
 }
 
