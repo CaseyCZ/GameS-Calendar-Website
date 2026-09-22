@@ -483,12 +483,6 @@ html:not([data-compact-controls="1"]) .filters {
   display: none !important;
 }
 
-html[data-theme="light"] .sort-panel {
-  border-color: rgba(62,35,72,.13);
-  background: rgba(250,247,252,.99);
-  box-shadow: 0 24px 70px rgba(53,30,61,.18);
-}
-
 @media (max-width: 760px) {
   .sort-panel {
     position: fixed;
