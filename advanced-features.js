@@ -1,6 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
-import { matchesSearch, normalizeSearch, searchRelevance } from './js/search.js';
+import { collapseDisplayRows, displayFamilyKey, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -336,6 +336,8 @@ function sortRows(items, sort, search = '') {
       return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     }
 
+    const certainty = releaseCertaintyRank(a) - releaseCertaintyRank(b);
+    if (certainty) return certainty;
     if (!ad && bd) return 1;
     if (ad && !bd) return -1;
     if (ad !== bd) return sort === 'date-desc' ? bd.localeCompare(ad) : ad.localeCompare(bd);
@@ -390,14 +392,8 @@ function preferSearchCard(current, candidate) {
   return current;
 }
 
-function collapseSearchCards(items, search = '') {
-  if (!normalizeSearch(search)) return items;
-  const unique = new Map();
-  for (const row of items) {
-    const key = searchCardKey(row);
-    unique.set(key, preferSearchCard(unique.get(key), row));
-  }
-  return [...unique.values()];
+function collapseSearchCards(items) {
+  return collapseDisplayRows(items, preferSearchCard);
 }
 
 function uniqueGameCount(items, { byTitle = false } = {}) {
