@@ -449,9 +449,17 @@ function renderGames({ resetLimit = false } = {}) {
   if (resetLimit) state.limit = PAGE_SIZE;
   state.filtered = filterRows();
   const shown = state.filtered.slice(0, state.limit);
+  const watchedFamilies = new Set(
+    state.rows
+      .filter(row => state.watchlist.has(gameId(row.game)))
+      .map(displayFamilyKey)
+  );
   $('games').dataset.view = state.view;
   $('games').setAttribute('aria-busy', String(state.onlineSearchLoading));
-  $('games').innerHTML = shown.map(row => rowCard(row, isWatched(row.game))).join('');
+  $('games').innerHTML = shown.map(row => rowCard(
+    row,
+    state.watchlist.has(gameId(row.game)) || watchedFamilies.has(displayFamilyKey(row))
+  )).join('');
   $('games').hidden = shown.length === 0;
   $('empty-state').hidden = state.filtered.length !== 0 || state.onlineSearchLoading;
   $('load-more-wrap').hidden = state.filtered.length <= shown.length;
