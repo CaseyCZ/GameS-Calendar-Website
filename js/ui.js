@@ -199,7 +199,7 @@ export function fallbackLinks(game) {
   };
 }
 
-function storeIcon(kind) {
+function linkIcon(kind) {
   if (['steam','epic','playstation','xbox','nintendo','meta'].includes(kind)) return sharedStoreIcon(kind);
   if (kind === 'youtube') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 8.2v7.6l6.2-3.8-6.2-3.8Z" fill="currentColor"/><rect x="3" y="5.5" width="18" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   if (kind === 'official') return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.3-5.1-3.3-8.5S9.8 5.8 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
@@ -212,7 +212,7 @@ function storeIcon(kind) {
 function linkButton(label, url, kind) {
   const safe = safeUrl(url);
   if (!safe) return '';
-  return `<a class="store-link store-link--${escapeHtml(kind)}" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer"><span class="store-link__icon">${storeIcon(kind)}</span><span class="store-link__label">${escapeHtml(label)}</span><svg class="store-link__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8m-6 0h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+  return `<a class="store-link store-link--${escapeHtml(kind)}" href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer"><span class="store-link__icon">${linkIcon(kind)}</span><span class="store-link__label">${escapeHtml(label)}</span><svg class="store-link__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8m-6 0h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
 }
 
 function platformStoreLinks(row, links) {
