@@ -46,42 +46,55 @@ function compactSubscriptions(source = {}) {
 }
 
 function compactReleases(releases = []) {
-  return releases.map(release => ({
-    date: release.date || release.day || null,
-    platforms: (release.platforms || []).map(platform =>
+  return releases.map(release => {
+    const out = {};
+    const date = release.date || release.day || null;
+    const platforms = (release.platforms || []).map(platform =>
       typeof platform === 'string' ? platform : (platform.abbreviation || platform.name || '')
-    ).filter(Boolean),
-    window: release.window || '',
-    precision: release.precision || ((release.date || release.day) ? 'day' : 'unknown'),
-    ...(release.precisionSource ? { precisionSource: release.precisionSource } : {}),
-    ...(release.regions?.length ? { regions: release.regions } : {})
-  }));
+    ).filter(Boolean);
+    const precision = release.precision || (date ? 'day' : 'unknown');
+
+    if (date) out.date = date;
+    if (platforms.length) out.platforms = platforms;
+    if (release.window) out.window = release.window;
+    if (precision !== 'day') out.precision = precision;
+    if (release.precisionSource) out.precisionSource = release.precisionSource;
+    if (release.regions?.length) out.regions = release.regions;
+    return out;
+  });
 }
 
 function compactGame(game = {}) {
-  return {
+  const out = {
     id: game.id,
-    igdbId: game.igdbId || '',
     name: game.name || '',
-    slug: game.slug || '',
-    aliases: game.aliases || [],
-    cover: game.cover || '',
-    genres: game.genres || [],
-    developers: game.developers || [],
-    publishers: game.publishers || [],
-    series: game.series || [],
-    scale: game.scale || '',
     contentType: game.contentType || '',
-    earlyAccess: Boolean(game.earlyAccess),
-    rating: Number(game.rating || 0) || 0,
-    ratingCount: Number(game.ratingCount || 0) || 0,
-    announcedWindow: game.announcedWindow || '',
-    subscriptions: compactSubscriptions(game.subscriptions),
-    hasDescription: Boolean(String(game.summary || game.storyline || '').trim()),
-    hasScreenshots: Boolean((game.screenshots || []).length),
-    trailerId: game.trailerId || '',
     releases: compactReleases(game.releases || [])
   };
+
+  if (game.igdbId) out.igdbId = game.igdbId;
+  if (game.slug) out.slug = game.slug;
+  if (game.aliases?.length) out.aliases = game.aliases;
+  if (game.cover) out.cover = game.cover;
+  if (game.genres?.length) out.genres = game.genres;
+  if (game.developers?.length) out.developers = game.developers;
+  if (game.publishers?.length) out.publishers = game.publishers;
+  if (game.series?.length) out.series = game.series;
+  if (game.scale) out.scale = game.scale;
+  if (game.earlyAccess) out.earlyAccess = true;
+
+  const rating = Number(game.rating || 0) || 0;
+  const ratingCount = Number(game.ratingCount || 0) || 0;
+  if (rating) out.rating = rating;
+  if (ratingCount) out.ratingCount = ratingCount;
+  if (game.announcedWindow) out.announcedWindow = game.announcedWindow;
+
+  const subscriptions = compactSubscriptions(game.subscriptions);
+  if (Object.keys(subscriptions).length) out.subscriptions = subscriptions;
+  if (String(game.summary || game.storyline || '').trim()) out.hasDescription = true;
+  if ((game.screenshots || []).length) out.hasScreenshots = true;
+  if (game.trailerId) out.trailerId = game.trailerId;
+  return out;
 }
 
 async function main() {
@@ -90,6 +103,7 @@ async function main() {
   const compact = {
     version: Number(payload.version || 5),
     compact: true,
+    sparse: true,
     generatedAt: payload.generatedAt || null,
     range: payload.range || null,
     provider: payload.provider || '',
