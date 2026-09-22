@@ -11,11 +11,6 @@ on:
       - 'fetch-games.js'
       - 'enrich-public-metadata.js'
       - 'games-api/scripts/enrich-catalog-igdb.js'
-      - 'enrich-live-igdb.js'
-      - 'repair-catalog.js'
-      - 'build-web-index.js'
-      - 'audit-data.js'
-      - 'tests/smoke.mjs'
       - '.github/workflows/update-games.yml'
 
 permissions:
