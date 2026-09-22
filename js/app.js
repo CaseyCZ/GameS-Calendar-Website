@@ -221,7 +221,7 @@ function parseQuery() {
   if (query.has('series')) state.series = query.get('series') || '';
   if (['upcoming','released','all'].includes(query.get('status'))) state.status = query.get('status');
   if (['all','day','month','quarter','year','unknown'].includes(query.get('precision'))) state.precision = query.get('precision');
-  if (['date-asc','date-desc','name-asc','name-desc'].includes(query.get('sort'))) state.sort = query.get('sort');
+  if (['date-asc','date-desc','name-asc','name-desc','rating-desc','rating-asc'].includes(query.get('sort'))) state.sort = query.get('sort');
   else if (state.search) state.sort = 'date-desc';
   if (['grid','compact'].includes(query.get('view'))) state.view = query.get('view');
   state.requestedGameId = query.get('game') || '';
@@ -304,6 +304,20 @@ function inActiveRange(row) {
   return row.day >= state.range.from && row.day <= state.range.to;
 }
 
+function ratingValue(row) {
+  const value = Number(row?.game?.rating || 0);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function compareRatingRows(a, b, direction = 'desc') {
+  const ar = ratingValue(a);
+  const br = ratingValue(b);
+  if (ar == null && br == null) return 0;
+  if (ar == null) return 1;
+  if (br == null) return -1;
+  return direction === 'asc' ? ar - br : br - ar;
+}
+
 function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
   const filtered = searching
@@ -319,21 +333,29 @@ function filterRows() {
     const ad = a.day || '';
     const bd = b.day || '';
 
-    if (searching) {
-      if (!ad && bd) return 1;
-      if (ad && !bd) return -1;
-      if (ad !== bd) return bd.localeCompare(ad);
-      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
-      if (relevance) return relevance;
-      return a.game.name.localeCompare(b.game.name, 'cs');
-    }
-
     if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+
+    if (state.sort === 'rating-desc' || state.sort === 'rating-asc') {
+      const byRating = compareRatingRows(a, b, state.sort === 'rating-asc' ? 'asc' : 'desc');
+      if (byRating) return byRating;
+      if (searching) {
+        const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+        if (relevance) return relevance;
+      }
+      return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+    }
+
     if (!ad && bd) return 1;
     if (ad && !bd) return -1;
-    if (state.sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
-    return ad.localeCompare(bd) || a.game.name.localeCompare(b.game.name, 'cs');
+    if (ad !== bd) return state.sort === 'date-desc' ? bd.localeCompare(ad) : ad.localeCompare(bd);
+
+    if (searching) {
+      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+      if (relevance) return relevance;
+    }
+
+    return a.game.name.localeCompare(b.game.name, 'cs');
   });
   return rows;
 }
