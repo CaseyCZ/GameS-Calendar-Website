@@ -17,6 +17,11 @@ assert.deepEqual(releaseBounds({ precision:'month', window:'September 2026' }), 
   from:'2026-09-01', to:'2026-09-30', sortDay:'2026-09-15'
 });
 assert.equal(platformGroup('PlayStation 5'), 'PS5');
+assert.equal(platformGroup('PlayStation 4'), 'PS4');
+assert.equal(platformGroup('Series X|S'), 'Xbox Series');
+assert.equal(platformGroup('Xbox Series X|S'), 'Xbox Series');
+assert.equal(platformGroup('XONE'), 'Xbox One');
+assert.equal(platformGroup('Xbox 360'), 'Xbox 360');
 assert.equal(platformGroup('PC (Microsoft Windows)'), 'PC');
 
 const dataset = normalizePayload({
