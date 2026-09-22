@@ -125,9 +125,12 @@ export function platformGroup(name = '') {
   const n = String(name).trim().toLowerCase();
   if (n.includes('switch 2') || n === 'nsw2') return 'Switch 2';
   if (n.includes('playstation 5') || n === 'ps5') return 'PS5';
-  if (n.includes('xbox') || /^(xone|x360|xsx|xb1)$/.test(n)) return 'Xbox Series';
+  if (n.includes('playstation 4') || n === 'ps4') return 'PS4';
+  if (n.includes('xbox series') || /^(xsx|xss)$/.test(n)) return 'Xbox Series';
+  if (n.includes('xbox one') || /^(xone|xb1)$/.test(n)) return 'Xbox One';
+  if (n.includes('xbox 360') || n === 'x360') return 'Xbox 360';
   if (n.includes('nintendo switch') || n === 'switch' || n === 'nsw') return 'Switch';
-  if (/quest|rift|steamvr|playstation vr|\bvr\b|virtual reality/.test(n)) return 'VR';
+  if (/quest|rift|steamvr|playstation vr|psvr|\bvr\b|virtual reality/.test(n)) return 'VR';
   if (/\bpc\b|windows|linux|mac|steam|^win$/.test(n)) return 'PC';
   return 'Other';
 }
@@ -135,7 +138,10 @@ export function platformGroup(name = '') {
 export const PLATFORM_GROUPS = [
   { key: 'PC', label: 'PC', icon: '▣' },
   { key: 'PS5', label: 'PS5', icon: 'PS' },
-  { key: 'Xbox Series', label: 'Xbox', icon: 'X' },
+  { key: 'PS4', label: 'PS4', icon: 'PS' },
+  { key: 'Xbox Series', label: 'Xbox Series', icon: 'X' },
+  { key: 'Xbox One', label: 'Xbox One', icon: 'X' },
+  { key: 'Xbox 360', label: 'Xbox 360', icon: 'X' },
   { key: 'Switch', label: 'Switch', icon: 'N' },
   { key: 'Switch 2', label: 'Switch 2', icon: 'N2' },
   { key: 'VR', label: 'VR', icon: 'VR' }
