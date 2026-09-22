@@ -13,6 +13,37 @@ function releaseLabel(value) {
   return first.window || 'bez oznámeného termínu';
 }
 
+function releasePlatformLabel(item = {}) {
+  const platforms = Array.isArray(item.platforms) ? item.platforms.filter(Boolean) : [];
+  if (platforms.length !== 1) return '';
+  const value = String(platforms[0] || '').trim();
+  if (!value) return '';
+  const normalized = value.toLowerCase();
+  if (/playstation 5|\bps5\b/.test(normalized)) return 'PS5';
+  if (/playstation 4|\bps4\b/.test(normalized)) return 'PS4';
+  if (/xbox series/.test(normalized)) return 'Xbox Series';
+  if (/xbox one/.test(normalized)) return 'Xbox One';
+  if (/switch 2/.test(normalized)) return 'Switch 2';
+  if (/nintendo switch|\bswitch\b/.test(normalized)) return 'Switch';
+  if (/windows|\bpc\b/.test(normalized)) return 'PC';
+  return value;
+}
+
+function singleRelease(value) {
+  const items = Array.isArray(value) ? value : value?.releases;
+  return Array.isArray(items) && items.length === 1 ? items[0] : null;
+}
+
+function releaseChangeText(oldValue, newValue) {
+  const before = singleRelease(oldValue);
+  const after = singleRelease(newValue);
+  const beforePlatform = before ? releasePlatformLabel(before) : '';
+  const afterPlatform = after ? releasePlatformLabel(after) : '';
+  const platform = beforePlatform && beforePlatform === afterPlatform ? beforePlatform : '';
+  const change = `${releaseLabel(oldValue)} → ${releaseLabel(newValue)}`;
+  return platform ? `${platform}: ${change}` : change;
+}
+
 function priceSummary(value) {
   const entries = Object.entries(value || {}).filter(([, price]) => price && (price.currentText || price.current != null));
   if (!entries.length) return 'bez ceny';
@@ -98,7 +129,7 @@ function itemText(item) {
     if (item.oldValue === false && item.newValue === true) return { badge: 'Early Access', text: 'Hra vstoupila do Early Access', kind: 'early' };
     return { badge: 'Early Access', text: 'Stav Early Access se změnil', kind: 'early' };
   }
-  return { badge: 'Změna termínu', text: `${releaseLabel(item.oldValue)} → ${releaseLabel(item.newValue)}`, kind: 'date' };
+  return { badge: 'Změna termínu', text: releaseChangeText(item.oldValue, item.newValue), kind: 'date' };
 }
 
 function itemHref(item) {
