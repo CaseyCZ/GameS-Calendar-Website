@@ -1,8 +1,8 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v9';
-const CACHE_TTL = 6 * 60 * 60 * 1000;
+const CACHE_KEY = 'games-catalog-v10';
+const CACHE_TTL = 2 * 60 * 60 * 1000;
 const IS_GITHUB_PAGES = Boolean(globalThis.location?.hostname?.endsWith('.github.io'));
 const REMOTE_API_ROOTS = [
   'https://130.61.49.108/games-api',
@@ -201,6 +201,7 @@ function normalizeRelease(release = {}) {
     platforms,
     window,
     precision,
+    precisionSource: release.precisionSource || '',
     regions: uniq(release.regions || []),
     from: bounds.from,
     to: bounds.to,
@@ -483,13 +484,24 @@ async function fetchPayload() {
 }
 
 async function revalidateCache(cached, dataset) {
-  if (!LIVE_CATALOG_META_URL || revalidationPromise) return revalidationPromise;
+  if (revalidationPromise) return revalidationPromise;
   revalidationPromise = (async () => {
-    const meta = await fetchJson(LIVE_CATALOG_META_URL);
     const before = String(dataset.generatedAt || cached.savedAt);
-    const after = String(meta.generatedAt || '');
+
+    if (LIVE_CATALOG_META_URL) {
+      const meta = await fetchJson(LIVE_CATALOG_META_URL);
+      const after = String(meta.generatedAt || '');
+      if (!after || before === after) return;
+      const { payload } = await fetchPayload();
+      const fresh = normalizePayload(payload);
+      for (const callback of revalidationCallbacks) callback(fresh);
+      return;
+    }
+
+    const payload = await fetchJson(STATIC_CATALOG_URLS[0]);
+    const after = String(payload?.generatedAt || '');
     if (!after || before === after) return;
-    const { payload } = await fetchPayload();
+    await writeCache(payload);
     const fresh = normalizePayload(payload);
     for (const callback of revalidationCallbacks) callback(fresh);
   })().catch(() => {}).finally(() => { revalidationPromise = null; });
