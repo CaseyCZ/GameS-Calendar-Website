@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { matchesSearch, normalizeSearch, searchRelevance } from '../js/search.js';
 
@@ -35,5 +36,13 @@ const dataset = normalizePayload({
 assert.equal(dataset.games[0].releases[0].day, null);
 assert.equal(dataset.games[0].releases[0].from, '2026-10-01');
 assert.equal(dataset.games[0].releases[0].to, '2026-12-31');
+
+
+
+const compactPayload = JSON.parse(readFileSync(new URL('../games-index.json', import.meta.url), 'utf8'));
+assert.equal(compactPayload.compact, true);
+const compactDataset = normalizePayload(compactPayload);
+assert.equal(compactDataset.games.length, compactPayload.games.length);
+assert.ok(compactDataset.games.every(game => Array.isArray(game.releases)));
 
 console.log('Smoke tests passed.');
