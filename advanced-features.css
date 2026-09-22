@@ -154,16 +154,16 @@ html[data-theme="light"] .advanced-setting i { background:rgba(70,45,78,.08); }
 .release-changes__head h2 { margin:0; font-size:19px; }
 .release-changes__filters { display:flex; gap:5px; overflow-x:auto; }
 .release-changes__list { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:8px; }
-.release-change { min-width:0; display:grid; grid-template-columns:52px 1fr; gap:10px; padding:9px; border:1px solid var(--border); border-radius:12px; color:var(--text); background:rgba(255,255,255,.025); text-decoration:none; }
+.release-change { min-width:0; display:grid; grid-template-columns:52px 1fr; gap:10px; padding:9px; border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text); background:rgba(255,255,255,.025); text-decoration:none; }
 .release-change:hover { border-color:var(--border-strong); background:var(--pink-soft); }
-.release-change img,.release-change__cover { width:52px; height:68px; display:block; object-fit:cover; border-radius:8px; background:linear-gradient(145deg,#271431,#130b1b); }
+.release-change img,.release-change__cover { width:52px; height:68px; display:block; object-fit:cover; border-radius:var(--radius-xs); background:linear-gradient(145deg,#271431,#130b1b); }
 .release-change__body { min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:3px; }
 .release-change__body strong { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
 .release-change__body > span:not(.release-change__badge) { color:var(--muted); font-size:10px; line-height:1.4; }
 .release-change__body time { margin-top:auto; color:var(--muted); font-size:9px; }
-.release-change__badge { padding:2px 6px; border:1px solid rgba(255,71,155,.32); border-radius:99px; color:var(--pink); background:rgba(255,71,155,.08); font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+.release-change__badge { padding:2px 6px; border:1px solid rgba(255,71,155,.32); border-radius:var(--radius-pill); color:var(--pink); background:rgba(255,71,155,.08); font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
 .release-change--date .release-change__badge { border-color:rgba(245,158,11,.35); color:#fbbf24; background:rgba(245,158,11,.08); }
-.release-changes__empty { grid-column:1/-1; display:flex; flex-direction:column; gap:3px; padding:24px; border:1px dashed var(--border); border-radius:12px; text-align:center; color:var(--muted); }
+.release-changes__empty { grid-column:1/-1; display:flex; flex-direction:column; gap:3px; padding:24px; border:1px dashed var(--border); border-radius:var(--radius-md); text-align:center; color:var(--muted); }
 .release-changes__empty strong { color:var(--text); }
 @media (max-width:620px) {
   .release-changes { padding:12px; }
