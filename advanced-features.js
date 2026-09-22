@@ -1,5 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
+import { matchesSearch, normalizeSearch, searchRelevance } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -127,54 +128,6 @@ function ensureStyles() {
   link.href = 'advanced-features.css';
   link.dataset.advancedFeatures = '1';
   document.head.appendChild(link);
-}
-
-function normalizeSearch(value = '') {
-  const roman = new Map([
-    ['i','1'],['ii','2'],['iii','3'],['iv','4'],['v','5'],['vi','6'],['vii','7'],['viii','8'],['ix','9'],['x','10']
-  ]);
-  return String(value)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[™®©]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(token => roman.get(token) || token)
-    .join(' ');
-}
-
-function gameSearchText(game) {
-  return normalizeSearch([
-    game.name,
-    ...(game.aliases || []),
-    ...(game.developers || []),
-    ...(game.publishers || []),
-    ...(game.series || [])
-  ].join(' '));
-}
-
-function matchesSearch(game, query) {
-  const needle = normalizeSearch(query);
-  if (!needle) return true;
-  const haystack = gameSearchText(game);
-  return haystack.includes(needle)
-    || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
-}
-
-function searchRelevance(game, query) {
-  const needle = normalizeSearch(query);
-  const name = normalizeSearch(game.name);
-  const aliases = (game.aliases || []).map(normalizeSearch);
-  if (!needle) return 0;
-  if (name === needle) return 100;
-  if (aliases.includes(needle)) return 95;
-  if (name.startsWith(needle)) return 85;
-  if (name.includes(needle)) return 75;
-  if (aliases.some(alias => alias.startsWith(needle))) return 70;
-  const words = needle.split(' ').filter(Boolean);
-  return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
 }
 
 function rawGame(game) {
