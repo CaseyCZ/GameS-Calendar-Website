@@ -281,7 +281,13 @@ function catalogGameFromIgdb(item) {
     if (!day && !window) continue;
     const precision = release?.precision || (day ? 'day' : 'unknown');
     const key = `${day || window}|${precision}`;
-    if (!byDate.has(key)) byDate.set(key, { day: day || null, window, precision, platforms: new Set() });
+    if (!byDate.has(key)) byDate.set(key, {
+      day: day || null,
+      window,
+      precision,
+      precisionSource: release?.precisionSource || '',
+      platforms: new Set()
+    });
     if (release.platform) byDate.get(key).platforms.add(String(release.platform));
   }
   if (!byDate.size && item?.releaseDate) {
@@ -294,7 +300,7 @@ function catalogGameFromIgdb(item) {
     platforms: [...release.platforms].map(name => ({ name, abbreviation: name })),
     window: release.window,
     precision: release.precision,
-    precisionSource: 'igdb-date-format',
+    precisionSource: release.precisionSource || 'igdb-inferred',
     regions: []
   }));
   if (!releases.length) {
