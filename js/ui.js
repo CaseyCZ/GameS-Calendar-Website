@@ -197,9 +197,9 @@ export function fallbackLinks(game) {
     database: game.links?.igdb || game.igdbUrl || '',
     official: game.links?.official || '',
     wikipedia: game.links?.wikipedia || '',
-    playstation: `https://store.playstation.com/en-cz/search/${q}`,
-    xbox: `https://www.xbox.com/cs-CZ/Search/Results?q=${q}`,
-    nintendo: `https://www.nintendo.com/us/search/#q=${q}`,
+    playstation: game.links?.playstation || `https://store.playstation.com/en-cz/search/${q}`,
+    xbox: game.links?.xbox || `https://www.xbox.com/cs-CZ/Search/Results?q=${q}`,
+    nintendo: game.links?.nintendo || `https://www.nintendo.com/us/search/#q=${q}`,
     meta: `https://www.meta.com/experiences/search/?q=${q}`
   };
 }
