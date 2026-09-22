@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERZE-v3.9.1-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.9.1" />
+  <img src="https://img.shields.io/badge/VERZE-v3.10.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.10.0" />
 </p>
 
 <p align="center">
@@ -29,6 +29,14 @@
 - přesné datum, oznámený měsíc, čtvrtletí a rok se vedou odděleně, aby se orientační termín netvářil jako potvrzený den
 - web načítá zmenšený katalog pro rychlé zobrazení a plná metadata až při otevření detailu
 - automatické kontroly hlídají strukturu katalogu, duplicity, podezřelé termíny a regresní scénáře vyhledávání
+
+## Architektura
+
+- `games-index.json` je kompaktní katalog pro rychlé první načtení; plný `games.json` zůstává datovým zdrojem a nouzovým fallbackem
+- živé vyhledávání a detail hry obsluhuje GameS API s IGDB, Steam, Xbox, PlayStation, Nintendo a GeForce NOW providery
+- katalog se lehce obnovuje denně z IGDB; hlubší obohacení metadat běží samostatně a všechny workflow zapisující katalog jsou serializované
+- release záznam nese vlastní přesnost (`day / month / q1–q4 / year / unknown`) a původ této přesnosti, aby orientační termíny nebyly prezentované jako potvrzené datum
+- CI spouští syntax check, regresní smoke testy, datový audit a kontrolu velikosti kompaktního katalogu
 
 ## Hlavní funkce
 
