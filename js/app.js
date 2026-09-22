@@ -91,7 +91,9 @@ let calendarFeedMode = 'watch';
 const isWatched = game => state.watchlist.has(gameId(game));
 
 function searchResultKey(row) {
-  return normalizeSearch(row?.game?.name) || gameId(row.game);
+  const game = row?.game || {};
+  if (game.igdbId) return `igdb:${game.igdbId}`;
+  return `id:${gameId(game)}`;
 }
 
 function searchReleaseKey(row) {
@@ -287,7 +289,11 @@ function compareRatingRows(a, b, direction = 'desc') {
   if (ar == null && br == null) return 0;
   if (ar == null) return 1;
   if (br == null) return -1;
-  return direction === 'asc' ? ar - br : br - ar;
+  const score = direction === 'asc' ? ar - br : br - ar;
+  if (score) return score;
+  const ac = Number(a?.game?.ratingCount || 0);
+  const bc = Number(b?.game?.ratingCount || 0);
+  return bc - ac;
 }
 
 function filterRows() {
