@@ -1,6 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
-import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './js/search.js';
+import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -368,23 +368,7 @@ function uniqueReleaseCount(items, search = '') {
 }
 
 function preferSearchCard(current, candidate) {
-  if (!current) return candidate;
-
-  const currentId = String(current?.game?.id || '');
-  const candidateId = String(candidate?.game?.id || '');
-  if (currentId === candidateId) {
-    if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
-    if (candidate.day && current.day && candidate.day < current.day) return candidate;
-    return current;
-  }
-
-  const currentRatings = Number(current?.game?.ratingCount || 0);
-  const candidateRatings = Number(candidate?.game?.ratingCount || 0);
-  if (candidateRatings !== currentRatings) return candidateRatings > currentRatings ? candidate : current;
-
-  if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
-  if (candidate.day && current.day && candidate.day < current.day) return candidate;
-  return current;
+  return preferDisplayRow(current, candidate);
 }
 
 function collapseSearchCards(items) {

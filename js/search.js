@@ -74,6 +74,38 @@ export function releaseCertaintyRank(row = {}) {
   return 4;
 }
 
+export function preferDisplayRow(current, candidate) {
+  if (!current) return candidate;
+
+  if (Boolean(current.onlineResult) !== Boolean(candidate.onlineResult)) {
+    return current.onlineResult ? candidate : current;
+  }
+
+  const typeScore = row => {
+    const type = normalizeSearch(row?.game?.contentType || '');
+    if (!type || type === 'game' || type === 'main game' || type === 'plna hra') return 2;
+    if (['remake','remaster','expanded game','standalone expansion'].includes(type)) return 1;
+    return 0;
+  };
+  const currentType = typeScore(current);
+  const candidateType = typeScore(candidate);
+  if (candidateType !== currentType) return candidateType > currentType ? candidate : current;
+
+  const currentCertainty = releaseCertaintyRank(current);
+  const candidateCertainty = releaseCertaintyRank(candidate);
+  if (candidateCertainty !== currentCertainty) return candidateCertainty < currentCertainty ? candidate : current;
+
+  const currentRatings = Number(current?.game?.ratingCount || 0);
+  const candidateRatings = Number(candidate?.game?.ratingCount || 0);
+  if (candidateRatings !== currentRatings) return candidateRatings > currentRatings ? candidate : current;
+
+  const currentDate = current.sortDay || current.day || '';
+  const candidateDate = candidate.sortDay || candidate.day || '';
+  if (currentDate && candidateDate && candidateDate !== currentDate) return candidateDate < currentDate ? candidate : current;
+  if (!currentDate && candidateDate) return candidate;
+  return current;
+}
+
 export function displayFamilyKey(row = {}) {
   const game = row.game || {};
   const name = normalizeSearch(game.name || '');

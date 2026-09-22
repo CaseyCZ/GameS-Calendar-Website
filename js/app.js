@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -126,37 +126,7 @@ function uniqueReleaseCount(rows, { byTitle = false } = {}) {
 }
 
 function preferSearchRow(current, candidate) {
-  if (!current) return candidate;
-
-  const currentId = gameId(current.game);
-  const candidateId = gameId(candidate.game);
-  if (currentId === candidateId) {
-    if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
-    if (candidate.day && current.day && candidate.day < current.day) return candidate;
-    return current;
-  }
-
-  if (Boolean(current.onlineResult) !== Boolean(candidate.onlineResult)) {
-    return current.onlineResult ? candidate : current;
-  }
-
-  const mainTypeScore = row => {
-    const type = normalizeSearch(row?.game?.contentType || '');
-    if (!type || type === 'game' || type === 'main game' || type === 'plna hra') return 2;
-    if (['remake','remaster','expanded game','standalone expansion'].includes(type)) return 1;
-    return 0;
-  };
-  const currentType = mainTypeScore(current);
-  const candidateType = mainTypeScore(candidate);
-  if (candidateType !== currentType) return candidateType > currentType ? candidate : current;
-
-  const currentRatings = Number(current.game?.ratingCount || 0);
-  const candidateRatings = Number(candidate.game?.ratingCount || 0);
-  if (candidateRatings !== currentRatings) return candidateRatings > currentRatings ? candidate : current;
-
-  if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
-  if (candidate.day && current.day && candidate.day < current.day) return candidate;
-  return current;
+  return preferDisplayRow(current, candidate);
 }
 
 function collapseSearchRows(rows) {

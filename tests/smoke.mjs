@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
+import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
@@ -64,6 +64,14 @@ assert.equal(releaseCertaintyRank({ precision:'month', window:'September 2026' }
 assert.equal(releaseCertaintyRank({ precision:'q4', window:'Q4 2026' }), 2);
 assert.equal(releaseCertaintyRank({ precision:'year', window:'2026' }), 3);
 assert.equal(releaseCertaintyRank({ precision:'unknown', window:'TBA' }), 4);
+
+const fuzzyRated = { game:{ id:'fuzzy', name:'Family Game', ratingCount:5000, contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' };
+const exactUnrated = { game:{ id:'exact', name:'Family Game', ratingCount:0, contentType:'Main Game' }, day:'2026-10-15', precision:'day', sortDay:'2026-10-15' };
+assert.equal(preferDisplayRow(fuzzyRated, exactUnrated), exactUnrated);
+
+const quarterRated = { game:{ id:'q', name:'Family Game', ratingCount:999, contentType:'Main Game' }, precision:'q4', window:'Q4 2026', sortDay:'2026-11-15' };
+const monthUnrated = { game:{ id:'m', name:'Family Game', ratingCount:0, contentType:'Main Game' }, precision:'month', window:'October 2026', sortDay:'2026-10-15' };
+assert.equal(preferDisplayRow(quarterRated, monthUnrated), monthUnrated);
 
 const septemberRange = { from:'2026-09-01', to:'2026-09-30' };
 assert.equal(matchesReleaseRange({ day:'2026-09-18', precision:'day', from:'2026-09-18', to:'2026-09-18' }, septemberRange, 'month'), true);
