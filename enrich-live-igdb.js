@@ -109,6 +109,95 @@ async function requestBatch(ids, attempt = 0) {
   }
 }
 
+function rollingCatalogRange() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  const from = `${year}-${pad(month + 1)}-01`;
+  const end = new Date(Date.UTC(year, month + 12, 0));
+  const to = `${end.getUTCFullYear()}-${pad(end.getUTCMonth() + 1)}-${pad(end.getUTCDate())}`;
+  return {
+    from: process.env.GAMES_RANGE_FROM || from,
+    to: process.env.GAMES_RANGE_TO || to
+  };
+}
+
+async function requestRange(from, to, offset = 0, attempt = 0) {
+  try {
+    const url = new URL(`${API_ROOT}/igdb/catalog-range`);
+    url.searchParams.set('from', from);
+    url.searchParams.set('to', to);
+    url.searchParams.set('limit', String(BATCH_SIZE));
+    url.searchParams.set('offset', String(offset));
+    const response = await fetch(url, { headers:{ Accept:'application/json' } });
+    const text = await response.text();
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0,240)}`);
+    return JSON.parse(text);
+  } catch (error) {
+    if (attempt + 1 >= RETRIES) throw error;
+    await new Promise(resolve => setTimeout(resolve, 1500 * (attempt + 1)));
+    return requestRange(from, to, offset, attempt + 1);
+  }
+}
+
+function slugFromItem(item = {}) {
+  try {
+    const url = new URL(item.storeUrl || '');
+    return url.pathname.split('/').filter(Boolean).at(-1) || '';
+  } catch {
+    return '';
+  }
+}
+
+function catalogGame(item, range) {
+  const releases = buildReleases(item, range);
+  if (!releases.length) return null;
+  const steamId = String(item.externalIds?.steam || item.rawHints?.externalIds?.steam || '');
+  const now = new Date().toISOString();
+  return {
+    id: Number(item.providerId) || `igdb-${item.providerId}`,
+    igdbId: String(item.providerId || ''),
+    name: item.title || 'Unknown game',
+    slug: slugFromItem(item),
+    aliases: uniq(item.aliases || item.rawHints?.aliases || []),
+    summary: item.description || '',
+    summarySource: item.description ? 'IGDB' : '',
+    storyline: '',
+    cover: item.media?.cover || '',
+    genres: uniq(item.genres || []),
+    developers: uniq(item.developers || []),
+    publishers: uniq(item.publishers || []),
+    series: uniq(item.series || []),
+    scale: '',
+    contentType: item.gameType || '',
+    earlyAccess: false,
+    storeCategories: [],
+    metadataSources: ['IGDB'],
+    steamId,
+    rating: Number(item.rating || 0) || 0,
+    ratingCount: Number(item.ratingCount || 0) || 0,
+    igdbUrl: item.storeUrl || '',
+    trailerId: '',
+    trailerUrl: '',
+    trailerPoster: '',
+    screenshots: [],
+    subscriptions: {
+      gamePass:false, gamePassConsole:false, gamePassPc:false, cloudGaming:false,
+      psPlus:false, geforceNow:false
+    },
+    regionalReleases: [],
+    announcedWindow: '',
+    links: {
+      official:'',
+      steam: steamId ? `https://store.steampowered.com/app/${encodeURIComponent(steamId)}/` : '',
+      epic:'', reddit:'', youtube:'', wikipedia:'', igdb:item.storeUrl || ''
+    },
+    releases,
+    igdbStatus:'matched',
+    igdbCheckedAt:now
+  };
+}
+
 function mergeGame(game, item, range) {
   const releases = buildReleases(item, range);
   return {
@@ -121,10 +210,16 @@ function mergeGame(game, item, range) {
     series: uniq([...(game.series || []), ...(item.series || [])]),
     rating: Number(item.rating || game.rating || 0) || 0,
     ratingCount: Number(item.ratingCount || game.ratingCount || 0) || 0,
+    cover: game.cover || item.media?.cover || '',
     contentType: game.contentType || item.gameType || '',
     igdbId: String(item.providerId || game.igdbId || ''),
     igdbUrl: item.storeUrl || game.igdbUrl || '',
-    links: { ...(game.links || {}), igdb:item.storeUrl || game.links?.igdb || game.igdbUrl || '' },
+    steamId: game.steamId || String(item.externalIds?.steam || item.rawHints?.externalIds?.steam || ''),
+    links: {
+      ...(game.links || {}),
+      steam: game.links?.steam || (item.externalIds?.steam ? `https://store.steampowered.com/app/${encodeURIComponent(item.externalIds.steam)}/` : ''),
+      igdb:item.storeUrl || game.links?.igdb || game.igdbUrl || ''
+    },
     releases: releases.length ? releases : game.releases,
     metadataSources: uniq([...(game.metadataSources || []), 'IGDB']),
     igdbStatus:'matched',
@@ -135,31 +230,53 @@ function mergeGame(game, item, range) {
 async function main() {
   const payload = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
   const games = Array.isArray(payload.games) ? payload.games : [];
-  const ids = uniq(games.map(game => String(game.igdbId || '')).filter(value => /^\d+$/.test(value))).map(Number);
-  if (!ids.length) {
-    console.log('Live IGDB: no catalog IDs to enrich');
-    return;
-  }
+  const targetRange = rollingCatalogRange();
+  const queryRange = {
+    from: `${targetRange.from.slice(0, 4)}-01-01`,
+    to: `${targetRange.to.slice(0, 4)}-12-31`
+  };
 
   const byId = new Map();
-  for (let offset = 0; offset < ids.length; offset += BATCH_SIZE) {
-    const batch = ids.slice(offset, offset + BATCH_SIZE);
-    const result = await requestBatch(batch);
-    for (const item of result.items || []) byId.set(String(item.providerId), item);
-    console.log(`Live IGDB: ${Math.min(offset + batch.length, ids.length)}/${ids.length} IDs, matched=${byId.size}`);
+  for (let offset = 0; offset <= 10000; offset += BATCH_SIZE) {
+    const result = await requestRange(queryRange.from, queryRange.to, offset);
+    const items = result.items || [];
+    for (const item of items) byId.set(String(item.providerId), item);
+    console.log(`Live IGDB range: offset=${offset}, page=${items.length}, unique=${byId.size}`);
+    if (items.length < BATCH_SIZE) break;
   }
 
-  let changed = 0;
-  payload.games = games.map(game => {
-    const item = byId.get(String(game.igdbId || ''));
-    if (!item) return game;
-    changed += 1;
-    return mergeGame(game, item, payload.range);
-  });
+  const existingByIgdb = new Map(games.filter(game => game.igdbId).map(game => [String(game.igdbId), game]));
+  const next = [];
+  let enriched = 0;
+  let added = 0;
+
+  for (const item of byId.values()) {
+    const fresh = catalogGame(item, targetRange);
+    if (!fresh) continue;
+    const existing = existingByIgdb.get(String(item.providerId));
+    if (existing) {
+      next.push(mergeGame(existing, item, targetRange));
+      enriched += 1;
+    } else {
+      next.push(fresh);
+      added += 1;
+    }
+  }
+
+  for (const game of games.filter(game => !game.igdbId)) {
+    if ((game.releases || []).some(release => overlapsCatalog({
+      day:release.date || release.day || null,
+      window:release.window || '',
+      precision:release.precision || ((release.date || release.day) ? 'day' : 'unknown')
+    }, targetRange))) next.push(game);
+  }
+
+  payload.range = targetRange;
+  payload.games = next;
   payload.generatedAt = new Date().toISOString();
-  payload.provider = 'IGDB release and metadata + official Steam/Xbox metadata + Wikidata/Wikipedia fallback + official subscription catalogs';
+  payload.provider = 'IGDB rolling release catalog + official Steam/Xbox metadata + Wikidata/Wikipedia fallback + official subscription catalogs';
   await fs.writeFile(OUTPUT, `${JSON.stringify(payload, null, 2)}\n`);
-  console.log(`Live IGDB: enriched ${changed}/${games.length} catalog games`);
+  console.log(`Live IGDB rolling catalog: ${next.length} games, enriched=${enriched}, added=${added}, range=${targetRange.from}..${targetRange.to}`);
 }
 
 main().catch(error => {
