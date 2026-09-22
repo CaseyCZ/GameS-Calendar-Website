@@ -294,6 +294,9 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   if (!search && base.period === 'undated') return !from && !to;
   if (!search && !ignoreRange && base.range) {
     if (!from || !to) return false;
+    if (base.period === 'month' || base.period === 'next') {
+      if (precisionGroup !== 'day' && precisionGroup !== 'month') return false;
+    }
     if (to < base.range.from || from > base.range.to) return false;
   }
   return true;
