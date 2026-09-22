@@ -199,21 +199,31 @@ export function collapseCalendarRows(rows = []) {
   }));
 }
 
+export function watchedFamilyKeys(rows = [], watchedIds = []) {
+  const watched = watchedIds instanceof Set
+    ? new Set([...watchedIds].map(String))
+    : new Set((watchedIds || []).map(String));
+  const families = new Set();
+
+  for (const row of rows || []) {
+    const id = String(row?.game?.id || '');
+    if (id && watched.has(id)) families.add(displayFamilyKey(row));
+  }
+  return families;
+}
+
 export function countWatchedFamilies(rows = [], watchedIds = []) {
   const watched = watchedIds instanceof Set
     ? new Set([...watchedIds].map(String))
     : new Set((watchedIds || []).map(String));
   const matchedIds = new Set();
-  const families = new Set();
 
   for (const row of rows || []) {
     const id = String(row?.game?.id || '');
-    if (!id || !watched.has(id)) continue;
-    matchedIds.add(id);
-    families.add(displayFamilyKey(row));
+    if (id && watched.has(id)) matchedIds.add(id);
   }
 
-  let count = families.size;
+  let count = watchedFamilyKeys(rows, watched).size;
   for (const id of watched) if (!matchedIds.has(id)) count += 1;
   return count;
 }

@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from './search.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance, watchedFamilyKeys } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -222,7 +222,7 @@ function updateQuery(options) {
   history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
 }
 
-function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
+function matchesBase(row, { includeStatus = true, ignoreGenres = false, watchedFamilies = null } = {}) {
   const game = row.game;
   const search = normalizeSearch(state.search);
   if (search && !matchesSearch(game, search)) return false;
@@ -236,7 +236,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
     if (!(haystack || []).some(value => value === state.company.value)) return false;
   }
   if (state.series && !(game.series || []).includes(state.series)) return false;
-  if (state.watchlistOnly && !isWatched(game)) return false;
+  if (state.watchlistOnly && !isWatched(game) && !watchedFamilies?.has(displayFamilyKey(row))) return false;
   const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
   const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
   if (!search && state.precision !== 'all' && precisionGroup !== state.precision) return false;
@@ -254,7 +254,7 @@ function inActiveRange(row) {
   return matchesReleaseRange(row, state.range, state.period);
 }
 
-function matchesSearchContext(row, { ignoreGenres = false } = {}) {
+function matchesSearchContext(row, { ignoreGenres = false, watchedFamilies = null } = {}) {
   if (!matchesSearch(row.game, state.search)) return false;
   if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
   if (!ignoreGenres && state.genres.size) {
@@ -266,7 +266,7 @@ function matchesSearchContext(row, { ignoreGenres = false } = {}) {
     if (!(source || []).includes(state.company.value)) return false;
   }
   if (state.series && !(row.game.series || []).includes(state.series)) return false;
-  if (state.watchlistOnly && !isWatched(row.game)) return false;
+  if (state.watchlistOnly && !isWatched(row.game) && !watchedFamilies?.has(displayFamilyKey(row))) return false;
   return true;
 }
 
@@ -290,10 +290,11 @@ function compareRatingRows(a, b, direction = 'desc') {
 
 function visibleReleaseRows() {
   const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
   return searching
-    ? state.rows.filter(row => matchesSearchContext(row))
+    ? state.rows.filter(row => matchesSearchContext(row, { watchedFamilies }))
     : state.rows.filter(row =>
-        matchesBase(row, { includeStatus: !row.onlineResult })
+        matchesBase(row, { includeStatus: !row.onlineResult, watchedFamilies })
         && (row.onlineResult || inActiveRange(row))
       );
 }
@@ -352,8 +353,9 @@ function renderPlatformFilters() {
 
 function genreCountRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  if (searching) return state.rows.filter(row => matchesSearchContext(row, { ignoreGenres: true }));
-  return state.rows.filter(row => matchesBase(row, { ignoreGenres: true }) && inActiveRange(row));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  if (searching) return state.rows.filter(row => matchesSearchContext(row, { ignoreGenres: true, watchedFamilies }));
+  return state.rows.filter(row => matchesBase(row, { ignoreGenres: true, watchedFamilies }) && inActiveRange(row));
 }
 
 function renderGenres() {
@@ -400,8 +402,11 @@ function renderMonthSelectors() {
 function monthCounts() {
   const map = new Map();
   const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
   for (const row of state.rows) {
-    if (searching ? !matchesSearchContext(row) : !matchesBase(row)) continue;
+    if (searching
+      ? !matchesSearchContext(row, { watchedFamilies })
+      : !matchesBase(row, { watchedFamilies })) continue;
     const from = row.from || row.day || null;
     const to = row.to || row.day || null;
     if (!from || !to || from.slice(0,7) !== to.slice(0,7)) continue;
@@ -548,8 +553,9 @@ async function refreshOnlineSearch(query) {
 
 function statBaseRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  if (searching) return state.rows.filter(row => matchesSearchContext(row));
-  return state.rows.filter(row => matchesBase(row, { includeStatus: false }));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  if (searching) return state.rows.filter(row => matchesSearchContext(row, { watchedFamilies }));
+  return state.rows.filter(row => matchesBase(row, { includeStatus: false, watchedFamilies }));
 }
 
 function updateSummary() {
@@ -949,15 +955,19 @@ async function maybeNotifyUpcoming(force = false) {
   const today = todayLocal();
   if (!force && localStorage.getItem(NOTIFY_LAST_KEY) === today) return;
   const end = addDays(today, 7);
-  const upcoming = state.rows.filter(row => row.day && row.day >= today && row.day <= end && isWatched(row.game));
+  const watchedFamilies = watchedFamilyKeys(state.rows, state.watchlist);
+  const upcoming = state.rows.filter(row =>
+    row.day
+    && row.day >= today
+    && row.day <= end
+    && (isWatched(row.game) || watchedFamilies.has(displayFamilyKey(row)))
+  );
   if (!upcoming.length) {
     if (force) toast('Žádná sledovaná hra nevychází během příštích 7 dní.');
     localStorage.setItem(NOTIFY_LAST_KEY, today);
     return;
   }
-  const unique = [];
-  const ids = new Set();
-  for (const row of upcoming) if (!ids.has(gameId(row.game))) { ids.add(gameId(row.game)); unique.push(row); }
+  const unique = collapseDisplayRows(upcoming, preferDisplayRow);
   const first = unique[0];
   const body = unique.slice(0,3).map(row => `${row.game.name} – ${formatDate(row.day)}`).join('\n') + (unique.length > 3 ? `\n+ ${unique.length - 3} další` : '');
   try {

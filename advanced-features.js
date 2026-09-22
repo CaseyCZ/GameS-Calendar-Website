@@ -1,6 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
-import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from './js/search.js';
+import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance, watchedFamilyKeys } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -260,7 +260,8 @@ function readBaseState() {
     range = monthRange(year, month - 1);
   }
 
-  return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, company, series, range, period };
+  const watchFamilies = watchlistOnly ? watchedFamilyKeys(rows, watchlist) : new Set();
+  return { platforms, genres, search, status, precision, sort, watchlistOnly, watchlist, watchFamilies, company, series, range, period };
 }
 
 function baseMatches(row, base, { ignoreRange = false } = {}) {
@@ -277,7 +278,9 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
     if (!(source || []).includes(base.company.value)) return false;
   }
   if (base.series && !(game.series || []).includes(base.series)) return false;
-  if (base.watchlistOnly && !base.watchlist.has(String(game.id))) return false;
+  if (base.watchlistOnly
+    && !base.watchlist.has(String(game.id))
+    && !base.watchFamilies?.has(displayFamilyKey(row))) return false;
   const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
   const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
   if (!search && base.precision !== 'all' && precisionGroup !== base.precision) return false;

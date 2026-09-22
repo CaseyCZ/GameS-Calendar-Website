@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance } from '../js/search.js';
+import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
@@ -52,6 +52,10 @@ assert.equal(collapseDisplayRows(reskinRows).length, 1);
 
 assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','cats-gr'])), 1);
 assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','missing-old-id'])), 2);
+
+const watchedCatsFamilies = watchedFamilyKeys(reskinRows, new Set(['cats-ar']));
+assert.equal(watchedCatsFamilies.size, 1);
+assert.ok(watchedCatsFamilies.has(displayFamilyKey(reskinRows[1])));
 
 const unrelatedNumericRows = [
   ...reskinRows.slice(0, 1),
