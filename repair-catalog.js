@@ -99,6 +99,28 @@ function generatedSummary(value = '') {
   return /\b(?:je videohra|je hra z kategorie)\b|\bDatum vydání:\s*\d{1,2}\.\s*\d{1,2}\.\s*20\d{2}/i.test(String(value || ''));
 }
 
+function releaseLabel(release = {}) {
+  const day = String(release.date || release.day || '');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(day)) {
+    const [year, month, date] = day.split('-');
+    return `${Number(date)}. ${Number(month)}. ${year}`;
+  }
+  return String(release.window || '').trim() || 'TBA';
+}
+
+function generatedText(game = {}) {
+  const genres = canonicalGenres(game.genres || []);
+  const developers = game.developers || [];
+  const platforms = uniq((game.releases || []).flatMap(release => (release.platforms || []).map(item => item?.name).filter(Boolean))).slice(0, 4);
+  let text = genres.length ? `${game.name} je hra z kategorie ${genres.slice(0, 2).join(' / ')}` : `${game.name} je videohra`;
+  if (developers.length) text += ` od studia ${developers[0]}`;
+  if (platforms.length) text += ` pro ${platforms.join(', ')}`;
+  const first = game.releases?.[0];
+  if (first) text += `. Termín vydání: ${releaseLabel(first)}.`;
+  else text += '.';
+  return text;
+}
+
 function mergeGame(a, b) {
   const preferred = richness(b) > richness(a) ? b : a;
   const secondary = preferred === a ? b : a;
@@ -136,12 +158,14 @@ function fuzzifySuspicious(release = {}) {
 
 function repairGame(game) {
   const releases = mergeReleases((game.releases || []).map(fuzzifySuspicious));
-  return {
+  const repaired = {
     ...game,
     genres:canonicalGenres(game.genres || []),
     contentType:canonicalContentType(game.contentType || ''),
     releases
   };
+  if (generatedSummary(repaired.summary)) repaired.summary = generatedText(repaired);
+  return repaired;
 }
 
 async function main() {
