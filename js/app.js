@@ -434,7 +434,7 @@ async function refreshOnlineSearch(query) {
   const value = String(query || '').trim();
   state.onlineRows = [];
   state.rows = state.catalogRows;
-  if (value.length < 3) {
+  if (value.length < 2) {
     state.onlineSearchLoading = false;
     renderGames({ resetLimit: true });
     notifyAvailableRows();
