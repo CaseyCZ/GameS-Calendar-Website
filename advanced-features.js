@@ -362,8 +362,42 @@ function sortRows(items, sort, search = '') {
   });
 }
 
-function uniqueGameCount(items) {
-  return new Set(items.map(row => String(row.game.id))).size;
+function searchCardKey(row) {
+  return normalizeSearch(row?.game?.name) || String(row?.game?.id || '');
+}
+
+function preferSearchCard(current, candidate) {
+  if (!current) return candidate;
+
+  const currentId = String(current?.game?.id || '');
+  const candidateId = String(candidate?.game?.id || '');
+  if (currentId === candidateId) {
+    if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
+    if (candidate.day && current.day && candidate.day < current.day) return candidate;
+    return current;
+  }
+
+  const currentRatings = Number(current?.game?.ratingCount || 0);
+  const candidateRatings = Number(candidate?.game?.ratingCount || 0);
+  if (candidateRatings !== currentRatings) return candidateRatings > currentRatings ? candidate : current;
+
+  if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
+  if (candidate.day && current.day && candidate.day < current.day) return candidate;
+  return current;
+}
+
+function collapseSearchCards(items, search = '') {
+  if (!normalizeSearch(search)) return items;
+  const unique = new Map();
+  for (const row of items) {
+    const key = searchCardKey(row);
+    unique.set(key, preferSearchCard(unique.get(key), row));
+  }
+  return [...unique.values()];
+}
+
+function uniqueGameCount(items, { byTitle = false } = {}) {
+  return new Set(items.map(row => byTitle ? searchCardKey(row) : String(row.game.id))).size;
 }
 
 function selectedTraitLabels() {
@@ -452,17 +486,19 @@ function renderTraitCounts(baseRows) {
   }
 }
 
-function renderAdvancedSummary(filtered) {
+function renderAdvancedSummary(filtered, releaseCount = filtered.length, search = '') {
+  const byTitle = Boolean(normalizeSearch(search));
+  const gameCount = uniqueGameCount(filtered, { byTitle });
   const stat = $('stat-visible');
-  if (stat) stat.textContent = formatter.format(uniqueGameCount(filtered));
+  if (stat) stat.textContent = formatter.format(gameCount);
   const summary = $('result-summary');
   if (!summary) return;
   const marker = ' · vlastnosti: ';
   const current = summary.textContent || '';
   const baseText = current.includes(marker) ? current.split(marker)[0] : current;
   const parts = baseText.split(' · ');
-  parts[0] = `${formatter.format(uniqueGameCount(filtered))} her`;
-  if (parts.length > 1) parts[1] = `${formatter.format(filtered.length)} vydání`;
+  parts[0] = `${formatter.format(gameCount)} her`;
+  if (parts.length > 1) parts[1] = `${formatter.format(releaseCount)} vydání`;
   summary.textContent = `${parts.join(' · ')}${marker}${selectedTraitLabels().join(' + ')}`;
 }
 
@@ -475,7 +511,7 @@ function updateMonthCounts(base) {
     const month = row.day.slice(0, 7);
     if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0 });
     const entry = counts.get(month);
-    entry.games.add(String(row.game.id));
+    entry.games.add(normalizeSearch(base.search) ? searchCardKey(row) : String(row.game.id));
     entry.releases += 1;
   }
   document.querySelectorAll('#month-rail [data-month]').forEach(tile => {
@@ -562,7 +598,8 @@ function applyAdvancedFilters() {
     return;
   }
 
-  const filtered = sortRows(baseRows.filter(row => matchesSelectedTraits(row.game)), base.sort, base.search);
+  const matched = baseRows.filter(row => matchesSelectedTraits(row.game));
+  const filtered = sortRows(collapseSearchCards(matched, base.search), base.sort, base.search);
   const shown = filtered.slice(0, advancedLimit);
   const games = $('games');
   if (!games) return;
@@ -573,7 +610,7 @@ function applyAdvancedFilters() {
   $('empty-state').hidden = filtered.length !== 0;
   $('load-more-wrap').hidden = filtered.length <= shown.length;
   wasFiltering = true;
-  renderAdvancedSummary(filtered);
+  renderAdvancedSummary(filtered, matched.length, base.search);
   updateMonthCounts(base);
   decorateCards();
   applyBadgePrefs();
