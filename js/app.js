@@ -63,6 +63,7 @@ const state = {
   catalogRows: [],
   onlineRows: [],
   onlineSearchLoading: false,
+  onlineSearchError: '',
   filtered: [],
   search: '',
   platforms: new Set(),
@@ -423,6 +424,7 @@ function monthCounts() {
 
 function renderMonthRail() {
   const counts = monthCounts();
+  if (normalizeSearch(state.search) && state.sort === 'date-desc') counts.reverse();
   const active = state.range?.from?.slice(0,7) || '';
   $('month-rail').innerHTML = counts.map(([key, count]) => {
     const [year, month] = key.split('-').map(Number);
@@ -449,9 +451,13 @@ function renderGames({ resetLimit = false } = {}) {
     $('empty-state').querySelector('p').textContent = 'Kontroluji IGDB, Steam, Xbox, PlayStation a Nintendo.';
     $('empty-reset').hidden = true;
   } else {
-    $('empty-state').querySelector('h2').textContent = 'Nic jsme nenašli';
+    $('empty-state').querySelector('h2').textContent = state.search && state.onlineSearchError
+      ? 'Online hledání není dostupné'
+      : 'Nic jsme nenašli';
     $('empty-state').querySelector('p').textContent = state.search
-      ? 'Hra není v katalogu ani v připojených herních zdrojích.'
+      ? (state.onlineSearchError
+          ? 'Zobrazuji jen lokální katalog. Zkus hledání znovu za chvíli.'
+          : 'Hra není v katalogu ani v připojených herních zdrojích.')
       : 'Zkus jinou platformu, žánr, období nebo název hry.';
     $('empty-reset').hidden = false;
   }
@@ -503,6 +509,7 @@ async function refreshOnlineSearch(query) {
   const value = String(query || '').trim();
   state.onlineRows = [];
   state.rows = state.catalogRows;
+  state.onlineSearchError = '';
   if (value.length < 2) {
     state.onlineSearchLoading = false;
     renderGames({ resetLimit: true });
@@ -519,7 +526,10 @@ async function refreshOnlineSearch(query) {
     state.onlineRows = makeOnlineRows(games);
     state.rows = [...state.catalogRows, ...state.onlineRows];
   } catch (error) {
-    if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) console.warn('Online hledání:', error);
+    if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) {
+      state.onlineSearchError = String(error?.message || 'Online zdroje nejsou dostupné');
+      console.warn('Online hledání:', error);
+    }
   } finally {
     if (sequence === onlineSearchSequence) {
       state.onlineSearchLoading = false;
@@ -586,6 +596,7 @@ function updateSummary() {
   if (state.platforms.size) parts.push([...state.platforms].map(value => value === 'Xbox Series' ? 'Xbox' : value).join(', '));
   if (state.genres.size) parts.push([...state.genres].join(' + '));
   if (state.search) parts.push(`„${state.search}“`);
+  if (state.search && state.onlineSearchError) parts.push('online zdroje momentálně nedostupné');
   if (state.dataset?.generatedAt) parts.push(`data ${new Date(state.dataset.generatedAt).toLocaleString('cs-CZ')}`);
   $('result-summary').textContent = parts.join(' · ');
   $('watchlist-toggle').classList.toggle('is-active', state.watchlistOnly);
