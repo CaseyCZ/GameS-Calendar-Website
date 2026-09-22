@@ -56,11 +56,43 @@ function subscriptionSummary(value) {
   return items.length ? items.join(', ') : 'bez předplatného';
 }
 
+function subscriptionChangeText(oldValue, newValue) {
+  const before = oldValue || {};
+  const after = newValue || {};
+  const services = [
+    ['gamePassConsole', 'Game Pass Console'],
+    ['gamePassPc', 'PC Game Pass'],
+    ['cloudGaming', 'Xbox Cloud Gaming'],
+    ['eaPlay', 'EA Play'],
+    ['psPlus', 'PS Plus'],
+    ['geforceNow', 'GeForce NOW']
+  ];
+
+  const added = [];
+  const removed = [];
+  for (const [key, label] of services) {
+    if (!before[key] && after[key]) added.push(label);
+    if (before[key] && !after[key]) removed.push(label);
+  }
+
+  const beforeHasSpecificGamePass = before.gamePassConsole || before.gamePassPc || before.cloudGaming;
+  const afterHasSpecificGamePass = after.gamePassConsole || after.gamePassPc || after.cloudGaming;
+  if (!beforeHasSpecificGamePass && !afterHasSpecificGamePass) {
+    if (!before.gamePass && after.gamePass) added.push('Game Pass');
+    if (before.gamePass && !after.gamePass) removed.push('Game Pass');
+  }
+
+  const parts = [];
+  if (added.length) parts.push(`Přidáno: ${added.join(', ')}`);
+  if (removed.length) parts.push(`Odebráno: ${removed.join(', ')}`);
+  return parts.length ? parts.join(' · ') : `${subscriptionSummary(before)} → ${subscriptionSummary(after)}`;
+}
+
 function itemText(item) {
   if (item.field === 'gameAdded') return { badge: 'Nová hra', text: `Přidána do katalogu · ${releaseLabel(item.newValue)}`, kind: 'new' };
   if (item.field === 'gameRemoved') return { badge: 'Odebráno', text: 'Hra už není v aktuálním katalogu', kind: 'removed' };
   if (item.field === 'prices') return { badge: priceTrend(item.oldValue, item.newValue), text: `${priceSummary(item.oldValue)} → ${priceSummary(item.newValue)}`, kind: 'price' };
-  if (item.field === 'subscriptions') return { badge: 'Předplatné', text: `${subscriptionSummary(item.oldValue)} → ${subscriptionSummary(item.newValue)}`, kind: 'subscription' };
+  if (item.field === 'subscriptions') return { badge: 'Předplatné', text: subscriptionChangeText(item.oldValue, item.newValue), kind: 'subscription' };
   if (item.field === 'earlyAccess') {
     if (item.oldValue === true && item.newValue === false) return { badge: 'Early Access', text: 'Early Access byl ukončen', kind: 'early' };
     if (item.oldValue === false && item.newValue === true) return { badge: 'Early Access', text: 'Hra vstoupila do Early Access', kind: 'early' };
