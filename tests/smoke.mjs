@@ -147,6 +147,7 @@ const moduleSources = [
   '../compact-controls.js',
   '../advanced-features.js',
   '../badge-filter-controls.js',
+  '../filter-section-accordion.js',
   '../detail-gesture-fix.js',
   '../live-detail-enrichment.js',
   '../release-tracker.js',
