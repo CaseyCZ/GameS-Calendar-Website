@@ -134,6 +134,8 @@ html:not([data-compact-controls="1"]) .filters {
   background: rgba(18,9,26,.98);
   box-shadow: 0 28px 80px rgba(0,0,0,.52);
   backdrop-filter: blur(24px) saturate(150%);
+  max-height: min(80vh, 520px);
+  overflow-y: auto;
 }
 
 .filter-panel .genre-filter-wrap {
@@ -442,7 +444,7 @@ html:not([data-compact-controls="1"]) .filters {
 }
 
 .sort-option {
-  min-height: 42px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
