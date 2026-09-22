@@ -106,3 +106,19 @@ export function collapseDisplayRows(rows = [], prefer = current => current) {
   }
   return [...unique.values()];
 }
+
+export function matchesReleaseRange(row = {}, range = null, period = 'all') {
+  const from = row.from || row.day || null;
+  const to = row.to || row.day || null;
+  if (period === 'undated') return !from && !to;
+  if (!range) return true;
+  if (!from || !to) return false;
+
+  if (period === 'month' || period === 'next') {
+    const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+    const group = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
+    if (group !== 'day' && group !== 'month') return false;
+  }
+
+  return to >= range.from && from <= range.to;
+}
