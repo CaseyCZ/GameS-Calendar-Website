@@ -103,7 +103,10 @@ for (const game of games) {
 
 const duplicateIds = [...ids.values()].filter(count => count > 1).length;
 const duplicateIgdbIds = [...igdbIds.values()].filter(count => count > 1).length;
-const duplicateTitleGroups = [...normalizedTitles.values()].filter(values => values.size > 1).length;
+const sameTitleGroups = [...normalizedTitles.entries()]
+  .filter(([, group]) => group.length > 1)
+  .map(([title, group]) => ({ title, count: group.length, games: group }));
+const duplicateTitleGroups = sameTitleGroups.length;
 const exactDateTotal = [...exactDateCounts.values()].reduce((sum, count) => sum + count, 0);
 const topExactDates = [...exactDateCounts.entries()]
   .sort((a, b) => b[1] - a[1])
@@ -163,10 +166,10 @@ console.log(JSON.stringify(report, null, 2));
 const hardFailures = [];
 if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
 if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
-if (sameTitleGroups.length > Math.max(20, Math.ceil(games.length * 0.005))) {
-  hardFailures.push(`normalizedTitleGroups=${sameTitleGroups.length}`);
-} else if (sameTitleGroups.length) {
-  console.warn(`::warning::${sameTitleGroups.length} normalized title groups need manual identity review`);
+if (duplicateTitleGroups > Math.max(20, Math.ceil(games.length * 0.005))) {
+  hardFailures.push(`normalizedTitleGroups=${duplicateTitleGroups}`);
+} else if (duplicateTitleGroups) {
+  console.warn(`::warning::${duplicateTitleGroups} normalized title groups need manual identity review`);
 }
 if (missingPrecisionSource > Math.max(100, Math.ceil(releases * 0.03))) hardFailures.push(`missingPrecisionSource=${missingPrecisionSource}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
