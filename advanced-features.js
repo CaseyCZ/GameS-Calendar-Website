@@ -1,6 +1,6 @@
 import { addDays, flattenReleases, loadGameData, monthRange, todayLocal } from './js/data.js';
 import { formatGenre, formatter, rowCard } from './js/ui.js';
-import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance, watchedFamilyKeys } from './js/search.js';
+import { collapseDisplayRows, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from './js/search.js';
 
 const $ = id => document.getElementById(id);
 const TRAIT_KEY = 'games-calendar-trait-filters-v1';
@@ -358,16 +358,11 @@ function searchCardKey(row) {
 }
 
 function searchReleaseKey(row) {
-  return [
-    searchCardKey(row),
-    row?.day || row?.window || '',
-    String(row?.precision || (row?.day ? 'day' : 'unknown')).toLowerCase()
-  ].join('|');
+  return releaseRecordKey(row);
 }
 
-function uniqueReleaseCount(items, search = '') {
-  if (!normalizeSearch(search)) return items.length;
-  return new Set(items.map(searchReleaseKey)).size;
+function uniqueReleaseCount(items) {
+  return new Set(items.map(releaseRecordKey)).size;
 }
 
 function preferSearchCard(current, candidate) {
@@ -496,12 +491,8 @@ function updateMonthCounts(base) {
     const entry = counts.get(month);
     const searching = Boolean(normalizeSearch(base.search));
     entry.games.add(displayFamilyKey(row));
-    if (searching) {
-      entry.releaseKeys.add(searchReleaseKey(row));
-      entry.releases = entry.releaseKeys.size;
-    } else {
-      entry.releases += 1;
-    }
+    entry.releaseKeys.add(releaseRecordKey(row));
+    entry.releases = entry.releaseKeys.size;
   }
   document.querySelectorAll('#month-rail [data-month]').forEach(tile => {
     const entry = counts.get(tile.dataset.month) || { games: new Set(), releases: 0 };
