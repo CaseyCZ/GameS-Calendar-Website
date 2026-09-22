@@ -11,6 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
+import { matchesSearch, normalizeSearch, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -88,53 +89,6 @@ let onlineSearchSequence = 0;
 let calendarFeedMode = 'watch';
 
 const isWatched = game => state.watchlist.has(gameId(game));
-
-function normalizeSearch(value = '') {
-  const roman = new Map([
-    ['i','1'],['ii','2'],['iii','3'],['iv','4'],['v','5'],['vi','6'],['vii','7'],['viii','8'],['ix','9'],['x','10']
-  ]);
-  return String(value)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[™®©]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .map(token => roman.get(token) || token)
-    .join(' ');
-}
-
-function gameSearchText(game) {
-  return normalizeSearch([
-    game.name,
-    ...(game.aliases || []),
-    ...(game.developers || []),
-    ...(game.publishers || []),
-    ...(game.series || [])
-  ].join(' '));
-}
-
-function searchRelevance(game, query) {
-  const q = normalizeSearch(query);
-  const name = normalizeSearch(game.name);
-  const aliases = (game.aliases || []).map(normalizeSearch);
-  if (!q) return 0;
-  if (name == q) return 100;
-  if (aliases.includes(q)) return 95;
-  if (name.startsWith(q)) return 85;
-  if (name.includes(q)) return 75;
-  if (aliases.some(alias => alias.startsWith(q))) return 70;
-  const words = q.split(' ').filter(Boolean);
-  return words.filter(word => gameSearchText(game).includes(word)).length / Math.max(1, words.length) * 50;
-}
-
-function matchesSearch(game, query) {
-  const needle = normalizeSearch(query);
-  if (!needle) return true;
-  const haystack = gameSearchText(game);
-  return haystack.includes(needle)
-    || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
-}
 
 function searchResultKey(row) {
   return normalizeSearch(row?.game?.name) || gameId(row.game);
