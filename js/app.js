@@ -10,6 +10,7 @@ import {
   todayLocal
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
+import { apiUrl, fetchApi } from './api.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -29,9 +30,9 @@ const WATCH_KEY = 'games-calendar-watchlist-v2';
 const VIEW_KEY = 'games-calendar-view-v2';
 const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
-const PUSH_PUBLIC_KEY_URL = '/games-api/push/public-key';
-const PUSH_SUBSCRIBE_URL = '/games-api/push/subscribe';
-const CALENDAR_FEED_URL = '/games-api/calendar.ics';
+const PUSH_PUBLIC_KEY_PATH = '/push/public-key';
+const PUSH_SUBSCRIBE_PATH = '/push/subscribe';
+const CALENDAR_FEED_URL = apiUrl('/calendar.ics');
 const DEFAULT_TITLE = 'Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo';
 const DEFAULT_DESCRIPTION = 'Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.';
 
@@ -880,13 +881,13 @@ async function syncPushSubscription() {
   const registration = await navigator.serviceWorker.ready;
   let subscription = await registration.pushManager.getSubscription();
   if (!subscription) {
-    const response = await fetch(PUSH_PUBLIC_KEY_URL, { headers:{ Accept:'application/json' } });
+    const response = await fetchApi(PUSH_PUBLIC_KEY_PATH, { headers:{ Accept:'application/json' } });
     if (!response.ok) throw new Error(`Push key HTTP ${response.status}`);
     const data = await response.json();
     if (!data.enabled || !data.publicKey) throw new Error('Push notifications are not configured');
     subscription = await registration.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:urlBase64Bytes(data.publicKey) });
   }
-  const response = await fetch(PUSH_SUBSCRIBE_URL, {
+  const response = await fetchApi(PUSH_SUBSCRIBE_PATH, {
     method:'POST',
     headers:{ 'Content-Type':'application/json', Accept:'application/json' },
     body:JSON.stringify({ subscription:subscription.toJSON(), gameIds:[...state.watchlist] })
@@ -900,7 +901,7 @@ async function removePushSubscriptionFromServer() {
   const subscription = await registration.pushManager.getSubscription();
   if (!subscription) return;
   try {
-    await fetch(PUSH_SUBSCRIBE_URL, {
+    await fetchApi(PUSH_SUBSCRIBE_PATH, {
       method:'DELETE', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ endpoint:subscription.endpoint })
     });
   } finally {
