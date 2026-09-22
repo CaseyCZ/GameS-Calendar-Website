@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERZE-v3.8.2-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.8.2" />
+  <img src="https://img.shields.io/badge/VERZE-v3.9.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.9.0" />
 </p>
 
 <p align="center">
@@ -22,6 +22,13 @@
 ## O projektu
 
 **GameS Calendar** vznikl jako rychlý přehled herních vydání bez nutnosti procházet několik různých webů. Umožňuje vyhledat hru, filtrovat vydání podle platformy nebo období, uložit oblíbené tituly a přidat datum vydání do kalendáře.
+
+## Data a kvalita
+
+- živé hledání používá IGDB a doplňkové oficiální katalogy i mimo lokální seznam her
+- přesné datum, oznámený měsíc, čtvrtletí a rok se vedou odděleně, aby se orientační termín netvářil jako potvrzený den
+- web načítá zmenšený katalog pro rychlé zobrazení a plná metadata až při otevření detailu
+- automatické kontroly hlídají strukturu katalogu, duplicity, podezřelé termíny a regresní scénáře vyhledávání
 
 ## Hlavní funkce
 
