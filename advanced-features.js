@@ -343,22 +343,51 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   return true;
 }
 
+function ratingValue(row) {
+  const value = Number(row?.game?.rating || 0);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function compareRatingRows(a, b, direction = 'desc') {
+  const ar = ratingValue(a);
+  const br = ratingValue(b);
+  if (ar == null && br == null) return 0;
+  if (ar == null) return 1;
+  if (br == null) return -1;
+  return direction === 'asc' ? ar - br : br - ar;
+}
+
 function sortRows(items, sort, search = '') {
   return [...items].sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
-    if (normalizeSearch(search) && sort === 'date-asc') {
+    const searching = Boolean(normalizeSearch(search));
+
+    if (sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
+    if (sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+
+    if (sort === 'rating-desc' || sort === 'rating-asc') {
+      const byRating = compareRatingRows(a, b, sort === 'rating-asc' ? 'asc' : 'desc');
+      if (byRating) return byRating;
+      if (searching) {
+        const relevance = searchRelevance(b.game, search) - searchRelevance(a.game, search);
+        if (relevance) return relevance;
+      }
+      return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+    }
+
+    if (!ad && bd) return 1;
+    if (ad && !bd) return -1;
+    if (ad !== bd) return sort === 'date-desc' ? bd.localeCompare(ad) : ad.localeCompare(bd);
+
+    if (searching) {
       const relevance = searchRelevance(b.game, search) - searchRelevance(a.game, search);
       if (relevance) return relevance;
       const onlineOrder = (a.onlineOrder ?? Number.MAX_SAFE_INTEGER) - (b.onlineOrder ?? Number.MAX_SAFE_INTEGER);
       if (onlineOrder) return onlineOrder;
     }
-    if (sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
-    if (sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
-    if (!ad && bd) return 1;
-    if (ad && !bd) return -1;
-    if (sort === 'date-desc') return bd.localeCompare(ad) || a.game.name.localeCompare(b.game.name, 'cs');
-    return ad.localeCompare(bd) || a.game.name.localeCompare(b.game.name, 'cs');
+
+    return a.game.name.localeCompare(b.game.name, 'cs');
   });
 }
 
