@@ -34,7 +34,20 @@ jobs:
           npm run check
           npm test
 
+      - name: Check commit is still current main
+        id: current-main
+        run: |
+          set -euo pipefail
+          remote_sha="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [[ "$remote_sha" != "$GITHUB_SHA" ]]; then
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "Deployment skipped: workflow commit $GITHUB_SHA was superseded by $remote_sha."
+          else
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Check deployment configuration
+        if: steps.current-main.outputs.current == 'true'
         env:
           DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
         run: |
@@ -45,6 +58,7 @@ jobs:
           fi
 
       - name: Configure SSH
+        if: steps.current-main.outputs.current == 'true'
         env:
           DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
         run: |
@@ -68,6 +82,7 @@ jobs:
           ssh-keyscan -T 10 -p 22 -H 130.61.49.108 >> ~/.ssh/known_hosts
 
       - name: Deploy current main to server
+        if: steps.current-main.outputs.current == 'true'
         run: |
           ssh \
             -i ~/.ssh/games-deploy \
@@ -76,7 +91,7 @@ jobs:
             -o ServerAliveInterval=15 \
             -o ServerAliveCountMax=3 \
             ubuntu@130.61.49.108 \
-            "bash /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh '${GITHUB_SHA}'"
+            'bash /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh'
 
       - name: Deployment summary
         run: |
@@ -86,5 +101,9 @@ jobs:
             echo "- GitHub commit: \`${GITHUB_SHA}\`"
             echo "- Server: \`130.61.49.108\`"
             echo "- Web: \`/games/\`"
-            echo "- Result: deployment script completed successfully"
+            if [[ "${{ steps.current-main.outputs.current }}" == "true" ]]; then
+              echo "- Result: deployment script completed successfully"
+            else
+              echo "- Result: skipped because a newer main commit exists"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
