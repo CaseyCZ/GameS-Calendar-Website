@@ -147,7 +147,8 @@ const report = {
   duplicates: {
     ids: duplicateIds,
     igdbIds: duplicateIgdbIds,
-    normalizedTitleGroups: duplicateTitleGroups
+    normalizedTitleGroups: duplicateTitleGroups,
+    normalizedTitleSamples: sameTitleGroups.slice(0, 20)
   },
   invalid
 };
