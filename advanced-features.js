@@ -456,7 +456,7 @@ function renderTraitCounts(baseRows) {
   const seenByTrait = new Map([...TRAIT_LABELS.keys()].map(key => [key, new Set()]));
   const baseGameIds = new Set();
   for (const row of baseRows) {
-    const id = String(row.game.id);
+    const id = displayFamilyKey(row);
     baseGameIds.add(id);
     for (const trait of gameTraits(row.game)) seenByTrait.get(trait)?.add(id);
   }
@@ -508,7 +508,7 @@ function updateMonthCounts(base) {
     if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0, releaseKeys: new Set() });
     const entry = counts.get(month);
     const searching = Boolean(normalizeSearch(base.search));
-    entry.games.add(searching ? searchCardKey(row) : String(row.game.id));
+    entry.games.add(displayFamilyKey(row));
     if (searching) {
       entry.releaseKeys.add(searchReleaseKey(row));
       entry.releases = entry.releaseKeys.size;
