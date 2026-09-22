@@ -1,0 +1,115 @@
+.brand-icon {
+  --brand-color: #c4b5fd;
+  --brand-bg: color-mix(in srgb, var(--brand-color) 10%, transparent);
+  --brand-border: color-mix(in srgb, var(--brand-color) 34%, transparent);
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  color: var(--brand-color);
+  background: var(--brand-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+  vertical-align: middle;
+}
+
+.brand-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.brand-icon__monogram {
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.brand-icon--pc { --brand-color: #60a5fa; }
+.brand-icon--playstation { --brand-color: #4b82ff; }
+.brand-icon--xbox { --brand-color: #52c41a; }
+.brand-icon--nintendo { --brand-color: #ff4b55; }
+.brand-icon--vr { --brand-color: #5f85ff; }
+.brand-icon--steam { --brand-color: #66c0f4; }
+.brand-icon--epic { --brand-color: #e5e7eb; }
+.brand-icon--gamepass { --brand-color: #52c41a; }
+.brand-icon--psplus { --brand-color: #4b82ff; }
+.brand-icon--gfn { --brand-color: #76b900; }
+.brand-icon--eaplay { --brand-color: #ff6b35; }
+.brand-icon--cloud { --brand-color: #38bdf8; }
+
+.brand-icon--filter {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+  border-radius: 7px;
+}
+.brand-icon--filter svg { width: 15px; height: 15px; }
+
+.brand-icon--tag {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+  border: 0;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--brand-color) 12%, transparent);
+}
+.brand-icon--tag svg { width: 12px; height: 12px; }
+
+.brand-icon--service {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+  border: 0;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--brand-color) 12%, transparent);
+}
+.brand-icon--service svg { width: 12px; height: 12px; }
+.brand-icon--service .brand-icon__monogram { font-size: 8px; }
+
+.chip--platform {
+  gap: 7px;
+}
+.chip--platform .brand-icon {
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.chip--platform:hover .brand-icon,
+.chip--platform.is-active .brand-icon {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand-color) 52%, transparent);
+  background: color-mix(in srgb, var(--brand-color) 16%, transparent);
+}
+
+.platform-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.service-badge {
+  gap: 5px;
+}
+
+.store-link__icon > .brand-icon {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+.store-link__icon > .brand-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+@media (max-width: 560px) {
+  .brand-icon--filter {
+    width: 22px;
+    height: 22px;
+    flex-basis: 22px;
+  }
+}
