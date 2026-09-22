@@ -115,8 +115,8 @@ html:not([data-compact-controls="1"]) .filters {
 .filters-disclosure[open] > .filter-summary,
 .filter-summary.has-active {
   color: #fff;
-  border-color: rgba(255,71,155,.5);
-  background: rgba(255,71,155,.11);
+  border-color: color-mix(in srgb,var(--pink) 50%,transparent);
+  background: color-mix(in srgb,var(--pink) 11%,transparent);
 }
 
 .filter-panel {
@@ -201,8 +201,8 @@ html:not([data-compact-controls="1"]) .filters {
 
 .settings-menu[open] > .settings-summary {
   color: var(--pink);
-  border-color: rgba(255,71,155,.48);
-  background: rgba(255,71,155,.09);
+  border-color: color-mix(in srgb,var(--pink) 48%,transparent);
+  background: color-mix(in srgb,var(--pink) 9%,transparent);
 }
 
 .settings-popover {
@@ -411,8 +411,8 @@ html:not([data-compact-controls="1"]) .filters {
 .sort-disclosure[open] > .sort-summary,
 .sort-disclosure.has-active > .sort-summary {
   color: #fff;
-  border-color: rgba(255,71,155,.5);
-  background: rgba(255,71,155,.11);
+  border-color: color-mix(in srgb,var(--pink) 50%,transparent);
+  background: color-mix(in srgb,var(--pink) 11%,transparent);
 }
 
 .sort-panel {
@@ -469,8 +469,8 @@ html:not([data-compact-controls="1"]) .filters {
 
 .sort-option:hover,
 .sort-option.is-active {
-  border-color: rgba(255,71,155,.5);
-  background: rgba(255,71,155,.11);
+  border-color: color-mix(in srgb,var(--pink) 50%,transparent);
+  background: color-mix(in srgb,var(--pink) 11%,transparent);
 }
 
 .sort-option.is-active::after {
