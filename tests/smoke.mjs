@@ -1,12 +1,27 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { matchesSearch, normalizeSearch, searchRelevance } from '../js/search.js';
+import { collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
 assert.equal(matchesSearch({ name:'Call of Duty: Modern Warfare', aliases:[], developers:[], publishers:[], series:[] }, 'call warfare'), true);
 assert.ok(searchRelevance({ name:'Gears of War', aliases:[], developers:[], publishers:[], series:[] }, 'gears') > 70);
+
+assert.equal(gameIdentity({ id:'legacy-1', igdbId:'42', name:'Same Game' }), 'igdb:42');
+assert.equal(gameIdentity({ id:'legacy-1', name:'Same Game' }), 'id:legacy-1');
+
+const duplicateReleaseRows = [
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-11-01' }
+];
+assert.equal(collapseGameRows(duplicateReleaseRows).length, 1);
+
+const distinctSameTitleRows = [
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
+  { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
+];
+assert.equal(collapseGameRows(distinctSameTitleRows).length, 2);
 
 assert.deepEqual(releaseBounds({ precision:'year', window:'2027' }), {
   from:'2027-01-01', to:'2027-12-31', sortDay:'2027-07-01'
