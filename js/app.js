@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from './search.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -112,14 +112,6 @@ function isFamilyWatched(row) {
     displayFamilyKey(item) === familyKey
     && state.watchlist.has(gameId(item.game))
   );
-}
-
-function searchResultKey(row) {
-  return gameIdentity(row?.game);
-}
-
-function searchReleaseKey(row) {
-  return releaseRecordKey(row);
 }
 
 function uniqueReleaseCount(rows) {
