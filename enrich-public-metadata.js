@@ -9,6 +9,7 @@ const EN_WIKI_API = 'https://en.wikipedia.org/w/api.php';
 const GAMEPASS_SIGLS = 'https://catalog.gamepass.com/sigls/v2';
 const DISPLAY_CATALOG = 'https://displaycatalog.mp.microsoft.com/v7.0/products';
 const STEAM_APPDETAILS = 'https://store.steampowered.com/api/appdetails';
+const STEAM_RETRY_DAYS = Math.max(1, Number(process.env.PUBLIC_STEAM_RETRY_DAYS || 14));
 const USER_AGENT = 'GameS-Calendar/3.3 (https://caseycz.github.io/GameS-Calendar-Website/; public metadata enrichment)';
 
 const GAMEPASS_LISTS = {
@@ -97,6 +98,18 @@ function steamIdFromGame(game) {
   return match?.[1] || '';
 }
 
+function steamMetadataFresh(game) {
+  const checked = Date.parse(game.steamMetadataCheckedAt || '');
+  return Number.isFinite(checked) && Date.now() - checked < STEAM_RETRY_DAYS * 86_400_000;
+}
+
+function steamAlreadyUseful(game) {
+  const source = String(game.summarySource || '').toLowerCase();
+  return steamMetadataFresh(game)
+    && source === 'steam-store'
+    && Boolean((game.genres || []).length || (game.storeCategories || []).length);
+}
+
 async function enrichSteamOfficial(games) {
   let matched = 0;
   let improvedDescriptions = 0;
@@ -104,7 +117,7 @@ async function enrichSteamOfficial(games) {
 
   for (const game of games) {
     const steamId = steamIdFromGame(game);
-    if (!steamId) continue;
+    if (!steamId || steamAlreadyUseful(game)) continue;
     const url = new URL(STEAM_APPDETAILS);
     url.searchParams.set('appids', steamId);
     url.searchParams.set('cc', 'cz');
