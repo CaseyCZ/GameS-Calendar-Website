@@ -1,5 +1,5 @@
+import { fetchApi } from './js/api.js';
 const $ = id => document.getElementById(id);
-const API_URL = globalThis.location?.hostname?.endsWith('.github.io') ? null : '/games-api/changes';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' })[char]);
