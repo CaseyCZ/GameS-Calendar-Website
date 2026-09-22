@@ -14,8 +14,67 @@ const SAVE_EVERY = Math.max(10, Number(process.env.IGDB_ENRICH_SAVE_EVERY || 50)
 const timestamp = day => day ? Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000) : 0;
 const inRange = (day, range) => Boolean(day && (!range?.from || day >= range.from) && (!range?.to || day <= range.to));
 
+function releaseYear(release = {}) {
+  if (release.day || release.date) return Number(String(release.day || release.date).slice(0, 4)) || 0;
+  const match = String(release.window || '').match(/\b(20\d{2})\b/);
+  return Number(match?.[1] || 0);
+}
+
+function fuzzyReleaseBounds(release = {}) {
+  const precision = String(release.precision || '').toLowerCase();
+  const year = releaseYear(release);
+  if (!year) return null;
+  if (precision === 'year') return { from: `${year}-01-01`, to: `${year}-12-31` };
+  const quarter = precision.match(/^q([1-4])$/);
+  if (quarter) {
+    const q = Number(quarter[1]);
+    const startMonth = (q - 1) * 3 + 1;
+    const endMonth = q * 3;
+    const endDay = new Date(Date.UTC(year, endMonth, 0)).getUTCDate();
+    return {
+      from: `${year}-${String(startMonth).padStart(2, '0')}-01`,
+      to: `${year}-${String(endMonth).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`
+    };
+  }
+  if (precision === 'month') {
+    const numeric = String(release.window || '').match(/\b(0?[1-9]|1[0-2])[\/. -](20\d{2})\b/);
+    const monthNames = {
+      jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,
+      jul:7,july:7,aug:8,august:8,sep:9,sept:9,september:9,oct:10,october:10,
+      nov:11,november:11,dec:12,december:12
+    };
+    const text = String(release.window || '').toLowerCase();
+    const named = Object.entries(monthNames).find(([name]) => new RegExp(`\\b${name}\\b`).test(text));
+    const month = Number(numeric?.[1] || named?.[1] || 0);
+    if (!month) return null;
+    const endDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    return {
+      from: `${year}-${String(month).padStart(2, '0')}-01`,
+      to: `${year}-${String(month).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`
+    };
+  }
+  return null;
+}
+
+function releaseOverlapsRange(release, range) {
+  if (!range) return true;
+  const day = release.day || release.date;
+  if (day) return inRange(day, range);
+  const bounds = fuzzyReleaseBounds(release);
+  if (!bounds) return true;
+  return (!range.from || bounds.to >= range.from) && (!range.to || bounds.from <= range.to);
+}
+
+function suspiciousPlaceholder(game) {
+  return (game.releases || []).some(release => {
+    const day = String(release.date || release.day || '');
+    return String(release.precision || 'day').toLowerCase() === 'day'
+      && /-(03-31|06-30|09-30|12-31)$/.test(day);
+  });
+}
+
 function needsRefresh(game) {
-  if (FORCE || !game.igdbCheckedAt || !['matched', 'not-found'].includes(game.igdbStatus)) return true;
+  if (FORCE || suspiciousPlaceholder(game) || !game.igdbCheckedAt || !['matched', 'not-found'].includes(game.igdbStatus)) return true;
   const checked = Date.parse(game.igdbCheckedAt);
   return !Number.isFinite(checked) || Date.now() - checked >= RETRY_DAYS * 86400000;
 }
@@ -43,24 +102,77 @@ function youtubeId(value = '') {
   } catch { return ''; }
 }
 
+function releaseKey(release = {}) {
+  return [
+    release.date || release.day || '',
+    String(release.window || '').trim().toLowerCase(),
+    String(release.precision || (release.date || release.day ? 'day' : 'unknown')).toLowerCase()
+  ].join('|');
+}
+
+function fuzzyCoversPlaceholder(source, day) {
+  const bounds = fuzzyReleaseBounds(source);
+  return Boolean(bounds && day >= bounds.from && day <= bounds.to);
+}
+
 function mergeReleasePlatforms(game, item, range) {
-  const releases = Array.isArray(game.releases) ? game.releases.map(release => ({
-    ...release,
-    platforms: Array.isArray(release.platforms) ? [...release.platforms] : []
-  })) : [];
-  for (const source of item.releaseDates || []) {
-    if (!inRange(source.day, range) || !source.platform) continue;
-    const nextPlatform = platform(source.platform);
-    let release = releases.find(entry => (entry.date || entry.day) === source.day);
+  const igdbSources = (item.releaseDates || []).filter(source => releaseOverlapsRange(source, range));
+  const exactIgdbDays = new Set(igdbSources.map(source => source.day).filter(Boolean));
+  const fuzzyIgdb = igdbSources.filter(source => !source.day && source.precision && source.precision !== 'unknown');
+
+  const releases = (Array.isArray(game.releases) ? game.releases : [])
+    .map(release => ({
+      ...release,
+      platforms: Array.isArray(release.platforms) ? [...release.platforms] : []
+    }))
+    .filter(release => {
+      const day = String(release.date || release.day || '');
+      if (!day) return true;
+      if (exactIgdbDays.has(day)) return true;
+      const boundary = /-(03-31|06-30|09-30|12-31)$/.test(day);
+      if (!boundary) return true;
+      return !fuzzyIgdb.some(source => fuzzyCoversPlaceholder(source, day));
+    });
+
+  for (const source of igdbSources) {
+    const precision = source.precision || (source.day ? 'day' : 'unknown');
+    const nextPlatform = source.platform ? platform(source.platform) : null;
+    const candidate = {
+      date: precision === 'day' ? source.day : null,
+      timestamp: precision === 'day' ? timestamp(source.day) : 0,
+      platforms: nextPlatform ? [nextPlatform] : [],
+      window: precision === 'day' ? '' : (source.window || 'TBA'),
+      precision,
+      regions: []
+    };
+    let release = releases.find(entry => releaseKey(entry) === releaseKey(candidate));
     if (!release) {
-      release = { date: source.day, timestamp: timestamp(source.day), platforms: [], window: '', precision: 'day', regions: [] };
+      release = candidate;
       releases.push(release);
-    }
-    if (!release.platforms.some(entry => normalizeTitle(entry?.name || entry?.abbreviation) === normalizeTitle(nextPlatform.name))) {
+    } else if (nextPlatform && !release.platforms.some(entry => normalizeTitle(entry?.name || entry?.abbreviation) === normalizeTitle(nextPlatform.name))) {
       release.platforms.push(nextPlatform);
     }
   }
-  return releases.sort((a, b) => String(a.date || a.day || '9999').localeCompare(String(b.date || b.day || '9999')));
+
+  const unique = new Map();
+  for (const release of releases) {
+    const key = releaseKey(release);
+    if (!unique.has(key)) unique.set(key, release);
+    else {
+      const target = unique.get(key);
+      for (const p of release.platforms || []) {
+        if (!target.platforms.some(entry => normalizeTitle(entry?.name || entry?.abbreviation) === normalizeTitle(p?.name || p?.abbreviation))) {
+          target.platforms.push(p);
+        }
+      }
+    }
+  }
+
+  return [...unique.values()].sort((a, b) => {
+    const ak = a.date || a.day || fuzzyReleaseBounds(a)?.from || '9999-12-31';
+    const bk = b.date || b.day || fuzzyReleaseBounds(b)?.from || '9999-12-31';
+    return ak.localeCompare(bk);
+  });
 }
 
 function chooseHit(game, hits = []) {
@@ -77,12 +189,18 @@ function chooseHit(game, hits = []) {
   }).sort((a, b) => b.score - a.score)[0];
 }
 
+function generatedSummary(value = '') {
+  return /\b(?:je videohra|je hra z kategorie)\b|\bDatum vydání:\s*\d{1,2}\.\s*\d{1,2}\.\s*20\d{2}/i.test(String(value || ''));
+}
+
 function mergeGame(game, item, range) {
   const trailers = item.media?.trailers || [];
   const trailerUrl = trailers[0] || game.trailerUrl || '';
   const now = new Date().toISOString();
+  const betterSummary = item.description && (!game.summary || generatedSummary(game.summary)) ? item.description : game.summary;
   return {
     ...game,
+    summary: betterSummary || '',
     aliases: uniq([...(game.aliases || []), ...(item.aliases || [])]),
     genres: uniq([...(game.genres || []), ...(item.genres || [])]),
     developers: uniq([...(game.developers || []), ...(item.developers || [])]),
@@ -102,6 +220,69 @@ function mergeGame(game, item, range) {
     igdbStatus: 'matched',
     igdbCheckedAt: now
   };
+}
+
+function richness(game = {}) {
+  return [
+    game.cover, game.summary && !generatedSummary(game.summary), game.rating, game.ratingCount,
+    (game.screenshots || []).length, game.trailerId || game.trailerUrl,
+    (game.developers || []).length, (game.publishers || []).length, (game.genres || []).length,
+    game.steamId, game.links?.steam, game.wikidataId
+  ].reduce((score, value) => score + (Array.isArray(value) ? Math.min(3, value.length) : value ? 1 : 0), 0);
+}
+
+function mergeDuplicate(base, extra) {
+  const preferred = richness(extra) > richness(base) ? extra : base;
+  const secondary = preferred === base ? extra : base;
+  const releases = [];
+  const seen = new Map();
+  for (const release of [...(preferred.releases || []), ...(secondary.releases || [])]) {
+    const key = releaseKey(release);
+    if (!seen.has(key)) {
+      const copy = { ...release, platforms: [...(release.platforms || [])] };
+      seen.set(key, copy);
+      releases.push(copy);
+    } else {
+      const target = seen.get(key);
+      for (const p of release.platforms || []) {
+        if (!target.platforms.some(existing => normalizeTitle(existing?.name || existing?.abbreviation) === normalizeTitle(p?.name || p?.abbreviation))) {
+          target.platforms.push(p);
+        }
+      }
+    }
+  }
+  return {
+    ...secondary,
+    ...preferred,
+    id: preferred.id,
+    aliases: uniq([...(base.aliases || []), ...(extra.aliases || [])]),
+    genres: uniq([...(base.genres || []), ...(extra.genres || [])]),
+    developers: uniq([...(base.developers || []), ...(extra.developers || [])]),
+    publishers: uniq([...(base.publishers || []), ...(extra.publishers || [])]),
+    series: uniq([...(base.series || []), ...(extra.series || [])]),
+    screenshots: [...(preferred.screenshots || []), ...(secondary.screenshots || [])].filter((item, index, all) => {
+      const key = typeof item === 'string' ? item : item?.full || item?.thumb || JSON.stringify(item);
+      return all.findIndex(other => (typeof other === 'string' ? other : other?.full || other?.thumb || JSON.stringify(other)) === key) === index;
+    }),
+    metadataSources: uniq([...(base.metadataSources || []), ...(extra.metadataSources || [])]),
+    releases
+  };
+}
+
+function dedupeGames(games = []) {
+  const out = [];
+  const byIgdb = new Map();
+  for (const game of games) {
+    const key = game.igdbId ? `igdb:${game.igdbId}` : '';
+    if (!key || !byIgdb.has(key)) {
+      const index = out.push(game) - 1;
+      if (key) byIgdb.set(key, index);
+      continue;
+    }
+    const index = byIgdb.get(key);
+    out[index] = mergeDuplicate(out[index], game);
+  }
+  return out;
 }
 
 async function save(payload) {
@@ -129,11 +310,22 @@ async function main() {
     while (cursor < queue.length) {
       const current = queue[cursor++];
       try {
-        const hits = await igdbProvider.search(current.game.name, { limit: 5 });
-        const best = chooseHit(current.game, hits);
+        let matchedItem = null;
+        if (current.game.igdbId) {
+          try {
+            matchedItem = await igdbProvider.product(String(current.game.igdbId), { force: suspiciousPlaceholder(current.game) });
+          } catch {
+            matchedItem = null;
+          }
+        }
+        if (!matchedItem) {
+          const hits = await igdbProvider.search(current.game.name, { limit: 5, force: suspiciousPlaceholder(current.game) });
+          const best = chooseHit(current.game, hits);
+          if (best?.item && best.score >= 0.82) matchedItem = best.item;
+        }
         const now = new Date().toISOString();
-        if (best?.item && best.score >= 0.82) {
-          payload.games[current.index] = mergeGame(current.game, best.item, payload.range);
+        if (matchedItem) {
+          payload.games[current.index] = mergeGame(current.game, matchedItem, payload.range);
           matched += 1;
         } else {
           payload.games[current.index] = { ...current.game, igdbStatus: 'not-found', igdbCheckedAt: now };
@@ -157,6 +349,7 @@ async function main() {
   }
 
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  payload.games = dedupeGames(payload.games);
   payload.generatedAt = new Date().toISOString();
   payload.provider = 'IGDB release and metadata + official Steam/Xbox metadata + Wikidata/Wikipedia fallback + official subscription catalogs';
   await save(payload);
