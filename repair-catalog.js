@@ -60,6 +60,39 @@ function canonicalContentType(value = '') {
   return value;
 }
 
+function canonicalPlatform(platform = {}) {
+  if (!platform) return platform;
+  const source = typeof platform === 'string' ? { name:platform } : { ...platform };
+  const key = normalize(source.name || source.abbreviation);
+  const aliases = new Map([
+    ['series x s', ['Xbox Series X|S', 'XSX']],
+    ['xbox series x s', ['Xbox Series X|S', 'XSX']],
+    ['xbox series', ['Xbox Series X|S', 'XSX']],
+    ['xone', ['Xbox One', 'XONE']],
+    ['xb1', ['Xbox One', 'XONE']],
+    ['xbox one', ['Xbox One', 'XONE']],
+    ['browser', ['Web browser', 'WEB']],
+    ['web browser', ['Web browser', 'WEB']],
+    ['pc microsoft windows', ['PC (Microsoft Windows)', 'PC']]
+  ]);
+  const mapped = aliases.get(key);
+  if (!mapped) return source;
+  return { ...source, name:mapped[0], abbreviation:source.abbreviation || mapped[1] };
+}
+
+function canonicalPlatforms(values = []) {
+  const result = [];
+  const seen = new Set();
+  for (const raw of values || []) {
+    const platform = canonicalPlatform(raw);
+    const key = normalize(platform?.name || platform?.abbreviation);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    result.push(platform);
+  }
+  return result;
+}
+
 function releaseKey(release = {}) {
   return [
     release.date || release.day || '',
@@ -73,14 +106,11 @@ function mergeReleases(values = []) {
   for (const release of values) {
     const key = releaseKey(release);
     if (!map.has(key)) {
-      map.set(key, { ...release, platforms:[...(release.platforms || [])], regions:uniq(release.regions || []) });
+      map.set(key, { ...release, platforms:canonicalPlatforms(release.platforms || []), regions:uniq(release.regions || []) });
       continue;
     }
     const target = map.get(key);
-    for (const platform of release.platforms || []) {
-      const pk = normalize(platform?.name || platform?.abbreviation);
-      if (pk && !target.platforms.some(item => normalize(item?.name || item?.abbreviation) === pk)) target.platforms.push(platform);
-    }
+    target.platforms = canonicalPlatforms([...(target.platforms || []), ...(release.platforms || [])]);
     target.regions = uniq([...(target.regions || []), ...(release.regions || [])]);
   }
   return [...map.values()];
