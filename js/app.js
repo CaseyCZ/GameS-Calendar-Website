@@ -135,8 +135,55 @@ function matchesSearch(game, query) {
     || needle.split(' ').filter(Boolean).every(word => haystack.includes(word));
 }
 
-function uniqueGameCount(rows) {
-  return new Set(rows.map(row => gameId(row.game))).size;
+function searchResultKey(row) {
+  return normalizeSearch(row?.game?.name) || gameId(row.game);
+}
+
+function preferSearchRow(current, candidate) {
+  if (!current) return candidate;
+
+  const currentId = gameId(current.game);
+  const candidateId = gameId(candidate.game);
+  if (currentId === candidateId) {
+    if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
+    if (candidate.day && current.day && candidate.day < current.day) return candidate;
+    return current;
+  }
+
+  if (Boolean(current.onlineResult) !== Boolean(candidate.onlineResult)) {
+    return current.onlineResult ? candidate : current;
+  }
+
+  const mainTypeScore = row => {
+    const type = normalizeSearch(row?.game?.contentType || '');
+    if (!type || type === 'game' || type === 'main game' || type === 'plna hra') return 2;
+    if (['remake','remaster','expanded game','standalone expansion'].includes(type)) return 1;
+    return 0;
+  };
+  const currentType = mainTypeScore(current);
+  const candidateType = mainTypeScore(candidate);
+  if (candidateType !== currentType) return candidateType > currentType ? candidate : current;
+
+  const currentRatings = Number(current.game?.ratingCount || 0);
+  const candidateRatings = Number(candidate.game?.ratingCount || 0);
+  if (candidateRatings !== currentRatings) return candidateRatings > currentRatings ? candidate : current;
+
+  if (Boolean(current.day) !== Boolean(candidate.day)) return candidate.day ? candidate : current;
+  if (candidate.day && current.day && candidate.day < current.day) return candidate;
+  return current;
+}
+
+function collapseSearchRows(rows) {
+  const unique = new Map();
+  for (const row of rows) {
+    const key = searchResultKey(row);
+    unique.set(key, preferSearchRow(unique.get(key), row));
+  }
+  return [...unique.values()];
+}
+
+function uniqueGameCount(rows, { byTitle = false } = {}) {
+  return new Set(rows.map(row => byTitle ? searchResultKey(row) : gameId(row.game))).size;
 }
 
 function setDefaultPeriod() {
@@ -266,7 +313,7 @@ function filterRows() {
         && (row.onlineResult || inActiveRange(row))
       );
   const rows = searching
-    ? [...new Map(filtered.map(row => [gameId(row.game), row])).values()]
+    ? collapseSearchRows(filtered)
     : filtered;
   rows.sort((a, b) => {
     const ad = a.day || '';
@@ -316,7 +363,7 @@ function renderGenres() {
   for (const row of genreCountRows()) {
     for (const genre of [...new Set((row.game.genres || []).map(formatGenre).filter(Boolean))]) {
       if (!seen.has(genre)) seen.set(genre, new Set());
-      seen.get(genre).add(gameId(row.game));
+      seen.get(genre).add(normalizeSearch(state.search) ? searchResultKey(row) : gameId(row.game));
     }
   }
   for (const [genre, ids] of seen) counts.set(genre, ids.size);
@@ -361,7 +408,7 @@ function monthCounts() {
     if (!map.has(key)) map.set(key, { releases: 0, games: new Set() });
     const item = map.get(key);
     item.releases += 1;
-    item.games.add(gameId(row.game));
+    item.games.add(searching ? searchResultKey(row) : gameId(row.game));
   }
   return [...map.entries()].sort(([a],[b]) => a.localeCompare(b));
 }
@@ -485,8 +532,14 @@ function updateSummary() {
   const visibleReleases = searching ? base.length : state.filtered.length;
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
-  $('stat-30').textContent = formatter.format(uniqueGameCount(base.filter(row => row.day && row.day >= today && row.day <= next30End)));
-  $('stat-next').textContent = formatter.format(uniqueGameCount(base.filter(row => row.day && row.day >= nextMonth.from && row.day <= nextMonth.to)));
+  $('stat-30').textContent = formatter.format(uniqueGameCount(
+    base.filter(row => row.day && row.day >= today && row.day <= next30End),
+    { byTitle: searching }
+  ));
+  $('stat-next').textContent = formatter.format(uniqueGameCount(
+    base.filter(row => row.day && row.day >= nextMonth.from && row.day <= nextMonth.to),
+    { byTitle: searching }
+  ));
   $('stat-watchlist').textContent = formatter.format(state.watchlist.size);
 
   const periodTitles = {
