@@ -314,17 +314,22 @@ function compareRatingRows(a, b, direction = 'desc') {
   return bc - ac;
 }
 
-function filterRows() {
+function visibleReleaseRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  const filtered = searching
+  return searching
     ? state.rows.filter(row => matchesSearchContext(row))
     : state.rows.filter(row =>
         matchesBase(row, { includeStatus: !row.onlineResult })
         && (row.onlineResult || inActiveRange(row))
       );
-  const rows = searching
-    ? collapseSearchRows(filtered)
-    : filtered;
+}
+
+function filterRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  const filtered = visibleReleaseRows();
+  // Always render one card per game. Keep all matching release rows separately
+  // for counters, month statistics and calendar data.
+  const rows = collapseSearchRows(filtered);
   rows.sort((a, b) => {
     const ad = a.sortDay || a.day || '';
     const bd = b.sortDay || b.day || '';
@@ -571,7 +576,7 @@ function updateSummary() {
   const base = statBaseRows();
   const searching = Boolean(normalizeSearch(state.search));
   const visibleGames = uniqueGameCount(state.filtered);
-  const visibleReleases = searching ? uniqueReleaseCount(base, { byTitle: true }) : state.filtered.length;
+  const visibleReleases = uniqueReleaseCount(visibleReleaseRows(), { byTitle: searching });
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(
