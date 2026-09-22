@@ -599,6 +599,10 @@ html[data-theme$="-light"] .service-badge--gamepass { color: #397d25; }
 html[data-theme$="-light"] .service-badge--psplus { color: #315da8; }
 html[data-theme$="-light"] .service-badge--gfn { color: #527d14; }
 
+html[data-theme$="-light"] .brand-icon--epic { --brand-color: #4b5563; }
+html[data-theme$="-light"] .store-link--epic { --store-accent: #4b5563; }
+html[data-theme$="-light"] .store-link--wikipedia { --store-accent: #4b5563; }
+
 html[data-theme$="-light"] .detail-flag,
 html[data-theme$="-light"] .genre-chip {
   color: var(--purple);
