@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, searchRelevance, watchedFamilyKeys } from './search.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -119,16 +119,11 @@ function searchResultKey(row) {
 }
 
 function searchReleaseKey(row) {
-  return [
-    searchResultKey(row),
-    row?.day || row?.window || '',
-    String(row?.precision || (row?.day ? 'day' : 'unknown')).toLowerCase()
-  ].join('|');
+  return releaseRecordKey(row);
 }
 
-function uniqueReleaseCount(rows, { byTitle = false } = {}) {
-  if (!byTitle) return rows.length;
-  return new Set(rows.map(searchReleaseKey)).size;
+function uniqueReleaseCount(rows) {
+  return new Set(rows.map(releaseRecordKey)).size;
 }
 
 function preferSearchRow(current, candidate) {
@@ -419,12 +414,8 @@ function monthCounts() {
     const key = from.slice(0,7);
     if (!map.has(key)) map.set(key, { releases: 0, releaseKeys: new Set(), games: new Set() });
     const item = map.get(key);
-    if (searching) {
-      item.releaseKeys.add(searchReleaseKey(row));
-      item.releases = item.releaseKeys.size;
-    } else {
-      item.releases += 1;
-    }
+    item.releaseKeys.add(releaseRecordKey(row));
+    item.releases = item.releaseKeys.size;
     item.games.add(displayFamilyKey(row));
   }
   return [...map.entries()].sort(([a],[b]) => a.localeCompare(b));
@@ -572,7 +563,7 @@ function updateSummary() {
   const base = statBaseRows();
   const searching = Boolean(normalizeSearch(state.search));
   const visibleGames = uniqueGameCount(state.filtered);
-  const visibleReleases = uniqueReleaseCount(visibleReleaseRows(), { byTitle: searching });
+  const visibleReleases = uniqueReleaseCount(visibleReleaseRows());
   $('stat-visible').textContent = formatter.format(visibleGames);
   $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
   $('stat-30').textContent = formatter.format(uniqueGameCount(
