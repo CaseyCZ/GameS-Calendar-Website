@@ -26,6 +26,23 @@ function priceSummary(value) {
   }).join(' · ');
 }
 
+function priceTrend(oldValue, newValue) {
+  const oldPrices = oldValue || {};
+  const newPrices = newValue || {};
+  let lower = false;
+  let higher = false;
+  for (const provider of Object.keys(newPrices)) {
+    const before = Number(oldPrices?.[provider]?.current);
+    const after = Number(newPrices?.[provider]?.current);
+    if (!Number.isFinite(before) || !Number.isFinite(after) || before === after) continue;
+    if (after < before) lower = true;
+    if (after > before) higher = true;
+  }
+  if (lower && !higher) return 'Zlevněno';
+  if (higher && !lower) return 'Zdraženo';
+  return 'Cena';
+}
+
 function subscriptionSummary(value) {
   const s = value || {};
   const items = [];
@@ -42,7 +59,7 @@ function subscriptionSummary(value) {
 function itemText(item) {
   if (item.field === 'gameAdded') return { badge: 'Nová hra', text: `Přidána do katalogu · ${releaseLabel(item.newValue)}`, kind: 'new' };
   if (item.field === 'gameRemoved') return { badge: 'Odebráno', text: 'Hra už není v aktuálním katalogu', kind: 'removed' };
-  if (item.field === 'prices') return { badge: 'Cena', text: `${priceSummary(item.oldValue)} → ${priceSummary(item.newValue)}`, kind: 'price' };
+  if (item.field === 'prices') return { badge: priceTrend(item.oldValue, item.newValue), text: `${priceSummary(item.oldValue)} → ${priceSummary(item.newValue)}`, kind: 'price' };
   if (item.field === 'subscriptions') return { badge: 'Předplatné', text: `${subscriptionSummary(item.oldValue)} → ${subscriptionSummary(item.newValue)}`, kind: 'subscription' };
   if (item.field === 'earlyAccess') {
     if (item.oldValue === true && item.newValue === false) return { badge: 'Early Access', text: 'Early Access byl ukončen', kind: 'early' };
