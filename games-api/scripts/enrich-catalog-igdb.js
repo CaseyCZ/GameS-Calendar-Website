@@ -68,8 +68,11 @@ function releaseOverlapsRange(release, range) {
 function suspiciousPlaceholder(game) {
   return (game.releases || []).some(release => {
     const day = String(release.date || release.day || '');
-    return String(release.precision || 'day').toLowerCase() === 'day'
-      && /-(03-31|06-30|09-30|12-31)$/.test(day);
+    if (String(release.precision || 'day').toLowerCase() !== 'day' || !/^20\d{2}-\d{2}-\d{2}$/.test(day)) return false;
+    if (String(release.precisionSource || '').startsWith('igdb-date-format')) return false;
+    const [year, month, date] = day.split('-').map(Number);
+    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    return date === 1 || date === last;
   });
 }
 
@@ -143,6 +146,7 @@ function mergeReleasePlatforms(game, item, range) {
       platforms: nextPlatform ? [nextPlatform] : [],
       window: precision === 'day' ? '' : (source.window || 'TBA'),
       precision,
+      precisionSource: 'igdb-date-format',
       regions: []
     };
     let release = releases.find(entry => releaseKey(entry) === releaseKey(candidate));
