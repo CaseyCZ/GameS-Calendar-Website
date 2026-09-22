@@ -9,7 +9,8 @@
     "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check enrich-steam-media.js && node --check build-web-index.js && node --check audit-data.js && node --check filter-section-accordion.js && node --check dynamic-filter-fix.js && node --check advanced-features.js && node --check badge-filter-controls.js && node --check detail-gesture-fix.js && node --check live-detail-enrichment.js && node --check js/api.js && node --check js/search.js && node --check js/icons.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js && node --check release-tracker.js",
     "enrich-igdb": "node --env-file-if-exists=games-api/.env games-api/scripts/enrich-catalog-igdb.js",
     "build-index": "node build-web-index.js",
-    "audit-data": "node audit-data.js"
+    "audit-data": "node audit-data.js",
+    "test": "node tests/smoke.mjs"
   },
   "engines": {
     "node": ">=18"
