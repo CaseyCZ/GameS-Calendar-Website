@@ -306,7 +306,15 @@ function hydrateChange(row) {
 
 export function listRecentChanges({ limit = 100, since = 0, type = 'all', gameKeys = [] } = {}) {
   const take = Math.max(1, Math.min(500, Number(limit) || 100));
-  const fields = type === 'new' ? ['gameAdded'] : type === 'date' ? ['releaseDates'] : ['gameAdded', 'releaseDates', 'gameRemoved'];
+  const fields = type === 'new'
+    ? ['gameAdded']
+    : type === 'date'
+      ? ['releaseDates']
+      : type === 'price'
+        ? ['prices']
+        : type === 'subscription'
+          ? ['subscriptions']
+          : ['gameAdded', 'releaseDates', 'gameRemoved'];
   const keys = [...new Set((gameKeys || []).map(String).filter(Boolean))].slice(0, 500);
   const clauses = [`h.field IN (${fields.map(() => '?').join(',')})`, 'h.changed_at >= ?'];
   const params = [...fields, Math.max(0, Number(since) || 0)];
