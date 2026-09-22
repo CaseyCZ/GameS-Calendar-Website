@@ -34,7 +34,43 @@ function singleRelease(value) {
   return Array.isArray(items) && items.length === 1 ? items[0] : null;
 }
 
+function releaseItemLabel(item = {}) {
+  if (item.day) return new Date(`${item.day}T12:00:00Z`).toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric', timeZone:'UTC' });
+  return item.window || 'bez oznámeného termínu';
+}
+
+function releasePlatformMap(value) {
+  const items = Array.isArray(value) ? value : value?.releases;
+  const map = new Map();
+  if (!Array.isArray(items)) return map;
+  for (const item of items) {
+    const platforms = Array.isArray(item?.platforms) ? item.platforms.filter(Boolean) : [];
+    for (const platformValue of platforms) {
+      const label = releasePlatformLabel({ platforms: [platformValue] });
+      if (!label || map.has(label)) continue;
+      map.set(label, releaseItemLabel(item));
+    }
+  }
+  return map;
+}
+
+function changedPlatformRelease(oldValue, newValue) {
+  const before = releasePlatformMap(oldValue);
+  const after = releasePlatformMap(newValue);
+  if (!before.size || !after.size) return null;
+  const changed = [];
+  for (const [platform, oldLabel] of before) {
+    if (!after.has(platform)) continue;
+    const newLabel = after.get(platform);
+    if (oldLabel !== newLabel) changed.push({ platform, oldLabel, newLabel });
+  }
+  return changed.length === 1 ? changed[0] : null;
+}
+
 function releaseChangeText(oldValue, newValue) {
+  const specific = changedPlatformRelease(oldValue, newValue);
+  if (specific) return `${specific.platform}: ${specific.oldLabel} → ${specific.newLabel}`;
+
   const before = singleRelease(oldValue);
   const after = singleRelease(newValue);
   const beforePlatform = before ? releasePlatformLabel(before) : '';
