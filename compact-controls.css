@@ -75,9 +75,9 @@ html:not([data-compact-controls="1"]) .filters {
   gap: 7px;
   padding: 7px 11px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: var(--text);
-  background: rgba(255,255,255,.035);
+  background: var(--surface-soft);
   font-weight: 720;
   white-space: nowrap;
 }
@@ -99,7 +99,7 @@ html:not([data-compact-controls="1"]) .filters {
   display: inline-grid;
   place-items: center;
   padding: 0 5px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: #fff;
   background: var(--pink);
   font-size: 9px;
@@ -130,7 +130,7 @@ html:not([data-compact-controls="1"]) .filters {
   overscroll-behavior: contain;
   padding: 14px;
   border: 1px solid rgba(255,255,255,.11);
-  border-radius: 16px;
+  border-radius: var(--radius);
   background: rgba(18,9,26,.98);
   box-shadow: 0 28px 80px rgba(0,0,0,.52);
   backdrop-filter: blur(24px) saturate(150%);
@@ -179,7 +179,7 @@ html:not([data-compact-controls="1"]) .filters {
   min-height: 36px;
   padding: 7px 14px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: #fff;
   background: linear-gradient(105deg,#ff479b,#c065f2);
   font: inherit;
@@ -194,9 +194,9 @@ html:not([data-compact-controls="1"]) .filters {
   display: grid;
   place-items: center;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: var(--text);
-  background: rgba(255,255,255,.035);
+  background: var(--surface-soft);
 }
 
 .settings-menu[open] > .settings-summary {
@@ -308,7 +308,7 @@ html:not([data-compact-controls="1"]) .filters {
     bottom: max(8px, env(safe-area-inset-bottom));
     width: auto;
     max-height: min(76vh, 620px);
-    border-radius: 18px;
+    border-radius: var(--radius-lg);
     padding: 14px;
   }
 
@@ -423,7 +423,7 @@ html:not([data-compact-controls="1"]) .filters {
   width: min(330px, calc(100vw - 28px));
   padding: 14px;
   border: 1px solid rgba(255,255,255,.11);
-  border-radius: 16px;
+  border-radius: var(--radius);
   background: rgba(18,9,26,.985);
   box-shadow: 0 28px 80px rgba(0,0,0,.52);
   backdrop-filter: blur(24px) saturate(150%);
@@ -450,7 +450,7 @@ html:not([data-compact-controls="1"]) .filters {
   width: 100%;
   padding: 8px 11px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: var(--text);
   background: rgba(255,255,255,.025);
   font: inherit;
@@ -498,6 +498,6 @@ html[data-theme="light"] .sort-panel {
     bottom: max(8px, env(safe-area-inset-bottom));
     width: auto;
     padding: 14px;
-    border-radius: 18px;
+    border-radius: var(--radius-lg);
   }
 }
