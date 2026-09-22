@@ -772,6 +772,20 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
   });
 }));
 
+app.post('/api/igdb/catalog-batch', asyncRoute(async (req, res) => {
+  if (!providers.igdb?.catalogBatch) return res.status(503).json({ error: 'IGDB is not configured' });
+  const ids = Array.isArray(req.body?.ids) ? req.body.ids : [];
+  const numericIds = [...new Set(ids
+    .map(Number)
+    .filter(id => Number.isInteger(id) && id > 0))]
+    .slice(0, 500);
+  if (!numericIds.length) return res.status(400).json({ error: 'Missing ids' });
+  const force = bool(req.query.refresh || req.body?.refresh);
+  const items = await providers.igdb.catalogBatch(numericIds, { force });
+  res.setHeader('Cache-Control', 'private, max-age=300');
+  res.json({ count: items.length, items });
+}));
+
 app.get('/api/search', asyncRoute(async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 120);
   if (!q) return res.status(400).json({ error: 'Missing q' });
