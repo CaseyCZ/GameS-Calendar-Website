@@ -310,7 +310,11 @@ function compareRatingRows(a, b, direction = 'desc') {
   if (ar == null && br == null) return 0;
   if (ar == null) return 1;
   if (br == null) return -1;
-  return direction === 'asc' ? ar - br : br - ar;
+  const score = direction === 'asc' ? ar - br : br - ar;
+  if (score) return score;
+  const ac = Number(a?.game?.ratingCount || 0);
+  const bc = Number(b?.game?.ratingCount || 0);
+  return bc - ac;
 }
 
 function sortRows(items, sort, search = '') {
@@ -348,7 +352,9 @@ function sortRows(items, sort, search = '') {
 }
 
 function searchCardKey(row) {
-  return normalizeSearch(row?.game?.name) || String(row?.game?.id || '');
+  const game = row?.game || {};
+  if (game.igdbId) return `igdb:${game.igdbId}`;
+  return `id:${String(game.id || '')}`;
 }
 
 function searchReleaseKey(row) {
