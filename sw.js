@@ -5,7 +5,10 @@ const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
   './',
   './index.html',
+  './tokens.css',
   './styles.css',
+  './components.css',
+  './icons.css',
   './detail-polish.css',
   './layout-fixes.css',
   './compact-controls.css',
@@ -27,8 +30,10 @@ const SHELL = [
   './watchlist-view-fix.js',
   './themes.js',
   './js/app.js',
+  './js/api.js',
   './js/data.js',
   './js/calendar.js',
+  './js/icons.js',
   './js/ui.js',
   './manifest.webmanifest',
   './pwa-desktop.png',
@@ -59,7 +64,10 @@ self.addEventListener('fetch', event => {
   // API data must stay fresh and must never enter the static shell cache.
   if (url.pathname.startsWith('/games-api/') || url.pathname.startsWith('/api/') || url.pathname === '/games-health') return;
 
-  if (url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json')) {
+  if (
+    url.pathname.endsWith('/games.json') || url.pathname.endsWith('games.json')
+    || url.pathname.endsWith('/games-index.json') || url.pathname.endsWith('games-index.json')
+  ) {
     event.respondWith(networkFirst(request));
     return;
   }
