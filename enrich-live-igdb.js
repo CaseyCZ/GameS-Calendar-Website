@@ -156,7 +156,7 @@ function catalogGame(item, range) {
   const steamId = String(item.externalIds?.steam || item.rawHints?.externalIds?.steam || '');
   const now = new Date().toISOString();
   return {
-    id: Number(item.providerId) || `igdb-${item.providerId}`,
+    id: `igdb-${item.providerId}`,
     igdbId: String(item.providerId || ''),
     name: item.title || 'Unknown game',
     slug: slugFromItem(item),
@@ -228,22 +228,45 @@ function mergeGame(game, item, range) {
   };
 }
 
+function monthWindows(from, to) {
+  const windows = [];
+  const cursor = new Date(`${from.slice(0, 7)}-01T00:00:00Z`);
+  const end = new Date(`${to.slice(0, 7)}-01T00:00:00Z`);
+  while (cursor <= end) {
+    const year = cursor.getUTCFullYear();
+    const month = cursor.getUTCMonth();
+    const start = `${year}-${pad(month + 1)}-01`;
+    const last = new Date(Date.UTC(year, month + 1, 0));
+    const finish = `${last.getUTCFullYear()}-${pad(last.getUTCMonth() + 1)}-${pad(last.getUTCDate())}`;
+    windows.push({ from:start, to:finish });
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+  return windows;
+}
+
 async function main() {
   const payload = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
   const games = Array.isArray(payload.games) ? payload.games : [];
   const targetRange = rollingCatalogRange();
+  // Fuzzy IGDB dates are represented by a synthetic endpoint (e.g. YYYY -> Dec 31,
+  // Q3 -> Sep 30). Query through the end of the final target year so those entries
+  // can be converted back to their real precision and overlap-tested afterwards.
   const queryRange = {
-    from: `${targetRange.from.slice(0, 4)}-01-01`,
+    from: targetRange.from,
     to: `${targetRange.to.slice(0, 4)}-12-31`
   };
 
   const byId = new Map();
-  for (let offset = 0; offset <= 10000; offset += BATCH_SIZE) {
-    const result = await requestRange(queryRange.from, queryRange.to, offset);
-    const items = result.items || [];
-    for (const item of items) byId.set(String(item.providerId), item);
-    console.log(`Live IGDB range: offset=${offset}, page=${items.length}, unique=${byId.size}`);
-    if (items.length < BATCH_SIZE) break;
+  for (const window of monthWindows(queryRange.from, queryRange.to)) {
+    let bucketCount = 0;
+    for (let offset = 0; offset <= 10000; offset += BATCH_SIZE) {
+      const result = await requestRange(window.from, window.to, offset);
+      const items = result.items || [];
+      bucketCount += items.length;
+      for (const item of items) byId.set(String(item.providerId), item);
+      if (items.length < BATCH_SIZE) break;
+    }
+    console.log(`Live IGDB month: ${window.from.slice(0, 7)} pageRows=${bucketCount} unique=${byId.size}`);
   }
 
   const existingByIgdb = new Map(games.filter(game => game.igdbId).map(game => [String(game.igdbId), game]));
