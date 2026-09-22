@@ -133,6 +133,12 @@ assert.equal(new Set(sameDayRows.map(row => row.key)).size, 2);
 
 
 
+const compactControlsSource = readFileSync(new URL('../compact-controls.js', import.meta.url), 'utf8');
+assert.equal(compactControlsSource.includes("import('./advanced-features.js')"), false);
+
+const advancedSource = readFileSync(new URL('../advanced-features.js', import.meta.url), 'utf8');
+assert.equal(advancedSource.includes("dy >= 88"), false);
+
 const moduleSources = [
   '../compact-controls.js',
   '../advanced-features.js',

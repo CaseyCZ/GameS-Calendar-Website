@@ -723,16 +723,11 @@ function setupGestures() {
     const dx = event.clientX - touchStart.x;
     const dy = event.clientY - touchStart.y;
     const elapsed = performance.now() - touchStart.time;
-    const start = touchStart;
     touchStart = null;
     if (elapsed > 800) return;
 
     if (Math.abs(dx) >= 72 && Math.abs(dx) > Math.abs(dy) * 1.25) {
       navigateDialog(dx < 0 ? 1 : -1);
-      return;
-    }
-    if (dy >= 88 && Math.abs(dy) > Math.abs(dx) * 1.25 && start.scrollTop <= 8) {
-      $('dialog-close')?.click();
     }
   });
 }
