@@ -258,10 +258,61 @@
     return items.length ? items.join(', ') : 'bez předplatného';
   }
 
+  function historyPriceTrend(oldValue, newValue) {
+    const before = oldValue || {};
+    const after = newValue || {};
+    let lower = false;
+    let higher = false;
+    for (const provider of Object.keys(after)) {
+      const oldPrice = Number(before?.[provider]?.current);
+      const newPrice = Number(after?.[provider]?.current);
+      if (!Number.isFinite(oldPrice) || !Number.isFinite(newPrice) || oldPrice === newPrice) continue;
+      if (newPrice < oldPrice) lower = true;
+      if (newPrice > oldPrice) higher = true;
+    }
+    if (lower && !higher) return 'Zlevněno';
+    if (higher && !lower) return 'Zdraženo';
+    return 'Změna ceny';
+  }
+
+  function historySubscriptionChange(oldValue, newValue) {
+    const before = oldValue || {};
+    const after = newValue || {};
+    const services = [
+      ['gamePassConsole', 'Game Pass Console'],
+      ['gamePassPc', 'PC Game Pass'],
+      ['cloudGaming', 'Xbox Cloud Gaming'],
+      ['eaPlay', 'EA Play'],
+      ['psPlus', 'PS Plus'],
+      ['geforceNow', 'GeForce NOW']
+    ];
+    const added = [];
+    const removed = [];
+    for (const [key, label] of services) {
+      if (!before[key] && after[key]) added.push(label);
+      if (before[key] && !after[key]) removed.push(label);
+    }
+
+    const beforeSpecific = before.gamePassConsole || before.gamePassPc || before.cloudGaming;
+    const afterSpecific = after.gamePassConsole || after.gamePassPc || after.cloudGaming;
+    if (!beforeSpecific && !afterSpecific) {
+      if (!before.gamePass && after.gamePass) added.push('Game Pass');
+      if (before.gamePass && !after.gamePass) removed.push('Game Pass');
+    }
+
+    const parts = [];
+    if (added.length) parts.push(`Přidáno: ${added.join(', ')}`);
+    if (removed.length) parts.push(`Odebráno: ${removed.join(', ')}`);
+    return parts.join(' · ');
+  }
+
   function historyText(item) {
     if (item.field === 'releaseDates') return `Změna termínu · ${historyReleaseLabel(item.oldValue)} → ${historyReleaseLabel(item.newValue)}`;
-    if (item.field === 'prices') return `Změna ceny · ${historyPriceSummary(item.oldValue)} → ${historyPriceSummary(item.newValue)}`;
-    if (item.field === 'subscriptions') return `Předplatné · ${historySubscriptionSummary(item.oldValue)} → ${historySubscriptionSummary(item.newValue)}`;
+    if (item.field === 'prices') return `${historyPriceTrend(item.oldValue, item.newValue)} · ${historyPriceSummary(item.oldValue)} → ${historyPriceSummary(item.newValue)}`;
+    if (item.field === 'subscriptions') {
+      const change = historySubscriptionChange(item.oldValue, item.newValue);
+      return change || `Předplatné · ${historySubscriptionSummary(item.oldValue)} → ${historySubscriptionSummary(item.newValue)}`;
+    }
     if (item.field === 'earlyAccess') {
       if (item.oldValue === true && item.newValue === false) return 'Early Access byl ukončen';
       if (item.oldValue === false && item.newValue === true) return 'Hra vstoupila do Early Access';
