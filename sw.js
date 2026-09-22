@@ -31,6 +31,7 @@ const SHELL = [
   './themes.js',
   './js/app.js',
   './js/api.js',
+  './js/search.js',
   './js/data.js',
   './js/calendar.js',
   './js/icons.js',
