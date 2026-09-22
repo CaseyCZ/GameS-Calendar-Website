@@ -27,9 +27,18 @@ const reskinRows = [
   { game:{ id:'cats-ar', name:'100 Cats Argentina', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
   { game:{ id:'cats-gr', name:'100 Cats Greece', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
   { game:{ id:'cats-pk', name:'100 Cats Pakistan', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
-  { game:{ id:'cats-ph', name:'100 Cats Philippines', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
+  { game:{ id:'cats-ph', name:'100 Cats Philippines', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-amsterdam', name:'100 Amsterdam Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-astro', name:'100 Astro Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-barcelona', name:'100 Barcelona Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
 ];
 assert.equal(collapseDisplayRows(reskinRows).length, 1);
+
+const unrelatedNumericRows = [
+  ...reskinRows.slice(0, 1),
+  { game:{ id:'rooms-100', name:'100 Hidden Rooms', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
+];
+assert.equal(collapseDisplayRows(unrelatedNumericRows).length, 2);
 
 assert.equal(releaseCertaintyRank({ day:'2026-09-25', precision:'day' }), 0);
 assert.equal(releaseCertaintyRank({ precision:'month', window:'September 2026' }), 1);
