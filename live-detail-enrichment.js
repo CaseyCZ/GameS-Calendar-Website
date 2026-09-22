@@ -1,13 +1,11 @@
 import { serviceIcon } from './js/icons.js';
+import { fetchApi } from './js/api.js';
 
 (() => {
   const dialog = document.getElementById('game-dialog');
   const content = document.getElementById('dialog-content');
   if (!dialog || !content || window.__gamesLiveDetailEnrichment) return;
   window.__gamesLiveDetailEnrichment = true;
-
-  const API_ROOT = location.pathname.startsWith('/games/') ? '/games-api' : '';
-  if (!API_ROOT) return;
 
   const cache = new Map();
   let pendingTitle = '';
@@ -376,9 +374,9 @@ import { serviceIcon } from './js/icons.js';
 
   async function addHistory(gameKey) {
     const key = clean(gameKey);
-    if (!key || !API_ROOT || content.querySelector('.detail-history-section')) return;
+    if (!key || content.querySelector('.detail-history-section')) return;
     try {
-      const response = await fetch(`${API_ROOT}/history/${encodeURIComponent(key)}?limit=12`, { headers: { accept: 'application/json' } });
+      const response = await fetchApi(`/history/${encodeURIComponent(key)}?limit=12`, { headers: { accept: 'application/json' } });
       if (!response.ok) return;
       const data = await response.json();
       const items = (data.items || []).map(item => ({ ...item, text: historyText(item) })).filter(item => item.text);
@@ -506,17 +504,11 @@ import { serviceIcon } from './js/icons.js';
       let payload = cache.get(title);
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
-        let response;
-        for (let attempt = 0; attempt < 3; attempt += 1) {
-          response = await fetch(`${API_ROOT}/enrich`, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json', accept: 'application/json' },
-            body: JSON.stringify({ game: { id: currentGameId(), title }, providers })
-          });
-          if (response.ok || ![502, 503, 504].includes(response.status) || attempt === 2) break;
-          await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
-        }
-        if (!response.ok) throw new Error(`API ${response.status}`);
+        const response = await fetchApi('/enrich', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify({ game: { id: currentGameId(), title }, providers })
+        });
         payload = await response.json();
         cache.set(title, payload);
       }
