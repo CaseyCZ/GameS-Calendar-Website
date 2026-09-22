@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-v3.8.2-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.8.2" />
+  <img src="https://img.shields.io/badge/VERSION-v3.9.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
 </p>
 
 <p align="center">
@@ -22,6 +22,13 @@
 ## About
 
 **GameS Calendar** was created as a fast overview of game releases without having to browse several different websites. It lets you search for games, filter releases by platform or period, save favorites and add release dates to your calendar.
+
+## Data quality
+
+- live search uses IGDB and complementary official catalogs beyond the local release list
+- exact dates, announced months, quarters and years are stored separately so approximate windows are not presented as confirmed days
+- the website loads a compact catalog first and full metadata only when a detail view needs it
+- automated quality checks cover catalog structure, duplicates, suspicious release boundaries and search regressions
 
 ## Main features
 
