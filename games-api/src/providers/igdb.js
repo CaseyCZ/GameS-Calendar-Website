@@ -284,6 +284,37 @@ export async function product(id, { force = false } = {}) {
   return cachePut(key, 'igdb', item, config.ttl.igdb || config.ttl.product);
 }
 
+const CATALOG_BATCH_FIELDS = [
+  'id','name','summary','first_release_date',
+  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count',
+  'game_type.type','genres.name','platforms.name','platforms.abbreviation',
+  'alternative_names.name','collections.name','franchises.name',
+  'involved_companies.company.name','involved_companies.developer','involved_companies.publisher',
+  'release_dates.date','release_dates.human','release_dates.m','release_dates.y','release_dates.date_format.format','release_dates.platform.name','release_dates.platform.abbreviation'
+].join(',');
+
+export async function catalogBatch(ids, { force = false } = {}) {
+  const numericIds = [...new Set((ids || [])
+    .map(Number)
+    .filter(id => Number.isInteger(id) && id > 0))]
+    .slice(0, 500);
+  if (!numericIds.length) return [];
+
+  const key = `igdb:catalog-batch:${numericIds.slice().sort((a, b) => a - b).join(',')}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached;
+  }
+
+  const payload = await request(
+    'games',
+    `fields ${CATALOG_BATCH_FIELDS}; where id = (${numericIds.join(',')}); limit ${numericIds.length};`
+  );
+  const items = (payload || []).map(normalizeIgdb).filter(Boolean);
+  cachePut(key, 'igdb', items, config.ttl.igdb || config.ttl.product);
+  return items;
+}
+
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
@@ -337,11 +368,12 @@ export async function searchByWords(query, { force = false, limit = 500 } = {}) 
 
 export const igdbProvider = {
   name: 'igdb',
-  capabilities: ['search','nameSearch','wordSearch','product','metadata','externalIds','releaseDates','media','videos'],
+  capabilities: ['search','nameSearch','wordSearch','product','catalogBatch','metadata','externalIds','releaseDates','media','videos'],
   search,
   searchByName,
   searchByWords,
   product,
+  catalogBatch,
   health: async () => {
     if (!configured()) return { ok: true, configured: false, skipped: true };
     const hits = await search('Halo', { force: true, limit: 1 });
