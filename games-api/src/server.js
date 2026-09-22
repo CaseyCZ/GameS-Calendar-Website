@@ -35,7 +35,16 @@ if (pushEnabled) webpush.setVapidDetails(config.vapidSubject, config.vapidPublic
 app.set('trust proxy', 'loopback');
 app.disable('x-powered-by');
 app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cors());
+const corsOrigins = new Set(config.corsOrigins || []);
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || corsOrigins.has(origin)) return callback(null, true);
+    return callback(null, false);
+  },
+  methods: ['GET','POST','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Accept'],
+  maxAge: 86_400
+}));
 app.use(express.json({ limit: '1mb' }));
 
 const rateBuckets = new Map();
@@ -80,6 +89,7 @@ function expensiveRateLimit(limit = 30) {
 
 app.use('/api/enrich', expensiveRateLimit(30));
 app.use('/api/search', expensiveRateLimit(60));
+app.use('/api/discover', expensiveRateLimit(45));
 app.use('/api/igdb/catalog-batch', expensiveRateLimit(12));
 app.use('/api/igdb/catalog-range', expensiveRateLimit(30));
 
