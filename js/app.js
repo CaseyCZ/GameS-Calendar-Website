@@ -280,6 +280,22 @@ function inActiveRange(row) {
   return to >= state.range.from && from <= state.range.to;
 }
 
+function matchesSearchContext(row, { ignoreGenres = false } = {}) {
+  if (!matchesSearch(row.game, state.search)) return false;
+  if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
+  if (!ignoreGenres && state.genres.size) {
+    const labels = new Set((row.game.genres || []).map(formatGenre));
+    if (![...state.genres].some(genre => labels.has(genre))) return false;
+  }
+  if (state.company?.value) {
+    const source = state.company.type === 'developer' ? row.game.developers : row.game.publishers;
+    if (!(source || []).includes(state.company.value)) return false;
+  }
+  if (state.series && !(row.game.series || []).includes(state.series)) return false;
+  if (state.watchlistOnly && !isWatched(row.game)) return false;
+  return true;
+}
+
 function ratingValue(row) {
   const value = Number(row?.game?.rating || 0);
   return Number.isFinite(value) && value > 0 ? value : null;
@@ -301,7 +317,7 @@ function compareRatingRows(a, b, direction = 'desc') {
 function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
   const filtered = searching
-    ? state.rows.filter(row => matchesSearch(row.game, state.search))
+    ? state.rows.filter(row => matchesSearchContext(row))
     : state.rows.filter(row =>
         matchesBase(row, { includeStatus: !row.onlineResult })
         && (row.onlineResult || inActiveRange(row))
@@ -355,7 +371,7 @@ function renderPlatformFilters() {
 
 function genreCountRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  if (searching) return state.rows.filter(row => matchesSearch(row.game, state.search));
+  if (searching) return state.rows.filter(row => matchesSearchContext(row, { ignoreGenres: true }));
   return state.rows.filter(row => matchesBase(row, { ignoreGenres: true }) && inActiveRange(row));
 }
 
@@ -404,7 +420,7 @@ function monthCounts() {
   const map = new Map();
   const searching = Boolean(normalizeSearch(state.search));
   for (const row of state.rows) {
-    if (searching ? !matchesSearch(row.game, state.search) : !matchesBase(row)) continue;
+    if (searching ? !matchesSearchContext(row) : !matchesBase(row)) continue;
     const from = row.from || row.day || null;
     const to = row.to || row.day || null;
     if (!from || !to || from.slice(0,7) !== to.slice(0,7)) continue;
@@ -543,7 +559,7 @@ async function refreshOnlineSearch(query) {
 
 function statBaseRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  if (searching) return state.rows.filter(row => matchesSearch(row.game, state.search));
+  if (searching) return state.rows.filter(row => matchesSearchContext(row));
   return state.rows.filter(row => matchesBase(row, { includeStatus: false }));
 }
 
