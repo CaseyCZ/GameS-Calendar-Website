@@ -333,12 +333,15 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   if (!search && base.period === 'undated' && row.day) return false;
 
   const today = todayLocal();
-  if (!search && base.status === 'upcoming' && row.day && row.day < today) return false;
-  if (!search && base.status === 'released' && (!row.day || row.day >= today)) return false;
+  const from = row.from || row.day || null;
+  const to = row.to || row.day || null;
+  if (!search && base.status === 'upcoming' && to && to < today) return false;
+  if (!search && base.status === 'released' && (!from || from >= today)) return false;
 
+  if (!search && base.period === 'undated') return !from && !to;
   if (!search && !ignoreRange && base.range) {
-    if (!row.day && (base.precision === 'all' || base.precision === 'day')) return false;
-    if (row.day && (row.day < base.range.from || row.day > base.range.to)) return false;
+    if (!from || !to) return false;
+    if (to < base.range.from || from > base.range.to) return false;
   }
   return true;
 }
@@ -359,8 +362,8 @@ function compareRatingRows(a, b, direction = 'desc') {
 
 function sortRows(items, sort, search = '') {
   return [...items].sort((a, b) => {
-    const ad = a.day || '';
-    const bd = b.day || '';
+    const ad = a.sortDay || a.day || '';
+    const bd = b.sortDay || b.day || '';
     const searching = Boolean(normalizeSearch(search));
 
     if (sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
@@ -536,8 +539,10 @@ function updateMonthCounts(base) {
   const source = rows.filter(row => baseMatches(row, base, { ignoreRange: true }) && matchesSelectedTraits(row.game));
   const counts = new Map();
   for (const row of source) {
-    if (!row.day) continue;
-    const month = row.day.slice(0, 7);
+    const from = row.from || row.day || null;
+    const to = row.to || row.day || null;
+    if (!from || !to || from.slice(0, 7) !== to.slice(0, 7)) continue;
+    const month = from.slice(0, 7);
     if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0 });
     const entry = counts.get(month);
     entry.games.add(normalizeSearch(base.search) ? searchCardKey(row) : String(row.game.id));
