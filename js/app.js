@@ -10,6 +10,7 @@ import {
   todayLocal
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
+import { platformIcon } from './icons.js';
 import {
   MONTHS,
   escapeHtml,
@@ -18,7 +19,6 @@ import {
   formatMonth,
   formatter,
   gameDialogHtml,
-  platformIcon,
   rowCard
 } from './ui.js';
 
@@ -285,7 +285,7 @@ function renderPlatformFilters() {
   const items = PLATFORM_GROUPS.filter(item => available.has(item.key));
   $('platform-filters').innerHTML = items.map(item => `
     <button class="chip chip--platform ${state.platforms.has(item.key) ? 'is-active' : ''}" type="button" data-platform="${escapeHtml(item.key)}" aria-pressed="${state.platforms.has(item.key)}">
-      ${platformIcon(item.key)}<span>${escapeHtml(item.label)}</span>
+      ${platformIcon(item.key, { className:'brand-icon--filter' })}<span>${escapeHtml(item.label)}</span>
     </button>`).join('');
   const sameAsSaved = state.savedPlatforms.size > 0 && state.savedPlatforms.size === state.platforms.size && [...state.savedPlatforms].every(value => state.platforms.has(value));
   $('platform-my').classList.toggle('is-active', sameAsSaved);
