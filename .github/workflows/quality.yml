@@ -1,0 +1,53 @@
+name: Quality checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Validate JavaScript
+        run: npm run check
+
+      - name: Audit catalog quality
+        run: npm run audit-data
+
+      - name: Build compact catalog
+        run: npm run build-index
+
+      - name: Report compact catalog size
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const full = fs.statSync('games.json').size;
+          const compact = fs.statSync('games-index.json').size;
+          const saved = Math.round((1 - compact / full) * 100);
+          console.log(`games.json: ${Math.round(full/1024)} KiB`);
+          console.log(`games-index.json: ${Math.round(compact/1024)} KiB`);
+          console.log(`payload reduction: ${saved}%`);
+          if (compact > 6 * 1024 * 1024) {
+            console.error('Compact catalog is unexpectedly large.');
+            process.exit(1);
+          }
+          NODE
