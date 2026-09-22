@@ -262,7 +262,7 @@ function matchesBase(row, { includeStatus = true, ignoreGenres = false } = {}) {
     const from = row.from || row.day || null;
     const to = row.to || row.day || null;
     if (state.status === 'upcoming' && to && to < today) return false;
-    if (state.status === 'released' && (!from || from >= today)) return false;
+    if (state.status === 'released' && (!to || to >= today)) return false;
   }
   return true;
 }
