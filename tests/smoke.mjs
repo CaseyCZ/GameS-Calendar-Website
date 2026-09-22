@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { collapseDisplayRows, collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
+import { collapseDisplayRows, collapseGameRows, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
@@ -45,6 +45,12 @@ assert.equal(releaseCertaintyRank({ precision:'month', window:'September 2026' }
 assert.equal(releaseCertaintyRank({ precision:'q4', window:'Q4 2026' }), 2);
 assert.equal(releaseCertaintyRank({ precision:'year', window:'2026' }), 3);
 assert.equal(releaseCertaintyRank({ precision:'unknown', window:'TBA' }), 4);
+
+const septemberRange = { from:'2026-09-01', to:'2026-09-30' };
+assert.equal(matchesReleaseRange({ day:'2026-09-18', precision:'day', from:'2026-09-18', to:'2026-09-18' }, septemberRange, 'month'), true);
+assert.equal(matchesReleaseRange({ precision:'month', window:'September 2026', from:'2026-09-01', to:'2026-09-30' }, septemberRange, 'month'), true);
+assert.equal(matchesReleaseRange({ precision:'q3', window:'Q3 2026', from:'2026-07-01', to:'2026-09-30' }, septemberRange, 'month'), false);
+assert.equal(matchesReleaseRange({ precision:'year', window:'2026', from:'2026-01-01', to:'2026-12-31' }, septemberRange, 'month'), false);
 
 assert.deepEqual(releaseBounds({ precision:'year', window:'2027' }), {
   from:'2027-01-01', to:'2027-12-31', sortDay:'2027-07-01'
