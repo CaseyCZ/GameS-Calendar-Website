@@ -59,8 +59,8 @@
         <div class="sort-options">
           <button type="button" class="sort-option" data-sort-value="name-asc"><span>Název</span><strong>A–Z</strong></button>
           <button type="button" class="sort-option" data-sort-value="name-desc"><span>Název</span><strong>Z–A</strong></button>
-          <button type="button" class="sort-option" data-sort-value="date-desc"><span>Rok vydání</span><strong>Nejnovější</strong></button>
-          <button type="button" class="sort-option" data-sort-value="date-asc"><span>Rok vydání</span><strong>Nejstarší</strong></button>
+          <button type="button" class="sort-option" data-sort-value="date-desc"><span>Termín vydání</span><strong>Nejnovější</strong></button>
+          <button type="button" class="sort-option" data-sort-value="date-asc"><span>Termín vydání</span><strong>Nejbližší</strong></button>
           <button type="button" class="sort-option" data-sort-value="rating-desc"><span>Hodnocení</span><strong>Nejvyšší</strong></button>
           <button type="button" class="sort-option" data-sort-value="rating-asc"><span>Hodnocení</span><strong>Nejnižší</strong></button>
         </div>
@@ -302,5 +302,4 @@
 
   setup();
   import('./advanced-features.js').catch(error => console.warn('Advanced features:', error));
-  import('./watchlist-view-fix.js').catch(error => console.warn('Watchlist view fix:', error));
 })();
