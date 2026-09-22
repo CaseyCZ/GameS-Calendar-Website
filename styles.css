@@ -45,22 +45,7 @@ img { max-width: 100%; }
 .stat-pill--watch strong { color: var(--green); }
 
 .topbar__actions { display: flex; justify-content: flex-end; align-items: center; gap: 7px; }
-.icon-btn, .primary-btn, .secondary-btn, .chip, .control {
-  border: 1px solid var(--border);
-  color: var(--text);
-  background: var(--surface-soft);
-  transition: border-color .15s ease, background .15s ease, transform .15s ease, box-shadow .15s ease;
-}
-.icon-btn:hover, .secondary-btn:hover, .chip:hover, .control:hover { border-color: rgba(255,71,155,.48); background: rgba(255,71,155,.07); }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
-.icon-btn { width: 38px; height: 38px; border-radius: var(--radius-sm); display: inline-grid; place-items: center; padding: 0; }
-.icon-btn svg, .primary-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.icon-btn--small { width: 34px; height: 34px; border-radius: 9px; font-size: 18px; }
-.icon-btn.is-active { color: var(--pink); background: var(--pink-soft); border-color: var(--border-strong); }
-.primary-btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: var(--radius-sm); padding: 8px 13px; color: white; font-weight: 700; background: linear-gradient(105deg, #ff479b, #c065f2); box-shadow: 0 8px 24px rgba(255,71,155,.18); }
-.primary-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(255,71,155,.28); }
-.secondary-btn { min-height: 40px; border-radius: var(--radius-sm); padding: 8px 14px; font-weight: 650; }
-
 .search-popover { padding-bottom: 10px; }
 .search-field { display: flex; align-items: center; gap: 9px; width: min(600px, 100%); margin-left: auto; padding: 0 12px; background: var(--input); border: 1px solid var(--border-strong); border-radius: 11px; box-shadow: var(--shadow); }
 .search-field svg { width: 17px; height: 17px; fill: none; stroke: var(--muted); stroke-width: 2; }
@@ -71,14 +56,6 @@ kbd { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; col
 .filters-wrap { border-top: 1px solid rgba(255,255,255,.045); }
 .filters { min-height: 52px; display: flex; align-items: center; gap: 7px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; padding-block: 8px; }
 .platforms { display: flex; align-items: center; gap: 5px; flex: none; }
-.chip { min-height: 34px; display: inline-flex; align-items: center; gap: 6px; border-radius: 9px; padding: 6px 10px; white-space: nowrap; font-size: 12px; }
-.chip svg { width: 15px; height: 15px; }
-.chip.is-active { background: var(--pink); border-color: var(--pink); color: white; box-shadow: 0 5px 18px rgba(255,71,155,.2); }
-.chip--platform.is-active { background: rgba(255,71,155,.17); border-color: rgba(255,71,155,.48); }
-.chip--reset { color: var(--muted); }
-.control { min-height: 34px; max-width: 160px; border-radius: 9px; padding: 6px 28px 6px 9px; background-color: var(--input); color: var(--text); white-space: nowrap; }
-.control--month { width: 115px; }
-.control--year { width: 78px; }
 .period-control { display: flex; align-items: center; gap: 4px; flex: none; }
 
 .main { padding-block: 20px 42px; }
