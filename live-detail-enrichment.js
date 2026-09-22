@@ -214,10 +214,44 @@
     if (current.length < 110 || /\bje videohra\b/i.test(current)) summary.textContent = text.length > 850 ? `${text.slice(0, 847)}…` : text;
   }
 
+  function historyReleaseLabel(value) {
+    const items = Array.isArray(value) ? value : value?.releases;
+    if (!Array.isArray(items) || !items.length) return 'bez oznámeného termínu';
+    const first = items[0] || {};
+    if (first.day) return new Date(`${first.day}T12:00:00Z`).toLocaleDateString('cs-CZ', { day:'numeric', month:'short', year:'numeric', timeZone:'UTC' });
+    return first.window || 'bez oznámeného termínu';
+  }
+
+  function historyPriceSummary(value) {
+    const entries = Object.entries(value || {}).filter(([, price]) => price && (price.currentText || price.current != null));
+    if (!entries.length) return 'bez ceny';
+    return entries.map(([provider, price]) => {
+      const label = provider === 'microsoft' ? 'Xbox' : provider === 'playstation' ? 'PlayStation' : provider === 'nintendo' ? 'Nintendo' : provider === 'steam' ? 'Steam' : provider;
+      const text = clean(price.currentText);
+      if (text) return `${label}: ${text}`;
+      const current = Number(price.current);
+      const currency = clean(price.currency).toUpperCase();
+      return Number.isFinite(current) ? `${label}: ${current}${currency ? ` ${currency}` : ''}` : label;
+    }).join(' · ');
+  }
+
+  function historySubscriptionSummary(value) {
+    const s = value || {};
+    const items = [];
+    if (s.gamePassConsole) items.push('Game Pass Console');
+    if (s.gamePassPc) items.push('PC Game Pass');
+    if (s.cloudGaming) items.push('Xbox Cloud Gaming');
+    if (s.gamePass && !s.gamePassConsole && !s.gamePassPc) items.push('Game Pass');
+    if (s.psPlus) items.push('PS Plus');
+    if (s.geforceNow) items.push('GeForce NOW');
+    if (s.eaPlay) items.push('EA Play');
+    return items.length ? items.join(', ') : 'bez předplatného';
+  }
+
   function historyText(item) {
-    if (item.field === 'releaseDates') return 'Změna termínu vydání';
-    if (item.field === 'prices') return 'Změna ceny';
-    if (item.field === 'subscriptions') return 'Změna předplatného';
+    if (item.field === 'releaseDates') return `Změna termínu · ${historyReleaseLabel(item.oldValue)} → ${historyReleaseLabel(item.newValue)}`;
+    if (item.field === 'prices') return `Změna ceny · ${historyPriceSummary(item.oldValue)} → ${historyPriceSummary(item.newValue)}`;
+    if (item.field === 'subscriptions') return `Předplatné · ${historySubscriptionSummary(item.oldValue)} → ${historySubscriptionSummary(item.newValue)}`;
     if (item.field === 'earlyAccess') {
       if (item.oldValue === true && item.newValue === false) return 'Early Access byl ukončen';
       if (item.oldValue === false && item.newValue === true) return 'Hra vstoupila do Early Access';
