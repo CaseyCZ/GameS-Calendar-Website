@@ -17,6 +17,14 @@ const duplicateReleaseRows = [
 ];
 assert.equal(collapseGameRows(duplicateReleaseRows).length, 1);
 
+const multiPlatformRows = [
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PlayStation 5', abbreviation:'PS5', group:'PS5' }], platformGroups:['PS5'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-11-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] }
+];
+const collapsedPlatformGame = collapseDisplayRows(multiPlatformRows, (current, candidate) => current.day <= candidate.day ? current : candidate)[0];
+assert.equal(collapsedPlatformGame.platforms.length, 2);
+assert.deepEqual(new Set(collapsedPlatformGame.platformGroups), new Set(['PS5','PC']));
+
 const distinctSameTitleRows = [
   { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
   { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
