@@ -99,12 +99,29 @@ export function displayFamilyKey(row = {}) {
 
 export function collapseDisplayRows(rows = [], prefer = current => current) {
   const unique = new Map();
+  const mergedPlatforms = new Map();
+  const mergedGroups = new Map();
+
   for (const row of rows || []) {
     const key = displayFamilyKey(row);
     const current = unique.get(key);
     unique.set(key, current ? prefer(current, row) : row);
+
+    if (!mergedPlatforms.has(key)) mergedPlatforms.set(key, new Map());
+    for (const platform of row?.platforms || []) {
+      const platformKey = String(platform?.group || platform?.abbreviation || platform?.name || platform || '').trim();
+      if (platformKey && !mergedPlatforms.get(key).has(platformKey)) mergedPlatforms.get(key).set(platformKey, platform);
+    }
+
+    if (!mergedGroups.has(key)) mergedGroups.set(key, new Set());
+    for (const group of row?.platformGroups || []) if (group) mergedGroups.get(key).add(group);
   }
-  return [...unique.values()];
+
+  return [...unique.entries()].map(([key, row]) => ({
+    ...row,
+    platforms: mergedPlatforms.get(key)?.size ? [...mergedPlatforms.get(key).values()] : (row?.platforms || []),
+    platformGroups: mergedGroups.get(key)?.size ? [...mergedGroups.get(key)] : (row?.platformGroups || [])
+  }));
 }
 
 export function matchesReleaseRange(row = {}, range = null, period = 'all') {
