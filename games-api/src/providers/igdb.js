@@ -161,11 +161,27 @@ function companyLists(items = []) {
 }
 
 function releasePrecision(item = {}) {
-  const format = String(item?.date_format?.format || item?.human || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (/YYYYQ[1-4]|\bQ[1-4]\b/.test(format)) return `q${(format.match(/Q([1-4])/) || [])[1] || ''}`;
-  if (format === 'YYYY' || /^\d{4}$/.test(String(item?.human || '').trim())) return 'year';
-  if (format.includes('YYYYMMMM') && !format.includes('DD')) return 'month';
-  if (format.includes('TBD')) return 'unknown';
+  const human = String(item?.human || '').trim();
+  const rawFormat = String(item?.date_format?.format || '').trim().toUpperCase();
+  const format = rawFormat.replace(/[^A-Z0-9]/g, '');
+  const humanUpper = human.toUpperCase();
+
+  const quarter = (format.match(/Q([1-4])/) || humanUpper.match(/\bQ([1-4])\b/))?.[1];
+  if (quarter) return `q${quarter}`;
+
+  if (format.includes('TBD') || /\b(TBD|TBA|TO BE ANNOUNCED)\b/i.test(human)) return 'unknown';
+  if (format === 'YYYY' || /^\d{4}$/.test(human)) return 'year';
+
+  const hasYear = format.includes('YYYY') || Boolean(item?.y);
+  const hasMonth = format.includes('MMMM') || format.includes('MMM') || format.includes('MM') || Boolean(item?.m);
+  const hasDay = format.includes('DD');
+  if (hasYear && hasMonth && !hasDay) return 'month';
+
+  if (/\b(?:JAN(?:UARY)?|FEB(?:RUARY)?|MAR(?:CH)?|APR(?:IL)?|MAY|JUN(?:E)?|JUL(?:Y)?|AUG(?:UST)?|SEP(?:T(?:EMBER)?)?|OCT(?:OBER)?|NOV(?:EMBER)?|DEC(?:EMBER)?)\b/i.test(human)
+      && /\b20\d{2}\b/.test(human)
+      && !/\b\d{1,2}[,./ -]/.test(human)) return 'month';
+
+  if (hasDay && item?.date) return 'day';
   return item?.date ? 'day' : 'unknown';
 }
 
