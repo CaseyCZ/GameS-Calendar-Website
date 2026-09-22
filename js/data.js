@@ -13,7 +13,7 @@ const LIVE_CATALOG_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog?
 const LIVE_DETAIL_URLS = LIVE_API_ROOTS.map(root => `${root}/catalog/game`);
 const LIVE_DISCOVER_URLS = LIVE_API_ROOTS.map(root => `${root}/discover`);
 const LIVE_CATALOG_META_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog-meta`;
-const STATIC_CATALOG_URL = 'games-index.json';
+const STATIC_CATALOG_URLS = ['games-index.json', 'games.json'];
 const STATIC_DETAIL_URL = 'games.json';
 
 let sharedLoadPromise = null;
@@ -474,11 +474,11 @@ async function fetchPayload() {
   }
 
   try {
-    const payload = await fetchJson(STATIC_CATALOG_URL);
+    const payload = await fetchFirstJson(STATIC_CATALOG_URLS);
     await writeCache(payload);
-    return { payload, source: 'compact-index', liveError };
+    return { payload, source: payload?.compact ? 'compact-index' : 'games-json', liveError };
   } catch (fallbackError) {
-    throw new Error(`Živé API i kompaktní katalog selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
+    throw new Error(`Živé API i statický katalog selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
   }
 }
 
