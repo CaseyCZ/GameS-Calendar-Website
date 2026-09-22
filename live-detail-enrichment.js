@@ -1,3 +1,5 @@
+import { serviceIcon } from './js/icons.js';
+
 (() => {
   const dialog = document.getElementById('game-dialog');
   const content = document.getElementById('dialog-content');
@@ -115,7 +117,8 @@
       if ([...wrap.querySelectorAll('.service-badge')].some(node => clean(node.textContent) === label)) continue;
       const badge = document.createElement('span');
       badge.className = `service-badge service-badge--${kind}`;
-      badge.textContent = label;
+      badge.innerHTML = `${serviceIcon(kind, { className:'brand-icon--service' })}<span></span>`;
+      badge.querySelector('span:last-child').textContent = label;
       wrap.appendChild(badge);
     }
   }
