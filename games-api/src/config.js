@@ -32,6 +32,12 @@ export const config = Object.freeze({
   vapidSubject: String(process.env.VAPID_SUBJECT || 'https://caseycz.github.io/GameS-Calendar-Website/').trim(),
   pushIntervalMs: Math.max(60_000, num(process.env.PUSH_INTERVAL_MS, 15 * 60_000)),
   rateLimitPerMinute: Math.max(30, num(process.env.GAMES_API_RATE_LIMIT_PER_MINUTE, 180)),
+  corsOrigins: Object.freeze(
+    String(process.env.GAMES_API_CORS_ORIGINS || 'https://caseycz.github.io,https://130.61.49.108,https://130.61.49.108:8443,http://localhost,http://127.0.0.1')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean)
+  ),
   userAgent: `GameS-Calendar-API/${version} (+https://github.com/CaseyCZ/GameS-Calendar-Website)`,
   ttl: Object.freeze({
     search: 30 * 60_000,
