@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERZE-v3.10.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.10.0" />
+  <img src="https://img.shields.io/badge/VERZE-v3.11.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS verze 3.11.0" />
 </p>
 
 <p align="center">
@@ -37,6 +37,14 @@
 - katalog se lehce obnovuje denně z IGDB; hlubší obohacení metadat běží samostatně a všechny workflow zapisující katalog jsou serializované
 - release záznam nese vlastní přesnost (`day / month / q1–q4 / year / unknown`) a původ této přesnosti, aby orientační termíny nebyly prezentované jako potvrzené datum
 - CI spouští syntax check, regresní smoke testy, datový audit a kontrolu velikosti kompaktního katalogu
+
+### Audit 3.11
+
+- vyhledávání respektuje aktivní platformy, žánry, studio, sérii a sledované hry i při globálním IGDB hledání
+- opravené rozlišení PS4 / PS5 / Xbox Series / Xbox One / Xbox 360 včetně názvu IGDB `Series X|S`
+- kompaktní katalog používá sparse schéma a má výkonový limit 3,2 MiB; prázdná/defaultní pole už se neposílají
+- mobilní ovládání má větší dotykové cíle a čitelnější malé texty
+- writer workflow jsou oddělené podle odpovědnosti a každý zápis dat prochází regresními a datovými kontrolami
 
 ## Hlavní funkce
 
