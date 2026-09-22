@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-v3.10.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
+  <img src="https://img.shields.io/badge/VERSION-v3.11.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.11.0" />
 </p>
 
 <p align="center">
@@ -37,6 +37,14 @@
 - the rolling catalog is refreshed daily from IGDB, while deeper metadata enrichment runs separately; all catalog-writer workflows are serialized
 - each release preserves its precision (`day / month / q1–q4 / year / unknown`) and precision provenance so approximate windows are never presented as confirmed dates
 - CI runs syntax validation, regression smoke tests, catalog data-quality checks and compact-payload size checks
+
+### Audit 3.11
+
+- global IGDB search respects active platform, genre, company, series and watchlist filters
+- corrected PS4 / PS5 / Xbox Series / Xbox One / Xbox 360 grouping, including IGDB's `Series X|S` label
+- the compact catalog uses a sparse schema with a 3.2 MiB performance budget instead of shipping empty/default fields
+- touch targets and small mobile text were improved for readability and accessibility
+- catalog-writer workflows have distinct responsibilities and every data write passes regression and data-quality gates
 
 ## Main features
 
