@@ -214,12 +214,30 @@
     if (current.length < 110 || /\bje videohra\b/i.test(current)) summary.textContent = text.length > 850 ? `${text.slice(0, 847)}…` : text;
   }
 
+  function improveStoreLinks(providers) {
+    const exactLinks = {
+      steam: providers?.steam?.storeUrl,
+      xbox: providers?.microsoft?.storeUrl,
+      playstation: providers?.playstation?.storeUrl,
+      nintendo: providers?.nintendo?.storeUrl
+    };
+    for (const [kind, rawUrl] of Object.entries(exactLinks)) {
+      const url = safeUrl(rawUrl);
+      if (!url) continue;
+      const link = content.querySelector(`.store-link--${kind}`);
+      if (!link) continue;
+      link.href = url;
+      link.dataset.exactStoreLink = 'true';
+    }
+  }
+
   function applyLiveData(title, payload) {
     const result = payload?.results?.[0];
     if (!result) throw new Error('API nevrátilo detail hry');
     const providers = result.providers || {};
     const merged = result.merged || {};
     addSubscriptions(merged, providers);
+    improveStoreLinks(providers);
     addTrailer(merged, providers);
     addScreenshots(merged, title);
     improveSummary(merged);
