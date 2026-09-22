@@ -91,7 +91,7 @@ app.use('/api/enrich', expensiveRateLimit(30));
 app.use('/api/search', expensiveRateLimit(60));
 app.use('/api/discover', expensiveRateLimit(45));
 app.use('/api/igdb/catalog-batch', expensiveRateLimit(12));
-app.use('/api/igdb/catalog-range', expensiveRateLimit(30));
+app.use('/api/igdb/catalog-range', expensiveRateLimit(90));
 
 const asyncRoute = handler => async (req, res, next) => {
   try { await handler(req, res, next); }
