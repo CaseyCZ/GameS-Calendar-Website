@@ -37,6 +37,10 @@ const calendarRows = collapseCalendarRows([
 assert.equal(calendarRows.length, 2);
 assert.equal(calendarRows.find(row => row.day === '2026-10-01').platforms.length, 2);
 
+assert.notEqual(releaseRecordKey(multiPlatformRows[0]), releaseRecordKey(multiPlatformRows[1]));
+const duplicatePs5Record = { ...multiPlatformRows[0], onlineResult:true };
+assert.equal(releaseRecordKey(multiPlatformRows[0]), releaseRecordKey(duplicatePs5Record));
+
 const distinctSameTitleRows = [
   { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
   { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
