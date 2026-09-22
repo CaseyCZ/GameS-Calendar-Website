@@ -86,6 +86,7 @@ const state = {
 };
 
 let onlineSearchSequence = 0;
+let onlineSearchAbortController = null;
 let calendarFeedMode = 'watch';
 
 const isWatched = game => state.watchlist.has(gameId(game));
@@ -497,6 +498,8 @@ function makeOnlineRows(games) {
 
 async function refreshOnlineSearch(query) {
   const sequence = ++onlineSearchSequence;
+  onlineSearchAbortController?.abort();
+  onlineSearchAbortController = null;
   const value = String(query || '').trim();
   state.onlineRows = [];
   state.rows = state.catalogRows;
@@ -507,14 +510,16 @@ async function refreshOnlineSearch(query) {
     return;
   }
   state.onlineSearchLoading = true;
+  onlineSearchAbortController = new AbortController();
+  const { signal } = onlineSearchAbortController;
   renderGames({ resetLimit: true });
   try {
-    const games = await searchOnlineGames(value);
+    const games = await searchOnlineGames(value, { signal });
     if (sequence !== onlineSearchSequence || value !== state.search) return;
     state.onlineRows = makeOnlineRows(games);
     state.rows = [...state.catalogRows, ...state.onlineRows];
   } catch (error) {
-    if (sequence === onlineSearchSequence) console.warn('Online hledání:', error);
+    if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) console.warn('Online hledání:', error);
   } finally {
     if (sequence === onlineSearchSequence) {
       state.onlineSearchLoading = false;
