@@ -11,7 +11,7 @@ import {
 } from './data.js';
 import { downloadIcs, googleCalendarUrl } from './calendar.js';
 import { apiUrl, fetchApi } from './api.js';
-import { collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, searchRelevance } from './search.js';
+import { collapseDisplayRows, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from './search.js';
 import { platformIcon } from './icons.js';
 import {
   MONTHS,
@@ -144,7 +144,7 @@ function preferSearchRow(current, candidate) {
 }
 
 function collapseSearchRows(rows) {
-  return collapseGameRows(rows, preferSearchRow);
+  return collapseDisplayRows(rows, preferSearchRow);
 }
 
 function uniqueGameCount(rows, { byTitle = false } = {}) {
@@ -340,6 +340,8 @@ function filterRows() {
       return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     }
 
+    const certainty = releaseCertaintyRank(a) - releaseCertaintyRank(b);
+    if (certainty) return certainty;
     if (!ad && bd) return 1;
     if (ad && !bd) return -1;
     if (ad !== bd) return state.sort === 'date-desc' ? bd.localeCompare(ad) : ad.localeCompare(bd);
