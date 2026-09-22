@@ -636,7 +636,7 @@ function discoveryScore(query, game) {
 
 app.get('/api/discover', asyncRoute(async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 100);
-  if (q.length < 3) return res.status(400).json({ error: 'Search must have at least 3 characters' });
+  if (q.length < 2) return res.status(400).json({ error: 'Search must have at least 2 characters' });
 
   const limit = limitOf(req.query.limit, 500, 500);
   const providerLimit = Math.min(20, Math.max(8, limit));
@@ -658,7 +658,8 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
   if (providers.igdb) {
     searches.push(
       ['igdb', providers.igdb.search(q, { limit: providerLimit })],
-      ['igdb-name', providers.igdb.searchByName(q, { limit: nameSearchLimit })]
+      ['igdb-name', providers.igdb.searchByName(q, { limit: nameSearchLimit })],
+      ['igdb-words', providers.igdb.searchByWords(q, { limit: nameSearchLimit })]
     );
   }
   if (providers.steam) searches.push(['steam', providers.steam.search(q, { limit: providerLimit })]);
@@ -677,7 +678,8 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
 
   const igdbHits = [
     ...(providerHits.get('igdb') || []),
-    ...(providerHits.get('igdb-name') || [])
+    ...(providerHits.get('igdb-name') || []),
+    ...(providerHits.get('igdb-words') || [])
   ].filter((item, index, all) =>
     item?.providerId
     && item?.title
