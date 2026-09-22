@@ -37,12 +37,28 @@ function dedupeGames(games = []) {
   return out;
 }
 
+function compactSubscriptions(source = {}) {
+  const out = {};
+  for (const key of ['gamePass','gamePassConsole','gamePassPc','cloudGaming','psPlus','geforceNow']) {
+    if (source?.[key]) out[key] = true;
+  }
+  return out;
+}
+
+function compactReleases(releases = []) {
+  return releases.map(release => ({
+    date: release.date || release.day || null,
+    platforms: (release.platforms || []).map(platform =>
+      typeof platform === 'string' ? platform : (platform.abbreviation || platform.name || '')
+    ).filter(Boolean),
+    window: release.window || '',
+    precision: release.precision || ((release.date || release.day) ? 'day' : 'unknown'),
+    ...(release.precisionSource ? { precisionSource: release.precisionSource } : {}),
+    ...(release.regions?.length ? { regions: release.regions } : {})
+  }));
+}
+
 function compactGame(game = {}) {
-  const links = {
-    official: game.links?.official || '',
-    steam: game.links?.steam || '',
-    igdb: game.links?.igdb || game.igdbUrl || ''
-  };
   return {
     id: game.id,
     igdbId: game.igdbId || '',
@@ -59,21 +75,12 @@ function compactGame(game = {}) {
     earlyAccess: Boolean(game.earlyAccess),
     rating: Number(game.rating || 0) || 0,
     ratingCount: Number(game.ratingCount || 0) || 0,
-    steamId: game.steamId || '',
     announcedWindow: game.announcedWindow || '',
-    subscriptions: {
-      gamePass: Boolean(game.subscriptions?.gamePass),
-      gamePassConsole: Boolean(game.subscriptions?.gamePassConsole),
-      gamePassPc: Boolean(game.subscriptions?.gamePassPc),
-      cloudGaming: Boolean(game.subscriptions?.cloudGaming),
-      psPlus: Boolean(game.subscriptions?.psPlus),
-      geforceNow: Boolean(game.subscriptions?.geforceNow)
-    },
-    links,
+    subscriptions: compactSubscriptions(game.subscriptions),
     hasDescription: Boolean(String(game.summary || game.storyline || '').trim()),
     hasScreenshots: Boolean((game.screenshots || []).length),
     trailerId: game.trailerId || '',
-    releases: game.releases || []
+    releases: compactReleases(game.releases || [])
   };
 }
 
