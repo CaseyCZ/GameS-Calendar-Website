@@ -13,6 +13,7 @@ if (!games.length) {
 
 const ids = new Map();
 const igdbIds = new Map();
+const normalizedTitles = new Map();
 let releases = 0;
 let invalid = 0;
 let fuzzy = 0;
@@ -43,6 +44,21 @@ for (const game of games) {
   }
   const id = String(game.id || '');
   ids.set(id, (ids.get(id) || 0) + 1);
+  const normalizedTitle = String(game.name || '')
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[™®©]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (normalizedTitle) {
+    const group = normalizedTitles.get(normalizedTitle) || [];
+    group.push({
+      id,
+      igdbId: game.igdbId ? String(game.igdbId) : '',
+      name: String(game.name || ''),
+      contentType: String(game.contentType || ''),
+      releases: (game.releases || []).map(item => String(item.date || item.day || item.window || '')).filter(Boolean)
+    });
+    normalizedTitles.set(normalizedTitle, group);
+  }
   if (game.igdbId) {
     const key = String(game.igdbId);
     igdbIds.set(key, (igdbIds.get(key) || 0) + 1);
@@ -147,6 +163,11 @@ console.log(JSON.stringify(report, null, 2));
 const hardFailures = [];
 if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
 if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
+if (sameTitleGroups.length > Math.max(20, Math.ceil(games.length * 0.005))) {
+  hardFailures.push(`normalizedTitleGroups=${sameTitleGroups.length}`);
+} else if (sameTitleGroups.length) {
+  console.warn(`::warning::${sameTitleGroups.length} normalized title groups need manual identity review`);
+}
 if (missingPrecisionSource > Math.max(100, Math.ceil(releases * 0.03))) hardFailures.push(`missingPrecisionSource=${missingPrecisionSource}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
 if (massPlaceholderDates.length) hardFailures.push(`massPlaceholderDates=${massPlaceholderDates.map(item => `${item.date}:${item.count}`).join(',')}`);
