@@ -21,6 +21,9 @@ let covers = 0;
 let ratings = 0;
 let generated = 0;
 let screenshots = 0;
+let genres = 0;
+let developers = 0;
+let publishers = 0;
 
 for (const game of games) {
   if (!game?.id || !String(game.name || '').trim() || !Array.isArray(game.releases)) invalid += 1;
@@ -33,6 +36,9 @@ for (const game of games) {
   if (game.cover) covers += 1;
   if (Number(game.rating || 0) > 0) ratings += 1;
   if ((game.screenshots || []).length) screenshots += 1;
+  if ((game.genres || []).length) genres += 1;
+  if ((game.developers || []).length) developers += 1;
+  if ((game.publishers || []).length) publishers += 1;
   if (/\b(?:je videohra|je hra z kategorie)\b|\bDatum vydání:\s*\d{1,2}\.\s*\d{1,2}\.\s*20\d{2}/i.test(String(game.summary || ''))) generated += 1;
 
   for (const release of game.releases || []) {
@@ -60,6 +66,9 @@ const report = {
     covers: pct(covers),
     ratings: pct(ratings),
     screenshots: pct(screenshots),
+    genres: pct(genres),
+    developers: pct(developers),
+    publishers: pct(publishers),
     generatedDescriptions: pct(generated)
   },
   releaseQuality: {
@@ -76,11 +85,19 @@ const report = {
 
 console.log(JSON.stringify(report, null, 2));
 
-if (duplicateIgdbIds) console.warn(`::warning::catalog has ${duplicateIgdbIds} duplicated IGDB identities; enrichment will merge them`);
-if (releasePct(boundary) > 15) console.warn(`::warning::${releasePct(boundary)}% of releases are exact quarter/year boundary dates; run IGDB precision repair`);
-if (pct(generated) > 40) console.warn(`::warning::${pct(generated)}% of descriptions are generated fallbacks`);
+const hardFailures = [];
+if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
+if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
+if (invalid) hardFailures.push(`invalid=${invalid}`);
+if (boundary) hardFailures.push(`suspiciousBoundaryDays=${boundary}`);
+if (pct(covers) < 95) hardFailures.push(`coverCoverage=${pct(covers)}%`);
+if (pct(genres) < 90) hardFailures.push(`genreCoverage=${pct(genres)}%`);
 
-if (invalid || duplicateIds) {
-  console.error(`catalog structural validation failed: invalid=${invalid}, duplicateIds=${duplicateIds}`);
+if (pct(generated) > 20) console.warn(`::warning::${pct(generated)}% of descriptions are generated fallbacks`);
+if (pct(developers) < 60) console.warn(`::warning::developer coverage is only ${pct(developers)}%`);
+if (pct(publishers) < 55) console.warn(`::warning::publisher coverage is only ${pct(publishers)}%`);
+
+if (hardFailures.length) {
+  console.error(`catalog quality gate failed: ${hardFailures.join(', ')}`);
   process.exit(1);
 }
