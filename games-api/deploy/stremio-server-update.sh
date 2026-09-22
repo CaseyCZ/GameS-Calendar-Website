@@ -104,6 +104,22 @@ for attempt in {1..15}; do
       echo "GameS search smoke could not query /api/discover"
     fi
 
+    RANGE_FROM="$(date -u +%Y-%m-01)"
+    RANGE_TO="$(date -u -d '+12 months' +%Y-%m-%d)"
+    RANGE_SMOKE="$(curl --fail --silent --show-error --max-time 30 "http://127.0.0.1:8787/api/igdb/catalog-range?from=$RANGE_FROM&to=$RANGE_TO&limit=1" || true)"
+    if [[ -n "$RANGE_SMOKE" ]]; then
+      node -e '
+        try {
+          const payload = JSON.parse(process.argv[1]);
+          console.log("GameS IGDB range smoke | count:", payload.count ?? "?", "| from:", payload.from || "?", "| to:", payload.to || "?");
+        } catch {
+          console.log("GameS IGDB range smoke returned unreadable JSON");
+        }
+      ' "$RANGE_SMOKE"
+    else
+      echo "GameS IGDB range smoke could not query /api/igdb/catalog-range"
+    fi
+
     echo "GameS web files are in $WEB"
     exit 0
   fi
