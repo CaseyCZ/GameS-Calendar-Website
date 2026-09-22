@@ -225,6 +225,7 @@ function catalogGameFromProviders(items = []) {
     platforms: [...release.platforms].map(name => ({ name, abbreviation: name })),
     window: '',
     precision: 'day',
+    precisionSource: 'store-provider-date',
     regions: []
   }));
 
@@ -235,7 +236,7 @@ function catalogGameFromProviders(items = []) {
       platforms: (merged.platforms || []).map(name => ({ name, abbreviation: name })),
       window: 'TBA',
       precision: 'unknown',
-      precisionSource: 'igdb-date-format',
+      precisionSource: 'store-provider-inferred',
       regions: []
     });
   }
@@ -310,6 +311,7 @@ function catalogGameFromIgdb(item) {
       platforms: (item?.platforms || []).map(name => ({ name, abbreviation: name })),
       window: 'TBA',
       precision: 'unknown',
+      precisionSource: 'igdb-inferred',
       regions: []
     });
   }
