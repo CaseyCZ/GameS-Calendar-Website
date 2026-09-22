@@ -316,7 +316,7 @@ export async function catalogBatch(ids, { force = false } = {}) {
     .slice(0, 500);
   if (!numericIds.length) return [];
 
-  const key = `igdb:catalog-batch:${numericIds.slice().sort((a, b) => a - b).join(',')}`;
+  const key = `igdb:catalog-batch:v2:${numericIds.slice().sort((a, b) => a - b).join(',')}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached;
