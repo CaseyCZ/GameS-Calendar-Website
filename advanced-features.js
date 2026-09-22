@@ -289,7 +289,7 @@ function baseMatches(row, base, { ignoreRange = false } = {}) {
   const from = row.from || row.day || null;
   const to = row.to || row.day || null;
   if (!search && base.status === 'upcoming' && to && to < today) return false;
-  if (!search && base.status === 'released' && (!from || from >= today)) return false;
+  if (!search && base.status === 'released' && (!to || to >= today)) return false;
 
   if (!search && base.period === 'undated') return !from && !to;
   if (!search && !ignoreRange && base.range) {
