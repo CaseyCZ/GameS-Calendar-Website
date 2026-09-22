@@ -142,26 +142,53 @@ function mergeGame(a, b) {
   };
 }
 
-function fuzzifySuspicious(release = {}) {
-  const precision = String(release.precision || (release.date || release.day ? 'day' : 'unknown')).toLowerCase();
-  const date = String(release.date || release.day || '');
-  if (precision !== 'day' || !/^20\d{2}-(03-31|06-30|09-30|12-31)$/.test(date)) return release;
-  const year = date.slice(0,4);
-  const mmdd = date.slice(5);
-  let nextPrecision = 'year';
-  let window = year;
-  if (mmdd === '03-31') { nextPrecision = 'q1'; window = `Q1 ${year}`; }
-  if (mmdd === '06-30') { nextPrecision = 'q2'; window = `Q2 ${year}`; }
-  if (mmdd === '09-30') { nextPrecision = 'q3'; window = `Q3 ${year}`; }
-  return { ...release, date:null, day:undefined, timestamp:0, window, precision:nextPrecision };
+function lastDayOfMonth(date) {
+  if (!/^20\d{2}-\d{2}-\d{2}$/.test(date)) return false;
+  const [year, month, day] = date.split('-').map(Number);
+  return day === new Date(Date.UTC(year, month, 0)).getUTCDate();
 }
 
-function repairGame(game) {
-  const checkedAt = Date.parse(game.igdbCheckedAt || '');
-  const authoritativeIgdb = game.igdbStatus === 'matched'
-    && Number.isFinite(checkedAt)
-    && Date.now() - checkedAt < 24 * 60 * 60 * 1000;
-  const releases = mergeReleases((game.releases || []).map(release => authoritativeIgdb ? release : fuzzifySuspicious(release)));
+function placeholderDates(games = []) {
+  const counts = new Map();
+  for (const game of games) {
+    for (const release of game.releases || []) {
+      const precision = String(release.precision || (release.date || release.day ? 'day' : 'unknown')).toLowerCase();
+      const date = String(release.date || release.day || '');
+      if (precision !== 'day' || !/^20\d{2}-\d{2}-\d{2}$/.test(date)) continue;
+      counts.set(date, (counts.get(date) || 0) + 1);
+    }
+  }
+  const threshold = Math.max(25, Math.ceil(games.length * 0.006));
+  return new Set(
+    [...counts.entries()]
+      .filter(([date, count]) => count >= threshold && (date.endsWith('-01') || lastDayOfMonth(date)))
+      .map(([date]) => date)
+  );
+}
+
+function fuzzifySuspicious(release = {}, placeholders = new Set()) {
+  const precision = String(release.precision || (release.date || release.day ? 'day' : 'unknown')).toLowerCase();
+  const date = String(release.date || release.day || '');
+  if (precision !== 'day' || !placeholders.has(date)) return release;
+  if (String(release.precisionSource || '').startsWith('igdb-date-format')) return release;
+
+  const [year, month] = date.split('-');
+  const yearOnly = date.endsWith('-12-31') && Number(month) === 12;
+  const nextPrecision = yearOnly ? 'year' : 'month';
+  const window = yearOnly ? year : `${month}/${year}`;
+  return {
+    ...release,
+    date:null,
+    day:undefined,
+    timestamp:0,
+    window,
+    precision:nextPrecision,
+    precisionSource:'catalog-placeholder-repair'
+  };
+}
+
+function repairGame(game, placeholders) {
+  const releases = mergeReleases((game.releases || []).map(release => fuzzifySuspicious(release, placeholders)));
   const repaired = {
     ...game,
     genres:canonicalGenres(game.genres || []),
@@ -174,7 +201,9 @@ function repairGame(game) {
 
 async function main() {
   const payload = JSON.parse(await fs.readFile(OUTPUT, 'utf8'));
-  const source = (payload.games || []).map(repairGame);
+  const rawGames = payload.games || [];
+  const placeholders = placeholderDates(rawGames);
+  const source = rawGames.map(game => repairGame(game, placeholders));
   const result = [];
   const identity = new Map();
   let merged = 0;
@@ -192,7 +221,7 @@ async function main() {
   payload.games = result;
   payload.generatedAt = new Date().toISOString();
   await fs.writeFile(OUTPUT, `${JSON.stringify(payload, null, 2)}\n`);
-  console.log(`Catalog repair: ${source.length} -> ${result.length} games; merged=${merged}`);
+  console.log(`Catalog repair: ${source.length} -> ${result.length} games; merged=${merged}; placeholderDates=${[...placeholders].sort().join(',') || 'none'}`);
 }
 
 main().catch(error => {
