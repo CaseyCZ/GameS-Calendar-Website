@@ -430,6 +430,7 @@ function renderGames({ resetLimit = false } = {}) {
   state.filtered = filterRows();
   const shown = state.filtered.slice(0, state.limit);
   $('games').dataset.view = state.view;
+  $('games').setAttribute('aria-busy', String(state.onlineSearchLoading));
   $('games').innerHTML = shown.map(row => rowCard(row, isWatched(row.game))).join('');
   $('games').hidden = shown.length === 0;
   $('empty-state').hidden = state.filtered.length !== 0 || state.onlineSearchLoading;
