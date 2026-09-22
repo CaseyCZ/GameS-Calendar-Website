@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
+import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
@@ -99,6 +99,21 @@ const dataset = normalizePayload({
 assert.equal(dataset.games[0].releases[0].day, null);
 assert.equal(dataset.games[0].releases[0].from, '2026-10-01');
 assert.equal(dataset.games[0].releases[0].to, '2026-12-31');
+
+const sameDayDataset = normalizePayload({
+  version:5,
+  games:[{
+    id:'same-day',
+    name:'Same Day Game',
+    releases:[
+      { date:'2026-10-01', platforms:['PS5'] },
+      { date:'2026-10-01', platforms:['PC'] }
+    ]
+  }]
+});
+const sameDayRows = flattenReleases(sameDayDataset);
+assert.equal(sameDayRows.length, 2);
+assert.equal(new Set(sameDayRows.map(row => row.key)).size, 2);
 
 
 

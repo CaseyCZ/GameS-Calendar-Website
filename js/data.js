@@ -337,7 +337,7 @@ export function flattenReleases(dataset) {
     for (let index = 0; index < game.releases.length; index += 1) {
       const release = game.releases[index];
       rows.push({
-        key: `${game.id}:${release.day || `window-${index}`}`,
+        key: `${game.id}:${release.day || 'window'}:${index}`,
         game,
         day: release.day,
         timestamp: release.timestamp,

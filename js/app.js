@@ -516,7 +516,7 @@ function makeOnlineRows(games) {
     releases.forEach((release, releaseOrder) => {
       const platforms = release.platforms || [];
       rows.push({
-        key: `online:${game.id}:${release.day || release.window || releaseOrder}`,
+        key: `online:${game.id}:${release.day || release.window || 'window'}:${releaseOrder}`,
         game,
         day: release.day,
         timestamp: release.timestamp,
@@ -770,6 +770,7 @@ function restoreSeo() {
 function renderGameDialog(row) {
   state.openRowKey = row.key;
   $('game-dialog').dataset.rowKey = row.key;
+  $('game-dialog').dataset.gameId = gameId(row.game);
   $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
   updateQuery();
   updateSeoForGame(row);

@@ -37,13 +37,15 @@ import { fetchApi } from './js/api.js';
   }
 
   function currentGameId() {
+    const dialogId = clean(dialog.dataset.gameId);
+    if (dialogId) return dialogId;
     const queryId = clean(new URLSearchParams(location.search).get('game'));
     if (queryId) return queryId;
     const rowKey = clean(dialog.dataset.rowKey);
     if (!rowKey) return '';
-    if (rowKey.startsWith('online:')) return rowKey.slice('online:'.length);
-    const lastColon = rowKey.lastIndexOf(':');
-    return lastColon > 0 ? rowKey.slice(0, lastColon) : rowKey;
+    if (rowKey.startsWith('online:')) return rowKey.split(':')[1] || '';
+    const firstColon = rowKey.indexOf(':');
+    return firstColon > 0 ? rowKey.slice(0, firstColon) : rowKey;
   }
 
   function platformTexts() {
