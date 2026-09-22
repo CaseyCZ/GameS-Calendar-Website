@@ -30,14 +30,14 @@ jobs:
       - name: Validate JavaScript
         run: npm run check
 
+      - name: Build compact catalog
+        run: npm run build-index
+
       - name: Run regression tests
         run: npm test
 
       - name: Audit catalog quality
         run: npm run audit-data
-
-      - name: Build compact catalog
-        run: npm run build-index
 
       - name: Report compact catalog size
         run: |
@@ -49,8 +49,18 @@ jobs:
           console.log(`games.json: ${Math.round(full/1024)} KiB`);
           console.log(`games-index.json: ${Math.round(compact/1024)} KiB`);
           console.log(`payload reduction: ${saved}%`);
-          if (compact > 6 * 1024 * 1024) {
-            console.error('Compact catalog is unexpectedly large.');
+          const fullPayload = JSON.parse(fs.readFileSync('games.json', 'utf8'));
+          const compactPayload = JSON.parse(fs.readFileSync('games-index.json', 'utf8'));
+          if (!compactPayload.compact || !compactPayload.sparse) {
+            console.error('Compact catalog must use the sparse web schema.');
+            process.exit(1);
+          }
+          if ((compactPayload.games || []).length !== (fullPayload.games || []).length) {
+            console.error('Compact catalog game count does not match the full catalog.');
+            process.exit(1);
+          }
+          if (compact > 3.2 * 1024 * 1024) {
+            console.error('Compact catalog exceeded the 3.2 MiB performance budget.');
             process.exit(1);
           }
           NODE
