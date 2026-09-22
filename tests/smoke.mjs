@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, searchRelevance } from '../js/search.js';
+import { collapseDisplayRows, collapseGameRows, gameIdentity, matchesSearch, normalizeSearch, releaseCertaintyRank, searchRelevance } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
@@ -22,6 +22,20 @@ const distinctSameTitleRows = [
   { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
 ];
 assert.equal(collapseGameRows(distinctSameTitleRows).length, 2);
+
+const reskinRows = [
+  { game:{ id:'cats-ar', name:'100 Cats Argentina', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-gr', name:'100 Cats Greece', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-pk', name:'100 Cats Pakistan', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-ph', name:'100 Cats Philippines', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
+];
+assert.equal(collapseDisplayRows(reskinRows).length, 1);
+
+assert.equal(releaseCertaintyRank({ day:'2026-09-25', precision:'day' }), 0);
+assert.equal(releaseCertaintyRank({ precision:'month', window:'September 2026' }), 1);
+assert.equal(releaseCertaintyRank({ precision:'q4', window:'Q4 2026' }), 2);
+assert.equal(releaseCertaintyRank({ precision:'year', window:'2026' }), 3);
+assert.equal(releaseCertaintyRank({ precision:'unknown', window:'TBA' }), 4);
 
 assert.deepEqual(releaseBounds({ precision:'year', window:'2027' }), {
   from:'2027-01-01', to:'2027-12-31', sortDay:'2027-07-01'
