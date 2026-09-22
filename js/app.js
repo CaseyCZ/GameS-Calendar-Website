@@ -260,10 +260,12 @@ function inActiveRange(row) {
 
 function filterRows() {
   const searching = Boolean(normalizeSearch(state.search));
-  const filtered = state.rows.filter(row =>
-    matchesBase(row, { includeStatus: !searching && !row.onlineResult })
-    && (searching || row.onlineResult || inActiveRange(row))
-  );
+  const filtered = searching
+    ? state.rows.filter(row => matchesSearch(row.game, state.search))
+    : state.rows.filter(row =>
+        matchesBase(row, { includeStatus: !row.onlineResult })
+        && (row.onlineResult || inActiveRange(row))
+      );
   const rows = searching
     ? [...new Map(filtered.map(row => [gameId(row.game), row])).values()]
     : filtered;
@@ -374,13 +376,13 @@ function renderGames({ resetLimit = false } = {}) {
   if (!state.filtered.length) $('games').innerHTML = '';
   if (state.onlineSearchLoading && !state.filtered.length) {
     $('empty-state').hidden = false;
-    $('empty-state').querySelector('h2').textContent = 'Hledám také v IGDB…';
-    $('empty-state').querySelector('p').textContent = 'Kontroluji hry, které ještě nejsou v našem seznamu.';
+    $('empty-state').querySelector('h2').textContent = 'Hledám ve všech zdrojích…';
+    $('empty-state').querySelector('p').textContent = 'Kontroluji IGDB, Steam, Xbox, PlayStation a Nintendo.';
     $('empty-reset').hidden = true;
   } else {
     $('empty-state').querySelector('h2').textContent = 'Nic jsme nenašli';
     $('empty-state').querySelector('p').textContent = state.search
-      ? 'Hra není ani v našem seznamu, ani v IGDB.'
+      ? 'Hra není v katalogu ani v připojených herních zdrojích.'
       : 'Zkus jinou platformu, žánr, období nebo název hry.';
     $('empty-reset').hidden = false;
   }
