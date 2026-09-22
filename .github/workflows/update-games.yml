@@ -79,8 +79,8 @@ jobs:
       - name: Commit changed data
         if: github.ref == 'refs/heads/main'
         run: |
-          if git diff --quiet -- games.json games-index.json; then
-            echo "games.json is unchanged"
+          if [[ -z "$(git status --porcelain -- games.json games-index.json)" ]]; then
+            echo "catalog files are unchanged"
             exit 0
           fi
           git config user.name "github-actions[bot]"
