@@ -1,5 +1,5 @@
 importScripts('./version.js');
-const VERSION = `games-calendar-v${globalThis.GAMES_APP_VERSION || '3.8.1'}`;
+const VERSION = `games-calendar-v${globalThis.GAMES_APP_VERSION || '3.9.1'}`;
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [
@@ -24,10 +24,8 @@ const SHELL = [
   './release-tracker.js',
   './badge-filter-controls.js',
   './filter-section-accordion.js',
-  './dynamic-filter-fix.js',
   './detail-gesture-fix.js',
   './live-detail-enrichment.js',
-  './watchlist-view-fix.js',
   './themes.js',
   './js/app.js',
   './js/api.js',
