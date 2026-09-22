@@ -218,10 +218,29 @@ async function main() {
     result[index] = mergeGame(result[index], game);
     merged += 1;
   }
+  const usedIds = new Set();
+  let rekeyed = 0;
+  for (const game of result) {
+    const original = String(game.id ?? '');
+    if (original && !usedIds.has(original)) {
+      usedIds.add(original);
+      continue;
+    }
+    const base = game.igdbId
+      ? `igdb-${game.igdbId}`
+      : `game-${normalize(game.name) || 'unknown'}`;
+    let candidate = base;
+    let suffix = 2;
+    while (usedIds.has(candidate)) candidate = `${base}-${suffix++}`;
+    game.id = candidate;
+    usedIds.add(candidate);
+    rekeyed += 1;
+  }
+
   payload.games = result;
   payload.generatedAt = new Date().toISOString();
   await fs.writeFile(OUTPUT, `${JSON.stringify(payload, null, 2)}\n`);
-  console.log(`Catalog repair: ${source.length} -> ${result.length} games; merged=${merged}; placeholderDates=${[...placeholders].sort().join(',') || 'none'}`);
+  console.log(`Catalog repair: ${source.length} -> ${result.length} games; merged=${merged}; rekeyed=${rekeyed}; placeholderDates=${[...placeholders].sort().join(',') || 'none'}`);
 }
 
 main().catch(error => {
