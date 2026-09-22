@@ -271,6 +271,16 @@ function filterRows() {
   rows.sort((a, b) => {
     const ad = a.day || '';
     const bd = b.day || '';
+
+    if (searching) {
+      if (!ad && bd) return 1;
+      if (ad && !bd) return -1;
+      if (ad !== bd) return bd.localeCompare(ad);
+      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+      if (relevance) return relevance;
+      return a.game.name.localeCompare(b.game.name, 'cs');
+    }
+
     if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
     if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
     if (!ad && bd) return 1;
