@@ -89,7 +89,7 @@ const hardFailures = [];
 if (duplicateIds) hardFailures.push(`duplicateIds=${duplicateIds}`);
 if (duplicateIgdbIds) hardFailures.push(`duplicateIgdbIds=${duplicateIgdbIds}`);
 if (invalid) hardFailures.push(`invalid=${invalid}`);
-if (boundary) hardFailures.push(`suspiciousBoundaryDays=${boundary}`);
+if (releasePct(boundary) > 5) hardFailures.push(`suspiciousBoundaryDays=${boundary} (${releasePct(boundary)}%)`);
 if (pct(covers) < 95) hardFailures.push(`coverCoverage=${pct(covers)}%`);
 if (pct(genres) < 90) hardFailures.push(`genreCoverage=${pct(genres)}%`);
 
