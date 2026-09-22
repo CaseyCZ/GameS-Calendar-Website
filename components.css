@@ -15,8 +15,8 @@
 .secondary-btn:hover,
 .chip:hover,
 .control:hover {
-  border-color: rgba(255,71,155,.48);
-  background: rgba(255,71,155,.07);
+  border-color: color-mix(in srgb,var(--pink) 48%,transparent);
+  background: color-mix(in srgb,var(--pink) 7%,transparent);
 }
 
 .icon-btn {
@@ -63,13 +63,13 @@
   padding: 8px 13px;
   color: white;
   font-weight: 700;
-  background: linear-gradient(105deg, #ff479b, #c065f2);
-  box-shadow: 0 8px 24px rgba(255,71,155,.18);
+  background: linear-gradient(105deg,var(--pink),var(--purple));
+  box-shadow: 0 8px 24px color-mix(in srgb,var(--pink) 18%,transparent);
 }
 
 .primary-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(255,71,155,.28);
+  box-shadow: 0 10px 30px color-mix(in srgb,var(--pink) 28%,transparent);
 }
 
 .secondary-btn {
@@ -99,12 +99,12 @@
   background: var(--pink);
   border-color: var(--pink);
   color: white;
-  box-shadow: 0 5px 18px rgba(255,71,155,.2);
+  box-shadow: 0 5px 18px color-mix(in srgb,var(--pink) 20%,transparent);
 }
 
 .chip--platform.is-active {
-  background: rgba(255,71,155,.17);
-  border-color: rgba(255,71,155,.48);
+  background: color-mix(in srgb,var(--pink) 17%,transparent);
+  border-color: color-mix(in srgb,var(--pink) 48%,transparent);
 }
 
 .chip--reset {
