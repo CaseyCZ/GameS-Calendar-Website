@@ -398,6 +398,19 @@ function searchCardKey(row) {
   return normalizeSearch(row?.game?.name) || String(row?.game?.id || '');
 }
 
+function searchReleaseKey(row) {
+  return [
+    searchCardKey(row),
+    row?.day || row?.window || '',
+    String(row?.precision || (row?.day ? 'day' : 'unknown')).toLowerCase()
+  ].join('|');
+}
+
+function uniqueReleaseCount(items, search = '') {
+  if (!normalizeSearch(search)) return items.length;
+  return new Set(items.map(searchReleaseKey)).size;
+}
+
 function preferSearchCard(current, candidate) {
   if (!current) return candidate;
 
@@ -543,10 +556,16 @@ function updateMonthCounts(base) {
     const to = row.to || row.day || null;
     if (!from || !to || from.slice(0, 7) !== to.slice(0, 7)) continue;
     const month = from.slice(0, 7);
-    if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0 });
+    if (!counts.has(month)) counts.set(month, { games: new Set(), releases: 0, releaseKeys: new Set() });
     const entry = counts.get(month);
-    entry.games.add(normalizeSearch(base.search) ? searchCardKey(row) : String(row.game.id));
-    entry.releases += 1;
+    const searching = Boolean(normalizeSearch(base.search));
+    entry.games.add(searching ? searchCardKey(row) : String(row.game.id));
+    if (searching) {
+      entry.releaseKeys.add(searchReleaseKey(row));
+      entry.releases = entry.releaseKeys.size;
+    } else {
+      entry.releases += 1;
+    }
   }
   document.querySelectorAll('#month-rail [data-month]').forEach(tile => {
     const entry = counts.get(tile.dataset.month) || { games: new Set(), releases: 0 };
@@ -644,7 +663,7 @@ function applyAdvancedFilters() {
   $('empty-state').hidden = filtered.length !== 0;
   $('load-more-wrap').hidden = filtered.length <= shown.length;
   wasFiltering = true;
-  renderAdvancedSummary(filtered, matched.length, base.search);
+  renderAdvancedSummary(filtered, uniqueReleaseCount(matched, base.search), base.search);
   updateMonthCounts(base);
   decorateCards();
   applyBadgePrefs();
