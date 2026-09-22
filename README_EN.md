@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-v3.9.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
+  <img src="https://img.shields.io/badge/VERSION-v3.9.1-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
 </p>
 
 <p align="center">
