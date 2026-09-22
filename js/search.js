@@ -172,6 +172,22 @@ export function matchesReleaseRange(row = {}, range = null, period = 'all') {
   return to >= range.from && from <= range.to;
 }
 
+export function releaseRecordKey(row = {}) {
+  const platforms = (row.platformGroups?.length
+    ? row.platformGroups
+    : (row.platforms || []).map(platform => platform?.group || platform?.abbreviation || platform?.name || platform))
+    .filter(Boolean)
+    .map(String)
+    .sort((a, b) => a.localeCompare(b))
+    .join(',');
+  return [
+    gameIdentity(row.game),
+    row.day || row.window || '',
+    String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase(),
+    platforms
+  ].join('|');
+}
+
 export function collapseCalendarRows(rows = []) {
   const unique = new Map();
   const platformsByKey = new Map();
