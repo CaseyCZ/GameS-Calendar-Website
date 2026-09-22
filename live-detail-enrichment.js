@@ -214,20 +214,54 @@
     if (current.length < 110 || /\bje videohra\b/i.test(current)) summary.textContent = text.length > 850 ? `${text.slice(0, 847)}…` : text;
   }
 
+  function formattedPrice(provider) {
+    const price = provider?.price;
+    if (!price) return '';
+    const text = clean(price.currentText);
+    let current = text;
+    if (!current) {
+      const value = Number(price.current);
+      const currency = clean(price.currency).toUpperCase();
+      if (Number.isFinite(value) && currency) {
+        try {
+          current = new Intl.NumberFormat('cs-CZ', {
+            style: 'currency',
+            currency,
+            maximumFractionDigits: currency === 'CZK' ? 0 : 2
+          }).format(value);
+        } catch {
+          current = `${value} ${currency}`;
+        }
+      }
+    }
+    if (!current) return '';
+
+    let discount = Number(price.discountPercent || 0);
+    const regular = Number(price.regular);
+    const value = Number(price.current);
+    if (!discount && Number.isFinite(regular) && regular > 0 && Number.isFinite(value) && value < regular) {
+      discount = Math.round((1 - value / regular) * 100);
+    }
+    return discount > 0 ? `${current} · −${Math.round(discount)} %` : current;
+  }
+
   function improveStoreLinks(providers) {
-    const exactLinks = {
-      steam: providers?.steam?.storeUrl,
-      xbox: providers?.microsoft?.storeUrl,
-      playstation: providers?.playstation?.storeUrl,
-      nintendo: providers?.nintendo?.storeUrl
+    const stores = {
+      steam: { provider: providers?.steam, label: 'Steam' },
+      xbox: { provider: providers?.microsoft, label: 'Xbox Store' },
+      playstation: { provider: providers?.playstation, label: 'PlayStation Store' },
+      nintendo: { provider: providers?.nintendo, label: 'Nintendo Store' }
     };
-    for (const [kind, rawUrl] of Object.entries(exactLinks)) {
-      const url = safeUrl(rawUrl);
+    for (const [kind, store] of Object.entries(stores)) {
+      const url = safeUrl(store.provider?.storeUrl);
       if (!url) continue;
       const link = content.querySelector(`.store-link--${kind}`);
       if (!link) continue;
       link.href = url;
       link.dataset.exactStoreLink = 'true';
+      const price = formattedPrice(store.provider);
+      const label = link.querySelector('.store-link__label');
+      if (label) label.textContent = price ? `${store.label} · ${price}` : store.label;
     }
   }
 
