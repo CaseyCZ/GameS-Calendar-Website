@@ -651,6 +651,16 @@ function titleMatchesQuery(query, title) {
   return words.length > 0 && words.every(word => name.includes(word));
 }
 
+function discoveryIdentity(game = {}) {
+  if (game.igdbId) return `igdb:${game.igdbId}`;
+  const firstRelease = (game.releases || [])
+    .map(release => release.day || release.date || '')
+    .filter(Boolean)
+    .sort()[0] || '';
+  const year = firstRelease.slice(0, 4);
+  return `title:${normalizeTitle(game.name)}:${year}`;
+}
+
 function discoveryScore(query, game) {
   const q = normalizeTitle(query);
   const name = normalizeTitle(game?.name);
@@ -680,7 +690,9 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
   );
 
   const saved = searchDiscoveredGames(q, nameSearchLimit)
-    .filter(game => !catalogIgdbIds.has(String(game.igdbId || '')) && !catalogTitles.has(normalizeTitle(game.name)));
+    .filter(game => !game.igdbId
+      ? !catalogTitles.has(normalizeTitle(game.name))
+      : !catalogIgdbIds.has(String(game.igdbId)));
 
   const searches = [];
   if (providers.igdb) {
@@ -717,7 +729,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
 
   const igdbDiscovered = igdbHits
     .filter(item => titleMatchesQuery(q, item.title))
-    .filter(item => !catalogIgdbIds.has(String(item.providerId)) && !catalogTitles.has(normalizeTitle(item.title)))
+    .filter(item => !catalogIgdbIds.has(String(item.providerId)))
     .map(catalogGameFromIgdb);
 
   igdbDiscovered.forEach(saveDiscoveredGame);
@@ -739,7 +751,7 @@ app.get('/api/discover', asyncRoute(async (req, res) => {
     .filter(Boolean);
 
   const games = [...igdbDiscovered, ...storeDiscovered, ...saved]
-    .filter((game, index, all) => all.findIndex(item => normalizeTitle(item.name) === normalizeTitle(game.name)) === index)
+    .filter((game, index, all) => all.findIndex(item => discoveryIdentity(item) === discoveryIdentity(game)) === index)
     .sort((a, b) => discoveryScore(q, b) - discoveryScore(q, a))
     .slice(0, limit);
 
