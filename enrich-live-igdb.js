@@ -79,6 +79,7 @@ function buildReleases(item, range) {
       platforms: [],
       window,
       precision,
+      precisionSource: 'igdb-date-format',
       regions: []
     });
     const platform = normalizePlatform(source.platform);
