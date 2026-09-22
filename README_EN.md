@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-v3.9.1-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
+  <img src="https://img.shields.io/badge/VERSION-v3.10.0-38BDF8?style=for-the-badge&labelColor=0284C7" alt="GameS version 3.9.0" />
 </p>
 
 <p align="center">
@@ -29,6 +29,14 @@
 - exact dates, announced months, quarters and years are stored separately so approximate windows are not presented as confirmed days
 - the website loads a compact catalog first and full metadata only when a detail view needs it
 - automated quality checks cover catalog structure, duplicates, suspicious release boundaries and search regressions
+
+## Architecture
+
+- `games-index.json` is the compact first-load catalog; the full `games.json` remains the authoritative data source and emergency fallback
+- live search and game details are served by the GameS API backed by IGDB, Steam, Xbox, PlayStation, Nintendo and GeForce NOW providers
+- the rolling catalog is refreshed daily from IGDB, while deeper metadata enrichment runs separately; all catalog-writer workflows are serialized
+- each release preserves its precision (`day / month / q1–q4 / year / unknown`) and precision provenance so approximate windows are never presented as confirmed dates
+- CI runs syntax validation, regression smoke tests, catalog data-quality checks and compact-payload size checks
 
 ## Main features
 
