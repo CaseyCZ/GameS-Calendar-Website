@@ -69,6 +69,11 @@ for (const game of games) {
 
 const duplicateIds = [...ids.values()].filter(count => count > 1).length;
 const duplicateIgdbIds = [...igdbIds.values()].filter(count => count > 1).length;
+const exactDateTotal = [...exactDateCounts.values()].reduce((sum, count) => sum + count, 0);
+const topExactDates = [...exactDateCounts.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 12)
+  .map(([date, count]) => ({ date, count, shareOfExactPct: Number((count / Math.max(1, exactDateTotal) * 100).toFixed(1)) }));
 const pct = value => Number((value / games.length * 100).toFixed(1));
 const releasePct = value => Number((value / Math.max(1, releases) * 100).toFixed(1));
 const placeholderThreshold = Math.max(25, Math.ceil(games.length * 0.006));
@@ -102,7 +107,8 @@ const report = {
     fuzzyPct: releasePct(fuzzy),
     suspiciousBoundaryDays: boundary,
     suspiciousBoundaryPct: releasePct(boundary),
-    massPlaceholderDates
+    massPlaceholderDates,
+    topExactDates
   },
   duplicates: {
     ids: duplicateIds,
@@ -126,6 +132,7 @@ if (pct(developers) < 60) console.warn(`::warning::developer coverage is only ${
 if (pct(publishers) < 55) console.warn(`::warning::publisher coverage is only ${pct(publishers)}%`);
 if (pct(ratings) < 10) console.warn(`::warning::rating coverage is only ${pct(ratings)}%; rating sorting will be sparse for upcoming games`);
 if (releasePct(fuzzy) < 1) console.warn('::warning::almost all releases are marked as exact days; verify IGDB date precision mapping');
+if (topExactDates[0]?.shareOfExactPct > 8) console.warn(`::warning::${topExactDates[0].shareOfExactPct}% of exact releases share ${topExactDates[0].date}; verify source distribution`);
 
 if (hardFailures.length) {
   console.error(`catalog quality gate failed: ${hardFailures.join(', ')}`);
