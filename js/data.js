@@ -1,7 +1,7 @@
 const DB_NAME = 'games-calendar-cache';
 const DB_VERSION = 1;
 const STORE = 'responses';
-const CACHE_KEY = 'games-catalog-v8';
+const CACHE_KEY = 'games-catalog-v9';
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 const IS_GITHUB_PAGES = Boolean(globalThis.location?.hostname?.endsWith('.github.io'));
 const REMOTE_API_ROOTS = [
@@ -13,12 +13,14 @@ const LIVE_CATALOG_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog?
 const LIVE_DETAIL_URLS = LIVE_API_ROOTS.map(root => `${root}/catalog/game`);
 const LIVE_DISCOVER_URLS = LIVE_API_ROOTS.map(root => `${root}/discover`);
 const LIVE_CATALOG_META_URL = IS_GITHUB_PAGES ? null : `${LIVE_API_ROOTS[0]}/catalog-meta`;
-const STATIC_CATALOG_URL = 'games.json';
+const STATIC_CATALOG_URL = 'games-index.json';
+const STATIC_DETAIL_URL = 'games.json';
 
 let sharedLoadPromise = null;
 let revalidationPromise = null;
 const revalidationCallbacks = new Set();
 const detailCache = new Map();
+let staticDetailDatasetPromise = null;
 
 const pad = value => String(value).padStart(2, '0');
 
@@ -61,6 +63,62 @@ export function monthRange(year, monthIndex) {
     from: `${start.getUTCFullYear()}-${pad(start.getUTCMonth() + 1)}-01`,
     to: `${end.getUTCFullYear()}-${pad(end.getUTCMonth() + 1)}-${pad(end.getUTCDate())}`
   };
+}
+
+const RELEASE_MONTHS = {
+  jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,
+  jul:7,july:7,aug:8,august:8,sep:9,sept:9,september:9,oct:10,october:10,
+  nov:11,november:11,dec:12,december:12,
+  leden:1,unor:2,únor:2,brezen:3,březen:3,duben:4,kveten:5,květen:5,cerven:6,červen:6,
+  cervenec:7,červenec:7,srpen:8,zari:9,září:9,rijen:10,říjen:10,listopad:11,prosinec:12
+};
+
+function releaseYearFromWindow(window = '') {
+  return Number(String(window).match(/\b(20\d{2})\b/)?.[1] || 0);
+}
+
+export function releaseBounds(release = {}) {
+  const day = toDay(release.day ?? release.date ?? release.timestamp);
+  if (day && String(release.precision || 'day').toLowerCase() === 'day') return { from: day, to: day, sortDay: day };
+
+  const precision = String(release.precision || release.datePrecision || (day ? 'day' : 'unknown')).toLowerCase();
+  const window = String(release.window || release.releaseWindow || release.label || '').trim();
+  const year = releaseYearFromWindow(window) || Number(day?.slice(0, 4) || 0);
+  if (!year) return { from: null, to: null, sortDay: day || null };
+
+  if (precision === 'year') {
+    return { from: `${year}-01-01`, to: `${year}-12-31`, sortDay: `${year}-07-01` };
+  }
+
+  const quarter = precision.match(/^q([1-4])$/) || window.toLowerCase().match(/\bq([1-4])\b/);
+  if (quarter) {
+    const q = Number(quarter[1]);
+    const startMonth = (q - 1) * 3 + 1;
+    const endMonth = q * 3;
+    const endDay = new Date(Date.UTC(year, endMonth, 0)).getUTCDate();
+    return {
+      from: `${year}-${pad(startMonth)}-01`,
+      to: `${year}-${pad(endMonth)}-${pad(endDay)}`,
+      sortDay: `${year}-${pad(startMonth + 1)}-15`
+    };
+  }
+
+  if (precision === 'month') {
+    const numeric = window.match(/\b(0?[1-9]|1[0-2])[\/. -](20\d{2})\b/);
+    const lower = window.toLocaleLowerCase('cs');
+    const named = Object.entries(RELEASE_MONTHS).find(([name]) => new RegExp(`\\b${name}\\b`, 'i').test(lower));
+    const month = Number(numeric?.[1] || named?.[1] || day?.slice(5, 7) || 0);
+    if (month) {
+      const endDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+      return {
+        from: `${year}-${pad(month)}-01`,
+        to: `${year}-${pad(month)}-${pad(endDay)}`,
+        sortDay: `${year}-${pad(month)}-15`
+      };
+    }
+  }
+
+  return { from: day || null, to: day || null, sortDay: day || null };
 }
 
 export function platformGroup(name = '') {
@@ -134,20 +192,26 @@ function normalizeRelease(release = {}) {
   const window = String(release.window || release.releaseWindow || release.label || '').trim();
   if (!day && !window) return null;
   const platforms = (release.platforms || []).map(normalizePlatform).filter(Boolean);
+  const precision = String(release.precision || release.datePrecision || (day ? 'day' : 'unknown')).toLowerCase();
+  const normalizedDay = precision === 'day' ? day : null;
+  const bounds = releaseBounds({ ...release, day: normalizedDay, window, precision });
   return {
-    day,
-    timestamp: release.timestamp || (day ? dayToTimestamp(day) : 0),
+    day: normalizedDay,
+    timestamp: normalizedDay ? (release.timestamp || dayToTimestamp(normalizedDay)) : 0,
     platforms,
     window,
-    precision: release.precision || release.datePrecision || (day ? 'day' : 'unknown'),
-    regions: uniq(release.regions || [])
+    precision,
+    regions: uniq(release.regions || []),
+    from: bounds.from,
+    to: bounds.to,
+    sortDay: bounds.sortDay
   };
 }
 
 function normalizeGame(game = {}) {
   const releases = (game.releases || []).map(normalizeRelease).filter(Boolean).sort((a, b) => {
-    const ak = a.day || '9999-12-31';
-    const bk = b.day || '9999-12-31';
+    const ak = a.sortDay || a.day || '9999-12-31';
+    const bk = b.sortDay || b.day || '9999-12-31';
     return ak.localeCompare(bk);
   });
 
@@ -274,13 +338,16 @@ export function flattenReleases(dataset) {
         platformGroups: uniq(release.platforms.map(p => p.group || platformGroup(p.name))),
         window: release.window,
         precision: release.precision,
-        regions: release.regions
+        regions: release.regions,
+        from: release.from,
+        to: release.to,
+        sortDay: release.sortDay
       });
     }
   }
   return rows.sort((a, b) => {
-    const ak = a.day || '9999-12-31';
-    const bk = b.day || '9999-12-31';
+    const ak = a.sortDay || a.day || '9999-12-31';
+    const bk = b.sortDay || b.day || '9999-12-31';
     return ak.localeCompare(bk) || a.game.name.localeCompare(b.game.name, 'cs');
   });
 }
@@ -342,18 +409,39 @@ async function fetchFirstJson(urls) {
   throw lastError || new Error('Live API endpoint is not available');
 }
 
-export async function loadGameDetail(game) {
-  if (!LIVE_DETAIL_URLS.length || !game?.id) return null;
-  const key = String(game.id);
-  if (!detailCache.has(key)) {
-    const request = fetchFirstJson(
-      LIVE_DETAIL_URLS.map(base => `${base}/${encodeURIComponent(key)}`)
-    )
-      .then(normalizeGame)
+async function loadStaticDetailDataset() {
+  if (!staticDetailDatasetPromise) {
+    staticDetailDatasetPromise = fetchJson(STATIC_DETAIL_URL)
+      .then(normalizePayload)
       .catch(error => {
-        detailCache.delete(key);
+        staticDetailDatasetPromise = null;
         throw error;
       });
+  }
+  return staticDetailDatasetPromise;
+}
+
+export async function loadGameDetail(game) {
+  if (!game?.id) return null;
+  const key = String(game.id);
+  if (!detailCache.has(key)) {
+    const request = (async () => {
+      try {
+        if (LIVE_DETAIL_URLS.length) {
+          const payload = await fetchFirstJson(LIVE_DETAIL_URLS.map(base => `${base}/${encodeURIComponent(key)}`));
+          return normalizeGame(payload);
+        }
+      } catch {}
+      const dataset = await loadStaticDetailDataset();
+      const exact = dataset.games.find(item =>
+        String(item.id) === key
+        || (game.igdbId && String(item.igdbId || '') === String(game.igdbId))
+      );
+      return exact || normalizeGame(game);
+    })().catch(error => {
+      detailCache.delete(key);
+      throw error;
+    });
     detailCache.set(key, request);
   }
   return detailCache.get(key);
@@ -388,9 +476,9 @@ async function fetchPayload() {
   try {
     const payload = await fetchJson(STATIC_CATALOG_URL);
     await writeCache(payload);
-    return { payload, source: 'games-json', liveError };
+    return { payload, source: 'compact-index', liveError };
   } catch (fallbackError) {
-    throw new Error(`Živé API i games.json selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
+    throw new Error(`Živé API i kompaktní katalog selhaly: ${liveError?.message || 'API error'}; ${fallbackError.message}`);
   }
 }
 
