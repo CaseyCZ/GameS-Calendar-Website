@@ -606,8 +606,16 @@ function applyAdvancedFilters() {
   const games = $('games');
   if (!games) return;
   const watchlist = base.watchlist;
+  const watchedFamilies = new Set(
+    rows
+      .filter(row => watchlist.has(String(row.game.id)))
+      .map(displayFamilyKey)
+  );
   ignoreGameMutation = true;
-  games.innerHTML = shown.map(row => rowCard(row, watchlist.has(String(row.game.id)))).join('');
+  games.innerHTML = shown.map(row => rowCard(
+    row,
+    watchlist.has(String(row.game.id)) || watchedFamilies.has(displayFamilyKey(row))
+  )).join('');
   games.hidden = shown.length === 0;
   $('empty-state').hidden = filtered.length !== 0;
   $('load-more-wrap').hidden = filtered.length <= shown.length;
