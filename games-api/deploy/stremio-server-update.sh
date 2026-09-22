@@ -87,6 +87,23 @@ pm2 save
 for attempt in {1..15}; do
   if curl --fail --silent --show-error --max-time 3 http://127.0.0.1:8787/health >/dev/null; then
     echo "GameS API is healthy on 127.0.0.1:8787"
+
+    DISCOVER_SMOKE="$(curl --fail --silent --show-error --max-time 45 'http://127.0.0.1:8787/api/discover?q=call%20of%20duty&limit=50' || true)"
+    if [[ -n "$DISCOVER_SMOKE" ]]; then
+      node -e '
+        try {
+          const payload = JSON.parse(process.argv[1]);
+          console.log("GameS search smoke | query: call of duty | count:", payload.count ?? "?", "| source:", payload.source || "unknown");
+          if (payload.providers) console.log("GameS search providers:", JSON.stringify(payload.providers));
+          if (Array.isArray(payload.failures) && payload.failures.length) console.log("GameS search failures:", JSON.stringify(payload.failures));
+        } catch {
+          console.log("GameS search smoke returned unreadable JSON");
+        }
+      ' "$DISCOVER_SMOKE"
+    else
+      echo "GameS search smoke could not query /api/discover"
+    fi
+
     echo "GameS web files are in $WEB"
     exit 0
   fi
