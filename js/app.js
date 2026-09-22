@@ -270,6 +270,15 @@ function inActiveRange(row) {
   if (state.period === 'undated') return !from && !to;
   if (!state.range) return true;
   if (!from || !to) return false;
+
+  // A year/quarter window overlaps every month it spans, but that does not
+  // mean the game is announced for each of those months. Keep month views
+  // focused on releases actually assigned to that month.
+  if (state.period === 'month' || state.period === 'next') {
+    const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+    if (precision !== 'day' && precision !== 'month') return false;
+  }
+
   return to >= state.range.from && from <= state.range.to;
 }
 
