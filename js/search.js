@@ -83,10 +83,16 @@ export function displayFamilyKey(row = {}) {
   const dateText = String(row.day || row.sortDay || row.window || '');
   const year = dateText.match(/\b(20\d{2})\b/)?.[1] || '';
 
-  // Collapse narrow reskin families such as "100 Cats Argentina/Greece/...":
-  // same numeric prefix, same base noun, same developer, same content type and year.
-  if (tokens.length >= 3 && /^\d+$/.test(tokens[0]) && developer && year) {
-    return `variant:${tokens.slice(0, 2).join(' ')}|${developer}|${type}|${year}`;
+  // Collapse narrow numeric reskin families such as
+  // "100 Cats Argentina" / "100 Amsterdam Cats".
+  // Restrict the heuristic to a high numeric prefix + same developer/type/year.
+  const prefix = Number(tokens[0]);
+  const words = tokens
+    .slice(1)
+    .filter(token => /^[a-z][a-z0-9]*$/.test(token) && token.length >= 3)
+    .sort((a, b) => a.length - b.length || a.localeCompare(b));
+  if (tokens.length >= 3 && Number.isInteger(prefix) && prefix >= 50 && words.length && developer && year) {
+    return `variant:${prefix}:${words[0]}|${developer}|${type}|${year}`;
   }
   return gameIdentity(game);
 }
