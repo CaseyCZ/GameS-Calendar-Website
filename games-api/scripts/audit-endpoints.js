@@ -68,101 +68,28 @@ try {
 
 
 try {
-  const query = 'EA Sports FC 27';
-  const identity = await providers.igdb?.product?.('408819', { force:true }).catch(() => null);
-  console.log('ℹ️ FC 27 IGDB identity', {
-    providerId:identity?.providerId || null,
-    title:identity?.title || null,
-    externalIds:identity?.externalIds || identity?.rawHints?.externalIds || {},
-    websites:identity?.websites || identity?.rawHints?.websites || []
-  });
-
-  for (const name of ['steam','epic','microsoft','playstation','nintendo']) {
-    const provider = providers[name];
-    if (!provider?.search) continue;
-    try {
-      const items = await provider.search(query, { force:true, limit:10 });
-      console.log(`ℹ️ FC 27 edition diagnostic ${name}`, items.map(item => ({
-        providerId:item?.providerId || null,
-        title:item?.title || null,
-        score:titleScore(query, item?.title),
-        storefrontScore:storefrontTitleScore(query, item?.title),
-        price:item?.price || null,
-        storeUrl:item?.storeUrl || null
-      })));
-    } catch (error) {
-      console.log(`ℹ️ FC 27 edition diagnostic ${name} failed: ${error?.message || error}`);
-    }
-  }
-} catch (error) {
-  console.log(`ℹ️ FC 27 edition diagnostic failed: ${error?.message || error}`);
-}
-
-
-try {
-  const response = await fetch('https://130.61.49.108/games-api/enrich', {
-    method:'POST',
-    headers:{ 'content-type':'application/json', accept:'application/json' },
-    body:JSON.stringify({
-      game:{ id:'408819', igdbId:'408819', title:'EA Sports FC 27' },
-      providers:['igdb','steam','epic','microsoft','playstation','nintendo']
-    })
-  });
-  const text = await response.text();
-  const payload = JSON.parse(text);
-  const result = payload?.results?.[0] || {};
-  const compactProviders = Object.fromEntries(Object.entries(result.providers || {}).map(([name,item]) => [name,{
-    providerId:item?.providerId || null,
-    title:item?.title || null,
-    price:item?.price || null,
-    storeUrl:item?.storeUrl || null,
-    subscriptions:item?.subscriptions || {}
-  }]));
-  console.log('ℹ️ FC 27 production enrich diagnostic', {
-    status:response.status,
-    identity:result.identity || null,
-    matchedProviders:result.matchedProviders || [],
-    providers:compactProviders
-  });
-} catch (error) {
-  console.log(`ℹ️ FC 27 production enrich diagnostic failed: ${error?.message || error}`);
-}
-
-try {
   const ps = await providers.playstation.concept('10017332', { force:true });
-  console.log('ℹ️ FC 27 PS concept price candidates', {
-    title:ps?.title || null,
-    price:ps?.price || null,
-    candidates:ps?.rawHints?.priceCandidates || []
+  const psPrice = Number(ps?.price?.current);
+  const psStandard = /STANDARD|BASE/i.test(String(ps?.rawHints?.priceProductId || ''));
+  const psOk = psStandard && Number.isFinite(psPrice) && Math.abs(psPrice - 1899) < 0.01;
+  console.log(`${psOk ? '✅' : '❌'} FC 27 Standard edition probe · PlayStation`, {
+    productId:ps?.rawHints?.priceProductId || null,
+    price:ps?.price || null
   });
-} catch (error) {
-  console.log(`ℹ️ FC 27 PS concept price candidates failed: ${error?.message || error}`);
-}
+  if (!psOk) failed += 1;
 
-try {
-  const items = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:6 });
-  console.log('ℹ️ FC 27 Nintendo NSUID candidates', items.map(item => ({
-    id:item?.providerId || null,
-    title:item?.title || null,
+  const nintendo = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:6 });
+  const exact = nintendo.filter(item => storefrontTitleScore('EA Sports FC 27', item?.title) >= 1);
+  const bundle = exact.find(item => /^700700/.test(String(item?.providerId || '')));
+  const base = exact.find(item => /^700100/.test(String(item?.providerId || '')));
+  const nintendoOk = Boolean(base && !bundle && base.releaseDate === '2026-09-25');
+  console.log(`${nintendoOk ? '✅' : '❌'} FC 27 Standard edition probe · Nintendo`, exact.map(item => ({
+    providerId:item?.providerId || null,
     releaseDate:item?.releaseDate || null,
-    price:item?.price || null,
-    storeUrl:item?.storeUrl || null,
-    rawHints:item?.rawHints || {}
+    price:item?.price || null
   })));
+  if (!nintendoOk) failed += 1;
 } catch (error) {
-  console.log(`ℹ️ FC 27 Nintendo NSUID candidates failed: ${error?.message || error}`);
-}
-
-try {
-  const items = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:4 });
-  console.log('ℹ️ FC 27 Nintendo raw arrays JSON', JSON.stringify(items.map(item => ({
-    id:item?.providerId || null,
-    releaseDate:item?.releaseDate || null,
-    allNsuids:item?.rawHints?.allNsuids || [],
-    productCodes:item?.rawHints?.productCodes || [],
-    sourceReleaseDates:item?.rawHints?.sourceReleaseDates || [],
-    playableOn:item?.rawHints?.playableOn || []
-  }))));
-} catch (error) {
-  console.log(`ℹ️ FC 27 Nintendo raw arrays JSON failed: ${error?.message || error}`);
+  failed += 1;
+  console.error(`❌ FC 27 Standard edition probe: ${error?.message || error}`);
 }

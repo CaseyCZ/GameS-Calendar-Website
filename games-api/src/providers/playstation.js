@@ -110,45 +110,91 @@ function collectStrings(root, keys) {
   return uniq(values.map(cleanText).filter(Boolean));
 }
 
+function parsePriceText(value = '') {
+  const raw = cleanText(value);
+  if (!raw || /game\s*trial|zdarma|free/i.test(raw)) return null;
+  const match = raw.match(/-?\d[\d\s\u00a0.,]*/);
+  if (!match) return null;
+  let number = match[0].replace(/[\s\u00a0]/g, '');
+  const comma = number.lastIndexOf(',');
+  const dot = number.lastIndexOf('.');
+  if (comma > dot) number = number.replace(/\./g, '').replace(',', '.');
+  else if (dot > comma && comma >= 0) number = number.replace(/,/g, '');
+  else if (comma >= 0) number = number.replace(',', '.');
+  const parsed = Number(number);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function collectPriceCandidates(root) {
   const out = [];
   walk(root, node => {
     if (!node || Array.isArray(node) || typeof node !== 'object') return;
+    const id = cleanText(node.productId || node.id || node.skuId || '');
     const title = cleanText(
       node.name || node.title || node.productName || node.conceptName ||
       node.displayName || node.editionName || node.skuName || ''
     );
     const regularText = [
       node.basePrice, node.formattedBasePrice, node.strikethroughPrice,
-      node.regularPrice, node.price
+      node.regularPrice
     ].find(value => typeof value === 'string' && value.trim()) || '';
     const currentText = [
       node.discountedPrice, node.salePrice, node.formattedDiscountedPrice,
       node.formattedPrice
     ].find(value => typeof value === 'string' && value.trim()) || regularText;
-    const regularValue = [
+    const regularRaw = [
       node.basePriceValue, node.regularPriceValue,
       typeof node.basePrice === 'number' ? node.basePrice : null,
       typeof node.regularPrice === 'number' ? node.regularPrice : null
     ].find(value => typeof value === 'number' && Number.isFinite(value));
-    const currentValue = [
+    const currentRaw = [
       node.discountedPriceValue, node.salePriceValue,
       typeof node.discountedPrice === 'number' ? node.discountedPrice : null,
       typeof node.salePrice === 'number' ? node.salePrice : null
-    ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularValue;
-    if (!title && !regularText && regularValue == null) return;
-    if (!regularText && regularValue == null && !currentText && currentValue == null) return;
+    ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularRaw;
+    const regular = parsePriceText(regularText) ?? regularRaw ?? null;
+    const current = parsePriceText(currentText) ?? currentRaw ?? regular;
+    if (!(Number.isFinite(current) && current > 0) && !(Number.isFinite(regular) && regular > 0)) return;
     out.push({
-      title,
+      id, title,
       regularText: regularText || '',
-      currentText: currentText || '',
-      regularValue: regularValue ?? null,
-      currentValue: currentValue ?? null,
-      currency: cleanText(node.currencyCode || node.currency || ''),
-      id: cleanText(node.productId || node.id || node.skuId || '')
+      currentText: currentText || regularText || '',
+      regular: Number.isFinite(regular) ? regular : null,
+      current: Number.isFinite(current) ? current : null,
+      currency: cleanText(node.currencyCode || node.currency || '')
     });
   });
-  return out.slice(0, 80);
+
+  const unique = new Map();
+  for (const item of out) {
+    const key = `${item.id}|${item.currentText}|${item.current}|${item.currency}`;
+    if (!unique.has(key)) unique.set(key, item);
+  }
+  return [...unique.values()];
+}
+
+function selectPriceCandidate(root, providerId = '', { preferBase = false } = {}) {
+  const items = collectPriceCandidates(root);
+  if (!items.length) return null;
+  const requested = String(providerId || '').toUpperCase();
+  const editionText = item => `${item.id} ${item.title}`.toUpperCase();
+  const exact = requested
+    ? items.find(item => item.id && (String(item.id).toUpperCase() === requested || String(item.id).toUpperCase().startsWith(requested)))
+    : null;
+  if (exact && !preferBase) return exact;
+
+  return [...items].sort((a,b) => {
+    const at=editionText(a), bt=editionText(b);
+    const aStandard=/STANDARD|BASE/.test(at);
+    const bStandard=/STANDARD|BASE/.test(bt);
+    const aPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(at);
+    const bPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(bt);
+    if (preferBase && aStandard !== bStandard) return aStandard ? -1 : 1;
+    if (preferBase && aPremium !== bPremium) return aPremium ? 1 : -1;
+    const ap=Number(a.current ?? a.regular ?? Infinity);
+    const bp=Number(b.current ?? b.regular ?? Infinity);
+    return ap-bp;
+  })[0] || null;
 }
 
 function collectImages(root) {
@@ -162,7 +208,7 @@ function collectImages(root) {
   return uniq(values.filter(url => /image|akamai|playstation|sndcdn|sony/i.test(url)));
 }
 
-function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
+function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase = false } = {}) {
   const title = firstString(payload, ['name', 'title', 'productName', 'conceptName']);
   const description = firstString(payload, ['longDescription', 'description', 'shortDescription']);
   const publisher = firstString(payload, ['publisherName', 'publisher']);
@@ -173,11 +219,12 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
   const ratingText = firstString(payload, ['averageRating', 'starRating']);
   const ratingNumber = firstNumber(payload, ['averageRating', 'starRating']);
   const ratingCount = firstNumber(payload, ['ratingCount', 'starRatingCount', 'totalRatingsCount']);
-  const regularText = firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
-  const currentText = firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
-  const regularValue = firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
-  const currentValue = firstNumber(payload, ['discountedPriceValue', 'discountedPrice', 'salePriceValue']) ?? regularValue;
-  const currency = firstString(payload, ['currencyCode', 'currency']);
+  const selectedPrice = selectPriceCandidate(payload, providerId, { preferBase });
+  const regularText = selectedPrice?.regularText || firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
+  const currentText = selectedPrice?.currentText || firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
+  const regularValue = selectedPrice?.regular ?? parsePriceText(regularText) ?? firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
+  const currentValue = selectedPrice?.current ?? parsePriceText(currentText) ?? firstNumber(payload, ['discountedPriceValue', 'discountedPrice', 'salePriceValue']) ?? regularValue;
+  const currency = selectedPrice?.currency || firstString(payload, ['currencyCode', 'currency']);
   return canonicalGame('playstation', {
     providerId,
     title,
@@ -202,7 +249,10 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
     sourceUrl,
     rawHints: {
       operation: payload?.data ? 'graphql' : 'html',
-      priceCandidates: collectPriceCandidates(payload)
+      priceProductId: selectedPrice?.id || null,
+      priceEdition: selectedPrice?.id && /STANDARD|BASE/i.test(selectedPrice.id) ? 'standard'
+        : selectedPrice?.id && /ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/i.test(selectedPrice.id) ? 'premium'
+        : null
     }
   });
 }
@@ -221,7 +271,7 @@ export async function concept(conceptId, { force = false } = {}) {
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
-  const normalized = normalizePsPayload(id, { payloads });
+  const normalized = normalizePsPayload(id, { payloads }, BASE, { preferBase: true });
   normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
   return normalized;
 }
