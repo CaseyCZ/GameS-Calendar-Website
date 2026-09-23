@@ -554,7 +554,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
     for (const result of searched) {
       if (result.status !== 'fulfilled' || !result.value?.item) continue;
       const threshold = result.value.item.provider === 'nintendo' ? 0.55 : 0.48;
-      if (result.value.score >= threshold) addFound(found, result.value.item);
+      if (result.value.storefrontScore >= threshold) addFound(found, result.value.item);
     }
   }
 
