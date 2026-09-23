@@ -1,6 +1,6 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
-import { titleScore } from '../src/lib/normalize.js';
+import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
 
 let failed = 0;
 for (const provider of Object.values(providers)) {
@@ -66,3 +66,34 @@ try {
   console.error(`❌ microsoft E-Day fallback safety probe: ${error?.message || error}`);
 }
 
+
+try {
+  const query = 'EA Sports FC 27';
+  const identity = await providers.igdb?.product?.('408819', { force:true }).catch(() => null);
+  console.log('ℹ️ FC 27 IGDB identity', {
+    providerId:identity?.providerId || null,
+    title:identity?.title || null,
+    externalIds:identity?.externalIds || identity?.rawHints?.externalIds || {},
+    websites:identity?.websites || identity?.rawHints?.websites || []
+  });
+
+  for (const name of ['steam','epic','microsoft','playstation','nintendo']) {
+    const provider = providers[name];
+    if (!provider?.search) continue;
+    try {
+      const items = await provider.search(query, { force:true, limit:10 });
+      console.log(`ℹ️ FC 27 edition diagnostic ${name}`, items.map(item => ({
+        providerId:item?.providerId || null,
+        title:item?.title || null,
+        score:titleScore(query, item?.title),
+        storefrontScore:storefrontTitleScore(query, item?.title),
+        price:item?.price || null,
+        storeUrl:item?.storeUrl || null
+      })));
+    } catch (error) {
+      console.log(`ℹ️ FC 27 edition diagnostic ${name} failed: ${error?.message || error}`);
+    }
+  }
+} catch (error) {
+  console.log(`ℹ️ FC 27 edition diagnostic failed: ${error?.message || error}`);
+}
