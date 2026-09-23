@@ -131,8 +131,12 @@ import { fetchApi } from './js/api.js';
     return { card, rowKey, gameId, igdbId, title, platforms, button };
   }
 
+  function providerSignature(platforms = []) {
+    return providersForPlatforms(platforms).slice().sort().join(',');
+  }
+
   function screenKey(game) {
-    return `${game.gameId}:${game.title.toLowerCase()}`;
+    return `${game.gameId}:${game.title.toLowerCase()}:${providerSignature(game.platforms)}`;
   }
 
   function screenFresh(game) {
@@ -765,7 +769,11 @@ import { fetchApi } from './js/api.js';
       const cacheKey = currentEnrichmentKey();
       let payload = cachedPayload(cacheKey);
       if (!payload) {
-        const screenEntry = screenCache.get(`${currentGameId()}:${title.toLowerCase()}`);
+        const screenEntry = screenCache.get(screenKey({
+          gameId: currentGameId(),
+          title,
+          platforms: platformTexts()
+        }));
         if (screenEntry?.payload && Date.now() - Number(screenEntry.fetchedAt || 0) < SCREEN_CACHE_TTL_MS) {
           payload = screenEntry.payload;
           cachePayload(cacheKey, payload);
