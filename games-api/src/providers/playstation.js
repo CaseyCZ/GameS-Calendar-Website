@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, titleScore, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
 
@@ -313,7 +313,7 @@ export async function psPlusCatalog({ force = false, size = 1000 } = {}) {
 async function applyPsPlusMembership(item, { force = false } = {}) {
   if (!item?.title) return item;
   try {
-    const entries = await psPlusCatalog({ force });
+    const entries = await psPlusCatalog({ force: false });
     const ids = new Set(entries.map(entry => entry.id.toUpperCase()));
     const candidateIds = [
       item.providerId,
@@ -321,7 +321,7 @@ async function applyPsPlusMembership(item, { force = false } = {}) {
     ].map(value => String(value || '').trim().toUpperCase()).filter(Boolean);
     const exact = candidateIds.some(id => ids.has(id));
     const titleMatch = exact ? null : entries
-      .map(entry => ({ entry, score: titleScore(item.title, entry.title) }))
+      .map(entry => ({ entry, score: storefrontTitleScore(item.title, entry.title) }))
       .sort((a, b) => b.score - a.score)[0];
     const matched = exact || Number(titleMatch?.score || 0) >= 0.92;
     if (!matched) return item;
