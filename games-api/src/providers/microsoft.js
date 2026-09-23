@@ -61,7 +61,9 @@ export function microsoftPriceOf(product) {
       const regular = Number(raw.MSRP ?? raw.msrp ?? raw.ListPrice ?? raw.listPrice);
       const actions = availabilityActions(availability);
       const purchasable = actions.some(action => /purchase|buy|pre.?order/i.test(action));
-      const explicitFree = raw.IsFree === true || raw.isFree === true;
+      const explicitFree = (raw.IsFree === true || raw.isFree === true)
+        && purchasable
+        && !/trial|demo|beta/i.test(skuTitle);
       const positive = Number.isFinite(current) && current > 0;
       if (!positive && !explicitFree) continue;
       candidates.push({
@@ -118,7 +120,7 @@ export function consolidateMicrosoftSearch(query, items = []) {
   const scored = (items || [])
     .filter(Boolean)
     .map(item => ({ item, score: titleScore(query, item.title) }))
-    .filter(entry => entry.score >= 0.45)
+    .filter(entry => entry.score >= 0.55)
     .sort((a, b) => b.score - a.score);
   if (!scored.length) return items || [];
 

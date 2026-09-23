@@ -20,6 +20,14 @@ const microsoftZeroOnly = {
 };
 assert.equal(microsoftPriceOf(microsoftZeroOnly), null);
 
+const microsoftTrialZero = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Free Trial' }] }, Availabilities:[{
+    Actions:['Purchase'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:0, MSRP:0, IsFree:true } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftTrialZero), null);
+
 const microsoftPaid = {
   DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Pre-Order' }] }, Availabilities:[{
     Actions:['Purchase'],
