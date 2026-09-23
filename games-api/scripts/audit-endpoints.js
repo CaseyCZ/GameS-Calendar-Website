@@ -114,3 +114,55 @@ try {
 } catch (error) {
   console.log('ℹ️ FC 27 storefront diagnostic failed', error?.stack || error?.message || String(error));
 }
+
+
+try {
+  const query = 'EA SPORTS FC 27';
+  const [xboxItems, psItem, nintendoItems] = await Promise.all([
+    providers.microsoft.search(query, { force:true, limit:8 }),
+    providers.playstation.concept('10017332', { force:true }),
+    providers.nintendo.search(query, { force:true, limit:8 })
+  ]);
+
+  const summarize = item => item ? {
+    providerId:item.providerId || null,
+    title:item.title || null,
+    price:item.price || null,
+    storeUrl:item.storeUrl || null,
+    storefrontScore:storefrontTitleScore(query, item.title)
+  } : null;
+
+  const xbox = xboxItems[0] || null;
+  const nintendo = nintendoItems[0] || null;
+  const xboxOk = Boolean(
+    xbox
+    && !/ultimate\s+edition/i.test(xbox.title || '')
+    && Number(xbox.price?.current || 0) > 0
+    && storefrontTitleScore(query, xbox.title) >= 0.55
+  );
+  const psOk = Boolean(
+    psItem
+    && !/ultimate\s+edition/i.test(psItem.title || '')
+    && storefrontTitleScore(query, psItem.title) >= 0.55
+  );
+  const nintendoOk = Boolean(
+    nintendo
+    && !/ultimate\s+edition/i.test(nintendo.title || '')
+    && storefrontTitleScore(query, nintendo.title) >= 0.55
+  );
+
+  console.log(`${xboxOk && psOk && nintendoOk ? '✅' : '❌'} FC 27 fixed-provider verification`);
+  console.log(JSON.stringify({
+    xbox:summarize(xbox),
+    xboxCandidates:xboxItems.slice(0,5).map(summarize),
+    playstation:summarize(psItem),
+    nintendo:summarize(nintendo),
+    nintendoCandidates:nintendoItems.slice(0,5).map(summarize),
+    checks:{ xboxOk, psOk, nintendoOk }
+  }, null, 2));
+
+  if (!xboxOk || !psOk || !nintendoOk) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ FC 27 fixed-provider verification: ${error?.stack || error?.message || error}`);
+}
