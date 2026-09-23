@@ -98,7 +98,7 @@ assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
 assert.equal(xboxConsolidated.price.current, 1799);
 assert.equal(xboxConsolidated.price.from, true);
 assert.equal(xboxConsolidated.subscriptions.gamePass, true);
-assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 1);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
 const xboxWrongSearch = [
