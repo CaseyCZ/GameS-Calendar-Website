@@ -337,6 +337,11 @@ assert.equal(serverSource.includes("wanted.has('steam') && game.steamId"), true)
 assert.equal(serverSource.includes("if (!wanted.has(provider) || !price) continue"), true);
 assert.equal(serverSource.includes('subscriptionsForProviders(snapshot?.subscriptions || {}, wanted)'), true);
 assert.equal(serverSource.includes("if (wanted.has('igdb')) addFound(found, igdbIdentity)"), true);
+const microsoftProviderSource = readFileSync(new URL('../games-api/src/providers/microsoft.js', import.meta.url), 'utf8');
+assert.equal(microsoftProviderSource.includes('function xboxEmbeddedStoreLinks'), true);
+assert.equal(microsoftProviderSource.includes('if (!item.price)'), true);
+assert.equal(microsoftProviderSource.includes('if (!primary?.price)'), true);
+assert.equal(microsoftProviderSource.includes('storefrontTitleScore(item.title, candidate.title) >= 0.70'), true);
 assert.equal(serverSource.includes('lastKnownProviders'), true);
 assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
 

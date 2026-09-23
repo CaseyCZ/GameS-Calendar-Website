@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, uniq } from '../lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../lib/microsoft-pricing.js';
 
 const SIGL_IDS = Object.freeze({
@@ -48,6 +48,23 @@ function xboxLinksFromSearch(html = '') {
       links.set(match[1].toUpperCase(), new URL(href, 'https://www.xbox.com').href);
     } catch {}
   });
+  return links;
+}
+
+function xboxEmbeddedStoreLinks(html = '') {
+  const links = new Map();
+  const source = String(html || '')
+    .replace(/\\u002f/gi, '/')
+    .replace(/\\\//g, '/')
+    .replace(/&amp;/gi, '&');
+  const regex = /(?:https?:\/\/www\.xbox\.com)?(?:\/[a-z]{2}-[a-z]{2})?\/games\/store\/[^"'<>\\\s?#]+\/([A-Z0-9]{10,16})(?:[/?#"'<>\\\s&]|$)/gi;
+  for (const match of source.matchAll(regex)) {
+    const id = String(match[1] || '').toUpperCase();
+    if (!id) continue;
+    try {
+      links.set(id, new URL(match[0], 'https://www.xbox.com').href);
+    } catch {}
+  }
   return links;
 }
 
@@ -223,6 +240,11 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
     const pageHtml = await fetchText(pageUrl);
     const signals = xboxPageSignals(pageHtml);
     const pageLinks = xboxLinksFromSearch(pageHtml);
+    if (!item.price) {
+      for (const [embeddedId, embeddedUrl] of xboxEmbeddedStoreLinks(pageHtml)) {
+        if (!pageLinks.has(embeddedId)) pageLinks.set(embeddedId, embeddedUrl);
+      }
+    }
     pageLinks.set(id, pageUrl);
 
     const relatedIds = [...pageLinks.keys()]
@@ -242,6 +264,9 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
           storeUrl: pageLinks.get(relatedId) || xboxProductUrl(localProps(product).ProductTitle || '', relatedId)
         });
       }).filter(Boolean);
+      if (!item.price) {
+        related = related.filter(candidate => storefrontTitleScore(item.title, candidate.title) >= 0.70);
+      }
     }
 
     const exactTitle = item.title;
@@ -341,6 +366,11 @@ export async function search(query, { force = false, limit = 8 } = {}) {
     try {
       const pageHtml = await fetchText(primaryUrl);
       const pageLinks = xboxLinksFromSearch(pageHtml);
+      if (!primary?.price) {
+        for (const [embeddedId, embeddedUrl] of xboxEmbeddedStoreLinks(pageHtml)) {
+          if (!pageLinks.has(embeddedId)) pageLinks.set(embeddedId, embeddedUrl);
+        }
+      }
       const knownIds = new Set(productIds);
       const relatedIds = [...pageLinks.keys()].filter(id => !knownIds.has(id)).slice(0, 30);
       if (relatedIds.length) {
@@ -349,13 +379,16 @@ export async function search(query, { force = false, limit = 8 } = {}) {
           .map(item => String(item?.ProductId || item?.productId || '').toUpperCase())
           .filter(Boolean);
         const relatedMembership = await subscriptionKindsForIds(relatedProductIds, { force });
-        const relatedNormalized = relatedProducts.map(item => {
+        let relatedNormalized = relatedProducts.map(item => {
           const id = String(item?.ProductId || item?.productId || '').toUpperCase();
           const title = localProps(item).ProductTitle || localProps(item).productTitle || '';
           return normalizeMicrosoftProduct(item, relatedMembership.get(id) || [], {
             storeUrl: pageLinks.get(id) || xboxProductUrl(title, id)
           });
         }).filter(Boolean);
+        if (!primary?.price) {
+          relatedNormalized = relatedNormalized.filter(candidate => storefrontTitleScore(q, candidate.title) >= 0.70);
+        }
         normalized = [...normalized, ...relatedNormalized];
         consolidated = consolidateMicrosoftSearch(q, normalized);
         primary = consolidated[0] || primary;
