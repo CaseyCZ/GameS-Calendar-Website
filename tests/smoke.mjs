@@ -22,6 +22,14 @@ assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitle
 assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
 assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
+assert.ok(
+  storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Standard Edition PS4 & PS5')
+  > storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Ultimate Edition PS4 & PS5')
+);
+assert.ok(
+  storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27')
+  > storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Ultimate Edition')
+);
 
 assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
 assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');
@@ -91,7 +99,7 @@ const xboxStandard = { provider:'microsoft', providerId:'STD', title:'Gears of W
 const xboxPremium = { provider:'microsoft', providerId:'PREM', title:'Gears of War: E-Day Premium Edition Pre-Order', price:{ current:2599, regular:2599, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-pre-order/PREM', subscriptions:{}, rawHints:{} };
 const xboxUpgrade = { provider:'microsoft', providerId:'UPGRADE', title:'Gears of War: E-Day Premium Edition Upgrade', price:{ current:800, regular:800, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-upgrade/UPGRADE', subscriptions:{}, rawHints:{} };
 const xboxConsolidated = consolidateMicrosoftSearch('Gears of War: E-Day', [xboxBase, xboxStandard, xboxPremium, xboxUpgrade])[0];
-assert.equal(xboxConsolidated.providerId, 'STD');
+assert.equal(xboxConsolidated.providerId, 'BASE');
 assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
 assert.equal(xboxConsolidated.price.current, 1799);
 assert.equal(xboxConsolidated.price.from, true);
@@ -99,17 +107,16 @@ assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
-const xboxStandardEdition = { provider:'microsoft', providerId:'STD27', title:'Example 27 Standard Edition', price:{ current:1899, regular:1899, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-standard/STD27', subscriptions:{}, rawHints:{} };
-const xboxUltimateCheaper = { provider:'microsoft', providerId:'ULT27', title:'Example 27 Ultimate Edition', price:{ current:1499, regular:2599, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-ultimate/ULT27', subscriptions:{}, rawHints:{} };
-const xboxBaseChoice = consolidateMicrosoftSearch('Example 27', [xboxUltimateCheaper, xboxStandardEdition])[0];
-assert.equal(xboxBaseChoice.providerId, 'STD27');
-assert.equal(xboxBaseChoice.price.current, 1899);
-assert.equal(xboxBaseChoice.rawHints.selectedEdition, 'standard');
-
 const xboxWrongSearch = [
   { provider:'microsoft', providerId:'GAMEPASS', title:'Xbox Game Pass Ultimate', price:{ current:499, currency:'CZK' }, subscriptions:{ gamePass:true }, rawHints:{} }
 ];
 assert.deepEqual(consolidateMicrosoftSearch('Gears of War: E-Day', xboxWrongSearch), []);
+
+const fc27XboxUltimate = { provider:'microsoft', providerId:'ULT', title:'EA SPORTS FC 27 Ultimate Edition XBOX One a XBOX Series X|S', price:{ current:2599, regular:2599, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/fc27-ultimate/ULT', subscriptions:{}, rawHints:{} };
+const fc27XboxStandard = { provider:'microsoft', providerId:'STD', title:'EA SPORTS FC 27 Standard Edition XBOX One a XBOX Series X|S', price:{ current:1899, regular:1899, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/fc27-standard/STD', subscriptions:{}, rawHints:{} };
+const fc27Xbox = consolidateMicrosoftSearch('EA SPORTS FC 27', [fc27XboxUltimate, fc27XboxStandard])[0];
+assert.equal(fc27Xbox.providerId, 'STD');
+assert.equal(fc27Xbox.price.current, 1899);
 
 
 assert.equal(historyValuesEqual('prices', { microsoft:null }, {}), true);

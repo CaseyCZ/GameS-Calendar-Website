@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, titleScore, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
 
@@ -110,91 +110,34 @@ function collectStrings(root, keys) {
   return uniq(values.map(cleanText).filter(Boolean));
 }
 
-function parsePriceText(value = '') {
-  const raw = cleanText(value);
-  if (!raw || /game\s*trial|zdarma|free/i.test(raw)) return null;
-  const match = raw.match(/-?\d[\d\s\u00a0.,]*/);
-  if (!match) return null;
-  let number = match[0].replace(/[\s\u00a0]/g, '');
-  const comma = number.lastIndexOf(',');
-  const dot = number.lastIndexOf('.');
-  if (comma > dot) number = number.replace(/\./g, '').replace(',', '.');
-  else if (dot > comma && comma >= 0) number = number.replace(/,/g, '');
-  else if (comma >= 0) number = number.replace(',', '.');
-  const parsed = Number(number);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function collectPriceCandidates(root) {
-  const out = [];
+function collectProductIds(root) {
+  const ids = new Set();
   walk(root, node => {
-    if (!node || Array.isArray(node) || typeof node !== 'object') return;
-    const id = cleanText(node.productId || node.id || node.skuId || '');
-    const title = cleanText(
-      node.name || node.title || node.productName || node.conceptName ||
-      node.displayName || node.editionName || node.skuName || ''
-    );
-    const regularText = [
-      node.basePrice, node.formattedBasePrice, node.strikethroughPrice,
-      node.regularPrice
-    ].find(value => typeof value === 'string' && value.trim()) || '';
-    const currentText = [
-      node.discountedPrice, node.salePrice, node.formattedDiscountedPrice,
-      node.formattedPrice
-    ].find(value => typeof value === 'string' && value.trim()) || regularText;
-    const regularRaw = [
-      node.basePriceValue, node.regularPriceValue,
-      typeof node.basePrice === 'number' ? node.basePrice : null,
-      typeof node.regularPrice === 'number' ? node.regularPrice : null
-    ].find(value => typeof value === 'number' && Number.isFinite(value));
-    const currentRaw = [
-      node.discountedPriceValue, node.salePriceValue,
-      typeof node.discountedPrice === 'number' ? node.discountedPrice : null,
-      typeof node.salePrice === 'number' ? node.salePrice : null
-    ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularRaw;
-    const regular = parsePriceText(regularText) ?? regularRaw ?? null;
-    const current = parsePriceText(currentText) ?? currentRaw ?? regular;
-    if (!(Number.isFinite(current) && current > 0) && !(Number.isFinite(regular) && regular > 0)) return;
-    out.push({
-      id, title,
-      regularText: regularText || '',
-      currentText: currentText || regularText || '',
-      regular: Number.isFinite(regular) ? regular : null,
-      current: Number.isFinite(current) ? current : null,
-      currency: cleanText(node.currencyCode || node.currency || '')
-    });
+    if (Array.isArray(node)) return;
+    for (const value of Object.values(node)) {
+      if (typeof value !== 'string') continue;
+      const text = value.trim();
+      if (/^(?:UP|EP|JP|HP|PP)\d{4}-[A-Z0-9_-]+$/i.test(text)) ids.add(text);
+      const match = text.match(/\/product\/([^/?#]+)/i);
+      if (match) ids.add(decodeURIComponent(match[1]));
+    }
   });
-
-  const unique = new Map();
-  for (const item of out) {
-    const key = `${item.id}|${item.currentText}|${item.current}|${item.currency}`;
-    if (!unique.has(key)) unique.set(key, item);
-  }
-  return [...unique.values()];
+  return [...ids];
 }
 
-function selectPriceCandidate(root, providerId = '', { preferBase = false } = {}) {
-  const items = collectPriceCandidates(root);
-  if (!items.length) return null;
-  const requested = String(providerId || '').toUpperCase();
-  const editionText = item => `${item.id} ${item.title}`.toUpperCase();
-  const exact = requested
-    ? items.find(item => item.id && (String(item.id).toUpperCase() === requested || String(item.id).toUpperCase().startsWith(requested)))
-    : null;
-  if (exact && !preferBase) return exact;
-
-  return [...items].sort((a,b) => {
-    const at=editionText(a), bt=editionText(b);
-    const aStandard=/STANDARD|BASE/.test(at);
-    const bStandard=/STANDARD|BASE/.test(bt);
-    const aPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(at);
-    const bPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(bt);
-    if (preferBase && aStandard !== bStandard) return aStandard ? -1 : 1;
-    if (preferBase && aPremium !== bPremium) return aPremium ? 1 : -1;
-    const ap=Number(a.current ?? a.regular ?? Infinity);
-    const bp=Number(b.current ?? b.regular ?? Infinity);
-    return ap-bp;
-  })[0] || null;
+async function preferredConceptProduct(queryTitle, payloads, { force = false } = {}) {
+  const ids = collectProductIds({ payloads }).slice(0, 20);
+  if (!ids.length) return null;
+  const settled = await Promise.allSettled(ids.map(id => product(id, { force })));
+  const items = settled.filter(result => result.status === 'fulfilled' && result.value).map(result => result.value);
+  return items
+    .map(item => ({
+      item,
+      score: titleScore(queryTitle, item.title),
+      storefrontScore: storefrontTitleScore(queryTitle, item.title)
+    }))
+    .filter(entry => entry.score >= 0.45)
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)[0]?.item || null;
 }
 
 function collectImages(root) {
@@ -208,7 +151,7 @@ function collectImages(root) {
   return uniq(values.filter(url => /image|akamai|playstation|sndcdn|sony/i.test(url)));
 }
 
-function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase = false } = {}) {
+function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
   const title = firstString(payload, ['name', 'title', 'productName', 'conceptName']);
   const description = firstString(payload, ['longDescription', 'description', 'shortDescription']);
   const publisher = firstString(payload, ['publisherName', 'publisher']);
@@ -219,12 +162,11 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase 
   const ratingText = firstString(payload, ['averageRating', 'starRating']);
   const ratingNumber = firstNumber(payload, ['averageRating', 'starRating']);
   const ratingCount = firstNumber(payload, ['ratingCount', 'starRatingCount', 'totalRatingsCount']);
-  const selectedPrice = selectPriceCandidate(payload, providerId, { preferBase });
-  const regularText = selectedPrice?.regularText || firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
-  const currentText = selectedPrice?.currentText || firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
-  const regularValue = selectedPrice?.regular ?? parsePriceText(regularText) ?? firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
-  const currentValue = selectedPrice?.current ?? parsePriceText(currentText) ?? firstNumber(payload, ['discountedPriceValue', 'discountedPrice', 'salePriceValue']) ?? regularValue;
-  const currency = selectedPrice?.currency || firstString(payload, ['currencyCode', 'currency']);
+  const regularText = firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
+  const currentText = firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
+  const regularValue = firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
+  const currentValue = firstNumber(payload, ['discountedPriceValue', 'discountedPrice', 'salePriceValue']) ?? regularValue;
+  const currency = firstString(payload, ['currencyCode', 'currency']);
   return canonicalGame('playstation', {
     providerId,
     title,
@@ -247,13 +189,7 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase 
     media: { cover: images[0] || '', hero: images[1] || '', screenshots: images.slice(2, 18) },
     storeUrl: providerId ? `https://store.playstation.com/${config.psLocale}/product/${providerId}` : '',
     sourceUrl,
-    rawHints: {
-      operation: payload?.data ? 'graphql' : 'html',
-      priceProductId: selectedPrice?.id || null,
-      priceEdition: selectedPrice?.id && /STANDARD|BASE/i.test(selectedPrice.id) ? 'standard'
-        : selectedPrice?.id && /ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/i.test(selectedPrice.id) ? 'premium'
-        : null
-    }
+    rawHints: { operation: payload?.data ? 'graphql' : 'html' }
   });
 }
 
@@ -271,9 +207,22 @@ export async function concept(conceptId, { force = false } = {}) {
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
-  const normalized = normalizePsPayload(id, { payloads }, BASE, { preferBase: true });
-  normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
-  return normalized;
+
+  const conceptItem = normalizePsPayload(id, { payloads });
+  const preferred = await preferredConceptProduct(conceptItem.title, payloads, { force });
+
+  if (preferred) {
+    preferred.rawHints = {
+      ...(preferred.rawHints || {}),
+      conceptId:id,
+      conceptTitle:conceptItem.title,
+      selectedFromConcept:true
+    };
+    return preferred;
+  }
+
+  conceptItem.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
+  return conceptItem;
 }
 
 export async function catalog(category = 'all', { force = false, size = 100, offset = 0 } = {}) {

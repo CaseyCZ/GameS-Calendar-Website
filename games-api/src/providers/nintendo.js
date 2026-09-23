@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, titleScore, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, titleScore, uniq } from '../lib/normalize.js';
 
 const SEARCH_HOST = 'https://searching.nintendo-europe.com';
 const PRICE_API = 'https://api.ec.nintendo.com/v1/price';
@@ -13,30 +13,10 @@ const VALID_LISTS = new Set(['sales', 'new', 'ranking']);
 const arr = value => value == null ? [] : Array.isArray(value) ? value : [value];
 const first = value => Array.isArray(value) ? value[0] : value;
 
-function allNsuidsFromDoc(doc = {}) {
-  return uniq([...arr(doc.nsuid_txt), ...arr(doc.related_nsuids_txt)]
-    .map(value => String(value).trim())
-    .filter(value => /^7\d{13}$/.test(value)));
-}
-
-function preferredNsuidFromDoc(doc = {}) {
-  const ids = allNsuidsFromDoc(doc);
-  return ids.find(id => /^700100\d{8}$/.test(id))
-    || ids.find(id => !/^700700/.test(id))
-    || ids[0]
-    || '';
-}
-
 function nsuidFromDoc(doc = {}) {
-  return preferredNsuidFromDoc(doc);
-}
-
-function releaseDateForNsuid(doc = {}, nsuid = '') {
-  const ids = allNsuidsFromDoc(doc);
-  const dates = arr(doc.dates_released_dts).filter(Boolean);
-  const index = ids.indexOf(String(nsuid || ''));
-  if (index >= 0 && dates[index]) return dates[index];
-  return dates[0] || doc.date_from || doc.release_date_on_eshop || null;
+  return String(arr(doc.nsuid_txt).find(value => /^7\d{13}$/.test(String(value)))
+    || arr(doc.related_nsuids_txt).find(value => /^7\d{13}$/.test(String(value)))
+    || '').trim();
 }
 
 function normalizePlatforms(doc = {}) {
@@ -49,8 +29,8 @@ function normalizePlatforms(doc = {}) {
   return result.length ? result : ['Nintendo Switch'];
 }
 
-function normalizeDoc(doc = {}, { providerId = '' } = {}) {
-  const nsuid = String(providerId || preferredNsuidFromDoc(doc));
+function normalizeDoc(doc = {}) {
+  const nsuid = nsuidFromDoc(doc);
   const categories = uniq([
     ...arr(doc.pretty_game_categories_txt),
     ...arr(doc.game_categories_txt),
@@ -62,7 +42,7 @@ function normalizeDoc(doc = {}, { providerId = '' } = {}) {
   if (storeUrl) {
     try { storeUrl = new URL(storeUrl, NINTENDO_SITE).href; } catch {}
   }
-  const releaseDate = releaseDateForNsuid(doc, nsuid);
+  const releaseDate = first(doc.dates_released_dts) || doc.date_from || doc.release_date_on_eshop || null;
   const description = cleanText(doc.excerpt || doc.product_catalog_description_s || doc.gift_finder_description_s || '');
   const publisher = cleanText(doc.publisher || '');
   const developer = cleanText(doc.developer || '');
@@ -82,7 +62,6 @@ function normalizeDoc(doc = {}, { providerId = '' } = {}) {
     sourceUrl: `${SEARCH_HOST}/${config.nintendoLanguage}/select`,
     rawHints: {
       nsuid: nsuid || null,
-      relatedNsuids: allNsuidsFromDoc(doc).filter(id => id !== nsuid),
       fsId: doc.fs_id || null,
       ageRating: doc.pretty_agerating_s || doc.age_rating_value || null,
       ageRatingType: doc.age_rating_type || null,
@@ -163,7 +142,8 @@ export async function contents(titleIds, { force = false } = {}) {
   const docs = arr(payload?.response?.docs);
   const byId = new Map();
   for (const doc of docs) {
-    for (const id of allNsuidsFromDoc(doc)) byId.set(id, doc);
+    const id = nsuidFromDoc(doc);
+    if (id) byId.set(id, doc);
   }
   return ids.map(id => byId.get(id)).filter(Boolean);
 }
@@ -200,7 +180,7 @@ export async function productById(titleId, { force = false } = {}) {
   }
   const doc = (await contents(id, { force }))[0];
   if (!doc) throw new Error(`Nintendo title ${id} not found in official Europe search API`);
-  const result = normalizeDoc(doc, { providerId:id });
+  const result = normalizeDoc(doc);
   result.providerId = id;
   const pricing = await price(id, { force }).catch(() => null);
   const hit = arr(pricing?.prices).find(entry => String(entry?.title_id || entry?.titleId) === id);
@@ -231,7 +211,7 @@ export async function productByUrl(url, { force = false } = {}) {
 export async function search(query, { force = false, limit = 6 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `nintendo:search:${q.toLowerCase()}`;
+  const key = `nintendo:search:v2:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
@@ -240,9 +220,13 @@ export async function search(query, { force = false, limit = 6 } = {}) {
   const candidates = arr(payload?.response?.docs)
     .map(normalizeDoc)
     .filter(item => item?.title)
-    .map(item => ({ item, score: titleScore(q, item.title) }))
+    .map(item => ({
+      item,
+      score: titleScore(q, item.title),
+      storefrontScore: storefrontTitleScore(q, item.title)
+    }))
     .filter(entry => entry.score >= 0.28)
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)
     .slice(0, limit)
     .map(entry => entry.item);
 
