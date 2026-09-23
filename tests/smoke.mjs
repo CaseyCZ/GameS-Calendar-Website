@@ -310,6 +310,8 @@ assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true
 assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
 assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
 assert.equal(liveEnrichmentSource.includes('checkedProviders: group.providerNames'), true);
+assert.equal(liveEnrichmentSource.includes('screenObserver.disconnect()'), true);
+assert.equal(liveEnrichmentSource.includes('posl. známá'), true);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
@@ -337,6 +339,8 @@ const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('cardLivePrices(game)'), true);
 assert.equal(uiSource.includes("subscriptions?.eaPlay"), true);
 assert.equal(uiSource.includes("subscriptions?.cloudGaming"), true);
+assert.equal(uiSource.includes('livePriceMeta'), true);
+assert.equal(uiSource.includes('posl. známá'), true);
 assert.equal(uiSource.includes('card-service-badge'), true);
 assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
 

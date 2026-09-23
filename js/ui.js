@@ -61,21 +61,33 @@ export function formatLivePrice(price) {
 
 function cardLivePrices(game, limit = 3) {
   const items = LIVE_PRICE_SOURCES
-    .map(([provider, label, kind]) => ({ provider, label, kind, price: game.livePrices?.[provider] }))
-    .map(item => ({ ...item, text: formatLivePrice(item.price) }))
+    .map(([provider, label, kind]) => ({
+      provider,
+      label,
+      kind,
+      price: game.livePrices?.[provider],
+      lastKnownPrice: Boolean(game.livePriceMeta?.[provider]?.lastKnownPrice)
+    }))
+    .map(item => ({
+      ...item,
+      text: item.lastKnownPrice ? `posl. ${formatLivePrice(item.price)}` : formatLivePrice(item.price)
+    }))
     .filter(item => item.text);
   if (!items.length) return '';
 
   const shown = items.slice(0, limit);
   const more = Math.max(0, items.length - shown.length);
   return `<span class="card-live-prices" aria-label="Živé ceny">${shown.map(item =>
-    `<span class="card-price-chip" title="${escapeHtml(item.label)}">${sharedStoreIcon(item.kind, { className:'brand-icon--price' })}<span>${escapeHtml(item.text)}</span></span>`
+    `<span class="card-price-chip${item.lastKnownPrice ? ' is-stale' : ''}" title="${escapeHtml(item.lastKnownPrice ? `${item.label} · poslední známá cena` : item.label)}">${sharedStoreIcon(item.kind, { className:'brand-icon--price' })}<span>${escapeHtml(item.text)}</span></span>`
   ).join('')}${more ? `<span class="card-price-more">+${more}</span>` : ''}</span>`;
 }
 
 function livePriceForStore(game, kind) {
   const provider = { steam:'steam', epic:'epic', xbox:'microsoft', playstation:'playstation', nintendo:'nintendo' }[kind];
-  return provider ? formatLivePrice(game.livePrices?.[provider]) : '';
+  if (!provider) return '';
+  const text = formatLivePrice(game.livePrices?.[provider]);
+  if (!text) return '';
+  return game.livePriceMeta?.[provider]?.lastKnownPrice ? `${text} · posl. známá` : text;
 }
 
 export function formatDate(day, options = { day:'2-digit', month:'2-digit', year:'numeric' }) {

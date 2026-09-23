@@ -105,7 +105,11 @@ function compactLiveProviderEntry(detail = {}, previous = null) {
       rating: provider?.rating || prior.rating || null,
       ratingCount: provider?.ratingCount || prior.ratingCount || null,
       fetchedAt: provider?.fetchedAt || detail.verifiedAt || prior.fetchedAt || null,
-      lastKnownPrice: !provider?.price && Boolean(prior.price)
+      lastKnownPrice: Boolean(
+        provider?.rawHints?.lastKnownPrice
+        || provider?.lastKnownPrice
+        || (!provider?.price && prior.price)
+      )
     };
   }
   return {
@@ -167,6 +171,7 @@ function applyLiveProviderEntry(game, entry) {
   const before = JSON.stringify({
     links: game.links || {},
     livePrices: game.livePrices || {},
+    livePriceMeta: game.livePriceMeta || {},
     liveVerifiedAt: game.liveVerifiedAt || '',
     steamId: game.steamId || '',
     rating: game.rating || 0,
@@ -189,6 +194,13 @@ function applyLiveProviderEntry(game, entry) {
       .filter(([, provider]) => provider?.price)
       .map(([name, provider]) => [name, provider.price])
   );
+  game.livePriceMeta = Object.fromEntries(
+    Object.entries(providers)
+      .filter(([, provider]) => provider?.price)
+      .map(([name, provider]) => [name, {
+        lastKnownPrice: Boolean(provider?.lastKnownPrice || provider?.rawHints?.lastKnownPrice)
+      }])
+  );
   game.liveVerifiedAt = entry.verifiedAt || game.liveVerifiedAt || null;
   if (providers.steam?.providerId) game.steamId = String(providers.steam.providerId);
   const rated = providers.igdb?.rating
@@ -201,6 +213,7 @@ function applyLiveProviderEntry(game, entry) {
   return JSON.stringify({
     links: game.links || {},
     livePrices: game.livePrices || {},
+    livePriceMeta: game.livePriceMeta || {},
     liveVerifiedAt: game.liveVerifiedAt || '',
     steamId: game.steamId || '',
     rating: game.rating || 0,

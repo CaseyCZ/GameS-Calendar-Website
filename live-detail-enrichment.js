@@ -622,7 +622,10 @@ import { fetchApi } from './js/api.js';
     }
     const prefix = price.from ? 'od ' : '';
     const priced = `${prefix}${current}`;
-    return discount > 0 ? `${priced} · −${Math.round(discount)} %` : priced;
+    const base = discount > 0 ? `${priced} · −${Math.round(discount)} %` : priced;
+    return provider?.lastKnownPrice || provider?.rawHints?.lastKnownPrice
+      ? `${base} · posl. známá`
+      : base;
   }
 
   function ensureStoreGrid() {
@@ -799,6 +802,7 @@ import { fetchApi } from './js/api.js';
   const gamesGrid = document.getElementById('games');
   if (gamesGrid) {
     new MutationObserver(() => {
+      if (screenObserver) screenObserver.disconnect();
       observeGameCards();
       scheduleVisibleEnrichment();
     }).observe(gamesGrid, { childList: true });
