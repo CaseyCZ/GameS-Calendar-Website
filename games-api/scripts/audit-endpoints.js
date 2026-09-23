@@ -1,6 +1,7 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
 import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
+import { fetchJson } from '../src/lib/http.js';
 
 let failed = 0;
 for (const provider of Object.values(providers)) {
@@ -92,4 +93,22 @@ try {
 } catch (error) {
   failed += 1;
   console.error(`❌ FC 27 Standard edition probe: ${error?.message || error}`);
+}
+
+
+try {
+  const url = new URL('https://displaycatalog.mp.microsoft.com/v7.0/productFamilies/autosuggest');
+  url.searchParams.set('market', 'CZ');
+  url.searchParams.set('languages', 'cs-CZ');
+  url.searchParams.set('query', 'EA Sports FC 27');
+  url.searchParams.set('platformdependencyname', 'Windows.Xbox');
+  url.searchParams.set('productFamilyNames', 'Games');
+  url.searchParams.set('topProducts', '12');
+  const payload = await fetchJson(url, { attempts:2, timeoutMs:10000 });
+  console.log('ℹ️ Microsoft autosuggest FC 27 diagnostic', JSON.stringify({
+    keys:Object.keys(payload || {}),
+    payload
+  }).slice(0, 18000));
+} catch (error) {
+  console.log(`ℹ️ Microsoft autosuggest FC 27 diagnostic failed: ${error?.message || error}`);
 }
