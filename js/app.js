@@ -962,6 +962,94 @@ function renderGameDialog(row) {
   updateSeoForGame(row);
 }
 
+function syncDialogNode(currentRoot, nextRoot, selector, {
+  parentSelector = '.detail-main',
+  before = []
+} = {}) {
+  const current = currentRoot.querySelector(selector);
+  const next = nextRoot.querySelector(selector);
+
+  if (current && next) {
+    if (current.outerHTML !== next.outerHTML) current.replaceWith(next.cloneNode(true));
+    return;
+  }
+  if (current && !next) {
+    current.remove();
+    return;
+  }
+  if (!next) return;
+
+  const parent = currentRoot.querySelector(parentSelector);
+  if (!parent) return;
+  const clone = next.cloneNode(true);
+  const anchor = before.map(item => parent.querySelector(item)).find(Boolean);
+  if (anchor) parent.insertBefore(clone, anchor);
+  else parent.appendChild(clone);
+}
+
+function patchGameDialog(row) {
+  const content = $('dialog-content');
+  const currentRoot = content.querySelector('.detail-hero');
+  if (!currentRoot) return renderGameDialog(row);
+
+  const template = document.createElement('template');
+  template.innerHTML = gameDialogHtml(row, isFamilyWatched(row)).trim();
+  const nextRoot = template.content.firstElementChild;
+  if (!nextRoot) return;
+
+  syncDialogNode(currentRoot, nextRoot, '.detail-cover', {
+    parentSelector: '.detail-hero',
+    before: ['.detail-main']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-kicker', { before: ['h2'] });
+  syncDialogNode(currentRoot, nextRoot, '.detail-aliases', { before: ['.detail-meta'] });
+  syncDialogNode(currentRoot, nextRoot, '.detail-meta', {
+    before: ['.detail-flags', '.service-badges', '.detail-summary']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-flags', {
+    before: ['.service-badges', '.detail-summary']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-summary', {
+    before: ['.detail-genres', '.detail-facts', '.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-genres', {
+    before: ['.detail-facts', '.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-facts', {
+    before: ['.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-subsection', {
+    before: ['.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-actions', {
+    before: ['.detail-media-section', '.detail-link-section--stores', '.detail-link-section']
+  });
+
+  const liveState = content.querySelector('.live-enrich-status')?.dataset.state || '';
+  const liveApplied = liveState === 'ok' || liveState === 'empty';
+  if (!liveApplied) {
+    syncDialogNode(currentRoot, nextRoot, '.detail-media-section', {
+      before: ['.detail-link-section--stores', '.detail-link-section']
+    });
+    syncDialogNode(currentRoot, nextRoot, '.detail-link-section--stores', {
+      before: ['.detail-link-section:not(.detail-link-section--stores)']
+    });
+  }
+  syncDialogNode(currentRoot, nextRoot, '.detail-link-section:not(.detail-link-section--stores)');
+
+  $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
+  const livePlatforms = new Set();
+  const addPlatform = platform => {
+    const value = typeof platform === 'string' ? platform : (platform?.name || platform?.abbreviation || '');
+    if (value) livePlatforms.add(String(value));
+  };
+  (row.platforms || []).forEach(addPlatform);
+  for (const release of row.game?.releases || []) (release.platforms || []).forEach(addPlatform);
+  $('game-dialog').dataset.livePlatforms = JSON.stringify([...livePlatforms]);
+  updateQuery();
+  updateSeoForGame(row);
+}
+
 async function openGame(rowKey, { updateUrl = true } = {}) {
   const row = rowByKey(rowKey);
   if (!row) return;
@@ -973,7 +1061,7 @@ async function openGame(rowKey, { updateUrl = true } = {}) {
     const detail = await loadGameDetail(row.game);
     if (!detail || state.openRowKey !== rowKey || !$('game-dialog').open) return;
     Object.assign(row.game, detail);
-    renderGameDialog(row);
+    patchGameDialog(row);
   } catch (error) {
     console.warn('Detail hry:', error);
   }

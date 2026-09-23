@@ -318,6 +318,10 @@ assert.equal(appSource.includes("removeAttribute('data-live-enriched-title')"), 
 assert.equal(appSource.includes("'eaPlay'"), true);
 assert.equal(appSource.includes('compactLiveProviderEntry'), true);
 assert.equal(appSource.includes('dataset.livePlatforms'), true);
+assert.equal(appSource.includes('function patchGameDialog'), true);
+assert.equal(appSource.includes('function syncDialogNode'), true);
+assert.equal(appSource.includes('patchGameDialog(row);'), true);
+assert.equal(appSource.includes("const liveApplied = liveState === 'ok' || liveState === 'empty'"), true);
 assert.equal(appSource.includes('checkedProviders'), true);
 
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
