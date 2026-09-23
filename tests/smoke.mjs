@@ -380,6 +380,8 @@ assert.equal(serverSource.includes("wanted.has('steam') && game.steamId"), true)
 assert.equal(serverSource.includes("if (!wanted.has(provider) || !price) continue"), true);
 assert.equal(serverSource.includes('subscriptionsForProviders(snapshot?.subscriptions || {}, wanted)'), true);
 assert.equal(serverSource.includes("if (wanted.has('igdb')) addFound(found, igdbIdentity)"), true);
+assert.equal(serverSource.includes("providers.playstation?.concept(String(game.psConceptId), { force, preferredTitle: title })"), true);
+assert.equal(serverSource.includes("directFromIdentity(igdbIdentity, wanted, { force, preferredTitle: title })"), true);
 assert.equal(serverSource.includes('bestSearchHitDetailed'), true);
 assert.equal(serverSource.includes('providerStatus,'), true);
 assert.equal(serverSource.includes("status: 'not_found'"), true);

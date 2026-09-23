@@ -519,7 +519,7 @@ async function resolveIgdbIdentity(game, title, { force = false } = {}) {
   return null;
 }
 
-async function directFromIdentity(identity, wanted, { force = false } = {}) {
+async function directFromIdentity(identity, wanted, { force = false, preferredTitle = '' } = {}) {
   if (!identity) return [];
   const ids = identity.externalIds || identity.rawHints?.externalIds || {};
   const jobs = [];
@@ -536,7 +536,7 @@ async function directFromIdentity(identity, wanted, { force = false } = {}) {
   if (wanted.has('playstation') && providers.playstation) {
     const ps = psIdentity(ids);
     if (ps.product) jobs.push(providers.playstation.product(String(ps.product), { force }));
-    else if (ps.concept) jobs.push(providers.playstation.concept(String(ps.concept), { force }));
+    else if (ps.concept) jobs.push(providers.playstation.concept(String(ps.concept), { force, preferredTitle }));
   }
 
   const out = [];
@@ -562,7 +562,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
     wanted.has('microsoft') && game.xboxProductId && providers.microsoft?.product(String(game.xboxProductId), { force }),
     wanted.has('microsoft') && game.microsoftProductId && providers.microsoft?.product(String(game.microsoftProductId), { force }),
     wanted.has('playstation') && game.psProductId && providers.playstation?.product(String(game.psProductId), { force }),
-    wanted.has('playstation') && game.psConceptId && providers.playstation?.concept(String(game.psConceptId), { force }),
+    wanted.has('playstation') && game.psConceptId && providers.playstation?.concept(String(game.psConceptId), { force, preferredTitle: title }),
     wanted.has('nintendo') && game.nintendoUrl && providers.nintendo?.productByUrl(String(game.nintendoUrl), { force }),
     wanted.has('nintendo') && game.nintendoTitleId && providers.nintendo?.productById(String(game.nintendoTitleId), { force })
   ].filter(Boolean);
@@ -574,7 +574,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const igdbIdentity = await resolveIgdbIdentity(game, title, { force });
   if (igdbIdentity) {
     if (wanted.has('igdb')) addFound(found, igdbIdentity);
-    const directStoreResults = await directFromIdentity(igdbIdentity, wanted, { force });
+    const directStoreResults = await directFromIdentity(igdbIdentity, wanted, { force, preferredTitle: title });
     directStoreResults.forEach(item => addFound(found, item));
   }
 
