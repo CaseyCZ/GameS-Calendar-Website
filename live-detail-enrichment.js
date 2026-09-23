@@ -739,18 +739,6 @@ import { fetchApi } from './js/api.js';
         }
       }
       if (!payload) {
-        const stored = window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId());
-        if (stored?.providers && Date.now() - Number(stored.updatedAt || 0) < SCREEN_CACHE_TTL_MS) {
-          payload = { results: [{
-            gameKey: currentGameId(),
-            identity: { igdbId: currentIgdbId() || '' },
-            providers: stored.providers,
-            merged: stored.merged || {}
-          }] };
-          cachePayload(cacheKey, payload);
-        }
-      }
-      if (!payload) {
         const providers = providersForPlatforms(platformTexts());
         const response = await fetchApi('/enrich', {
           method: 'POST',
