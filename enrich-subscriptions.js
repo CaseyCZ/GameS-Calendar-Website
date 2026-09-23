@@ -103,7 +103,7 @@ async function fetchGamePass() {
   const kinds = ['console','pc','cloud'];
   const merged = new Map();
   for (const kind of kinds) {
-    const payload = await requestJson(`/api/gamepass/${kind}?limit=5000`);
+    const payload = await requestJson(`/gamepass/${kind}?limit=5000`);
     const items = Array.isArray(payload?.items) ? payload.items : [];
     for (const item of items) {
       const id = String(item?.providerId || '').trim().toUpperCase();
@@ -119,7 +119,7 @@ async function fetchGamePass() {
 }
 
 async function fetchGeforceNow() {
-  const payload = await requestJson('/api/gfn/catalog?pages=30');
+  const payload = await requestJson('/gfn/catalog?pages=30');
   return (Array.isArray(payload?.items) ? payload.items : [])
     .map(item => ({
       id:String(item?.providerId || '').trim(),
