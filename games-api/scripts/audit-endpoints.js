@@ -70,7 +70,7 @@ try {
 
 try {
   const query = 'EA SPORTS FC 27';
-  const igdbHits = await providers.igdb.searchByName(query, { force:true, limit:20 });
+  const igdbHits = await providers.igdb.search(query, { force:true, limit:20 });
   const identity = (igdbHits || [])
     .map(item => ({ item, score:titleScore(query, item?.title) }))
     .sort((a,b) => b.score - a.score)[0]?.item || null;
