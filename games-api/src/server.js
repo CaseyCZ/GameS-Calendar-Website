@@ -982,10 +982,43 @@ function releaseSummary(value) {
   return first?.window || 'bez známého data';
 }
 
+function priceChangeSummary(value) {
+  const items = Object.values(value || {}).filter(price => price && (price.currentText || price.current != null));
+  if (!items.length) return 'cena už není dostupná';
+  const price = items[0];
+  if (price.isFree === true) return 'nyní zdarma';
+  const text = String(price.currentText || '').trim();
+  if (text) return `nová cena ${text}`;
+  const current = Number(price.current);
+  const currency = String(price.currency || '').trim();
+  return Number.isFinite(current) ? `nová cena ${current}${currency ? ` ${currency}` : ''}` : 'cena se změnila';
+}
+
+function subscriptionChangeSummary(value) {
+  const s = value || {};
+  const services = [];
+  if (s.gamePassConsole) services.push('Game Pass Console');
+  if (s.gamePassPc) services.push('PC Game Pass');
+  if (s.gamePass && !s.gamePassConsole && !s.gamePassPc) services.push('Game Pass');
+  if (s.cloudGaming) services.push('Xbox Cloud Gaming');
+  if (s.eaPlay) services.push('EA Play');
+  if (s.psPlus) services.push('PS Plus');
+  if (s.geforceNow) services.push('GeForce NOW');
+  return services.length ? `dostupnost: ${services.join(', ')}` : 'už není v evidovaném předplatném';
+}
+
 function pushEventForChange(change) {
   const name = change.game?.name || change.gameKey;
   if (change.field === 'gameAdded') return { key:`change:${change.id}`, title:'Nová sledovaná hra', body:`${name} byla přidána do katalogu.`, game:change.game };
   if (change.field === 'gameRemoved') return { key:`change:${change.id}`, title:'Změna sledované hry', body:`${name} už není v aktuálním katalogu.`, game:change.game };
+  if (change.field === 'prices') return { key:`change:${change.id}`, title:'Změna ceny', body:`${name}: ${priceChangeSummary(change.newValue)}.`, game:change.game };
+  if (change.field === 'subscriptions') return { key:`change:${change.id}`, title:'Změna předplatného', body:`${name}: ${subscriptionChangeSummary(change.newValue)}.`, game:change.game };
+  if (change.field === 'earlyAccess') return {
+    key:`change:${change.id}`,
+    title:'Změna Early Access',
+    body:change.newValue === true ? `${name} vstoupila do Early Access.` : `${name} už není vedena jako Early Access.`,
+    game:change.game
+  };
   return { key:`change:${change.id}`, title:'Změna data vydání', body:`${name}: nový termín ${releaseSummary(change.newValue)}.`, game:change.game };
 }
 
