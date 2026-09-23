@@ -1,4 +1,4 @@
-import { cleanText, titleScore } from './normalize.js';
+import { cleanText, storefrontTitleScore, titleScore } from './normalize.js';
 
 function availabilityActions(availability = {}) {
   return (availability.Actions || availability.actions || [])
@@ -66,19 +66,48 @@ function isFullGameOffer(item) {
   return !/\b(upgrade|add[- ]?on|dlc|season pass|expansion pass|soundtrack|art ?book|coins?|credits?|points?|tokens?|currency|bonus pack)\b/i.test(title);
 }
 
+const PREMIUM_EDITION_RE = /\b(ultimate|deluxe|premium|gold|collector'?s?|vault|special|anniversary)\b/i;
+
+function isPremiumEdition(item) {
+  return PREMIUM_EDITION_RE.test(cleanText(item?.title || ''));
+}
+
 export function consolidateMicrosoftSearch(query, items = []) {
+  const wantsPremium = PREMIUM_EDITION_RE.test(cleanText(query || ''));
   const scored = (items || [])
     .filter(Boolean)
-    .map(item => ({ item, score: titleScore(query, item.title) }))
-    .filter(entry => entry.score >= 0.55)
-    .sort((a, b) => b.score - a.score);
+    .map(item => ({
+      item,
+      score: titleScore(query, item.title),
+      storefrontScore: storefrontTitleScore(query, item.title)
+    }))
+    .filter(entry => entry.storefrontScore >= 0.55)
+    .sort((a, b) =>
+      b.storefrontScore - a.storefrontScore
+      || b.score - a.score
+      || Number(a.item?.price?.current ?? Infinity) - Number(b.item?.price?.current ?? Infinity)
+    );
   if (!scored.length) return [];
 
-  const primary = scored[0].item;
   const related = scored.map(entry => entry.item);
-  const purchaseOffers = related
-    .filter(item => positivePrice(item) && isFullGameOffer(item))
-    .sort((a, b) => Number(a.price?.current ?? Infinity) - Number(b.price?.current ?? Infinity));
+  const primaryEntry = wantsPremium
+    ? scored[0]
+    : scored.find(entry => isFullGameOffer(entry.item) && !isPremiumEdition(entry.item)) || scored[0];
+  const primary = primaryEntry.item;
+
+  const purchaseOffers = scored
+    .filter(entry => positivePrice(entry.item) && isFullGameOffer(entry.item))
+    .sort((a, b) => {
+      if (!wantsPremium) {
+        const ap = isPremiumEdition(a.item);
+        const bp = isPremiumEdition(b.item);
+        if (ap !== bp) return ap ? 1 : -1;
+      }
+      return b.storefrontScore - a.storefrontScore
+        || Number(a.item?.price?.current ?? Infinity) - Number(b.item?.price?.current ?? Infinity);
+    })
+    .map(entry => entry.item);
+
   const chosen = purchaseOffers[0] || null;
   const offers = purchaseOffers.map(item => ({
     title: item.title,
@@ -92,14 +121,20 @@ export function consolidateMicrosoftSearch(query, items = []) {
   primary.rawHints = {
     ...(primary.rawHints || {}),
     xboxOffers: offers,
-    xboxEditionCount: offers.length
+    xboxEditionCount: offers.length,
+    selectedEdition: isPremiumEdition(primary) ? 'premium' : 'standard'
   };
 
   if (chosen) {
-    const differentOffer = String(chosen.providerId || '') !== String(primary.providerId || '');
+    const chosenIsPrimary = String(chosen.providerId || '') === String(primary.providerId || '');
+    if (!chosenIsPrimary && !wantsPremium && !isPremiumEdition(chosen)) {
+      primary.providerId = chosen.providerId;
+      primary.title = chosen.title;
+      primary.storeUrl = chosen.storeUrl;
+    }
     primary.price = {
       ...chosen.price,
-      from: differentOffer || purchaseOffers.length > 1,
+      from: purchaseOffers.length > 1,
       preorder: Boolean(chosen.price?.preorder || /pre.?order/i.test(chosen.title || '')),
       offerTitle: chosen.title || ''
     };
@@ -107,6 +142,6 @@ export function consolidateMicrosoftSearch(query, items = []) {
     primary.price = null;
   }
 
-  const rest = (items || []).filter(item => item !== primary);
+  const rest = related.filter(item => item !== primary);
   return [primary, ...rest];
 }

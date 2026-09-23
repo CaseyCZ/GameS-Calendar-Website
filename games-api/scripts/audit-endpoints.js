@@ -1,6 +1,6 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
-import { titleScore } from '../src/lib/normalize.js';
+import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
 
 let failed = 0;
 for (const provider of Object.values(providers)) {
@@ -66,3 +66,46 @@ try {
   console.error(`❌ microsoft E-Day fallback safety probe: ${error?.message || error}`);
 }
 
+
+try {
+  const query = 'EA Sports FC 27';
+  const microsoft = (await providers.microsoft.search(query, { force:true, limit:6 }))[0] || null;
+  const playstation = await providers.playstation.concept('10017332', { force:true });
+  const nintendo = await providers.nintendo.search(query, { force:true, limit:6 });
+  const exactNintendo = nintendo.filter(item => storefrontTitleScore(query, item?.title) >= 0.95);
+
+  const msOk = String(microsoft?.providerId || '').toUpperCase() === '9PH4M2J4680F'
+    && Math.abs(Number(microsoft?.price?.current) - 1899) < 0.01
+    && !/ultimate|deluxe|premium/i.test(String(microsoft?.title || ''));
+
+  const psOk = /STANDARD|BASE/i.test(String(playstation?.rawHints?.priceProductId || ''))
+    && Math.abs(Number(playstation?.price?.current) - 1899) < 0.01;
+
+  const nintendoBase = exactNintendo.filter(item => /^700100/.test(String(item?.providerId || '')));
+  const nintendoBundle = exactNintendo.filter(item => /^700700/.test(String(item?.providerId || '')));
+  const ninOk = nintendoBase.length >= 1 && nintendoBundle.length === 0
+    && nintendoBase.every(item => item.releaseDate === '2026-09-25');
+
+  const ok = msOk && psOk && ninOk;
+  console.log(`${ok ? '✅' : '❌'} FC 27 base-edition pricing regression`, {
+    microsoft:{
+      providerId:microsoft?.providerId || null,
+      title:microsoft?.title || null,
+      price:microsoft?.price || null,
+      storeUrl:microsoft?.storeUrl || null
+    },
+    playstation:{
+      priceProductId:playstation?.rawHints?.priceProductId || null,
+      price:playstation?.price || null
+    },
+    nintendo:exactNintendo.map(item => ({
+      providerId:item?.providerId || null,
+      releaseDate:item?.releaseDate || null,
+      price:item?.price || null
+    }))
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ FC 27 base-edition pricing regression: ${error?.message || error}`);
+}

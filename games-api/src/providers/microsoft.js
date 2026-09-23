@@ -159,6 +159,27 @@ export async function gamePassIds(kind, { force = false } = {}) {
   return cachePut(key, 'microsoft', { kind, ids, count: ids.length, sourceUrl: url.href }, config.ttl.gamePass);
 }
 
+async function catalogSearchProducts(query, { force = false } = {}) {
+  const q = String(query || '').trim();
+  if (!q) return [];
+  const cacheKey = `microsoft:catalog-search:v1:${config.market}:${config.language}:${q.toLowerCase()}`;
+  if (!force) {
+    const cached = cacheGet(cacheKey);
+    if (cached) return cached;
+  }
+
+  const url = new URL('https://displaycatalog.mp.microsoft.com/v7.0/productFamilies/Games/products');
+  url.searchParams.set('query', q);
+  url.searchParams.set('market', config.market);
+  url.searchParams.set('languages', config.language);
+  url.searchParams.set('fieldsTemplate', 'Details');
+  url.searchParams.set('platformdependencyname', 'windows.xbox');
+
+  const payload = await fetchJson(url);
+  const products = payload?.Products || payload?.products || payload?.Items || payload?.items || [];
+  return cachePut(cacheKey, 'microsoft', Array.isArray(products) ? products : [], config.ttl.search);
+}
+
 export async function displayProducts(ids, { force = false } = {}) {
   const unique = uniq((ids || []).map(String)).slice(0, 200);
   if (!unique.length) return [];
@@ -267,26 +288,33 @@ export async function gamePassCatalog(kind, { force = false, limit = 1000 } = {}
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `microsoft:search:v3:${config.market}:${config.language}:${q.toLowerCase()}`;
+  const key = `microsoft:search:v4:${config.market}:${config.language}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
   }
-  const locale = config.language;
-  const url = `https://www.xbox.com/${locale}/Search/Results?q=${encodeURIComponent(q)}`;
-  const html = await fetchText(url);
-  const xboxLinks = xboxLinksFromSearch(html);
-  const ids = new Set(xboxLinks.keys());
-  const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
-  for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
 
-  const products = await displayProducts([...ids].slice(0, 20), { force });
-  const productIds = products.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean);
+  let products = await catalogSearchProducts(q, { force });
+  let xboxLinks = new Map();
+
+  if (!products.length) {
+    const html = await fetchText(xboxSearchUrl(q));
+    xboxLinks = xboxLinksFromSearch(html);
+    const ids = new Set(xboxLinks.keys());
+    const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
+    for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
+    products = await displayProducts([...ids].slice(0, 20), { force });
+  }
+
+  const productIds = products
+    .map(item => String(item?.ProductId || item?.productId || '').toUpperCase())
+    .filter(Boolean);
   const membership = await subscriptionKindsForIds(productIds, { force });
   let normalized = products.map(item => {
-    const id = String(item?.ProductId || item?.productId || '');
+    const id = String(item?.ProductId || item?.productId || '').toUpperCase();
+    const title = localProps(item).ProductTitle || localProps(item).productTitle || '';
     return normalizeMicrosoftProduct(item, membership.get(id) || [], {
-      storeUrl: xboxLinks.get(id.toUpperCase()) || ''
+      storeUrl: xboxLinks.get(id) || xboxProductUrl(title, id)
     });
   }).filter(Boolean);
 
@@ -295,7 +323,8 @@ export async function search(query, { force = false, limit = 8 } = {}) {
     cachePut(key, 'microsoft', [], config.ttl.search);
     return [];
   }
-  let primary = consolidated[0] || null;
+
+  let primary = consolidated[0];
   const primaryUrl = primary?.storeUrl && /xbox\.com\/.*\/games\/store\//i.test(primary.storeUrl)
     ? primary.storeUrl
     : '';
@@ -304,18 +333,19 @@ export async function search(query, { force = false, limit = 8 } = {}) {
     try {
       const pageHtml = await fetchText(primaryUrl);
       const pageLinks = xboxLinksFromSearch(pageHtml);
-      const knownIds = new Set(productIds.map(id => id.toUpperCase()));
+      const knownIds = new Set(productIds);
       const relatedIds = [...pageLinks.keys()].filter(id => !knownIds.has(id)).slice(0, 30);
       if (relatedIds.length) {
         const relatedProducts = await displayProducts(relatedIds, { force });
-        const relatedMembership = await subscriptionKindsForIds(
-          relatedProducts.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean),
-          { force }
-        );
+        const relatedProductIds = relatedProducts
+          .map(item => String(item?.ProductId || item?.productId || '').toUpperCase())
+          .filter(Boolean);
+        const relatedMembership = await subscriptionKindsForIds(relatedProductIds, { force });
         const relatedNormalized = relatedProducts.map(item => {
-          const id = String(item?.ProductId || item?.productId || '');
+          const id = String(item?.ProductId || item?.productId || '').toUpperCase();
+          const title = localProps(item).ProductTitle || localProps(item).productTitle || '';
           return normalizeMicrosoftProduct(item, relatedMembership.get(id) || [], {
-            storeUrl: pageLinks.get(id.toUpperCase()) || ''
+            storeUrl: pageLinks.get(id) || xboxProductUrl(title, id)
           });
         }).filter(Boolean);
         normalized = [...normalized, ...relatedNormalized];

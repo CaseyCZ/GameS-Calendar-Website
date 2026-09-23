@@ -99,6 +99,13 @@ assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
+const xboxStandardEdition = { provider:'microsoft', providerId:'STD27', title:'Example 27 Standard Edition', price:{ current:1899, regular:1899, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-standard/STD27', subscriptions:{}, rawHints:{} };
+const xboxUltimateCheaper = { provider:'microsoft', providerId:'ULT27', title:'Example 27 Ultimate Edition', price:{ current:1499, regular:2599, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-ultimate/ULT27', subscriptions:{}, rawHints:{} };
+const xboxBaseChoice = consolidateMicrosoftSearch('Example 27', [xboxUltimateCheaper, xboxStandardEdition])[0];
+assert.equal(xboxBaseChoice.providerId, 'STD27');
+assert.equal(xboxBaseChoice.price.current, 1899);
+assert.equal(xboxBaseChoice.rawHints.selectedEdition, 'standard');
+
 const xboxWrongSearch = [
   { provider:'microsoft', providerId:'GAMEPASS', title:'Xbox Game Pass Ultimate', price:{ current:499, currency:'CZK' }, subscriptions:{ gamePass:true }, rawHints:{} }
 ];
