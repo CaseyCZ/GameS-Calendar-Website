@@ -332,7 +332,7 @@ export function listRecentChanges({ limit = 100, since = 0, type = 'all', gameKe
           ? ['subscriptions']
           : type === 'early'
             ? ['earlyAccess']
-            : ['gameAdded', 'releaseDates', 'gameRemoved'];
+            : ['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess'];
   const keys = [...new Set((gameKeys || []).map(String).filter(Boolean))].slice(0, 500);
   const clauses = [`h.field IN (${fields.map(() => '?').join(',')})`, 'h.changed_at >= ?'];
   const params = [...fields, Math.max(0, Number(since) || 0)];
