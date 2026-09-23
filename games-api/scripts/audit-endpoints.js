@@ -155,3 +155,55 @@ try {
 } catch (error) {
   console.log(`ℹ️ FC 27 identity diagnostic failed: ${error?.message || error}`);
 }
+
+
+try {
+  const response = await fetch('https://130.61.49.108/games-api/enrich?force=1', {
+    method:'POST',
+    headers:{ 'content-type':'application/json', accept:'application/json' },
+    body:JSON.stringify({
+      game:{ id:'408819', igdbId:'408819', title:'EA Sports FC 27' },
+      providers:['igdb','playstation','nintendo','microsoft','steam','epic']
+    })
+  });
+  const payload = await response.json();
+  console.log('ℹ️ FC 27 live enrich diagnostic', {
+    status:response.status,
+    identity:payload?.identity || null,
+    providers:Object.fromEntries(Object.entries(payload?.providers || {}).map(([name,item]) => [name, item ? {
+      providerId:item.providerId || null,
+      title:item.title || null,
+      price:item.price || null,
+      storeUrl:item.storeUrl || null,
+      externalIds:item.externalIds || item.rawHints?.externalIds || null
+    } : null]))
+  });
+} catch (error) {
+  console.log(`ℹ️ FC 27 live enrich diagnostic failed: ${error?.message || error}`);
+}
+
+try {
+  const language = 'en';
+  const url = new URL(`https://searching.nintendo-europe.com/${language}/select`);
+  url.searchParams.set('q', 'EA Sports FC 27');
+  url.searchParams.set('fq', 'type:GAME');
+  url.searchParams.set('rows', '30');
+  url.searchParams.set('wt', 'json');
+  const response = await fetch(url, { headers:{ accept:'application/json' } });
+  const payload = await response.json();
+  const docs = Array.isArray(payload?.response?.docs) ? payload.response.docs : [];
+  console.log('ℹ️ FC 27 raw Nintendo diagnostic', docs.slice(0, 20).map(doc => ({
+    title:doc.title || null,
+    sortingTitle:doc.sorting_title || null,
+    nsuid:doc.nsuid_txt || null,
+    relatedNsuids:doc.related_nsuids_txt || null,
+    fsId:doc.fs_id || null,
+    url:doc.url || doc.gift_finder_detail_page_store_link_s || null,
+    productCodes:doc.product_code_txt || null,
+    playableOn:doc.playable_on_txt || null,
+    dateFrom:doc.date_from || null,
+    releaseDate:doc.release_date_on_eshop || null
+  })));
+} catch (error) {
+  console.log(`ℹ️ FC 27 raw Nintendo diagnostic failed: ${error?.message || error}`);
+}
