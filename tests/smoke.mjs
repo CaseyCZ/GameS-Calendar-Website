@@ -335,6 +335,8 @@ assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
 
 const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
+assert.equal(dbSource.includes("if (price) merged.prices[provider] = price"), true);
+assert.equal(dbSource.includes("else if (!(provider in merged.prices)) merged.prices[provider] = null"), true);
 assert.equal(dbSource.includes('lastMeaningfulHistoryValue'), true);
 assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
 assert.equal(dbSource.includes('storeUrls'), true);
