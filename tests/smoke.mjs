@@ -104,6 +104,12 @@ const xboxWrongSearch = [
 ];
 assert.deepEqual(consolidateMicrosoftSearch('Gears of War: E-Day', xboxWrongSearch), []);
 
+const fc27XboxUltimate = { provider:'microsoft', providerId:'ULT', title:'EA SPORTS FC 27 Ultimate Edition XBOX One a XBOX Series X|S', price:{ current:2599, regular:2599, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/fc27-ultimate/ULT', subscriptions:{}, rawHints:{} };
+const fc27XboxStandard = { provider:'microsoft', providerId:'STD', title:'EA SPORTS FC 27 Standard Edition XBOX One a XBOX Series X|S', price:{ current:1899, regular:1899, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/fc27-standard/STD', subscriptions:{}, rawHints:{} };
+const fc27Xbox = consolidateMicrosoftSearch('EA SPORTS FC 27', [fc27XboxUltimate, fc27XboxStandard])[0];
+assert.equal(fc27Xbox.providerId, 'STD');
+assert.equal(fc27Xbox.price.current, 1899);
+
 
 assert.equal(historyValuesEqual('prices', { microsoft:null }, {}), true);
 assert.equal(historyValuesEqual('subscriptions', { gamePass:false }, {}), true);

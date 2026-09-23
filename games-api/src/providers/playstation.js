@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, titleScore, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
 
@@ -110,6 +110,36 @@ function collectStrings(root, keys) {
   return uniq(values.map(cleanText).filter(Boolean));
 }
 
+function collectProductIds(root) {
+  const ids = new Set();
+  walk(root, node => {
+    if (Array.isArray(node)) return;
+    for (const value of Object.values(node)) {
+      if (typeof value !== 'string') continue;
+      const text = value.trim();
+      if (/^(?:UP|EP|JP|HP|PP)\d{4}-[A-Z0-9_]+$/i.test(text)) ids.add(text);
+      const match = text.match(/\/product\/([^/?#]+)/i);
+      if (match) ids.add(decodeURIComponent(match[1]));
+    }
+  });
+  return [...ids];
+}
+
+async function preferredConceptProduct(queryTitle, payloads, { force = false } = {}) {
+  const ids = collectProductIds({ payloads }).slice(0, 20);
+  if (!ids.length) return null;
+  const settled = await Promise.allSettled(ids.map(id => product(id, { force })));
+  const items = settled.filter(result => result.status === 'fulfilled' && result.value).map(result => result.value);
+  return items
+    .map(item => ({
+      item,
+      score: titleScore(queryTitle, item.title),
+      storefrontScore: storefrontTitleScore(queryTitle, item.title)
+    }))
+    .filter(entry => entry.score >= 0.45)
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)[0]?.item || null;
+}
+
 function collectImages(root) {
   const values = [];
   walk(root, node => {
@@ -177,9 +207,22 @@ export async function concept(conceptId, { force = false } = {}) {
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
-  const normalized = normalizePsPayload(id, { payloads });
-  normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
-  return normalized;
+
+  const conceptItem = normalizePsPayload(id, { payloads });
+  const preferred = await preferredConceptProduct(conceptItem.title, payloads, { force });
+
+  if (preferred) {
+    preferred.rawHints = {
+      ...(preferred.rawHints || {}),
+      conceptId:id,
+      conceptTitle:conceptItem.title,
+      selectedFromConcept:true
+    };
+    return preferred;
+  }
+
+  conceptItem.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
+  return conceptItem;
 }
 
 export async function catalog(category = 'all', { force = false, size = 100, offset = 0 } = {}) {

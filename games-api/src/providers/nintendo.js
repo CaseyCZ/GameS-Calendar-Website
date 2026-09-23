@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, titleScore, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, titleScore, uniq } from '../lib/normalize.js';
 
 const SEARCH_HOST = 'https://searching.nintendo-europe.com';
 const PRICE_API = 'https://api.ec.nintendo.com/v1/price';
@@ -211,7 +211,7 @@ export async function productByUrl(url, { force = false } = {}) {
 export async function search(query, { force = false, limit = 6 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `nintendo:search:${q.toLowerCase()}`;
+  const key = `nintendo:search:v2:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
@@ -220,9 +220,13 @@ export async function search(query, { force = false, limit = 6 } = {}) {
   const candidates = arr(payload?.response?.docs)
     .map(normalizeDoc)
     .filter(item => item?.title)
-    .map(item => ({ item, score: titleScore(q, item.title) }))
+    .map(item => ({
+      item,
+      score: titleScore(q, item.title),
+      storefrontScore: storefrontTitleScore(q, item.title)
+    }))
     .filter(entry => entry.score >= 0.28)
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)
     .slice(0, limit)
     .map(entry => entry.item);
 

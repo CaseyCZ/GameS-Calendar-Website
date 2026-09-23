@@ -1,4 +1,4 @@
-import { cleanText, titleScore } from './normalize.js';
+import { cleanText, storefrontTitleScore, titleScore } from './normalize.js';
 
 function availabilityActions(availability = {}) {
   return (availability.Actions || availability.actions || [])
@@ -69,9 +69,13 @@ function isFullGameOffer(item) {
 export function consolidateMicrosoftSearch(query, items = []) {
   const scored = (items || [])
     .filter(Boolean)
-    .map(item => ({ item, score: titleScore(query, item.title) }))
+    .map(item => ({
+      item,
+      score: titleScore(query, item.title),
+      storefrontScore: storefrontTitleScore(query, item.title)
+    }))
     .filter(entry => entry.score >= 0.55)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score);
   if (!scored.length) return [];
 
   const primary = scored[0].item;

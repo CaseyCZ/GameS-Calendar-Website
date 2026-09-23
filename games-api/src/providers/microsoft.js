@@ -13,6 +13,7 @@ const SIGL_IDS = Object.freeze({
 });
 
 const DISPLAY_CATALOG = 'https://displaycatalog.mp.microsoft.com/v7.0/products';
+const DISPLAY_SEARCH = 'https://displaycatalog.mp.microsoft.com/v7.0/productFamilies/Games/products';
 
 function xboxSearchUrl(query = '') {
   return `https://www.xbox.com/${config.language}/Search/Results?q=${encodeURIComponent(String(query || '').trim())}`;
@@ -264,23 +265,52 @@ export async function gamePassCatalog(kind, { force = false, limit = 1000 } = {}
   return products.map(item => normalizeMicrosoftProduct(item, [kind])).filter(Boolean);
 }
 
+async function catalogSearch(query, { force = false, limit = 20 } = {}) {
+  const q = String(query || '').trim();
+  if (!q) return [];
+  const key = `microsoft:catalog-search:v1:${config.market}:${config.language}:${q.toLowerCase()}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached.slice(0, limit);
+  }
+  const url = new URL(DISPLAY_SEARCH);
+  url.searchParams.set('query', q);
+  url.searchParams.set('market', config.market);
+  url.searchParams.set('languages', config.language);
+  url.searchParams.set('fieldsTemplate', 'details');
+  url.searchParams.set('platformdependencyname', 'windows.xbox');
+  const payload = await fetchJson(url, { attempts: 2, timeoutMs: 12_000 });
+  const products = payload?.Products || payload?.products || payload?.Items || payload?.items || [];
+  const list = Array.isArray(products) ? products.slice(0, Math.max(1, Math.min(50, Number(limit) || 20))) : [];
+  return cachePut(key, 'microsoft', list, config.ttl.search);
+}
+
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `microsoft:search:v3:${config.market}:${config.language}:${q.toLowerCase()}`;
+  const key = `microsoft:search:v4:${config.market}:${config.language}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
   }
   const locale = config.language;
-  const url = `https://www.xbox.com/${locale}/Search/Results?q=${encodeURIComponent(q)}`;
-  const html = await fetchText(url);
-  const xboxLinks = xboxLinksFromSearch(html);
-  const ids = new Set(xboxLinks.keys());
-  const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
-  for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
+  let products = [];
+  let xboxLinks = new Map();
 
-  const products = await displayProducts([...ids].slice(0, 20), { force });
+  try {
+    products = await catalogSearch(q, { force, limit: 30 });
+  } catch {}
+
+  if (!products.length) {
+    const url = `https://www.xbox.com/${locale}/Search/Results?q=${encodeURIComponent(q)}`;
+    const html = await fetchText(url);
+    xboxLinks = xboxLinksFromSearch(html);
+    const ids = new Set(xboxLinks.keys());
+    const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
+    for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
+    products = await displayProducts([...ids].slice(0, 20), { force });
+  }
+
   const productIds = products.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean);
   const membership = await subscriptionKindsForIds(productIds, { force });
   let normalized = products.map(item => {
