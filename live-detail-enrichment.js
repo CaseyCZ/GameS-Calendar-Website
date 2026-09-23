@@ -682,7 +682,7 @@ import { fetchApi } from './js/api.js';
     const stores = {
       steam: { provider: providers?.steam, label: 'Steam' },
       epic: { provider: providers?.epic, label: 'Epic Games' },
-      xbox: { provider: providers?.microsoft, label: 'Xbox Store' },
+      xbox: { provider: providers?.microsoft, label: 'Microsoft / Xbox Store' },
       playstation: { provider: providers?.playstation, label: 'PlayStation Store' },
       nintendo: { provider: providers?.nintendo, label: 'Nintendo Store' }
     };

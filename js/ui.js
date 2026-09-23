@@ -340,6 +340,7 @@ function platformStoreLinks(row, links) {
   if (groups.has('PC')) {
     add(row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam, 'steam', Boolean(row.game.links?.steam));
     add(row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic, 'epic', Boolean(row.game.links?.epic));
+    add(row.game.links?.xbox ? 'Microsoft / Xbox Store' : 'Hledat na Microsoft / Xbox', links.xbox, 'xbox', Boolean(row.game.links?.xbox));
   }
   if (groups.has('PS5') || groups.has('PS4')) add('PlayStation Store', links.playstation, 'playstation');
   if (groups.has('Xbox Series') || groups.has('Xbox One') || groups.has('Xbox 360')) add('Xbox Store', links.xbox, 'xbox');

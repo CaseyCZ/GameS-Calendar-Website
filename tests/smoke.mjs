@@ -315,6 +315,7 @@ assert.equal(liveEnrichmentSource.includes('checkedProviders: group.providerName
 assert.equal(liveEnrichmentSource.includes('screenObserver.disconnect()'), true);
 assert.equal(liveEnrichmentSource.includes('posl. známá'), true);
 assert.equal(liveEnrichmentSource.includes('wrap.replaceChildren()'), true);
+assert.equal(liveEnrichmentSource.includes("label: 'Microsoft / Xbox Store'"), true);
 assert.equal(liveEnrichmentSource.includes('const displayProviders = stored?.providers || providers'), false);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
@@ -351,6 +352,8 @@ const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('cardLivePrices(row)'), true);
 assert.equal(uiSource.includes('priceProvidersForRow'), true);
 assert.equal(uiSource.includes('serviceKindsForRow'), true);
+assert.equal(uiSource.includes("'Microsoft / Xbox Store'"), true);
+assert.equal(uiSource.includes("'Hledat na Microsoft / Xbox'"), true);
 assert.equal(uiSource.includes("subscriptions?.eaPlay"), true);
 assert.equal(uiSource.includes("subscriptions?.cloudGaming"), true);
 assert.equal(uiSource.includes('livePriceMeta'), true);
