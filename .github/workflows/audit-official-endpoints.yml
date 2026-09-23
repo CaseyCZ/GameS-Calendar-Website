@@ -9,12 +9,14 @@ on:
       - main
     paths:
       - 'games-api/**'
+      - 'enrich-subscriptions.js'
       - '.github/workflows/audit-official-endpoints.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'games-api/**'
+      - 'enrich-subscriptions.js'
       - '.github/workflows/audit-official-endpoints.yml'
 
 permissions:
@@ -57,3 +59,9 @@ jobs:
           GAMES_API_GFN_LANGUAGE: en_US
           STEAM_WEB_API_KEY: ${{ secrets.STEAM_WEB_API_KEY }}
         run: npm run audit
+
+      - name: Dry-run subscription enrichment
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+        run: node enrich-subscriptions.js --dry-run
+

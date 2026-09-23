@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'enrich-live-igdb.js'
+      - 'enrich-subscriptions.js'
       - 'repair-catalog.js'
       - 'build-web-index.js'
       - '.github/workflows/refresh-catalog.yml'
@@ -42,6 +43,11 @@ jobs:
           IGDB_LIVE_BATCH_SIZE: 500
           IGDB_LIVE_RETRIES: 6
         run: npm run enrich-live-igdb
+
+      - name: Enrich subscription catalogs
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+        run: npm run enrich-subscriptions
 
       - name: Repair and normalize catalog
         run: npm run repair-catalog
