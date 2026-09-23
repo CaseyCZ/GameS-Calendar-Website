@@ -278,6 +278,13 @@ assert.equal(appSource.includes('compactLiveProviderEntry'), true);
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
 assert.equal(nintendoProviderSource.includes('nintendo:search:v2:'), true);
 
+const steamProviderSource = readFileSync(new URL('../games-api/src/providers/steam.js', import.meta.url), 'utf8');
+assert.equal(steamProviderSource.includes('data.is_free === true'), true);
+
+const playstationProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
+assert.equal(playstationProviderSource.includes('psPlusCatalog'), true);
+assert.equal(playstationProviderSource.includes("psPlusSource: 'playstation-monthly-category'"), true);
+
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
 
@@ -293,6 +300,7 @@ const serverSource = readFileSync(new URL('../games-api/src/server.js', import.m
 assert.equal(serverSource.includes("change.field === 'prices'"), true);
 assert.equal(serverSource.includes("change.field === 'subscriptions'"), true);
 assert.equal(serverSource.includes("change.field === 'earlyAccess'"), true);
+assert.equal(serverSource.includes('result.value.storefrontScore >= threshold'), true);
 
 const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
