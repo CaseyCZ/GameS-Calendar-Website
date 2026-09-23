@@ -1,5 +1,6 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
+import { igdbProvider } from '../src/providers/igdb.js';
 import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
 
 let failed = 0;
@@ -103,7 +104,7 @@ try {
 
 
 try {
-  const igdb = await providers.igdb.product('408819', { force:true });
+  const igdb = await igdbProvider.product('408819', { force:true });
   const ids = igdb?.externalIds || igdb?.rawHints?.externalIds || {};
   const diagnostic = {
     igdbTitle: igdb?.title || null,
