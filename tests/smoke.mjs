@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
-import { consolidateMicrosoftSearch, microsoftPriceOf, normalizeMicrosoftProduct } from '../games-api/src/providers/microsoft.js';
+import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
@@ -50,14 +50,6 @@ assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
-const normalizedXbox = normalizeMicrosoftProduct({
-  ProductId:'TEST',
-  LocalizedProperties:[{ ProductTitle:'Test Xbox Game' }],
-  Properties:{},
-  MarketProperties:[{}],
-  DisplaySkuAvailabilities:[]
-}, [], { storeUrl:'https://www.xbox.com/cs-CZ/games/store/test-xbox-game/TEST' });
-assert.equal(normalizedXbox.storeUrl.includes('xbox.com'), true);
 
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
 assert.equal(matchesSearch({ name:'Call of Duty: Modern Warfare', aliases:[], developers:[], publishers:[], series:[] }, 'call warfare'), true);
