@@ -339,4 +339,17 @@ const compactDataset = normalizePayload(compactPayload);
 assert.equal(compactDataset.games.length, compactPayload.games.length);
 assert.ok(compactDataset.games.every(game => Array.isArray(game.releases)));
 
+const versionSource = readFileSync(new URL('../version.js', import.meta.url), 'utf8');
+const versionMatch = versionSource.match(/GAMES_APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+assert.ok(versionMatch, 'Missing GAMES_APP_VERSION');
+const releaseVersion = versionMatch[1];
+const rootPackage = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const rootLock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'));
+const swSource = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+assert.equal(rootPackage.version, releaseVersion);
+assert.equal(rootLock.version, releaseVersion);
+assert.equal(rootLock.packages?.['']?.version, releaseVersion);
+assert.equal(swSource.includes(`globalThis.GAMES_APP_VERSION || '${releaseVersion}'`), true);
+assert.equal(serverSource.includes('url: `./?${query}`'), true);
+
 console.log('Smoke tests passed.');

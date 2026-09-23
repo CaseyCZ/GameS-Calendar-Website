@@ -1065,7 +1065,7 @@ async function runPushNotifications() {
       const payload = JSON.stringify({
         title: first.title,
         body: `${first.body}${extra}`,
-        url: `/games/?${query}`,
+        url: `./?${query}`,
         tag: first.key
       });
       try {
