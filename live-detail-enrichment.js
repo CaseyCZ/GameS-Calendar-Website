@@ -651,6 +651,16 @@ import { fetchApi } from './js/api.js';
         verifiedAt: new Date().toISOString()
       }
     }));
+    window.dispatchEvent(new CustomEvent('games:live-enriched', {
+      detail: {
+        gameId: currentGameId(),
+        igdbId: String(result.identity?.igdbId || currentIgdbId() || ''),
+        title,
+        providers,
+        merged,
+        verifiedAt: new Date().toISOString()
+      }
+    }));
     improveStoreLinks(providers);
     addTrailer(merged, providers);
     addHistory(result.gameKey || result.query?.id || '');
@@ -676,6 +686,18 @@ import { fetchApi } from './js/api.js';
     try {
       const cacheKey = currentEnrichmentKey();
       let payload = cachedPayload(cacheKey);
+      if (!payload) {
+        const stored = window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId());
+        if (stored?.providers && Date.now() - Number(stored.updatedAt || 0) < SCREEN_CACHE_TTL_MS) {
+          payload = { results: [{
+            gameKey: currentGameId(),
+            identity: { igdbId: currentIgdbId() || '' },
+            providers: stored.providers,
+            merged: stored.merged || {}
+          }] };
+          cachePayload(cacheKey, payload);
+        }
+      }
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
         const response = await fetchApi('/enrich', {
