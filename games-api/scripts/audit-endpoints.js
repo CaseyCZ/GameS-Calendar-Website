@@ -117,6 +117,25 @@ try {
 }
 
 try {
+  const item = await providers.steam.product('570', { force: true });
+  const ok = Boolean(
+    item
+    && /dota\s*2/i.test(String(item.title || ''))
+    && item?.price?.isFree === true
+    && Number(item?.price?.current) === 0
+  );
+  console.log(`${ok ? '✅' : '❌'} steam free-price probe`, {
+    providerId: item?.providerId || null,
+    title: item?.title || null,
+    price: item?.price || null
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ steam free-price probe: ${error?.message || error}`);
+}
+
+try {
   const query = 'Gears of War: E-Day';
   const expectedId = '9N4PT8HGCDHQ';
   const item = await providers.microsoft.product(expectedId, { force: true });
