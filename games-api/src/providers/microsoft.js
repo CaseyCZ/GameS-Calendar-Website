@@ -244,16 +244,24 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
       }).filter(Boolean);
     }
 
+    const exactTitle = item.title;
     const consolidated = consolidateMicrosoftSearch(item.title, [item, ...related]);
     const enriched = consolidated.find(candidate => String(candidate?.providerId || '').toUpperCase() === id)
       || consolidated[0]
       || item;
+    const priceProductId = String(enriched.providerId || '').toUpperCase();
+    const priceOfferTitle = enriched.price?.offerTitle || enriched.title || '';
 
+    enriched.providerId = id;
+    enriched.title = exactTitle || enriched.title;
     enriched.storeUrl = pageUrl;
     enriched.subscriptions = { ...(enriched.subscriptions || {}) };
     if (signals.gamePass) enriched.subscriptions.gamePass = true;
     enriched.rawHints = {
       ...(enriched.rawHints || {}),
+      xboxCanonicalProductId: id,
+      xboxPriceProductId: priceProductId || id,
+      xboxPriceOfferTitle: priceOfferTitle,
       xboxPageVerified: true,
       xboxGamePassPage: signals.gamePass,
       xboxGamePassComingSoon: signals.comingSoon,
