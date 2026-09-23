@@ -323,6 +323,11 @@ assert.equal(appSource.includes('function syncDialogNode'), true);
 assert.equal(appSource.includes('patchGameDialog(row);'), true);
 assert.equal(appSource.includes("const liveApplied = liveState === 'ok' || liveState === 'empty'"), true);
 assert.equal(appSource.includes('checkedProviders'), true);
+assert.equal(appSource.includes('function patchVisibleLiveCard'), true);
+assert.equal(appSource.includes('function scheduleLiveCardPatch'), true);
+assert.equal(appSource.includes("for (const selector of ['.card-badges', '.game-card__body'])"), true);
+assert.equal(appSource.includes('scheduleLiveCardPatch(id, igdbId)'), true);
+assert.equal(appSource.includes('scheduleLiveCardPatch(gameIdValue, igdbIdValue)'), true);
 
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
 assert.equal(nintendoProviderSource.includes('nintendo:search:v2:'), true);

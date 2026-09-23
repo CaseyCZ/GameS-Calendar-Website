@@ -289,6 +289,8 @@ let onlineSearchSequence = 0;
 let onlineSearchAbortController = null;
 let calendarFeedMode = 'watch';
 let liveRenderTimer = 0;
+let liveCardPatchTimer = 0;
+const pendingLiveCardPatches = new Map();
 
 function scheduleLiveRender() {
   if (liveRenderTimer) return;
@@ -296,6 +298,52 @@ function scheduleLiveRender() {
     liveRenderTimer = 0;
     renderGames();
     notifyAvailableRows();
+  }, 80);
+}
+
+function patchVisibleLiveCard(card) {
+  const rowKey = String(card?.dataset?.rowKey || '').trim();
+  if (!rowKey) return;
+  const row = rowByKey(rowKey);
+  if (!row) return;
+
+  const template = document.createElement('template');
+  template.innerHTML = rowCard(
+    row,
+    state.watchlist.has(gameId(row.game)) || isFamilyWatched(row)
+  ).trim();
+  const nextCard = template.content.firstElementChild;
+  if (!nextCard) return;
+
+  for (const selector of ['.card-badges', '.game-card__body']) {
+    const current = card.querySelector(selector);
+    const next = nextCard.querySelector(selector);
+    if (!current || !next || current.outerHTML === next.outerHTML) continue;
+    current.replaceWith(next.cloneNode(true));
+  }
+}
+
+function scheduleLiveCardPatch(gameIdValue = '', igdbIdValue = '') {
+  const id = String(gameIdValue || '').trim();
+  const igdbId = String(igdbIdValue || '').trim();
+  if (!id && !igdbId) return;
+  pendingLiveCardPatches.set(`${id}|${igdbId}`, { id, igdbId });
+  if (liveCardPatchTimer) return;
+
+  liveCardPatchTimer = setTimeout(() => {
+    liveCardPatchTimer = 0;
+    const pending = [...pendingLiveCardPatches.values()];
+    pendingLiveCardPatches.clear();
+
+    document.querySelectorAll('#games .game-card').forEach(card => {
+      const cardId = String(card.dataset.liveGameId || '').trim();
+      const cardIgdbId = String(card.dataset.liveIgdbId || '').trim();
+      const matched = pending.some(item =>
+        (item.id && cardId === item.id)
+        || (item.igdbId && cardIgdbId === item.igdbId)
+      );
+      if (matched) patchVisibleLiveCard(card);
+    });
   }, 80);
 }
 
@@ -1350,7 +1398,7 @@ function bindEvents() {
       const sameId = gameId(game) === id;
       if (sameIgdb || sameId) changed = applyLiveProviderEntry(game, entry) || changed;
     }
-    if (changed) scheduleLiveRender();
+    if (changed) scheduleLiveCardPatch(id, igdbId);
   });
   window.addEventListener('games:subscription-updated', event => {
     const detail = event.detail || {};
@@ -1394,7 +1442,7 @@ function bindEvents() {
       if (JSON.stringify(game.subscriptions) !== before) changed = true;
     }
 
-    if (changed) scheduleLiveRender();
+    if (changed) scheduleLiveCardPatch(gameIdValue, igdbIdValue);
   });
   $('search-toggle').addEventListener('click', () => {
     const open = $('search-popover').hidden;
