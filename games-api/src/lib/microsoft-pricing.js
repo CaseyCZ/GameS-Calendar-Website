@@ -56,10 +56,10 @@ function parseStorefrontPriceLabel(value = '') {
   if (!label) return null;
 
   let currency = '';
-  if (/(?:Kč|CZK)\b/i.test(label)) currency = 'CZK';
-  else if (/(?:€|EUR)\b/i.test(label)) currency = 'EUR';
-  else if (/(?:£|GBP)\b/i.test(label)) currency = 'GBP';
-  else if (/(?:\$|USD)\b/i.test(label)) currency = 'USD';
+  if (/Kč|\bCZK\b/i.test(label)) currency = 'CZK';
+  else if (/€|\bEUR\b/i.test(label)) currency = 'EUR';
+  else if (/£|\bGBP\b/i.test(label)) currency = 'GBP';
+  else if (/\$|\bUSD\b/i.test(label)) currency = 'USD';
   if (!currency) return null;
 
   let number = label
