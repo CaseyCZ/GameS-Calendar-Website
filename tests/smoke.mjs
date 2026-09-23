@@ -282,6 +282,9 @@ assert.equal(advancedSource.includes("dy >= 88"), false);
 
 const appSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 assert.equal(appSource.includes("window.addEventListener('games:live-release-date'"), true);
+assert.equal(appSource.includes('function applyLiveReleaseDateCache'), true);
+assert.equal(appSource.includes('releaseDates?.steam'), true);
+assert.equal(appSource.includes('applyLiveReleaseDateCache(state.rows)'), true);
 assert.equal(appSource.includes("provider !== 'steam'"), true);
 assert.equal(appSource.includes("includes('PC')"), true);
 assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')"), true);

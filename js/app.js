@@ -118,6 +118,10 @@ function compactLiveProviderEntry(detail = {}, previous = null) {
       subscriptions: detail.merged?.subscriptions || previous?.merged?.subscriptions || {},
       fieldSources: detail.merged?.fieldSources || previous?.merged?.fieldSources || {}
     },
+    releaseDates: {
+      ...(previous?.releaseDates || {}),
+      ...(detail.releaseDates || {})
+    },
     verifiedAt: detail.verifiedAt || new Date().toISOString(),
     updatedAt: Date.now()
   };
@@ -229,6 +233,22 @@ function applyLiveProviderCache(rows = []) {
     seen.add(game);
     const entry = subscriptionKeys(game).map(key => liveProviders[key]).find(Boolean);
     if (entry) applyLiveProviderEntry(game, entry);
+  }
+}
+
+function applyLiveReleaseDateCache(rows = []) {
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || !(row.platformGroups || []).includes('PC')) continue;
+    const entry = subscriptionKeys(game).map(key => liveProviders[key]).find(Boolean);
+    const day = String(entry?.releaseDates?.steam || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || row.day === day) continue;
+    row.day = day;
+    row.timestamp = Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
+    row.from = day;
+    row.to = day;
+    row.sortDay = day;
+    row.precision = 'day';
   }
 }
 
@@ -1186,6 +1206,22 @@ function bindEvents() {
     const id = String(detail.gameId || '').trim();
     const igdbId = String(detail.igdbId || '').trim();
     const timestamp = Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
+
+    const previous = (igdbId && liveProviders[`igdb:${igdbId}`])
+      || (id && liveProviders[`id:${id}`])
+      || null;
+    const cached = {
+      ...(previous || {}),
+      releaseDates: {
+        ...(previous?.releaseDates || {}),
+        steam: day
+      },
+      updatedAt: Date.now()
+    };
+    if (id) liveProviders[`id:${id}`] = cached;
+    if (igdbId) liveProviders[`igdb:${igdbId}`] = cached;
+    writeLiveProviders(liveProviders);
+
     let changed = false;
 
     for (const row of state.rows) {
@@ -1470,6 +1506,7 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   state.catalogRows = flattenReleases(dataset);
   state.rows = [...state.catalogRows, ...state.onlineRows];
   applyLiveProviderCache(state.rows);
+  applyLiveReleaseDateCache(state.rows);
   applyLiveSubscriptionCache(state.rows);
   if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
   hydrateControls();
