@@ -100,3 +100,57 @@ try {
   failed += 1;
   console.error(`❌ FC 27 storefront edition probe: ${error?.message || error}`);
 }
+
+
+try {
+  const igdb = await providers.igdb.product('408819', { force:true });
+  const ids = igdb?.externalIds || igdb?.rawHints?.externalIds || {};
+  const diagnostic = {
+    igdbTitle: igdb?.title || null,
+    externalIds: ids,
+    websites: igdb?.websites || igdb?.rawHints?.websites || []
+  };
+
+  if (providers.playstation) {
+    const ps = {};
+    if (ids.playstationProduct) {
+      try { ps.product = await providers.playstation.product(String(ids.playstationProduct), { force:true }); }
+      catch (error) { ps.productError = error?.message || String(error); }
+    }
+    if (ids.playstationConcept) {
+      try { ps.concept = await providers.playstation.concept(String(ids.playstationConcept), { force:true }); }
+      catch (error) { ps.conceptError = error?.message || String(error); }
+    }
+    if (ids.playstation && !ids.playstationProduct && !ids.playstationConcept) {
+      try {
+        if (/^\d+$/.test(String(ids.playstation))) ps.concept = await providers.playstation.concept(String(ids.playstation), { force:true });
+        else ps.product = await providers.playstation.product(String(ids.playstation), { force:true });
+      } catch (error) { ps.genericError = error?.message || String(error); }
+    }
+    diagnostic.playstation = {
+      product: ps.product ? { id:ps.product.providerId, title:ps.product.title, price:ps.product.price, storeUrl:ps.product.storeUrl } : null,
+      concept: ps.concept ? { id:ps.concept.providerId, title:ps.concept.title, price:ps.concept.price, storeUrl:ps.concept.storeUrl } : null,
+      errors:{ product:ps.productError || null, concept:ps.conceptError || null, generic:ps.genericError || null }
+    };
+  }
+
+  if (providers.nintendo) {
+    try {
+      const items = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:10 });
+      diagnostic.nintendo = items.map(item => ({
+        id:item?.providerId || null,
+        title:item?.title || null,
+        price:item?.price || null,
+        storeUrl:item?.storeUrl || null,
+        productCodes:item?.rawHints?.productCodes || [],
+        playableOn:item?.rawHints?.playableOn || []
+      }));
+    } catch (error) {
+      diagnostic.nintendoError = error?.message || String(error);
+    }
+  }
+
+  console.log('ℹ️ FC 27 identity diagnostic', diagnostic);
+} catch (error) {
+  console.log(`ℹ️ FC 27 identity diagnostic failed: ${error?.message || error}`);
+}
