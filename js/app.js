@@ -94,18 +94,23 @@ function compactLiveProviderEntry(detail = {}, previous = null) {
   const providers = { ...(previous?.providers || {}) };
   for (const [name, provider] of Object.entries(detail.providers || {})) {
     const prior = providers[name] || {};
+    const priceSuppressed = Boolean(provider?.rawHints?.priceSuppressed);
     providers[name] = {
       ...prior,
       provider: provider?.provider || name,
       providerId: provider?.providerId || prior.providerId || null,
       title: provider?.title || prior.title || '',
-      price: provider?.price || prior.price || null,
+      price: priceSuppressed ? null : (provider?.price || prior.price || null),
       subscriptions: provider?.subscriptions || {},
       storeUrl: provider?.storeUrl || prior.storeUrl || '',
       rating: provider?.rating || prior.rating || null,
       ratingCount: provider?.ratingCount || prior.ratingCount || null,
       fetchedAt: provider?.fetchedAt || detail.verifiedAt || prior.fetchedAt || null,
-      lastKnownPrice: Boolean(
+      rawHints: {
+        ...(prior?.rawHints || {}),
+        ...(provider?.rawHints || {})
+      },
+      lastKnownPrice: priceSuppressed ? false : Boolean(
         provider?.rawHints?.lastKnownPrice
         || provider?.lastKnownPrice
         || (!provider?.price && prior.price)

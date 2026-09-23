@@ -206,13 +206,14 @@ function lastMeaningfulHistoryValue(gameKey, field, limit = 30) {
   return null;
 }
 
-function mergeSparseTrackedSnapshot(previous, next, observedProviders = new Set()) {
+function mergeSparseTrackedSnapshot(previous, next, observedProviders = new Set(), authoritativePriceRemovals = new Set()) {
   if (!previous) return next;
   const merged = { ...next };
 
   merged.prices = { ...(previous.prices || {}) };
   for (const [provider, price] of Object.entries(next.prices || {})) {
     if (price) merged.prices[provider] = price;
+    else if (authoritativePriceRemovals.has(provider)) merged.prices[provider] = null;
     else if (!(provider in merged.prices)) merged.prices[provider] = null;
   }
   merged.providerIds = {
@@ -260,6 +261,11 @@ function trackedSnapshot(payload = {}) {
 export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
   if (!gameKey || !payload) return [];
   const observedProviders = new Set(Object.keys(payload.providers || {}));
+  const authoritativePriceRemovals = new Set(
+    Object.entries(payload.providers || {})
+      .filter(([, item]) => item?.rawHints?.priceSuppressed === true)
+      .map(([provider]) => provider)
+  );
   const next = trackedSnapshot(payload);
   let previous = null;
   const row = getSnapshotStmt.get(String(gameKey));
@@ -279,7 +285,7 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
     }
   }
 
-  const stableNext = mergeSparseTrackedSnapshot(previous, next, observedProviders);
+  const stableNext = mergeSparseTrackedSnapshot(previous, next, observedProviders, authoritativePriceRemovals);
   const changes = [];
   if (previous) {
     for (const field of ['title', 'releaseDates', 'subscriptions', 'prices', 'providerIds', 'earlyAccess']) {

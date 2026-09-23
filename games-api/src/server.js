@@ -652,7 +652,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   for (const [provider, price] of Object.entries(snapshot?.prices || {})) {
     if (!wanted.has(provider) || !price) continue;
     const current = responseProviders[provider] || null;
-    if (current?.price) continue;
+    if (current?.price || current?.rawHints?.priceSuppressed === true) continue;
     const providerId = current?.providerId || snapshot?.providerIds?.[provider] || null;
     const storeUrl = current?.storeUrl || snapshot?.storeUrls?.[provider] || '';
     responseProviders[provider] = {

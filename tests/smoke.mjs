@@ -483,6 +483,8 @@ assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
 const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
 assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
+assert.equal(appSubscriptionSource.includes('const priceSuppressed = Boolean(provider?.rawHints?.priceSuppressed)'), true);
+assert.equal(appSubscriptionSource.includes('price: priceSuppressed ? null : (provider?.price || prior.price || null)'), true);
 
 const moduleSources = [
   '../compact-controls.js',
@@ -557,6 +559,38 @@ try {
   const snapshot = dbModule.gameSnapshot(key);
   assert.equal(snapshot?.prices?.steam?.current, 19.99);
   assert.equal(snapshot?.prices?.steam?.currency, 'EUR');
+
+  const suppressedKey = 'smoke-suppressed-price';
+  dbModule.saveGameSnapshot(suppressedKey, {
+    title: 'Smoke Suppressed Price Game',
+    providers: {
+      epic: {
+        provider:'epic',
+        providerId:'epic-123',
+        storeUrl:'https://store.epicgames.com/en-US/p/smoke-game',
+        price:{ current:4290, regular:4290, currency:'CZK' },
+        rawHints:{}
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  dbModule.saveGameSnapshot(suppressedKey, {
+    title: 'Smoke Suppressed Price Game',
+    providers: {
+      epic: {
+        provider:'epic',
+        providerId:'epic-123',
+        storeUrl:'https://store.epicgames.com/en-US/p/smoke-game',
+        price:null,
+        rawHints:{ priceSuppressed:true }
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  const suppressedSnapshot = dbModule.gameSnapshot(suppressedKey);
+  assert.equal(suppressedSnapshot?.prices?.epic, null);
 } finally {
   dbModule.db.close();
   rmSync(dbTempDir, { recursive:true, force:true });
