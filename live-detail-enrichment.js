@@ -447,23 +447,22 @@ import { fetchApi } from './js/api.js';
     if (!price) return '';
     const value = Number(price.current);
     if (price.isFree === true) return 'Zdarma';
-    if (!clean(price.currentText) && (!Number.isFinite(value) || value <= 0)) return '';
 
+    const currency = clean(price.currency).toUpperCase();
     const text = clean(price.currentText);
-    let current = text;
-    if (!current) {
-      const currency = clean(price.currency).toUpperCase();
-      if (Number.isFinite(value) && value > 0 && currency) {
-        try {
-          current = new Intl.NumberFormat('cs-CZ', {
-            style: 'currency',
-            currency,
-            maximumFractionDigits: currency === 'CZK' ? 0 : 2
-          }).format(value);
-        } catch {
-          current = `${value} ${currency}`;
-        }
+    let current = '';
+    if (Number.isFinite(value) && value > 0 && currency) {
+      try {
+        current = new Intl.NumberFormat('cs-CZ', {
+          style: 'currency',
+          currency,
+          maximumFractionDigits: currency === 'CZK' ? 0 : 2
+        }).format(value);
+      } catch {
+        current = `${value} ${currency}`;
       }
+    } else {
+      current = text;
     }
     if (!current) return '';
 

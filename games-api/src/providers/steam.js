@@ -1,7 +1,7 @@
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, uniq } from '../lib/normalize.js';
 
 const STORE_SEARCH = 'https://store.steampowered.com/api/storesearch/';
 const APP_DETAILS = 'https://store.steampowered.com/api/appdetails';
@@ -65,7 +65,7 @@ export async function appDetails(appId, { force = false, language = 'english' } 
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `steam:search:${q.toLowerCase()}`;
+  const key = `steam:search:v2:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
@@ -75,7 +75,7 @@ export async function search(query, { force = false, limit = 8 } = {}) {
   url.searchParams.set('cc', 'CZ');
   url.searchParams.set('l', 'english');
   const payload = await fetchJson(url);
-  const items = (payload?.items || []).slice(0, Math.min(limit, 12));
+  const items = (payload?.items || []).slice(0, Math.min(Math.max(limit * 2, 12), 24));
   const detailed = [];
   for (const item of items) {
     try { detailed.push(await appDetails(item.id, { force })); }
@@ -90,8 +90,15 @@ export async function search(query, { force = false, limit = 8 } = {}) {
       }));
     }
   }
-  cachePut(key, 'steam', detailed, config.ttl.search);
-  return detailed.slice(0, limit);
+  const ranked = detailed
+    .filter(Boolean)
+    .map(item => ({ item, score: storefrontTitleScore(q, item.title) }))
+    .filter(entry => entry.score >= 0.35)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(entry => entry.item);
+  cachePut(key, 'steam', ranked, config.ttl.search);
+  return ranked;
 }
 
 export async function appList({ ifModifiedSince = 0, force = false } = {}) {
