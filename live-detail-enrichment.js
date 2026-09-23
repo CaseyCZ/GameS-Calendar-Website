@@ -110,13 +110,21 @@ import { fetchApi } from './js/api.js';
   function rowForCard(card) {
     const rowKey = clean(card?.dataset?.rowKey);
     const button = card?.querySelector('[data-open-game]');
-    const title = clean(card?.querySelector('.game-card__title')?.textContent);
+    const title = clean(card?.dataset?.liveTitle || card?.querySelector('.game-card__title')?.textContent);
     if (!rowKey || !title) return null;
-    const gameId = rowKey.startsWith('online:')
+    const gameId = clean(card.dataset.liveGameId) || (rowKey.startsWith('online:')
       ? (rowKey.split(':')[1] || '')
-      : (rowKey.includes(':') ? rowKey.slice(0, rowKey.indexOf(':')) : rowKey);
-    const platforms = [...card.querySelectorAll('.platform-tag span:last-child')].map(node => clean(node.textContent)).filter(Boolean);
-    return { card, rowKey, gameId, title, platforms, button };
+      : (rowKey.includes(':') ? rowKey.slice(0, rowKey.indexOf(':')) : rowKey));
+    const igdbId = clean(card.dataset.liveIgdbId);
+    let platforms = [];
+    try {
+      const parsed = JSON.parse(card.dataset.livePlatforms || '[]');
+      if (Array.isArray(parsed)) platforms = parsed.map(clean).filter(Boolean);
+    } catch {}
+    if (!platforms.length) {
+      platforms = [...card.querySelectorAll('.platform-tag span:last-child')].map(node => clean(node.textContent)).filter(Boolean);
+    }
+    return { card, rowKey, gameId, igdbId, title, platforms, button };
   }
 
   function screenKey(game) {
@@ -147,7 +155,7 @@ import { fetchApi } from './js/api.js';
           method: 'POST',
           headers: { 'content-type': 'application/json', accept: 'application/json' },
           body: JSON.stringify({
-            games: batch.map(game => ({ id: game.gameId, title: game.title })),
+            games: batch.map(game => ({ id: game.gameId, igdbId: game.igdbId, title: game.title })),
             providers: [...providerNames]
           })
         });
