@@ -1,6 +1,7 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
-import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
+import { normalizeTitle, storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
+import { readFile } from 'node:fs/promises';
 
 let failed = 0;
 for (const provider of Object.values(providers)) {
@@ -117,4 +118,83 @@ try {
 } catch (error) {
   failed += 1;
   console.error(`❌ FC 27 base-edition pricing regression: ${error?.message || error}`);
+}
+
+
+try {
+  const query = 'EA SPORTS FC 27';
+  const catalog = JSON.parse(await readFile('../games-index.json', 'utf8'));
+  const game = (catalog?.games || []).find(item => normalizeTitle(item?.name) === normalizeTitle(query))
+    || (catalog?.games || []).find(item => normalizeTitle(item?.name).includes('ea sports fc 27'));
+  if (!game) throw new Error('FC 27 not found in games-index.json');
+
+  const liveBase = String(process.env.GAMES_LIVE_API || 'https://130.61.49.108/games-api').replace(/\/+$/,'');
+  const response = await fetch(`${liveBase}/enrich`, {
+    method:'POST',
+    headers:{ 'content-type':'application/json', accept:'application/json' },
+    body:JSON.stringify({
+      game:{
+        id:String(game.id || ''),
+        igdbId:String(game.igdbId || ''),
+        title:String(game.name || query)
+      },
+      providers:'igdb,microsoft,playstation,nintendo'
+    })
+  });
+  const rawText = await response.text();
+  if (!response.ok) throw new Error(`HTTP ${response.status}: ${rawText.slice(0,500)}`);
+  const payload = JSON.parse(rawText);
+  const result = payload?.results?.[0] || {};
+  const ms = result?.providers?.microsoft || null;
+  const ps = result?.providers?.playstation || null;
+  const nin = result?.providers?.nintendo || null;
+
+  const msOk = Boolean(
+    ms
+    && !/ultimate|deluxe|premium/i.test(String(ms.title || ''))
+    && Number(ms.price?.current || 0) > 0
+  );
+  const psOk = Boolean(
+    ps
+    && !/ultimate|deluxe|premium/i.test(String(ps.title || ''))
+    && /STANDARD|BASE/i.test(String(ps.rawHints?.priceProductId || ''))
+  );
+  const ninOk = Boolean(
+    nin
+    && !/ultimate|deluxe|premium/i.test(String(nin.title || ''))
+    && !/^700700/.test(String(nin.providerId || ''))
+  );
+  const ok = msOk && psOk && ninOk;
+
+  console.log(`${ok ? '✅' : '❌'} FC 27 production enrich probe`);
+  console.log(JSON.stringify({
+    game:{ id:game.id || null, igdbId:game.igdbId || null, name:game.name || null },
+    identity:result?.identity || null,
+    matchedProviders:result?.matchedProviders || [],
+    microsoft:ms && {
+      providerId:ms.providerId || null,
+      title:ms.title || null,
+      price:ms.price || null,
+      storeUrl:ms.storeUrl || null
+    },
+    playstation:ps && {
+      providerId:ps.providerId || null,
+      title:ps.title || null,
+      priceProductId:ps.rawHints?.priceProductId || null,
+      price:ps.price || null,
+      storeUrl:ps.storeUrl || null
+    },
+    nintendo:nin && {
+      providerId:nin.providerId || null,
+      title:nin.title || null,
+      price:nin.price || null,
+      storeUrl:nin.storeUrl || null
+    },
+    checks:{ msOk, psOk, ninOk }
+  }, null, 2));
+
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ FC 27 production enrich probe: ${error?.stack || error?.message || error}`);
 }
