@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, storefrontTitleScore, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
 
@@ -204,7 +204,7 @@ export async function psPlus(tier = 'TIER_20', { force = false } = {}) {
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `playstation:html-search:${config.psLocale}:${q.toLowerCase()}`;
+  const key = `playstation:html-search:v2:${config.psLocale}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
@@ -227,13 +227,27 @@ export async function search(query, { force = false, limit = 8 } = {}) {
     seen.add(`${kind}:${id}`);
     hits.push({ id, kind, title: text, url: new URL(href, 'https://store.playstation.com').href });
   });
+  const rankedHits = hits
+    .map(hit => ({ hit, score: storefrontTitleScore(q, hit.title) }))
+    .filter(entry => entry.score >= 0.35)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, Math.min(Math.max(limit * 2, 12), 24))
+    .map(entry => entry.hit);
+
   const out = [];
-  for (const hit of hits.slice(0, limit)) {
+  for (const hit of rankedHits) {
     try { out.push(hit.kind === 'product' ? await product(hit.id, { force }) : await concept(hit.id, { force })); }
     catch { out.push(canonicalGame('playstation', { providerId: hit.id, title: hit.title, storeUrl: hit.url, sourceUrl: url })); }
   }
-  cachePut(key, 'playstation', out, config.ttl.search);
-  return out.slice(0, limit);
+  const ranked = out
+    .filter(Boolean)
+    .map(item => ({ item, score: storefrontTitleScore(q, item.title) }))
+    .filter(entry => entry.score >= 0.35)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(entry => entry.item);
+  cachePut(key, 'playstation', ranked, config.ttl.search);
+  return ranked;
 }
 
 export const playstationProvider = {

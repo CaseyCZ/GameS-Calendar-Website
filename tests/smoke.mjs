@@ -21,6 +21,8 @@ assert.ok(titleQueryVariants('Example II').includes('example 2'));
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
 assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
+assert.ok(storefrontTitleScore('EA Sports FC 27', 'EA Sports FC 27') > storefrontTitleScore('EA Sports FC 27', 'EA SPORTS FC 27 Ultimate Edition'));
+assert.ok(storefrontTitleScore('EA Sports FC 27', 'EA SPORTS FC 27 Standard Edition') > storefrontTitleScore('EA Sports FC 27', 'EA SPORTS FC 27 Ultimate Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
 
 assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
@@ -96,7 +98,7 @@ assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
 assert.equal(xboxConsolidated.price.current, 1799);
 assert.equal(xboxConsolidated.price.from, true);
 assert.equal(xboxConsolidated.subscriptions.gamePass, true);
-assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 1);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
 const xboxWrongSearch = [
@@ -278,6 +280,23 @@ assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
 const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
 assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
+
+const microsoftProviderSource = readFileSync(new URL('../games-api/src/providers/microsoft.js', import.meta.url), 'utf8');
+assert.equal(microsoftProviderSource.includes('productFamilies/Games/products'), true);
+assert.equal(microsoftProviderSource.includes('microsoft:search:v4'), true);
+
+const psProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
+assert.equal(psProviderSource.includes('storefrontTitleScore'), true);
+assert.equal(psProviderSource.includes('playstation:html-search:v2'), true);
+
+const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
+assert.equal(nintendoProviderSource.includes('storefrontTitleScore'), true);
+assert.equal(nintendoProviderSource.includes('700100'), true);
+assert.equal(nintendoProviderSource.includes('nintendo:search:v3'), true);
+
+
+const priceUiSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
+assert.equal(priceUiSource.includes("new Intl.NumberFormat('cs-CZ'"), true);
 
 const moduleSources = [
   '../compact-controls.js',
