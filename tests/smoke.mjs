@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
-import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
+import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
 const require = createRequire(import.meta.url);
@@ -16,6 +16,11 @@ assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
 assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
 assert.equal(titleScore('Example II', 'Example 2'), 1);
 assert.ok(titleQueryVariants('Example II').includes('example 2'));
+
+assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Edition'));
+assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
+assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
+assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
 
 assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
 assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');

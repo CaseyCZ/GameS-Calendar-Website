@@ -24,7 +24,7 @@ import {
   syncCatalogGames,
   wasPushDelivered
 } from './db.js';
-import { mergeGames, normalizeTitle, titleQueryVariants, titleScore } from './lib/normalize.js';
+import { mergeGames, normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from './lib/normalize.js';
 import { buildCalendarFeed } from './lib/calendar.js';
 import { providers, providerList } from './providers/index.js';
 
@@ -445,8 +445,12 @@ async function bestSearchHit(provider, title, { force = false } = {}) {
     }
   }
   return [...unique.values()]
-    .map(item => ({ item, score: titleScore(title, item?.title) }))
-    .sort((a, b) => b.score - a.score)[0] || null;
+    .map(item => ({
+      item,
+      score: titleScore(title, item?.title),
+      storefrontScore: storefrontTitleScore(title, item?.title)
+    }))
+    .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)[0] || null;
 }
 
 function addFound(found, item) {

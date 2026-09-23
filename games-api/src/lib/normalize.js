@@ -95,6 +95,42 @@ export function titleScore(a, b) {
   return overlap / union;
 }
 
+const STORE_EDITION_RE = /\b(deluxe|ultimate|premium|complete|definitive|collector'?s?|gold|special|vault|anniversary)\s+(?:digital\s+)?edition\b/g;
+const STORE_AUXILIARY_RE = /\b(?:upgrade(?:\s+(?:pack|kit))?|season\s+pass|dlc|add[- ]?on|bonus\s+content\s+pack)\b/;
+
+function storeEditionTags(value = '') {
+  const text = basicTitle(value);
+  return new Set([...text.matchAll(STORE_EDITION_RE)].map(match => match[1]));
+}
+
+export function storefrontTitleScore(query, candidate) {
+  const base = titleScore(query, candidate);
+  if (!base) return 0;
+
+  const queryRaw = basicTitle(query);
+  const candidateRaw = basicTitle(candidate);
+  const queryEditions = storeEditionTags(query);
+  const candidateEditions = storeEditionTags(candidate);
+  const queryAuxiliary = STORE_AUXILIARY_RE.test(queryRaw);
+  const candidateAuxiliary = STORE_AUXILIARY_RE.test(candidateRaw);
+  STORE_AUXILIARY_RE.lastIndex = 0;
+
+  let score = base;
+  if (queryRaw === candidateRaw) score += 0.08;
+
+  if (!queryEditions.size && candidateEditions.size) {
+    score -= 0.22;
+  } else if (queryEditions.size) {
+    const sameEdition = [...queryEditions].some(tag => candidateEditions.has(tag));
+    score += sameEdition ? 0.06 : -0.28;
+  }
+
+  if (!queryAuxiliary && candidateAuxiliary) score -= 0.35;
+  else if (queryAuxiliary && !candidateAuxiliary) score -= 0.2;
+
+  return Math.max(0, score);
+}
+
 export function isoDate(value) {
   if (!value) return null;
   if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return String(value);
