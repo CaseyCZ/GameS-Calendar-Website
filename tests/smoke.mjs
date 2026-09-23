@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { formatLivePrice } from '../js/ui.js';
@@ -394,5 +396,44 @@ assert.equal(rootLock.version, releaseVersion);
 assert.equal(rootLock.packages?.['']?.version, releaseVersion);
 assert.equal(swSource.includes(`globalThis.GAMES_APP_VERSION || '${releaseVersion}'`), true);
 assert.equal(serverSource.includes('url: `./?${query}`'), true);
+
+const dbTempDir = mkdtempSync(join(tmpdir(), 'games-api-smoke-'));
+process.env.GAMES_API_DB = join(dbTempDir, 'snapshot.sqlite');
+const dbModule = await import('../games-api/src/db.js');
+try {
+  const key = 'smoke-last-known-price';
+  dbModule.saveGameSnapshot(key, {
+    title: 'Smoke Price Game',
+    providers: {
+      steam: {
+        provider:'steam',
+        providerId:'123',
+        storeUrl:'https://store.steampowered.com/app/123/',
+        price:{ current:19.99, regular:19.99, currency:'EUR' }
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  dbModule.saveGameSnapshot(key, {
+    title: 'Smoke Price Game',
+    providers: {
+      steam: {
+        provider:'steam',
+        providerId:'123',
+        storeUrl:'https://store.steampowered.com/app/123/',
+        price:null
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  const snapshot = dbModule.gameSnapshot(key);
+  assert.equal(snapshot?.prices?.steam?.current, 19.99);
+  assert.equal(snapshot?.prices?.steam?.currency, 'EUR');
+} finally {
+  dbModule.db.close();
+  rmSync(dbTempDir, { recursive:true, force:true });
+}
 
 console.log('Smoke tests passed.');
