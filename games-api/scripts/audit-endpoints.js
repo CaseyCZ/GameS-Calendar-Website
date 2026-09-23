@@ -54,10 +54,15 @@ try {
 
 try {
   const fallback = await providers.microsoft.search('Gears of War: E-Day', { force: true, limit: 5 });
-  const wrong = fallback.find(item => titleScore('Gears of War: E-Day', item?.title) < 0.55);
-  const ok = !wrong;
+  const primary = fallback[0] || null;
+  const primaryTitle = String(primary?.title || '');
+  const primaryScore = primary ? titleScore('Gears of War: E-Day', primaryTitle) : 0;
+  const unsafePrimary = /upgrade|bonus|points?|coins?|credits?|dlc|add[- ]?on/i.test(primaryTitle);
+  const ok = !primary || (primaryScore >= 0.55 && !unsafePrimary);
   console.log(`${ok ? '✅' : '❌'} microsoft E-Day fallback safety probe`, {
     count: fallback.length,
+    primary: primaryTitle || null,
+    primaryScore,
     titles: fallback.map(item => item?.title || null).slice(0, 5)
   });
   if (!ok) failed += 1;
@@ -74,8 +79,12 @@ try {
   const nintendo = await providers.nintendo.search(query, { force:true, limit:6 });
   const exactNintendo = nintendo.filter(item => storefrontTitleScore(query, item?.title) >= 0.95);
 
+  const msCurrent = Number(microsoft?.price?.current);
+  const msRegular = Number(microsoft?.price?.regular);
   const msOk = String(microsoft?.providerId || '').toUpperCase() === '9PH4M2J4680F'
-    && Math.abs(Number(microsoft?.price?.current) - 1899) < 0.01
+    && Number.isFinite(msCurrent) && msCurrent > 0
+    && Number.isFinite(msRegular) && Math.abs(msRegular - 1899) < 0.01
+    && msCurrent <= msRegular
     && !/ultimate|deluxe|premium/i.test(String(microsoft?.title || ''));
 
   const psOk = /STANDARD|BASE/i.test(String(playstation?.rawHints?.priceProductId || ''))
