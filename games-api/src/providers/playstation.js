@@ -2,7 +2,7 @@ import { load as loadHtml } from 'cheerio';
 import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
-import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
+import { canonicalGame, cleanText, titleScore, uniq } from '../lib/normalize.js';
 
 const BASE = 'https://web.np.playstation.com/api/graphql/v1/op';
 
@@ -259,7 +259,7 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase 
 
 export async function product(productId, { force = false } = {}) {
   const payload = await persisted('metGetProductById', { productId: String(productId) }, { force });
-  return normalizePsPayload(String(productId), payload);
+  return applyPsPlusMembership(normalizePsPayload(String(productId), payload), { force });
 }
 
 export async function concept(conceptId, { force = false } = {}) {
@@ -273,7 +273,7 @@ export async function concept(conceptId, { force = false } = {}) {
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
   const normalized = normalizePsPayload(id, { payloads }, BASE, { preferBase: true });
   normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
-  return normalized;
+  return applyPsPlusMembership(normalized, { force });
 }
 
 export async function catalog(category = 'all', { force = false, size = 100, offset = 0 } = {}) {
@@ -287,6 +287,54 @@ export async function catalog(category = 'all', { force = false, size = 100, off
     filterBy: [],
     facetOptions: []
   }, { force });
+}
+
+function catalogEntries(payload) {
+  const entries = [];
+  const seen = new Set();
+  walk(payload, node => {
+    if (!node || Array.isArray(node) || typeof node !== 'object') return;
+    const id = cleanText(node.productId || node.conceptId || node.id || '');
+    const title = cleanText(node.name || node.title || node.productName || node.conceptName || '');
+    if (!id || !title) return;
+    const key = `${id.toUpperCase()}|${title.toLowerCase()}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    entries.push({ id, title });
+  });
+  return entries;
+}
+
+export async function psPlusCatalog({ force = false, size = 1000 } = {}) {
+  const payload = await catalog('psPlus', { force, size, offset: 0 });
+  return catalogEntries(payload);
+}
+
+async function applyPsPlusMembership(item, { force = false } = {}) {
+  if (!item?.title) return item;
+  try {
+    const entries = await psPlusCatalog({ force });
+    const ids = new Set(entries.map(entry => entry.id.toUpperCase()));
+    const candidateIds = [
+      item.providerId,
+      item.rawHints?.priceProductId
+    ].map(value => String(value || '').trim().toUpperCase()).filter(Boolean);
+    const exact = candidateIds.some(id => ids.has(id));
+    const titleMatch = exact ? null : entries
+      .map(entry => ({ entry, score: titleScore(item.title, entry.title) }))
+      .sort((a, b) => b.score - a.score)[0];
+    const matched = exact || Number(titleMatch?.score || 0) >= 0.92;
+    if (!matched) return item;
+    item.subscriptions = { ...(item.subscriptions || {}), psPlus: true };
+    item.rawHints = {
+      ...(item.rawHints || {}),
+      psPlusSource: 'playstation-monthly-category',
+      psPlusCatalogId: exact
+        ? candidateIds.find(id => ids.has(id)) || null
+        : titleMatch?.entry?.id || null
+    };
+  } catch {}
+  return item;
 }
 
 export async function psPlus(tier = 'TIER_20', { force = false } = {}) {
@@ -332,12 +380,13 @@ export async function search(query, { force = false, limit = 8 } = {}) {
 
 export const playstationProvider = {
   name: 'playstation',
-  capabilities: ['search', 'product', 'concept', 'catalog', 'psPlus', 'price', 'media'],
+  capabilities: ['search', 'product', 'concept', 'catalog', 'psPlus', 'psPlusCatalog', 'price', 'media'],
   search,
   product,
   concept,
   catalog,
   psPlus,
+  psPlusCatalog,
   health: async () => {
     const result = await concept('212779', { force: true });
     return { ok: Boolean(result?.title), sample: result?.title || null, locale: config.psLocale };
