@@ -286,6 +286,43 @@ try {
 }
 
 
+try {
+  const query = 'Grand Theft Auto VI';
+  const parentId = '9NL3WWNZLZZN';
+  const expectedBaseId = '9P3H4968GRSM';
+  const parent = await providers.microsoft.product(parentId, { force: true });
+  const search = await providers.microsoft.search(query, { force: true, limit: 8 });
+  const priced = search.find(item => {
+    const current = Number(item?.price?.current);
+    return storefrontTitleScore(query, item?.title) >= 0.95
+      && Number.isFinite(current)
+      && Math.abs(current - 2009) < 0.01;
+  }) || null;
+  const ok = Boolean(priced);
+  console.log(`${ok ? '✅' : '❌'} microsoft GTA VI base-edition price diagnostic`, {
+    parent: {
+      providerId: parent?.providerId || null,
+      title: parent?.title || null,
+      price: parent?.price || null,
+      storeUrl: parent?.storeUrl || null,
+      xboxPriceProductId: parent?.rawHints?.xboxPriceProductId || null,
+      xboxPriceOfferTitle: parent?.rawHints?.xboxPriceOfferTitle || null
+    },
+    expectedBaseId,
+    search: search.map(item => ({
+      providerId: item?.providerId || null,
+      title: item?.title || null,
+      price: item?.price || null,
+      storeUrl: item?.storeUrl || null,
+      score: storefrontTitleScore(query, item?.title)
+    }))
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ microsoft GTA VI base-edition price diagnostic: ${error?.message || error}`);
+}
+
 if (failed) {
   console.error(`\nEndpoint audit failed: ${failed} check(s) failed.`);
   process.exitCode = 1;
