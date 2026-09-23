@@ -9,6 +9,11 @@ import { fetchApi } from './js/api.js';
 
   const cache = new Map();
   const CACHE_TTL_MS = 2 * 60 * 1000;
+  const SCREEN_CACHE_TTL_MS = 10 * 60 * 1000;
+  const screenCache = new Map();
+  const screenPending = new Set();
+  let screenObserver = null;
+  let screenTimer = 0;
 
   function cachedPayload(key) {
     const entry = cache.get(key);
@@ -100,6 +105,106 @@ import { fetchApi } from './js/api.js';
     if (/switch|nintendo/.test(text)) names.add('nintendo');
     if (names.size === 1) ['microsoft','steam','epic','playstation','nintendo'].forEach(name => names.add(name));
     return [...names];
+  }
+
+  function rowForCard(card) {
+    const rowKey = clean(card?.dataset?.rowKey);
+    const button = card?.querySelector('[data-open-game]');
+    const title = clean(card?.querySelector('.game-card__title')?.textContent);
+    if (!rowKey || !title) return null;
+    const gameId = rowKey.startsWith('online:')
+      ? (rowKey.split(':')[1] || '')
+      : (rowKey.includes(':') ? rowKey.slice(0, rowKey.indexOf(':')) : rowKey);
+    const platforms = [...card.querySelectorAll('.platform-tag span:last-child')].map(node => clean(node.textContent)).filter(Boolean);
+    return { card, rowKey, gameId, title, platforms, button };
+  }
+
+  function screenKey(game) {
+    return `${game.gameId}:${game.title.toLowerCase()}`;
+  }
+
+  function screenFresh(game) {
+    const fetchedAt = screenCache.get(screenKey(game)) || 0;
+    return fetchedAt && Date.now() - fetchedAt < SCREEN_CACHE_TTL_MS;
+  }
+
+  async function enrichVisibleGames() {
+    screenTimer = 0;
+    const cards = [...document.querySelectorAll('#games .game-card[data-live-visible="true"]')]
+      .map(rowForCard)
+      .filter(Boolean)
+      .filter(game => !screenFresh(game) && !screenPending.has(screenKey(game)));
+    if (!cards.length) return;
+
+    for (let offset = 0; offset < cards.length; offset += 5) {
+      const batch = cards.slice(offset, offset + 5);
+      batch.forEach(game => screenPending.add(screenKey(game)));
+      try {
+        const providerNames = new Set();
+        batch.forEach(game => providersForPlatforms(game.platforms).forEach(name => providerNames.add(name)));
+        const response = await fetchApi('/enrich', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify({
+            games: batch.map(game => ({ id: game.gameId, title: game.title })),
+            providers: [...providerNames]
+          })
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        (payload.results || []).forEach((result, index) => {
+          const game = batch[index];
+          if (!game) return;
+          screenCache.set(screenKey(game), Date.now());
+          const subscriptions = addSubscriptions(null, result.providers || {}) || {};
+          window.dispatchEvent(new CustomEvent('games:subscription-updated', {
+            detail: {
+              gameId: game.gameId,
+              igdbId: String(result.identity?.igdbId || ''),
+              subscriptions,
+              verifiedAt: new Date().toISOString()
+            }
+          }));
+          window.dispatchEvent(new CustomEvent('games:live-enriched', {
+            detail: {
+              gameId: game.gameId,
+              title: game.title,
+              providers: result.providers || {},
+              merged: result.merged || {},
+              verifiedAt: new Date().toISOString()
+            }
+          }));
+        });
+      } catch (error) {
+        console.warn('Live enrichment viditelných her:', error);
+      } finally {
+        batch.forEach(game => screenPending.delete(screenKey(game)));
+      }
+    }
+  }
+
+  function scheduleVisibleEnrichment() {
+    if (screenTimer) return;
+    screenTimer = setTimeout(enrichVisibleGames, 120);
+  }
+
+  function observeGameCards() {
+    if (!('IntersectionObserver' in window)) return;
+    if (!screenObserver) {
+      screenObserver = new IntersectionObserver(entries => {
+        let changed = false;
+        for (const entry of entries) {
+          entry.target.dataset.liveVisible = entry.isIntersecting ? 'true' : 'false';
+          if (entry.isIntersecting) changed = true;
+        }
+        if (changed) scheduleVisibleEnrichment();
+      }, { rootMargin: '160px 0px', threshold: 0.01 });
+    }
+    document.querySelectorAll('#games .game-card').forEach(card => {
+      if (card.dataset.liveObserved === 'true') return;
+      card.dataset.liveObserved = 'true';
+      screenObserver.observe(card);
+    });
   }
 
   function ensureStatus() {
@@ -596,6 +701,14 @@ import { fetchApi } from './js/api.js';
   }
 
   new MutationObserver(schedule).observe(content, { childList: true, subtree: false });
+  const gamesGrid = document.getElementById('games');
+  if (gamesGrid) {
+    new MutationObserver(() => {
+      observeGameCards();
+      scheduleVisibleEnrichment();
+    }).observe(gamesGrid, { childList: true });
+    observeGameCards();
+  }
   new MutationObserver(schedule).observe(dialog, { attributes: true, attributeFilter: ['open'] });
   dialog.addEventListener('close', () => {
     pendingTitle = '';
