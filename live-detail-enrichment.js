@@ -156,7 +156,10 @@ import { fetchApi } from './js/api.js';
           const game = batch[index];
           if (!game) return;
           screenCache.set(screenKey(game), Date.now());
-          const subscriptions = addSubscriptions(null, result.providers || {}) || {};
+          const subscriptions = Object.values(result.providers || {}).reduce(
+            (all, provider) => Object.assign(all, provider?.subscriptions || {}),
+            { ...(result.merged?.subscriptions || {}) }
+          );
           window.dispatchEvent(new CustomEvent('games:subscription-updated', {
             detail: {
               gameId: game.gameId,
