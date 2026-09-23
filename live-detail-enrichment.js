@@ -83,6 +83,10 @@ import { fetchApi } from './js/api.js';
   }
 
   function platformTexts() {
+    try {
+      const parsed = JSON.parse(dialog.dataset.livePlatforms || '[]');
+      if (Array.isArray(parsed) && parsed.length) return parsed.map(clean).filter(Boolean);
+    } catch {}
     return [...content.querySelectorAll('.detail-meta .badge')]
       .map(node => clean(node.textContent))
       .filter(text => text && !text.includes('📅') && !text.includes('★'));
@@ -702,7 +706,9 @@ import { fetchApi } from './js/api.js';
     if (!result) throw new Error('API nevrátilo detail hry');
     const providers = result.providers || {};
     const merged = result.merged || {};
-    const subscriptions = addSubscriptions(merged, providers) || {};
+    const checkedProviders = Array.isArray(result.matchedProviders) ? result.matchedProviders : Object.keys(providers);
+    const currentSubscriptions = { ...(merged?.subscriptions || {}) };
+    for (const provider of Object.values(providers || {})) Object.assign(currentSubscriptions, provider?.subscriptions || {});
     const verifiedAt = new Date().toISOString();
     window.dispatchEvent(new CustomEvent('games:live-enriched', {
       detail: {
@@ -714,26 +720,33 @@ import { fetchApi } from './js/api.js';
         verifiedAt
       }
     }));
+    const stored = window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId());
+    const displayProviders = stored?.providers || providers;
+    addSubscriptions(merged, displayProviders);
     window.dispatchEvent(new CustomEvent('games:subscription-updated', {
       detail: {
         gameId: currentGameId(),
         igdbId: String(result.identity?.igdbId || currentIgdbId() || ''),
-        subscriptions,
+        subscriptions: currentSubscriptions,
+        checkedProviders,
         verifiedAt
       }
     }));
-    improveStoreLinks(providers);
-    addTrailer(merged, providers);
+    improveStoreLinks(displayProviders);
+    addTrailer(merged, displayProviders);
     addHistory(result.gameKey || result.query?.id || '');
     addScreenshots(merged, title);
     improveSummary(merged);
 
-    const matched = Object.keys(providers).map(name => PROVIDER_LABELS[name] || name);
+    const matched = checkedProviders.map(name => PROVIDER_LABELS[name] || name);
+    const remembered = (result.lastKnownProviders || []).filter(name => !checkedProviders.includes(name)).map(name => PROVIDER_LABELS[name] || name);
     const identity = result.identity?.igdbId ? ` · IGDB #${result.identity.igdbId}` : '';
     const fieldSources = fieldSourceSummary(merged);
     setStatus(matched.length
-      ? `Živě ověřeno: ${matched.join(' · ')}${identity}${fieldSources ? ` · ${fieldSources}` : ''}`
-      : 'Živé zdroje pro tuto hru nenašly jistou shodu.', matched.length ? 'ok' : 'empty');
+      ? `Živě ověřeno: ${matched.join(' · ')}${remembered.length ? ` · poslední známé: ${remembered.join(' · ')}` : ''}${identity}${fieldSources ? ` · ${fieldSources}` : ''}`
+      : remembered.length
+        ? `Použita poslední známá data: ${remembered.join(' · ')}`
+        : 'Živé zdroje pro tuto hru nenašly jistou shodu.', matched.length ? 'ok' : remembered.length ? 'ok' : 'empty');
   }
 
   async function enrichCurrent() {

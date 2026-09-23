@@ -90,23 +90,29 @@ function readLiveProviders() {
   } catch { return {}; }
 }
 
-function compactLiveProviderEntry(detail = {}) {
-  const providers = Object.fromEntries(Object.entries(detail.providers || {}).map(([name, provider]) => [name, {
-    provider: provider?.provider || name,
-    providerId: provider?.providerId || null,
-    title: provider?.title || '',
-    price: provider?.price || null,
-    subscriptions: provider?.subscriptions || {},
-    storeUrl: provider?.storeUrl || '',
-    rating: provider?.rating || null,
-    ratingCount: provider?.ratingCount || null,
-    fetchedAt: provider?.fetchedAt || detail.verifiedAt || null
-  }]));
+function compactLiveProviderEntry(detail = {}, previous = null) {
+  const providers = { ...(previous?.providers || {}) };
+  for (const [name, provider] of Object.entries(detail.providers || {})) {
+    const prior = providers[name] || {};
+    providers[name] = {
+      ...prior,
+      provider: provider?.provider || name,
+      providerId: provider?.providerId || prior.providerId || null,
+      title: provider?.title || prior.title || '',
+      price: provider?.price || prior.price || null,
+      subscriptions: provider?.subscriptions || {},
+      storeUrl: provider?.storeUrl || prior.storeUrl || '',
+      rating: provider?.rating || prior.rating || null,
+      ratingCount: provider?.ratingCount || prior.ratingCount || null,
+      fetchedAt: provider?.fetchedAt || detail.verifiedAt || prior.fetchedAt || null,
+      lastKnownPrice: !provider?.price && Boolean(prior.price)
+    };
+  }
   return {
     providers,
     merged: {
-      subscriptions: detail.merged?.subscriptions || {},
-      fieldSources: detail.merged?.fieldSources || {}
+      subscriptions: detail.merged?.subscriptions || previous?.merged?.subscriptions || {},
+      fieldSources: detail.merged?.fieldSources || previous?.merged?.fieldSources || {}
     },
     verifiedAt: detail.verifiedAt || new Date().toISOString(),
     updatedAt: Date.now()
@@ -909,6 +915,14 @@ function renderGameDialog(row) {
   $('game-dialog').dataset.rowKey = row.key;
   $('game-dialog').dataset.gameId = gameId(row.game);
   $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
+  const livePlatforms = new Set();
+  const addPlatform = platform => {
+    const value = typeof platform === 'string' ? platform : (platform?.name || platform?.abbreviation || '');
+    if (value) livePlatforms.add(String(value));
+  };
+  (row.platforms || []).forEach(addPlatform);
+  for (const release of row.game?.releases || []) (release.platforms || []).forEach(addPlatform);
+  $('game-dialog').dataset.livePlatforms = JSON.stringify([...livePlatforms]);
   $('dialog-content').removeAttribute('data-live-enriched-title');
   $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
   updateQuery();
@@ -1154,9 +1168,10 @@ function bindEvents() {
     const detail = event.detail || {};
     const id = String(detail.gameId || '').trim();
     if (!id) return;
-    const entry = compactLiveProviderEntry(detail);
-    liveProviders[`id:${id}`] = entry;
     const igdbId = String(detail.igdbId || '').trim();
+    const previous = (igdbId && liveProviders[`igdb:${igdbId}`]) || liveProviders[`id:${id}`] || null;
+    const entry = compactLiveProviderEntry(detail, previous);
+    liveProviders[`id:${id}`] = entry;
     if (igdbId) liveProviders[`igdb:${igdbId}`] = entry;
     writeLiveProviders(liveProviders);
 
@@ -1176,7 +1191,19 @@ function bindEvents() {
     const detail = event.detail || {};
     const gameIdValue = String(detail.gameId || '').trim();
     const igdbIdValue = String(detail.igdbId || '').trim();
-    const subscriptions = normalizeLiveSubscriptions(detail.subscriptions || {});
+    const incoming = normalizeLiveSubscriptions(detail.subscriptions || {});
+    const checkedProviders = new Set(Array.isArray(detail.checkedProviders) ? detail.checkedProviders : []);
+    const providerForSubscription = {
+      gamePass:'microsoft', gamePassConsole:'microsoft', gamePassPc:'microsoft',
+      cloudGaming:'microsoft', eaPlay:'microsoft', psPlus:'playstation', geforceNow:'geforceNow'
+    };
+    const previousEntry = (igdbIdValue && liveSubscriptions[`igdb:${igdbIdValue}`])
+      || (gameIdValue && liveSubscriptions[`id:${gameIdValue}`])
+      || null;
+    const subscriptions = { ...(previousEntry?.subscriptions || {}) };
+    for (const [key, provider] of Object.entries(providerForSubscription)) {
+      if (!checkedProviders.size || checkedProviders.has(provider)) subscriptions[key] = Boolean(incoming[key]);
+    }
     const verifiedAt = detail.verifiedAt || new Date().toISOString();
     const updatedAt = Date.now();
 

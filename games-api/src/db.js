@@ -173,6 +173,75 @@ export function recordChange(gameKey, field, oldValue, newValue, source) {
   return { id: Number(info.lastInsertRowid), gameKey: String(gameKey), field, oldValue: normalizedOld, newValue: normalizedNew, source: String(source || ''), changedAt: new Date(changedAt).toISOString() };
 }
 
+const SUBSCRIPTION_PROVIDER = Object.freeze({
+  gamePass: 'microsoft',
+  gamePassConsole: 'microsoft',
+  gamePassPc: 'microsoft',
+  cloudGaming: 'microsoft',
+  eaPlay: 'microsoft',
+  psPlus: 'playstation',
+  geforceNow: 'geforceNow'
+});
+
+function meaningfulTrackedValue(field, value) {
+  const normalized = normalizeHistoryValue(field, value);
+  if (!normalized || typeof normalized !== 'object') return false;
+  return Object.keys(normalized).length > 0;
+}
+
+function lastMeaningfulHistoryValue(gameKey, field, limit = 30) {
+  const rows = db.prepare(`
+    SELECT old_value,new_value
+    FROM change_history
+    WHERE game_key = ? AND field = ?
+    ORDER BY changed_at DESC
+    LIMIT ?
+  `).all(String(gameKey), String(field), Math.max(1, Math.min(100, Number(limit) || 30)));
+  for (const row of rows) {
+    for (const raw of [row.new_value, row.old_value]) {
+      const value = safeJson(raw, raw);
+      if (meaningfulTrackedValue(field, value)) return normalizeHistoryValue(field, value);
+    }
+  }
+  return null;
+}
+
+function mergeSparseTrackedSnapshot(previous, next, observedProviders = new Set()) {
+  if (!previous) return next;
+  const merged = { ...next };
+
+  merged.prices = {
+    ...(previous.prices || {}),
+    ...(next.prices || {})
+  };
+  merged.providerIds = {
+    ...(previous.providerIds || {}),
+    ...(next.providerIds || {})
+  };
+  merged.storeUrls = {
+    ...(previous.storeUrls || {}),
+    ...(next.storeUrls || {})
+  };
+
+  const subscriptions = { ...(previous.subscriptions || {}) };
+  const nextSubscriptions = next.subscriptions || {};
+  for (const [key, provider] of Object.entries(SUBSCRIPTION_PROVIDER)) {
+    if (!observedProviders.has(provider)) continue;
+    if (nextSubscriptions[key]) subscriptions[key] = true;
+    else delete subscriptions[key];
+  }
+  for (const [key, enabled] of Object.entries(nextSubscriptions)) {
+    if (enabled) subscriptions[key] = true;
+  }
+  merged.subscriptions = normalizeHistoryValue('subscriptions', subscriptions);
+
+  if (!observedProviders.has('steam') && previous.earlyAccess != null) {
+    merged.earlyAccess = previous.earlyAccess;
+  }
+
+  return merged;
+}
+
 function trackedSnapshot(payload = {}) {
   const steam = payload.providers?.steam || null;
   const raw = {
@@ -181,6 +250,7 @@ function trackedSnapshot(payload = {}) {
     subscriptions: payload.subscriptions || {},
     prices: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.price || null])),
     providerIds: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.providerId || null])),
+    storeUrls: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.storeUrl || '']).filter(([, value]) => Boolean(value))),
     earlyAccess: steam ? Boolean(steam.earlyAccess) : null
   };
   return Object.fromEntries(Object.entries(raw).map(([field,value]) => [field, normalizeHistoryValue(field, value)]));
@@ -188,6 +258,7 @@ function trackedSnapshot(payload = {}) {
 
 export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
   if (!gameKey || !payload) return [];
+  const observedProviders = new Set(Object.keys(payload.providers || {}));
   const next = trackedSnapshot(payload);
   let previous = null;
   const row = getSnapshotStmt.get(String(gameKey));
@@ -197,15 +268,34 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
       previous = Object.fromEntries(Object.entries(rawPrevious || {}).map(([field,value]) => [field, normalizeHistoryValue(field, value)]));
     } catch {}
   }
+
+  if (previous) {
+    if (!Object.keys(previous.prices || {}).length) {
+      previous.prices = lastMeaningfulHistoryValue(gameKey, 'prices') || {};
+    }
+    if (!Object.keys(previous.providerIds || {}).length) {
+      previous.providerIds = lastMeaningfulHistoryValue(gameKey, 'providerIds') || {};
+    }
+  }
+
+  const stableNext = mergeSparseTrackedSnapshot(previous, next, observedProviders);
   const changes = [];
   if (previous) {
     for (const field of ['title', 'releaseDates', 'subscriptions', 'prices', 'providerIds', 'earlyAccess']) {
-      const change = recordChange(gameKey, field, previous[field], next[field], source);
+      const change = recordChange(gameKey, field, previous[field], stableNext[field], source);
       if (change) changes.push(change);
     }
   }
-  putSnapshotStmt.run(String(gameKey), JSON.stringify(next), Date.now());
+  putSnapshotStmt.run(String(gameKey), JSON.stringify(stableNext), Date.now());
   return changes;
+}
+
+export function gameSnapshot(gameKey) {
+  if (!gameKey) return null;
+  const row = getSnapshotStmt.get(String(gameKey));
+  if (!row?.payload) return null;
+  try { return JSON.parse(row.payload); }
+  catch { return null; }
 }
 
 export function historyForGame(gameKey, limit = 100) {

@@ -7,6 +7,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { config } from './config.js';
 import {
   getDiscoveredGame,
+  gameSnapshot,
   historyStartedAt,
   historyForGame,
   latestChangeId,
@@ -561,6 +562,40 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const merged = mergeGames(found);
   const gameKey = String(game.id || game.slug || normalizeTitle(title || merged?.title || '')).trim();
   const changes = merged && gameKey ? saveGameSnapshot(gameKey, merged, 'live-enrich') : [];
+  const snapshot = gameKey ? gameSnapshot(gameKey) : null;
+  const responseProviders = Object.fromEntries(found.map(item => [item.provider, item]));
+  const lastKnownProviders = [];
+
+  for (const [provider, price] of Object.entries(snapshot?.prices || {})) {
+    if (!price) continue;
+    const current = responseProviders[provider] || null;
+    if (current?.price) continue;
+    const providerId = current?.providerId || snapshot?.providerIds?.[provider] || null;
+    const storeUrl = current?.storeUrl || snapshot?.storeUrls?.[provider] || '';
+    responseProviders[provider] = {
+      ...(current || {}),
+      provider,
+      providerId,
+      title: current?.title || title || merged?.title || '',
+      price,
+      subscriptions: current?.subscriptions || {},
+      storeUrl,
+      rawHints: {
+        ...(current?.rawHints || {}),
+        lastKnownPrice: true
+      }
+    };
+    lastKnownProviders.push(provider);
+  }
+
+  const responseMerged = merged ? {
+    ...merged,
+    subscriptions: {
+      ...(snapshot?.subscriptions || {}),
+      ...(merged.subscriptions || {})
+    }
+  } : merged;
+
   return {
     query: game,
     gameKey,
@@ -569,9 +604,10 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
       externalIds: igdbIdentity.externalIds || igdbIdentity.rawHints?.externalIds || {}
     } : null,
     matchedProviders: found.map(item => item.provider),
-    merged,
+    lastKnownProviders,
+    merged: responseMerged,
     changes,
-    providers: Object.fromEntries(found.map(item => [item.provider, item]))
+    providers: responseProviders
   };
 }
 

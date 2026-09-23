@@ -280,6 +280,8 @@ assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')
 assert.equal(appSource.includes("removeAttribute('data-live-enriched-title')"), true);
 assert.equal(appSource.includes("'eaPlay'"), true);
 assert.equal(appSource.includes('compactLiveProviderEntry'), true);
+assert.equal(appSource.includes('dataset.livePlatforms'), true);
+assert.equal(appSource.includes('checkedProviders'), true);
 
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
 assert.equal(nintendoProviderSource.includes('nintendo:search:v2:'), true);
@@ -299,6 +301,8 @@ assert.equal(liveEnrichmentSource.includes('cachedPayload(cacheKey)'), true);
 assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true);
 assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
 assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
+assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
+assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
 assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
 
@@ -307,9 +311,14 @@ assert.equal(serverSource.includes("change.field === 'prices'"), true);
 assert.equal(serverSource.includes("change.field === 'subscriptions'"), true);
 assert.equal(serverSource.includes("change.field === 'earlyAccess'"), true);
 assert.equal(serverSource.includes('result.value.storefrontScore >= threshold'), true);
+assert.equal(serverSource.includes('lastKnownProviders'), true);
+assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
 
 const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
+assert.equal(dbSource.includes('lastMeaningfulHistoryValue'), true);
+assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
+assert.equal(dbSource.includes('storeUrls'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('card-service-badge'), true);
