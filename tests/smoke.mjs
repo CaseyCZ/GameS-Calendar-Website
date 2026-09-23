@@ -281,6 +281,9 @@ const advancedSource = readFileSync(new URL('../advanced-features.js', import.me
 assert.equal(advancedSource.includes("dy >= 88"), false);
 
 const appSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+assert.equal(appSource.includes("window.addEventListener('games:live-release-date'"), true);
+assert.equal(appSource.includes("provider !== 'steam'"), true);
+assert.equal(appSource.includes("includes('PC')"), true);
 assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')"), true);
 assert.equal(appSource.includes("removeAttribute('data-live-enriched-title')"), true);
 assert.equal(appSource.includes("'eaPlay'"), true);
@@ -319,6 +322,9 @@ assert.equal(liveEnrichmentSource.includes("label: 'Microsoft / Xbox Store'"), t
 assert.equal(liveEnrichmentSource.includes("querySelectorAll('.store-link--xbox')"), true);
 assert.equal(liveEnrichmentSource.includes('liveBaseLabel'), true);
 assert.equal(liveEnrichmentSource.includes('function applyStoreAvailability'), true);
+assert.equal(liveEnrichmentSource.includes('function applySteamReleaseDate'), true);
+assert.equal(liveEnrichmentSource.includes("matchedProviders.includes('steam')"), true);
+assert.equal(liveEnrichmentSource.includes("provider: 'steam'"), true);
 assert.equal(liveEnrichmentSource.includes("status !== 'not_found'"), true);
 assert.equal(liveEnrichmentSource.includes('isFallbackStoreLink'), true);
 assert.equal(liveEnrichmentSource.includes('const displayProviders = stored?.providers || providers'), false);

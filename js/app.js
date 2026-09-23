@@ -1177,6 +1177,34 @@ async function maybeNotifyUpcoming(force = false) {
 }
 
 function bindEvents() {
+  window.addEventListener('games:live-release-date', event => {
+    const detail = event.detail || {};
+    const day = String(detail.day || '').trim();
+    const provider = String(detail.provider || '').trim();
+    if (provider !== 'steam' || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+
+    const id = String(detail.gameId || '').trim();
+    const igdbId = String(detail.igdbId || '').trim();
+    const timestamp = Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
+    let changed = false;
+
+    for (const row of state.rows) {
+      const sameId = id && gameId(row.game) === id;
+      const sameIgdb = igdbId && String(row.game?.igdbId || '') === igdbId;
+      const isPcRelease = (row.platformGroups || []).includes('PC');
+      if (!(sameId || sameIgdb) || !isPcRelease || row.day === day) continue;
+      row.day = day;
+      row.timestamp = timestamp;
+      row.from = day;
+      row.to = day;
+      row.sortDay = day;
+      row.precision = 'day';
+      changed = true;
+    }
+
+    if (changed) scheduleLiveRender();
+  });
+
   window.addEventListener('games:live-enriched', event => {
     const detail = event.detail || {};
     const id = String(detail.gameId || '').trim();

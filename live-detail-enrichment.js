@@ -747,6 +747,40 @@ import { fetchApi } from './js/api.js';
     }
   }
 
+  function formatLiveReleaseDate(day) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(day || ''))) return '';
+    const date = new Date(`${day}T12:00:00Z`);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('cs-CZ', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'UTC'
+    }).format(date);
+  }
+
+  function applySteamReleaseDate(result) {
+    const steam = result?.providers?.steam;
+    const day = clean(steam?.releaseDate);
+    const matched = Array.isArray(result?.matchedProviders) && result.matchedProviders.includes('steam');
+    const pcRelease = platformTexts().some(value => /\bpc\b|windows/i.test(value));
+    const formatted = formatLiveReleaseDate(day);
+    if (!matched || !pcRelease || !formatted) return;
+
+    const dateBadge = [...content.querySelectorAll('.detail-meta .badge')]
+      .find(node => clean(node.textContent).startsWith('📅'));
+    if (dateBadge) dateBadge.textContent = `📅 ${formatted}`;
+
+    window.dispatchEvent(new CustomEvent('games:live-release-date', {
+      detail: {
+        gameId: currentGameId(),
+        igdbId: currentIgdbId(),
+        provider: 'steam',
+        day
+      }
+    }));
+  }
+
   function fieldSourceSummary(merged) {
     const fields = merged?.fieldSources || {};
     const parts = [];
@@ -788,6 +822,7 @@ import { fetchApi } from './js/api.js';
       }
     }));
     improveStoreLinks(providers);
+    applySteamReleaseDate(result);
     addTrailer(merged, providers);
     addHistory(result.gameKey || result.query?.id || '');
     addScreenshots(merged, title);
