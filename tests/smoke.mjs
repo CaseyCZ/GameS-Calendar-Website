@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
+import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../games-api/src/lib/epic-store.js';
 import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
 const require = createRequire(import.meta.url);
 const subscriptionHelpers = require('../enrich-subscriptions.js');
@@ -65,6 +66,25 @@ const microsoftPaid = {
 };
 assert.equal(microsoftPriceOf(microsoftPaid)?.current, 1799);
 assert.equal(microsoftPriceOf(microsoftPaid)?.preorder, true);
+
+const epicTownfall = {
+  title:'SILENT HILL: Townfall',
+  id:'townfall-base',
+  productSlug:'silent-hill-townfall-0cb037/home',
+  categories:[{ path:'games' }, { path:'games/edition/base' }],
+  price:{ totalPrice:{
+    discountPrice:4999,
+    originalPrice:4999,
+    currencyCode:'USD',
+    currencyInfo:{ decimals:2 },
+    fmtPrice:{ discountPrice:'$49.99', originalPrice:'$49.99' }
+  }}
+};
+assert.equal(epicIsGameOffer(epicTownfall), true);
+assert.equal(epicPriceOf(epicTownfall)?.current, 49.99);
+assert.equal(epicPriceOf(epicTownfall)?.currency, 'USD');
+assert.equal(epicStoreUrlOf(epicTownfall), 'https://store.epicgames.com/en-US/p/silent-hill-townfall-0cb037');
+assert.equal(epicIsGameOffer({ categories:[{ path:'addons' }] }), false);
 
 const xboxBase = { provider:'microsoft', providerId:'BASE', title:'Gears of War: E-Day', price:null, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day/BASE', subscriptions:{ gamePass:true }, rawHints:{} };
 const xboxStandard = { provider:'microsoft', providerId:'STD', title:'Gears of War: E-Day Pre-Order', price:{ current:1799, regular:1799, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-pre-order/STD', subscriptions:{}, rawHints:{} };

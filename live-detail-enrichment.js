@@ -14,6 +14,7 @@ import { fetchApi } from './js/api.js';
   const PROVIDER_LABELS = {
     igdb: 'IGDB',
     steam: 'Steam · PC',
+    epic: 'Epic Games Store',
     microsoft: 'Microsoft / Xbox Store',
     playstation: 'PlayStation Store',
     nintendo: 'Nintendo eShop',
@@ -71,6 +72,7 @@ import { fetchApi } from './js/api.js';
     const names = new Set(['igdb']);
     if (/\bpc\b|windows/.test(text)) {
       names.add('steam');
+      names.add('epic');
       names.add('microsoft');
       names.add('geforceNow');
     }
@@ -80,7 +82,7 @@ import { fetchApi } from './js/api.js';
     }
     if (/ps4|ps5|playstation/.test(text)) names.add('playstation');
     if (/switch|nintendo/.test(text)) names.add('nintendo');
-    if (names.size === 1) ['microsoft','steam','playstation','nintendo'].forEach(name => names.add(name));
+    if (names.size === 1) ['microsoft','steam','epic','playstation','nintendo'].forEach(name => names.add(name));
     return [...names];
   }
 
@@ -300,7 +302,7 @@ import { fetchApi } from './js/api.js';
     const entries = Object.entries(value || {}).filter(([, price]) => price && (price.currentText || price.current != null));
     if (!entries.length) return 'bez ceny';
     return entries.map(([provider, price]) => {
-      const label = provider === 'microsoft' ? 'Xbox' : provider === 'playstation' ? 'PlayStation' : provider === 'nintendo' ? 'Nintendo' : provider === 'steam' ? 'Steam' : provider;
+      const label = provider === 'microsoft' ? 'Xbox' : provider === 'playstation' ? 'PlayStation' : provider === 'nintendo' ? 'Nintendo' : provider === 'steam' ? 'Steam' : provider === 'epic' ? 'Epic' : provider;
       const text = clean(price.currentText);
       if (text) return `${label}: ${text}`;
       const current = Number(price.current);
@@ -478,6 +480,7 @@ import { fetchApi } from './js/api.js';
   function improveStoreLinks(providers) {
     const stores = {
       steam: { provider: providers?.steam, label: 'Steam' },
+      epic: { provider: providers?.epic, label: 'Epic Games' },
       xbox: { provider: providers?.microsoft, label: 'Xbox Store' },
       playstation: { provider: providers?.playstation, label: 'PlayStation Store' },
       nintendo: { provider: providers?.nintendo, label: 'Nintendo Store' }

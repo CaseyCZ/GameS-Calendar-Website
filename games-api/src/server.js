@@ -181,6 +181,7 @@ function providerLabel(name = '') {
   return {
     igdb: 'IGDB',
     steam: 'Steam',
+    epic: 'Epic Games',
     microsoft: 'Xbox',
     playstation: 'PlayStation',
     nintendo: 'Nintendo',
@@ -191,6 +192,7 @@ function providerLabel(name = '') {
 function providerLinkKey(name = '') {
   return {
     steam: 'steam',
+    epic: 'epic',
     microsoft: 'xbox',
     playstation: 'playstation',
     nintendo: 'nintendo',

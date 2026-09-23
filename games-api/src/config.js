@@ -18,6 +18,8 @@ export const config = Object.freeze({
   market: String(process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
   language: String(process.env.GAMES_API_LANGUAGE || 'cs-cz').toLowerCase(),
   psLocale: String(process.env.GAMES_API_PS_LOCALE || 'en-cz').toLowerCase(),
+  epicCountry: String(process.env.GAMES_API_EPIC_COUNTRY || process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
+  epicLocale: String(process.env.GAMES_API_EPIC_LOCALE || 'en-US').trim() || 'en-US',
   nintendoRegion: String(process.env.GAMES_API_NINTENDO_REGION || 'us').toLowerCase(),
   nintendoCountry: String(process.env.GAMES_API_NINTENDO_COUNTRY || process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
   nintendoLanguage: String(process.env.GAMES_API_NINTENDO_LANGUAGE || 'en').toLowerCase(),
