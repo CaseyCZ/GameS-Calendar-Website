@@ -31,6 +31,7 @@ const WATCH_KEY = 'games-calendar-watchlist-v2';
 const VIEW_KEY = 'games-calendar-view-v2';
 const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
+const NOTIFY_LAST_KEY = 'games-calendar-notifications-last-v1';
 const LIVE_SUBSCRIPTIONS_KEY = 'games-calendar-live-subscriptions-v1';
 const LIVE_SUBSCRIPTIONS_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 const LIVE_PROVIDER_KEY = 'games-calendar-live-providers-v1';
@@ -89,6 +90,29 @@ function readLiveProviders() {
   } catch { return {}; }
 }
 
+function compactLiveProviderEntry(detail = {}) {
+  const providers = Object.fromEntries(Object.entries(detail.providers || {}).map(([name, provider]) => [name, {
+    provider: provider?.provider || name,
+    providerId: provider?.providerId || null,
+    title: provider?.title || '',
+    price: provider?.price || null,
+    subscriptions: provider?.subscriptions || {},
+    storeUrl: provider?.storeUrl || '',
+    rating: provider?.rating || null,
+    ratingCount: provider?.ratingCount || null,
+    fetchedAt: provider?.fetchedAt || detail.verifiedAt || null
+  }]));
+  return {
+    providers,
+    merged: {
+      subscriptions: detail.merged?.subscriptions || {},
+      fieldSources: detail.merged?.fieldSources || {}
+    },
+    verifiedAt: detail.verifiedAt || new Date().toISOString(),
+    updatedAt: Date.now()
+  };
+}
+
 function writeLiveProviders(cache) {
   try { localStorage.setItem(LIVE_PROVIDER_KEY, JSON.stringify(cache)); } catch {}
 }
@@ -112,7 +136,7 @@ function subscriptionKeys(game = {}) {
 }
 
 function normalizeLiveSubscriptions(value = {}) {
-  const keys = ['gamePass','gamePassConsole','gamePassPc','cloudGaming','psPlus','geforceNow'];
+  const keys = ['gamePass','gamePassConsole','gamePassPc','cloudGaming','eaPlay','psPlus','geforceNow'];
   return Object.fromEntries(keys.map(key => [key, Boolean(value?.[key])]));
 }
 
@@ -129,6 +153,63 @@ function applyLiveSubscriptionCache(rows = []) {
       ...normalizeLiveSubscriptions(entry.subscriptions),
       checkedAt: entry.verifiedAt || game.subscriptions?.checkedAt || null
     };
+  }
+}
+
+function applyLiveProviderEntry(game, entry) {
+  if (!game || !entry?.providers) return false;
+  const before = JSON.stringify({
+    links: game.links || {},
+    livePrices: game.livePrices || {},
+    liveVerifiedAt: game.liveVerifiedAt || '',
+    steamId: game.steamId || '',
+    rating: game.rating || 0,
+    ratingCount: game.ratingCount || 0
+  });
+  const providers = entry.providers || {};
+  const linkMap = {
+    steam: providers.steam?.storeUrl,
+    epic: providers.epic?.storeUrl,
+    xbox: providers.microsoft?.storeUrl,
+    playstation: providers.playstation?.storeUrl,
+    nintendo: providers.nintendo?.storeUrl
+  };
+  game.links = {
+    ...(game.links || {}),
+    ...Object.fromEntries(Object.entries(linkMap).filter(([, value]) => Boolean(value)))
+  };
+  game.livePrices = Object.fromEntries(
+    Object.entries(providers)
+      .filter(([, provider]) => provider?.price)
+      .map(([name, provider]) => [name, provider.price])
+  );
+  game.liveVerifiedAt = entry.verifiedAt || game.liveVerifiedAt || null;
+  if (providers.steam?.providerId) game.steamId = String(providers.steam.providerId);
+  const rated = providers.igdb?.rating
+    ? providers.igdb
+    : Object.values(providers).find(provider => Number(provider?.rating) > 0);
+  if (rated?.rating && (!game.rating || Number(rated.ratingCount || 0) >= Number(game.ratingCount || 0))) {
+    game.rating = Number(rated.rating);
+    if (rated.ratingCount) game.ratingCount = Number(rated.ratingCount);
+  }
+  return JSON.stringify({
+    links: game.links || {},
+    livePrices: game.livePrices || {},
+    liveVerifiedAt: game.liveVerifiedAt || '',
+    steamId: game.steamId || '',
+    rating: game.rating || 0,
+    ratingCount: game.ratingCount || 0
+  }) !== before;
+}
+
+function applyLiveProviderCache(rows = []) {
+  const seen = new Set();
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || seen.has(game)) continue;
+    seen.add(game);
+    const entry = subscriptionKeys(game).map(key => liveProviders[key]).find(Boolean);
+    if (entry) applyLiveProviderEntry(game, entry);
   }
 }
 
@@ -817,6 +898,7 @@ function renderGameDialog(row) {
   $('game-dialog').dataset.rowKey = row.key;
   $('game-dialog').dataset.gameId = gameId(row.game);
   $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
+  $('dialog-content').removeAttribute('data-live-enriched-title');
   $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
   updateQuery();
   updateSeoForGame(row);
@@ -1060,16 +1142,21 @@ function bindEvents() {
     const detail = event.detail || {};
     const id = String(detail.gameId || '').trim();
     if (!id) return;
-    const entry = {
-      providers: detail.providers || {},
-      merged: detail.merged || {},
-      verifiedAt: detail.verifiedAt || new Date().toISOString(),
-      updatedAt: Date.now()
-    };
+    const entry = compactLiveProviderEntry(detail);
     liveProviders[`id:${id}`] = entry;
     const igdbId = String(detail.igdbId || '').trim();
     if (igdbId) liveProviders[`igdb:${igdbId}`] = entry;
     writeLiveProviders(liveProviders);
+
+    const seen = new Set();
+    for (const row of state.rows) {
+      const game = row?.game;
+      if (!game || seen.has(game)) continue;
+      seen.add(game);
+      const sameIgdb = igdbId && String(game.igdbId || '') === igdbId;
+      const sameId = gameId(game) === id;
+      if (sameIgdb || sameId) applyLiveProviderEntry(game, entry);
+    }
   });
   window.addEventListener('games:subscription-updated', event => {
     const detail = event.detail || {};
@@ -1303,6 +1390,7 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   state.dataset = dataset;
   state.catalogRows = flattenReleases(dataset);
   state.rows = [...state.catalogRows, ...state.onlineRows];
+  applyLiveProviderCache(state.rows);
   applyLiveSubscriptionCache(state.rows);
   if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
   hydrateControls();
