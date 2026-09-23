@@ -59,8 +59,38 @@ export function formatLivePrice(price) {
     : `${prefix}${text}`;
 }
 
-function cardLivePrices(game, limit = 3) {
+function priceProvidersForRow(row) {
+  const groups = new Set(row?.platformGroups || []);
+  if (!groups.size) return new Set(LIVE_PRICE_SOURCES.map(([provider]) => provider));
+  const providers = new Set();
+  if (groups.has('PC')) ['steam','epic','microsoft'].forEach(provider => providers.add(provider));
+  if (groups.has('PS5') || groups.has('PS4')) providers.add('playstation');
+  if (groups.has('Xbox Series') || groups.has('Xbox One') || groups.has('Xbox 360')) providers.add('microsoft');
+  if (groups.has('Switch') || groups.has('Switch 2')) providers.add('nintendo');
+  if (groups.has('VR')) {
+    const names = (row?.platforms || []).map(platform => String(platform?.name || '').toLowerCase());
+    if (names.some(name => /steamvr|windows|pc/.test(name))) providers.add('steam');
+    if (names.some(name => /playstation vr|ps vr/.test(name))) providers.add('playstation');
+  }
+  return providers;
+}
+
+function serviceKindsForRow(row) {
+  const groups = new Set(row?.platformGroups || []);
+  if (!groups.size) return null;
+  const services = new Set();
+  if (groups.has('PC') || groups.has('Xbox Series') || groups.has('Xbox One') || groups.has('Xbox 360')) {
+    ['gamepass','cloud','eaplay','gfn'].forEach(kind => services.add(kind));
+  }
+  if (groups.has('PS5') || groups.has('PS4')) services.add('psplus');
+  return services;
+}
+
+function cardLivePrices(row, limit = 3) {
+  const game = row.game;
+  const allowedProviders = priceProvidersForRow(row);
   const items = LIVE_PRICE_SOURCES
+    .filter(([provider]) => allowedProviders.has(provider))
     .map(([provider, label, kind]) => ({
       provider,
       label,
@@ -211,14 +241,15 @@ function coverMarkup(game) {
   return `<div class="game-card__cover"><img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" loading="lazy" decoding="async" width="360" height="480"><div class="game-card__gradient"></div></div>`;
 }
 
-function serviceBadges(game, compact = false, excluded = []) {
+function serviceBadges(game, compact = false, excluded = [], allowed = null) {
   const skip = new Set(excluded);
   const services = [];
-  if (game.subscriptions?.gamePass && !skip.has('gamepass')) services.push(['Game Pass','gamepass']);
-  if (game.subscriptions?.cloudGaming && !skip.has('cloud')) services.push(['Xbox Cloud','cloud']);
-  if (game.subscriptions?.eaPlay && !skip.has('eaplay')) services.push(['EA Play','eaplay']);
-  if (game.subscriptions?.psPlus && !skip.has('psplus')) services.push(['PS Plus','psplus']);
-  if (game.subscriptions?.geforceNow && !skip.has('gfn')) services.push(['GeForce NOW','gfn']);
+  const visible = key => !allowed || allowed.has(key);
+  if (game.subscriptions?.gamePass && !skip.has('gamepass') && visible('gamepass')) services.push(['Game Pass','gamepass']);
+  if (game.subscriptions?.cloudGaming && !skip.has('cloud') && visible('cloud')) services.push(['Xbox Cloud','cloud']);
+  if (game.subscriptions?.eaPlay && !skip.has('eaplay') && visible('eaplay')) services.push(['EA Play','eaplay']);
+  if (game.subscriptions?.psPlus && !skip.has('psplus') && visible('psplus')) services.push(['PS Plus','psplus']);
+  if (game.subscriptions?.geforceNow && !skip.has('gfn') && visible('gfn')) services.push(['GeForce NOW','gfn']);
   if (!services.length) return '';
   return `<span class="service-badges ${compact ? 'service-badges--compact' : ''}">${services.map(([label, key]) => `<span class="service-badge service-badge--${key}">${serviceIcon(key, { className:'brand-icon--service' })}<span>${escapeHtml(label)}</span></span>`).join('')}</span>`;
 }
@@ -232,11 +263,12 @@ export function rowCard(row, watched) {
     return `<span class="platform-tag">${platformIcon(key, { className:'brand-icon--tag' })}<span>${escapeHtml(p.abbreviation || p.name)}</span></span>`;
   }).join('');
   const releaseState = row.day ? (row.day >= todayLocal() ? 'Nadcházející' : 'Vydáno') : (row.window || game.announcedWindow || 'TBA');
+  const visibleServices = serviceKindsForRow(row);
   const extraBadges = [
     row.onlineResult ? '<span class="badge badge--online">Nalezeno online</span>' : '',
     game.earlyAccess ? '<span class="badge badge--early">Early Access</span>' : '',
     game.scale ? `<span class="badge badge--scale">${escapeHtml(game.scale)}</span>` : '',
-    game.subscriptions?.gamePass
+    game.subscriptions?.gamePass && (!visibleServices || visibleServices.has('gamepass'))
       ? `<span class="service-badge service-badge--gamepass card-service-badge">${serviceIcon('gamepass', { className:'brand-icon--service' })}<span>Game Pass</span></span>`
       : ''
   ].filter(Boolean).join('');
@@ -249,8 +281,8 @@ export function rowCard(row, watched) {
         <span class="game-card__title">${escapeHtml(game.name)}</span>
         <span class="game-card__meta"><time class="game-card__date" ${row.day ? `datetime="${row.day}"` : ''}>${escapeHtml(releaseText(row))}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
         <span class="card-platforms">${platforms}</span>
-        ${cardLivePrices(game)}
-        ${serviceBadges(game, true, ['gamepass'])}
+        ${cardLivePrices(row)}
+        ${serviceBadges(game, true, ['gamepass'], visibleServices)}
       </span>
     </button>
     <div class="game-card__actions">
@@ -422,7 +454,7 @@ export function gameDialogHtml(row, watched) {
         ${game.rating ? `<span class="badge">★ ${Math.round(game.rating)} %</span>` : ''}
       </div>
       ${flags ? `<div class="detail-flags">${flags}</div>` : ''}
-      ${serviceBadges(game)}
+      ${serviceBadges(game, false, [], serviceKindsForRow(row))}
       <p class="detail-summary">${escapeHtml(summary)}</p>
       ${genreLabels.length ? `<div class="detail-genres"><span class="detail-section-label">Žánry</span><div class="genre-chips">${genreLabels.map(genre => `<button type="button" class="genre-chip" data-dialog-genre="${escapeHtml(genre)}">${escapeHtml(genre)}</button>`).join('')}</div></div>` : ''}
       ${facts ? `<div class="detail-facts">${facts}</div>` : ''}

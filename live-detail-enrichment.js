@@ -268,9 +268,13 @@ import { fetchApi } from './js/api.js';
     if (subscriptions.eaPlay) items.push(['EA Play', 'eaplay']);
     if (subscriptions.psPlus) items.push(['PS Plus', 'psplus']);
     if (subscriptions.geforceNow) items.push(['GeForce NOW', 'gfn']);
-    if (!items.length) return subscriptions;
 
     let wrap = content.querySelector('.detail-main > .service-badges');
+    if (!items.length) {
+      wrap?.remove();
+      return subscriptions;
+    }
+
     if (!wrap) {
       wrap = document.createElement('span');
       wrap.className = 'service-badges';
@@ -279,8 +283,8 @@ import { fetchApi } from './js/api.js';
       else content.querySelector('.detail-main')?.appendChild(wrap);
     }
 
+    wrap.replaceChildren();
     for (const [label, kind] of items) {
-      if ([...wrap.querySelectorAll('.service-badge')].some(node => clean(node.textContent) === label)) continue;
       const badge = document.createElement('span');
       badge.className = `service-badge service-badge--${kind}`;
       badge.innerHTML = `${serviceIcon(kind, { className:'brand-icon--service' })}<span></span>`;
@@ -728,9 +732,7 @@ import { fetchApi } from './js/api.js';
         verifiedAt
       }
     }));
-    const stored = window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId());
-    const displayProviders = stored?.providers || providers;
-    addSubscriptions(merged, displayProviders);
+    addSubscriptions(merged, providers);
     window.dispatchEvent(new CustomEvent('games:subscription-updated', {
       detail: {
         gameId: currentGameId(),
@@ -740,8 +742,8 @@ import { fetchApi } from './js/api.js';
         verifiedAt
       }
     }));
-    improveStoreLinks(displayProviders);
-    addTrailer(merged, displayProviders);
+    improveStoreLinks(providers);
+    addTrailer(merged, providers);
     addHistory(result.gameKey || result.query?.id || '');
     addScreenshots(merged, title);
     improveSummary(merged);
