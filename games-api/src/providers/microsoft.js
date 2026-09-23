@@ -14,6 +14,34 @@ const SIGL_IDS = Object.freeze({
 
 const DISPLAY_CATALOG = 'https://displaycatalog.mp.microsoft.com/v7.0/products';
 
+function xboxSearchUrl(query = '') {
+  return `https://www.xbox.com/${config.language}/Search/Results?q=${encodeURIComponent(String(query || '').trim())}`;
+}
+
+function xboxLinksFromSearch(html = '') {
+  const links = new Map();
+  const $ = loadHtml(html);
+  $('a[href*="/games/store/"]').each((_, node) => {
+    const href = $(node).attr('href') || '';
+    const match = href.match(/\/games\/store\/[^/?#"']+\/([A-Z0-9]{10,16})(?:[/?#"'&]|$)/i);
+    if (!match) return;
+    try {
+      links.set(match[1].toUpperCase(), new URL(href, 'https://www.xbox.com').href);
+    } catch {}
+  });
+  return links;
+}
+
+function xboxPageSignals(html = '') {
+  const text = loadHtml(html).text().replace(/\s+/g, ' ').trim();
+  const gamePass = /(přichází\s+do|coming\s+to|included\s+with|získat|get)\s+(?:xbox\s+)?game\s*pass/i.test(text)
+    || /game\s*pass\s+(ultimate|pc|console)/i.test(text);
+  const comingSoon = /(přichází\s+do|coming\s+to)\s+(?:xbox\s+)?game\s*pass/i.test(text);
+  const preorder = /předobjednat|předobjednáv|pre[- ]?order/i.test(text);
+  return { gamePass, comingSoon, preorder };
+}
+
+
 function localProps(product) {
   return product?.LocalizedProperties?.[0] || product?.localizedProperties?.[0] || {};
 }
@@ -166,7 +194,7 @@ export async function gamePassCatalog(kind, { force = false, limit = 1000 } = {}
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `microsoft:search:${config.language}:${q.toLowerCase()}`;
+  const key = `microsoft:search:v3:${config.market}:${config.language}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
@@ -182,13 +210,57 @@ export async function search(query, { force = false, limit = 8 } = {}) {
   const products = await displayProducts([...ids].slice(0, 20), { force });
   const productIds = products.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean);
   const membership = await subscriptionKindsForIds(productIds, { force });
-  const normalized = products.map(item => {
+  let normalized = products.map(item => {
     const id = String(item?.ProductId || item?.productId || '');
     return normalizeMicrosoftProduct(item, membership.get(id) || [], {
       storeUrl: xboxLinks.get(id.toUpperCase()) || ''
     });
   }).filter(Boolean);
-  const consolidated = consolidateMicrosoftSearch(q, normalized);
+
+  let consolidated = consolidateMicrosoftSearch(q, normalized);
+  let primary = consolidated[0] || null;
+  const primaryUrl = primary?.storeUrl && /xbox\.com\/.*\/games\/store\//i.test(primary.storeUrl)
+    ? primary.storeUrl
+    : '';
+
+  if (primaryUrl) {
+    try {
+      const pageHtml = await fetchText(primaryUrl);
+      const pageLinks = xboxLinksFromSearch(pageHtml);
+      const knownIds = new Set(productIds.map(id => id.toUpperCase()));
+      const relatedIds = [...pageLinks.keys()].filter(id => !knownIds.has(id)).slice(0, 30);
+      if (relatedIds.length) {
+        const relatedProducts = await displayProducts(relatedIds, { force });
+        const relatedMembership = await subscriptionKindsForIds(
+          relatedProducts.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean),
+          { force }
+        );
+        const relatedNormalized = relatedProducts.map(item => {
+          const id = String(item?.ProductId || item?.productId || '');
+          return normalizeMicrosoftProduct(item, relatedMembership.get(id) || [], {
+            storeUrl: pageLinks.get(id.toUpperCase()) || ''
+          });
+        }).filter(Boolean);
+        normalized = [...normalized, ...relatedNormalized];
+        consolidated = consolidateMicrosoftSearch(q, normalized);
+        primary = consolidated[0] || primary;
+      }
+
+      const signals = xboxPageSignals(pageHtml);
+      if (primary) {
+        primary.subscriptions = { ...(primary.subscriptions || {}) };
+        if (signals.gamePass) primary.subscriptions.gamePass = true;
+        primary.rawHints = {
+          ...(primary.rawHints || {}),
+          xboxPageVerified: true,
+          xboxGamePassPage: signals.gamePass,
+          xboxGamePassComingSoon: signals.comingSoon,
+          xboxPreorderPage: signals.preorder
+        };
+      }
+    } catch {}
+  }
+
   cachePut(key, 'microsoft', consolidated, config.ttl.search);
   return consolidated.slice(0, limit);
 }

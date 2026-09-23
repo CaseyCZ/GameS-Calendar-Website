@@ -358,13 +358,27 @@ import { fetchApi } from './js/api.js';
   }
 
   function historyText(item) {
-    if (item.field === 'releaseDates') return `Změna termínu · ${historyReleaseChange(item.oldValue, item.newValue)}`;
-    if (item.field === 'prices') return `${historyPriceTrend(item.oldValue, item.newValue)} · ${historyPriceSummary(item.oldValue)} → ${historyPriceSummary(item.newValue)}`;
+    if (item.field === 'releaseDates') {
+      const before = historyReleaseLabel(item.oldValue);
+      const after = historyReleaseLabel(item.newValue);
+      if (before === after && historyPlatformReleaseMap(item.oldValue).size === historyPlatformReleaseMap(item.newValue).size) return '';
+      return `Změna termínu · ${historyReleaseChange(item.oldValue, item.newValue)}`;
+    }
+    if (item.field === 'prices') {
+      const before = historyPriceSummary(item.oldValue);
+      const after = historyPriceSummary(item.newValue);
+      if (before === after) return '';
+      return `${historyPriceTrend(item.oldValue, item.newValue)} · ${before} → ${after}`;
+    }
     if (item.field === 'subscriptions') {
       const change = historySubscriptionChange(item.oldValue, item.newValue);
-      return change || `Předplatné · ${historySubscriptionSummary(item.oldValue)} → ${historySubscriptionSummary(item.newValue)}`;
+      const before = historySubscriptionSummary(item.oldValue);
+      const after = historySubscriptionSummary(item.newValue);
+      if (!change && before === after) return '';
+      return change || `Předplatné · ${before} → ${after}`;
     }
     if (item.field === 'earlyAccess') {
+      if (item.oldValue === item.newValue) return '';
       if (item.oldValue === true && item.newValue === false) return 'Early Access byl ukončen';
       if (item.oldValue === false && item.newValue === true) return 'Hra vstoupila do Early Access';
       return 'Změna Early Access stavu';

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { config } from './config.js';
+import { historyValuesEqual, normalizeHistoryValue } from './lib/history.js';
 
 fs.mkdirSync(path.dirname(config.dbFile), { recursive: true });
 export const db = new DatabaseSync(config.dbFile);
@@ -162,24 +163,27 @@ export function listHealth() {
 }
 
 export function recordChange(gameKey, field, oldValue, newValue, source) {
-  const oldText = oldValue == null ? null : (typeof oldValue === 'string' ? oldValue : JSON.stringify(oldValue));
-  const newText = newValue == null ? null : (typeof newValue === 'string' ? newValue : JSON.stringify(newValue));
-  if (oldText === newText) return null;
+  if (historyValuesEqual(field, oldValue, newValue)) return null;
+  const normalizedOld = normalizeHistoryValue(field, oldValue);
+  const normalizedNew = normalizeHistoryValue(field, newValue);
+  const oldText = normalizedOld == null ? null : (typeof normalizedOld === 'string' ? normalizedOld : JSON.stringify(normalizedOld));
+  const newText = normalizedNew == null ? null : (typeof normalizedNew === 'string' ? normalizedNew : JSON.stringify(normalizedNew));
   const changedAt = Date.now();
   const info = insertChangeStmt.run(String(gameKey), String(field), oldText, newText, String(source || ''), changedAt);
-  return { id: Number(info.lastInsertRowid), gameKey: String(gameKey), field, oldValue, newValue, source: String(source || ''), changedAt: new Date(changedAt).toISOString() };
+  return { id: Number(info.lastInsertRowid), gameKey: String(gameKey), field, oldValue: normalizedOld, newValue: normalizedNew, source: String(source || ''), changedAt: new Date(changedAt).toISOString() };
 }
 
 function trackedSnapshot(payload = {}) {
   const steam = payload.providers?.steam || null;
-  return {
+  const raw = {
     title: payload.title || '',
-    releaseDates: payload.releaseDates || {},
+    releaseDates: payload.releaseDates || [],
     subscriptions: payload.subscriptions || {},
     prices: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.price || null])),
     providerIds: Object.fromEntries(Object.entries(payload.providers || {}).map(([provider, item]) => [provider, item?.providerId || null])),
     earlyAccess: steam ? Boolean(steam.earlyAccess) : null
   };
+  return Object.fromEntries(Object.entries(raw).map(([field,value]) => [field, normalizeHistoryValue(field, value)]));
 }
 
 export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
@@ -188,7 +192,10 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
   let previous = null;
   const row = getSnapshotStmt.get(String(gameKey));
   if (row?.payload) {
-    try { previous = JSON.parse(row.payload); } catch {}
+    try {
+      const rawPrevious = JSON.parse(row.payload);
+      previous = Object.fromEntries(Object.entries(rawPrevious || {}).map(([field,value]) => [field, normalizeHistoryValue(field, value)]));
+    } catch {}
   }
   const changes = [];
   if (previous) {
@@ -202,18 +209,25 @@ export function saveGameSnapshot(gameKey, payload, source = 'enrich') {
 }
 
 export function historyForGame(gameKey, limit = 100) {
-  return db.prepare(`
+  const take = Math.max(1, Math.min(500, Number(limit) || 100));
+  const rows = db.prepare(`
     SELECT id,game_key,field,old_value,new_value,source,changed_at
     FROM change_history WHERE game_key = ? ORDER BY changed_at DESC LIMIT ?
-  `).all(String(gameKey), Math.max(1, Math.min(500, Number(limit) || 100))).map(row => ({
-    id: Number(row.id),
-    gameKey: row.game_key,
-    field: row.field,
-    oldValue: row.old_value,
-    newValue: row.new_value,
-    source: row.source,
-    changedAt: new Date(row.changed_at).toISOString()
-  }));
+  `).all(String(gameKey), Math.min(500, take * 4));
+
+  return rows.map(row => {
+    const oldValue = safeJson(row.old_value, row.old_value);
+    const newValue = safeJson(row.new_value, row.new_value);
+    return {
+      id: Number(row.id),
+      gameKey: row.game_key,
+      field: row.field,
+      oldValue,
+      newValue,
+      source: row.source,
+      changedAt: new Date(row.changed_at).toISOString()
+    };
+  }).filter(item => !historyValuesEqual(item.field, item.oldValue, item.newValue)).slice(0, take);
 }
 
 function normalizedReleaseDates(game = {}) {

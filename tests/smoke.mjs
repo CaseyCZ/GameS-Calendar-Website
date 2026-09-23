@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
+import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
@@ -49,6 +50,15 @@ assert.equal(xboxConsolidated.price.from, true);
 assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
+
+assert.equal(historyValuesEqual('prices', { microsoft:null }, {}), true);
+assert.equal(historyValuesEqual('subscriptions', { gamePass:false }, {}), true);
+assert.equal(historyValuesEqual('releaseDates', {}, []), true);
+assert.equal(historyValuesEqual('prices', {}, { microsoft:{ current:1799, currency:'CZK' } }), false);
+assert.equal(historyValuesEqual('subscriptions', {}, { gamePass:true }), false);
+assert.deepEqual(normalizeHistoryValue('prices', { microsoft:null, steam:{ current:69.99, currency:'EUR' } }), {
+  steam:{ currency:'EUR', currentText:'', current:69.99, regular:null, isFree:false }
+});
 
 
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
