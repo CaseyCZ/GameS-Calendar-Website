@@ -736,6 +736,7 @@ function renderGameDialog(row) {
   state.openRowKey = row.key;
   $('game-dialog').dataset.rowKey = row.key;
   $('game-dialog').dataset.gameId = gameId(row.game);
+  $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
   $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
   updateQuery();
   updateSeoForGame(row);

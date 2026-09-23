@@ -48,6 +48,10 @@ import { fetchApi } from './js/api.js';
     return firstColon > 0 ? rowKey.slice(0, firstColon) : rowKey;
   }
 
+  function currentIgdbId() {
+    return clean(dialog.dataset.igdbId);
+  }
+
   function platformTexts() {
     return [...content.querySelectorAll('.detail-meta .badge')]
       .map(node => clean(node.textContent))
@@ -532,7 +536,10 @@ import { fetchApi } from './js/api.js';
         const response = await fetchApi('/enrich', {
           method: 'POST',
           headers: { 'content-type': 'application/json', accept: 'application/json' },
-          body: JSON.stringify({ game: { id: currentGameId(), title }, providers })
+          body: JSON.stringify({
+            game: { id: currentGameId(), igdbId: currentIgdbId(), title },
+            providers
+          })
         });
         payload = await response.json();
         cache.set(title, payload);

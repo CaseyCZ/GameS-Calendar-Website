@@ -206,6 +206,12 @@ assert.equal(compactControlsSource.includes("import('./advanced-features.js')"),
 const advancedSource = readFileSync(new URL('../advanced-features.js', import.meta.url), 'utf8');
 assert.equal(advancedSource.includes("dy >= 88"), false);
 
+const appSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')"), true);
+
+const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
+assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
+
 const moduleSources = [
   '../compact-controls.js',
   '../advanced-features.js',
