@@ -1,4 +1,4 @@
-import { serviceIcon } from './js/icons.js';
+import { serviceIcon, storeIcon } from './js/icons.js';
 import { fetchApi } from './js/api.js';
 
 (() => {
@@ -124,7 +124,8 @@ import { fetchApi } from './js/api.js';
   }
 
   function screenFresh(game) {
-    const fetchedAt = screenCache.get(screenKey(game)) || 0;
+    const entry = screenCache.get(screenKey(game));
+    const fetchedAt = Number(entry?.fetchedAt || 0);
     return fetchedAt && Date.now() - fetchedAt < SCREEN_CACHE_TTL_MS;
   }
 
@@ -155,26 +156,28 @@ import { fetchApi } from './js/api.js';
         (payload.results || []).forEach((result, index) => {
           const game = batch[index];
           if (!game) return;
-          screenCache.set(screenKey(game), Date.now());
+          screenCache.set(screenKey(game), { fetchedAt: Date.now(), payload: { results: [result] } });
           const subscriptions = Object.values(result.providers || {}).reduce(
             (all, provider) => Object.assign(all, provider?.subscriptions || {}),
             { ...(result.merged?.subscriptions || {}) }
           );
+          const verifiedAt = new Date().toISOString();
+          window.dispatchEvent(new CustomEvent('games:live-enriched', {
+            detail: {
+              gameId: game.gameId,
+              igdbId: String(result.identity?.igdbId || ''),
+              title: game.title,
+              providers: result.providers || {},
+              merged: result.merged || {},
+              verifiedAt
+            }
+          }));
           window.dispatchEvent(new CustomEvent('games:subscription-updated', {
             detail: {
               gameId: game.gameId,
               igdbId: String(result.identity?.igdbId || ''),
               subscriptions,
-              verifiedAt: new Date().toISOString()
-            }
-          }));
-          window.dispatchEvent(new CustomEvent('games:live-enriched', {
-            detail: {
-              gameId: game.gameId,
-              title: game.title,
-              providers: result.providers || {},
-              merged: result.merged || {},
-              verifiedAt: new Date().toISOString()
+              verifiedAt
             }
           }));
         });
@@ -601,6 +604,48 @@ import { fetchApi } from './js/api.js';
     return discount > 0 ? `${priced} · −${Math.round(discount)} %` : priced;
   }
 
+  function ensureStoreGrid() {
+    let grid = content.querySelector('.detail-store-grid');
+    if (grid) return grid;
+    const section = document.createElement('section');
+    section.className = 'detail-link-section detail-link-section--stores';
+    section.setAttribute('aria-label', 'Obchody pro toto vydání');
+    const heading = document.createElement('p');
+    heading.className = 'detail-section-label';
+    heading.textContent = 'Kde hru najít';
+    grid = document.createElement('div');
+    grid.className = 'detail-store-grid';
+    section.append(heading, grid);
+    const more = content.querySelector('.detail-link-section:not(.detail-link-section--stores)');
+    if (more) more.insertAdjacentElement('beforebegin', section);
+    else content.querySelector('.detail-main')?.appendChild(section);
+    return grid;
+  }
+
+  function ensureStoreLink(kind, label) {
+    let link = content.querySelector(`.store-link--${kind}`);
+    if (link) return link;
+    const grid = ensureStoreGrid();
+    link = document.createElement('a');
+    link.className = `store-link store-link--${kind}`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    const icon = document.createElement('span');
+    icon.className = 'store-link__icon';
+    icon.innerHTML = storeIcon(kind);
+    const text = document.createElement('span');
+    text.className = 'store-link__label';
+    text.textContent = label;
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('class', 'store-link__arrow');
+    arrow.setAttribute('viewBox', '0 0 24 24');
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.innerHTML = '<path d="M8 16 16 8m-6 0h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+    link.append(icon, text, arrow);
+    grid.appendChild(link);
+    return link;
+  }
+
   function improveStoreLinks(providers) {
     const stores = {
       steam: { provider: providers?.steam, label: 'Steam' },
@@ -612,8 +657,7 @@ import { fetchApi } from './js/api.js';
     for (const [kind, store] of Object.entries(stores)) {
       const url = safeUrl(store.provider?.storeUrl);
       if (!url) continue;
-      const link = content.querySelector(`.store-link--${kind}`);
-      if (!link) continue;
+      const link = ensureStoreLink(kind, store.label);
       link.href = url;
       link.dataset.exactStoreLink = 'true';
       const price = formattedPrice(store.provider);
@@ -643,14 +687,7 @@ import { fetchApi } from './js/api.js';
     const providers = result.providers || {};
     const merged = result.merged || {};
     const subscriptions = addSubscriptions(merged, providers) || {};
-    window.dispatchEvent(new CustomEvent('games:subscription-updated', {
-      detail: {
-        gameId: currentGameId(),
-        igdbId: String(result.identity?.igdbId || currentIgdbId() || ''),
-        subscriptions,
-        verifiedAt: new Date().toISOString()
-      }
-    }));
+    const verifiedAt = new Date().toISOString();
     window.dispatchEvent(new CustomEvent('games:live-enriched', {
       detail: {
         gameId: currentGameId(),
@@ -658,7 +695,15 @@ import { fetchApi } from './js/api.js';
         title,
         providers,
         merged,
-        verifiedAt: new Date().toISOString()
+        verifiedAt
+      }
+    }));
+    window.dispatchEvent(new CustomEvent('games:subscription-updated', {
+      detail: {
+        gameId: currentGameId(),
+        igdbId: String(result.identity?.igdbId || currentIgdbId() || ''),
+        subscriptions,
+        verifiedAt
       }
     }));
     improveStoreLinks(providers);
@@ -686,6 +731,13 @@ import { fetchApi } from './js/api.js';
     try {
       const cacheKey = currentEnrichmentKey();
       let payload = cachedPayload(cacheKey);
+      if (!payload) {
+        const screenEntry = screenCache.get(`${currentGameId()}:${title.toLowerCase()}`);
+        if (screenEntry?.payload && Date.now() - Number(screenEntry.fetchedAt || 0) < SCREEN_CACHE_TTL_MS) {
+          payload = screenEntry.payload;
+          cachePayload(cacheKey, payload);
+        }
+      }
       if (!payload) {
         const stored = window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId());
         if (stored?.providers && Date.now() - Number(stored.updatedAt || 0) < SCREEN_CACHE_TTL_MS) {
