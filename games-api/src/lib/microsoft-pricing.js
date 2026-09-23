@@ -81,7 +81,7 @@ export function consolidateMicrosoftSearch(query, items = []) {
       score: titleScore(query, item.title),
       storefrontScore: storefrontTitleScore(query, item.title)
     }))
-    .filter(entry => entry.storefrontScore >= 0.45)
+    .filter(entry => entry.storefrontScore >= 0.40)
     .sort((a, b) =>
       b.storefrontScore - a.storefrontScore
       || b.score - a.score
