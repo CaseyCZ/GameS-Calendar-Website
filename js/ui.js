@@ -168,7 +168,8 @@ export function rowCard(row, watched) {
       ? `<span class="service-badge service-badge--gamepass card-service-badge">${serviceIcon('gamepass', { className:'brand-icon--service' })}<span>Game Pass</span></span>`
       : ''
   ].filter(Boolean).join('');
-  return `<article class="game-card" data-row-key="${escapeHtml(row.key)}">
+  const livePlatforms = JSON.stringify((row.platforms || []).map(p => p.name || p.abbreviation || '').filter(Boolean));
+  return `<article class="game-card" data-row-key="${escapeHtml(row.key)}" data-live-game-id="${escapeHtml(String(game.id || ''))}" data-live-igdb-id="${escapeHtml(String(game.igdbId || ''))}" data-live-title="${escapeHtml(game.name)}" data-live-platforms="${escapeHtml(livePlatforms)}">
     <button class="game-card__button" type="button" data-open-game="${escapeHtml(row.key)}" aria-label="Detail hry ${escapeHtml(game.name)}">
       ${coverMarkup(game)}
       <span class="card-badges"><span class="badge ${row.day && row.day < todayLocal() ? 'badge--released' : 'badge--soon'}" title="${escapeHtml(precisionLabel(row))}">${escapeHtml(countdown || releaseState)}</span>${!row.day || row.precision !== 'day' ? `<span class="badge badge--precision">${escapeHtml(precisionLabel(row))}</span>` : ''}${extraBadges}</span>
