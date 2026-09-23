@@ -74,14 +74,14 @@ function isPremiumEdition(item) {
 
 export function consolidateMicrosoftSearch(query, items = []) {
   const wantsPremium = PREMIUM_EDITION_RE.test(cleanText(query || ''));
-  const scored = (items || [])
-    .filter(Boolean)
-    .map(item => ({
-      item,
-      score: titleScore(query, item.title),
-      storefrontScore: storefrontTitleScore(query, item.title)
-    }))
-    .filter(entry => entry.storefrontScore >= 0.40)
+  const candidates = (items || []).filter(Boolean).map(item => ({
+    item,
+    score: titleScore(query, item.title),
+    storefrontScore: storefrontTitleScore(query, item.title)
+  }));
+
+  const scored = candidates
+    .filter(entry => entry.storefrontScore >= 0.55)
     .sort((a, b) =>
       b.storefrontScore - a.storefrontScore
       || b.score - a.score
@@ -89,14 +89,21 @@ export function consolidateMicrosoftSearch(query, items = []) {
     );
   if (!scored.length) return [];
 
-  const related = scored.map(entry => entry.item);
+  const related = candidates
+    .filter(entry => entry.score >= 0.40)
+    .map(entry => entry.item);
+
   const primaryEntry = wantsPremium
     ? scored[0]
     : scored.find(entry => isFullGameOffer(entry.item) && !isPremiumEdition(entry.item)) || scored[0];
   const primary = primaryEntry.item;
 
-  const purchaseOffers = scored
-    .filter(entry => positivePrice(entry.item) && isFullGameOffer(entry.item))
+  const purchaseOffers = candidates
+    .filter(entry =>
+      entry.score >= 0.40
+      && positivePrice(entry.item)
+      && isFullGameOffer(entry.item)
+    )
     .sort((a, b) => {
       if (!wantsPremium) {
         const ap = isPremiumEdition(a.item);
