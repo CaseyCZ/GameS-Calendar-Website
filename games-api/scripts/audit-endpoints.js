@@ -158,7 +158,7 @@ try {
 
 
 try {
-  const response = await fetch('https://130.61.49.108/games-api/enrich?force=1', {
+  const response = await fetch('https://130.61.49.108/games-api/api/enrich?refresh=1', {
     method:'POST',
     headers:{ 'content-type':'application/json', accept:'application/json' },
     body:JSON.stringify({
@@ -206,4 +206,26 @@ try {
   })));
 } catch (error) {
   console.log(`ℹ️ FC 27 raw Nintendo diagnostic failed: ${error?.message || error}`);
+}
+
+
+try {
+  const response = await fetch('https://130.61.49.108/games-api/api/igdb/catalog-batch?refresh=1', {
+    method:'POST',
+    headers:{ 'content-type':'application/json', accept:'application/json' },
+    body:JSON.stringify({ ids:[408819], refresh:true })
+  });
+  const payload = await response.json();
+  const item = payload?.items?.[0] || null;
+  console.log('ℹ️ FC 27 production IGDB batch diagnostic', {
+    status:response.status,
+    item:item ? {
+      providerId:item.providerId || null,
+      title:item.title || null,
+      externalIds:item.externalIds || item.rawHints?.externalIds || null,
+      websites:item.websites || item.rawHints?.websites || []
+    } : null
+  });
+} catch (error) {
+  console.log(`ℹ️ FC 27 production IGDB batch diagnostic failed: ${error?.message || error}`);
 }
