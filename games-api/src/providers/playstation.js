@@ -134,23 +134,26 @@ function collectPriceCandidates(root) {
       node.name || node.title || node.productName || node.conceptName ||
       node.displayName || node.editionName || node.skuName || ''
     );
+    const priceNode = node.price && typeof node.price === 'object' && !Array.isArray(node.price)
+      ? node.price
+      : node;
     const regularText = [
-      node.basePrice, node.formattedBasePrice, node.strikethroughPrice,
-      node.regularPrice
+      priceNode.basePrice, priceNode.formattedBasePrice, priceNode.strikethroughPrice,
+      priceNode.regularPrice
     ].find(value => typeof value === 'string' && value.trim()) || '';
     const currentText = [
-      node.discountedPrice, node.salePrice, node.formattedDiscountedPrice,
-      node.formattedPrice
+      priceNode.discountedPrice, priceNode.salePrice, priceNode.formattedDiscountedPrice,
+      priceNode.formattedPrice
     ].find(value => typeof value === 'string' && value.trim()) || regularText;
     const regularRaw = [
-      node.basePriceValue, node.regularPriceValue,
-      typeof node.basePrice === 'number' ? node.basePrice : null,
-      typeof node.regularPrice === 'number' ? node.regularPrice : null
+      priceNode.basePriceValue, priceNode.regularPriceValue,
+      typeof priceNode.basePrice === 'number' ? priceNode.basePrice : null,
+      typeof priceNode.regularPrice === 'number' ? priceNode.regularPrice : null
     ].find(value => typeof value === 'number' && Number.isFinite(value));
     const currentRaw = [
-      node.discountedPriceValue, node.salePriceValue,
-      typeof node.discountedPrice === 'number' ? node.discountedPrice : null,
-      typeof node.salePrice === 'number' ? node.salePrice : null
+      priceNode.discountedPriceValue, priceNode.salePriceValue,
+      typeof priceNode.discountedPrice === 'number' ? priceNode.discountedPrice : null,
+      typeof priceNode.salePrice === 'number' ? priceNode.salePrice : null
     ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularRaw;
     const regular = parsePriceText(regularText) ?? regularRaw ?? null;
     const current = parsePriceText(currentText) ?? currentRaw ?? regular;
@@ -161,7 +164,7 @@ function collectPriceCandidates(root) {
       currentText: currentText || regularText || '',
       regular: Number.isFinite(regular) ? regular : null,
       current: Number.isFinite(current) ? current : null,
-      currency: cleanText(node.currencyCode || node.currency || '')
+      currency: cleanText(priceNode.currencyCode || priceNode.currency || node.currencyCode || node.currency || '')
     });
   });
 

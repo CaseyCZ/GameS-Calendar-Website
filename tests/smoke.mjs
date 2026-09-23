@@ -330,6 +330,7 @@ const playstationProviderSource = readFileSync(new URL('../games-api/src/provide
 assert.equal(playstationProviderSource.includes('psPlusCatalog'), true);
 assert.equal(playstationProviderSource.includes("psPlusSource: 'playstation-monthly-category'"), true);
 assert.equal(playstationProviderSource.includes('function collectProductReferences'), true);
+assert.equal(playstationProviderSource.includes("const priceNode = node.price && typeof node.price === 'object'"), true);
 assert.equal(playstationProviderSource.includes('async function pricedConceptProduct'), true);
 assert.equal(playstationProviderSource.includes("priceFallback: 'concept-product'"), true);
 assert.equal(playstationProviderSource.includes('preferredTitle: q'), true);
