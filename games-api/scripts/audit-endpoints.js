@@ -112,3 +112,30 @@ try {
 } catch (error) {
   console.log(`ℹ️ Microsoft autosuggest FC 27 diagnostic failed: ${error?.message || error}`);
 }
+
+
+try {
+  const endpoints = [];
+  for (const [market,language] of [['CZ','cs-CZ'],['US','en-US']]) {
+    const url = new URL('https://displaycatalog.mp.microsoft.com/v7.0/productFamilies/Games/products');
+    url.searchParams.set('query', 'EA Sports FC 27');
+    url.searchParams.set('market', market);
+    url.searchParams.set('languages', language);
+    url.searchParams.set('fieldsTemplate', 'details');
+    url.searchParams.set('platformdependencyname', 'windows.xbox');
+    const payload = await fetchJson(url, { attempts:2, timeoutMs:10000 });
+    const products = payload?.Products || payload?.products || payload?.Items || payload?.items || payload?.Results || payload?.results || [];
+    endpoints.push({
+      market, language,
+      keys:Object.keys(payload || {}),
+      count:Array.isArray(products) ? products.length : null,
+      sample:Array.isArray(products) ? products.slice(0,12).map(item => ({
+        id:item?.ProductId || item?.productId || item?.Id || item?.id || null,
+        title:item?.LocalizedProperties?.[0]?.ProductTitle || item?.localizedProperties?.[0]?.productTitle || item?.Title || item?.title || null
+      })) : null
+    });
+  }
+  console.log('ℹ️ Microsoft catalog search variants FC 27', JSON.stringify(endpoints));
+} catch (error) {
+  console.log(`ℹ️ Microsoft catalog search variants FC 27 failed: ${error?.message || error}`);
+}
