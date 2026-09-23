@@ -72,7 +72,7 @@ export function consolidateMicrosoftSearch(query, items = []) {
     .map(item => ({ item, score: titleScore(query, item.title) }))
     .filter(entry => entry.score >= 0.55)
     .sort((a, b) => b.score - a.score);
-  if (!scored.length) return items || [];
+  if (!scored.length) return [];
 
   const primary = scored[0].item;
   const related = scored.map(entry => entry.item);

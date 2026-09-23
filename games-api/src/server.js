@@ -543,7 +543,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
     const selected = providerList(providerNames)
       .filter(provider => provider.name !== 'igdb')
       .filter(provider => typeof provider.search === 'function')
-      .filter(provider => provider.name === 'microsoft' || !found.some(item => item.provider === provider.name));
+      .filter(provider => !found.some(item => item.provider === provider.name));
     const searched = await Promise.allSettled(selected.map(provider => bestSearchHit(provider, title, { force })));
     for (const result of searched) {
       if (result.status !== 'fulfilled' || !result.value?.item) continue;

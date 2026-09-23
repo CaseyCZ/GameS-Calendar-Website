@@ -51,6 +51,12 @@ assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
+const xboxWrongSearch = [
+  { provider:'microsoft', providerId:'GAMEPASS', title:'Xbox Game Pass Ultimate', price:{ current:499, currency:'CZK' }, subscriptions:{ gamePass:true }, rawHints:{} }
+];
+assert.deepEqual(consolidateMicrosoftSearch('Gears of War: E-Day', xboxWrongSearch), []);
+
+
 assert.equal(historyValuesEqual('prices', { microsoft:null }, {}), true);
 assert.equal(historyValuesEqual('subscriptions', { gamePass:false }, {}), true);
 assert.equal(historyValuesEqual('releaseDates', {}, []), true);
