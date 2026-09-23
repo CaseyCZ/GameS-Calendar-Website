@@ -422,6 +422,7 @@ assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchTex
 assert.equal(microsoftProviderSource.includes('microsoftPagePriceForTitle'), true);
 assert.equal(microsoftProviderSource.includes("xboxPriceFallback: 'page-edition-text'"), true);
 assert.equal(microsoftProviderSource.includes("xboxPriceFallback: 'search-edition'"), true);
+assert.equal(microsoftProviderSource.includes("if (!item.price) {\n      const searchedEditions = await search(exactTitle, { force, limit: 8 });"), true);
 assert.equal(microsoftProviderSource.includes('await search(exactTitle, { force, limit: 8 })'), true);
 assert.equal(microsoftProviderSource.includes('enriched.rawHints?.xboxPriceProductId || enriched.providerId'), true);
 assert.equal(serverSource.includes('lastKnownProviders'), true);

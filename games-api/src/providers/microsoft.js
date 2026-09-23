@@ -298,7 +298,7 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
       }
     }
 
-    if (!consolidated[0]?.price) {
+    if (!item.price) {
       const pagePrice = microsoftPagePriceForTitle(loadHtml(pageHtml).text(), exactTitle);
       if (pagePrice) {
         item.price = {
@@ -314,7 +314,7 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
       }
     }
 
-    if (!consolidated[0]?.price) {
+    if (!item.price) {
       const searchedEditions = await search(exactTitle, { force, limit: 8 });
       const pricedEdition = searchedEditions.find(candidate => {
         const current = Number(candidate?.price?.current);
