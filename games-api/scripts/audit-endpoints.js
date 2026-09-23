@@ -97,3 +97,33 @@ try {
 } catch (error) {
   console.log(`ℹ️ FC 27 edition diagnostic failed: ${error?.message || error}`);
 }
+
+
+try {
+  const response = await fetch('https://130.61.49.108/games-api/enrich', {
+    method:'POST',
+    headers:{ 'content-type':'application/json', accept:'application/json' },
+    body:JSON.stringify({
+      game:{ id:'408819', igdbId:'408819', title:'EA Sports FC 27' },
+      providers:['igdb','steam','epic','microsoft','playstation','nintendo']
+    })
+  });
+  const text = await response.text();
+  const payload = JSON.parse(text);
+  const result = payload?.results?.[0] || {};
+  const compactProviders = Object.fromEntries(Object.entries(result.providers || {}).map(([name,item]) => [name,{
+    providerId:item?.providerId || null,
+    title:item?.title || null,
+    price:item?.price || null,
+    storeUrl:item?.storeUrl || null,
+    subscriptions:item?.subscriptions || {}
+  }]));
+  console.log('ℹ️ FC 27 production enrich diagnostic', {
+    status:response.status,
+    identity:result.identity || null,
+    matchedProviders:result.matchedProviders || [],
+    providers:compactProviders
+  });
+} catch (error) {
+  console.log(`ℹ️ FC 27 production enrich diagnostic failed: ${error?.message || error}`);
+}
