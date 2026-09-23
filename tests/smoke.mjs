@@ -293,6 +293,11 @@ const playstationProviderSource = readFileSync(new URL('../games-api/src/provide
 assert.equal(playstationProviderSource.includes('psPlusCatalog'), true);
 assert.equal(playstationProviderSource.includes("psPlusSource: 'playstation-monthly-category'"), true);
 
+const epicProviderSource = readFileSync(new URL('../games-api/src/providers/epic.js', import.meta.url), 'utf8');
+assert.equal(epicProviderSource.includes('PersistedQueryNotFound'), true);
+assert.equal(epicProviderSource.includes('query: SEARCH_QUERY'), true);
+assert.equal(epicProviderSource.includes("method: 'POST'"), true);
+
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
 

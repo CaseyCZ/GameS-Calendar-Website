@@ -8,6 +8,74 @@ const GRAPHQL = 'https://launcher.store.epicgames.com/graphql';
 const SEARCH_HASH = '7d58e12d9dd8cb14c84a3ff18d360bf9f0caa96bf218f2c5fda68ba88d68a437';
 const EPIC_LAUNCHER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) EpicGamesLauncher';
 
+const SEARCH_QUERY = `
+query searchStoreQuery(
+  $allowCountries: String,
+  $category: String,
+  $count: Int,
+  $country: String!,
+  $keywords: String,
+  $locale: String,
+  $sortBy: String,
+  $sortDir: String,
+  $start: Int,
+  $tag: String,
+  $withPrice: Boolean = true
+) {
+  Catalog {
+    searchStore(
+      allowCountries: $allowCountries
+      category: $category
+      count: $count
+      country: $country
+      keywords: $keywords
+      locale: $locale
+      sortBy: $sortBy
+      sortDir: $sortDir
+      start: $start
+      tag: $tag
+    ) {
+      elements {
+        title
+        id
+        namespace
+        description
+        effectiveDate
+        releaseDate
+        pcReleaseDate
+        offerType
+        developerDisplayName
+        publisherDisplayName
+        productSlug
+        urlSlug
+        url
+        keyImages { type url }
+        seller { name }
+        categories { path }
+        catalogNs { mappings(pageType: "productHome") { pageSlug pageType } }
+        offerMappings { pageSlug pageType }
+        price(country: $country) @include(if: $withPrice) {
+          totalPrice {
+            discountPrice
+            originalPrice
+            voucherDiscount
+            discount
+            currencyCode
+            currencyInfo { decimals }
+            fmtPrice(locale: $locale) {
+              originalPrice
+              discountPrice
+              intermediatePrice
+            }
+          }
+        }
+      }
+      paging { count total }
+    }
+  }
+}
+`;
+
 function imageOf(item, types) {
   for (const type of types) {
     const hit = (item?.keyImages || []).find(image => String(image?.type || '').toLowerCase() === type.toLowerCase());
@@ -78,14 +146,31 @@ async function searchStore(query, { force = false, limit = 8 } = {}) {
     persistedQuery: { version: 1, sha256Hash: SEARCH_HASH }
   }));
 
-  const payload = await fetchJson(url, {
-    headers: {
-      'user-agent': EPIC_LAUNCHER_UA,
-      'x-requested-with': 'XMLHttpRequest',
-      origin: 'https://store.epicgames.com',
-      referer: 'https://store.epicgames.com/'
-    }
-  });
+  const headers = {
+    'user-agent': EPIC_LAUNCHER_UA,
+    'x-requested-with': 'XMLHttpRequest',
+    origin: 'https://store.epicgames.com',
+    referer: 'https://store.epicgames.com/'
+  };
+  let payload = await fetchJson(url, { headers });
+
+  const persistedMissing = (payload?.errors || []).some(error =>
+    /PersistedQueryNotFound/i.test(String(error?.message || ''))
+  );
+  if (persistedMissing) {
+    payload = await fetchJson(GRAPHQL, {
+      method: 'POST',
+      headers: {
+        ...headers,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        operationName: 'searchStoreQuery',
+        query: SEARCH_QUERY,
+        variables
+      })
+    });
+  }
 
   if (payload?.errors?.length) {
     throw new Error(`Epic searchStore: ${payload.errors.map(item => item?.message || 'GraphQL error').join('; ')}`);
