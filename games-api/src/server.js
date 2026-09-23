@@ -475,6 +475,29 @@ function addFound(found, item) {
 function selectedNames(providerNames) {
   return new Set(providerList(providerNames).map(provider => provider.name));
 }
+function providerNamesForPlatforms(platforms = []) {
+  const text = (Array.isArray(platforms) ? platforms : []).join(' ').toLowerCase();
+  const names = new Set();
+  if (/\bpc\b|windows/.test(text)) {
+    ['steam','epic','microsoft','geforceNow'].forEach(name => names.add(name));
+  }
+  if (/xbox/.test(text)) {
+    names.add('microsoft');
+    names.add('geforceNow');
+  }
+  if (/ps4|ps5|playstation/.test(text)) names.add('playstation');
+  if (/switch|nintendo/.test(text)) names.add('nintendo');
+  return names;
+}
+
+function extendWantedFromIdentity(wanted, identity, providerStatus) {
+  for (const name of providerNamesForPlatforms(identity?.platforms || [])) {
+    if (!providers[name]) continue;
+    wanted.add(name);
+    if (!providerStatus[name]) providerStatus[name] = { status: 'unknown' };
+  }
+}
+
 
 const SUBSCRIPTION_PROVIDER = Object.freeze({
   gamePass: 'microsoft',
@@ -574,12 +597,13 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const igdbIdentity = await resolveIgdbIdentity(game, title, { force });
   if (igdbIdentity) {
     if (wanted.has('igdb')) addFound(found, igdbIdentity);
+    extendWantedFromIdentity(wanted, igdbIdentity, providerStatus);
     const directStoreResults = await directFromIdentity(igdbIdentity, wanted, { force, preferredTitle: title });
     directStoreResults.forEach(item => addFound(found, item));
   }
 
   if (title) {
-    const selected = providerList(providerNames)
+    const selected = providerList([...wanted])
       .filter(provider => provider.name !== 'igdb')
       .filter(provider => typeof provider.search === 'function')
       .filter(provider => !found.some(item => item.provider === provider.name));

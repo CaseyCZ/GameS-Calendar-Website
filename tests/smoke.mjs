@@ -390,6 +390,9 @@ assert.equal(serverSource.includes("if (wanted.has('igdb')) addFound(found, igdb
 assert.equal(serverSource.includes("providers.playstation?.concept(String(game.psConceptId), { force, preferredTitle: title })"), true);
 assert.equal(serverSource.includes("directFromIdentity(igdbIdentity, wanted, { force, preferredTitle: title })"), true);
 assert.equal(serverSource.includes('bestSearchHitDetailed'), true);
+assert.equal(serverSource.includes('function providerNamesForPlatforms'), true);
+assert.equal(serverSource.includes('extendWantedFromIdentity(wanted, igdbIdentity, providerStatus)'), true);
+assert.equal(serverSource.includes('providerList([...wanted])'), true);
 assert.equal(serverSource.includes('providerStatus,'), true);
 assert.equal(serverSource.includes("status: 'not_found'"), true);
 assert.equal(serverSource.includes("status: 'error'"), true);
