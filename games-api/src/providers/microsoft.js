@@ -116,6 +116,12 @@ function positivePrice(item) {
   return item?.price?.isFree === true || (Number.isFinite(value) && value > 0);
 }
 
+function isFullGameOffer(item) {
+  const title = cleanText(item?.title || '').toLowerCase();
+  if (!title) return false;
+  return !/\b(upgrade|add[- ]?on|dlc|season pass|expansion pass|soundtrack|art ?book|coins?|credits?|points?|tokens?|currency|bonus pack)\b/i.test(title);
+}
+
 export function consolidateMicrosoftSearch(query, items = []) {
   const scored = (items || [])
     .filter(Boolean)
@@ -127,7 +133,7 @@ export function consolidateMicrosoftSearch(query, items = []) {
   const primary = scored[0].item;
   const related = scored.map(entry => entry.item);
   const purchaseOffers = related
-    .filter(positivePrice)
+    .filter(item => positivePrice(item) && isFullGameOffer(item))
     .sort((a, b) => Number(a.price?.current ?? Infinity) - Number(b.price?.current ?? Infinity));
   const chosen = purchaseOffers[0] || null;
   const offers = purchaseOffers.map(item => ({

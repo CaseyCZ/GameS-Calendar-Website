@@ -40,13 +40,15 @@ assert.equal(microsoftPriceOf(microsoftPaid)?.preorder, true);
 const xboxBase = { provider:'microsoft', providerId:'BASE', title:'Gears of War: E-Day', price:null, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day/BASE', subscriptions:{ gamePass:true }, rawHints:{} };
 const xboxStandard = { provider:'microsoft', providerId:'STD', title:'Gears of War: E-Day Pre-Order', price:{ current:1799, regular:1799, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-pre-order/STD', subscriptions:{}, rawHints:{} };
 const xboxPremium = { provider:'microsoft', providerId:'PREM', title:'Gears of War: E-Day Premium Edition Pre-Order', price:{ current:2599, regular:2599, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-pre-order/PREM', subscriptions:{}, rawHints:{} };
-const xboxConsolidated = consolidateMicrosoftSearch('Gears of War: E-Day', [xboxBase, xboxStandard, xboxPremium])[0];
+const xboxUpgrade = { provider:'microsoft', providerId:'UPGRADE', title:'Gears of War: E-Day Premium Edition Upgrade', price:{ current:800, regular:800, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-upgrade/UPGRADE', subscriptions:{}, rawHints:{} };
+const xboxConsolidated = consolidateMicrosoftSearch('Gears of War: E-Day', [xboxBase, xboxStandard, xboxPremium, xboxUpgrade])[0];
 assert.equal(xboxConsolidated.providerId, 'BASE');
 assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
 assert.equal(xboxConsolidated.price.current, 1799);
 assert.equal(xboxConsolidated.price.from, true);
 assert.equal(xboxConsolidated.subscriptions.gamePass, true);
 assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
 
 const normalizedXbox = normalizeMicrosoftProduct({
   ProductId:'TEST',
