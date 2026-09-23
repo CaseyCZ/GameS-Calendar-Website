@@ -151,6 +151,35 @@ function generatedText(game = {}) {
   return text;
 }
 
+function latestIso(...values) {
+  return values.filter(Boolean).map(String).sort().at(-1) || null;
+}
+
+function mergeSubscriptions(a = {}, b = {}) {
+  const merged = { ...a, ...b };
+  for (const key of ['gamePass','gamePassConsole','gamePassPc','cloudGaming','psPlus','geforceNow','eaPlay']) {
+    merged[key] = Boolean(a?.[key] || b?.[key]);
+  }
+
+  for (const key of ['gamePassProductId','geforceNowGameId','psPlusProductId']) {
+    merged[key] = b?.[key] || a?.[key] || '';
+    if (!merged[key]) delete merged[key];
+  }
+
+  for (const key of ['gamePassSource','geforceNowSource','psPlusSource']) {
+    merged[key] = b?.[key] || a?.[key] || '';
+    if (!merged[key]) delete merged[key];
+  }
+
+  for (const key of ['checkedAt','gamePassCheckedAt','geforceNowCheckedAt','psPlusCheckedAt']) {
+    const value = latestIso(a?.[key], b?.[key]);
+    if (value) merged[key] = value;
+    else delete merged[key];
+  }
+
+  return merged;
+}
+
 function mergeGame(a, b) {
   const preferred = richness(b) > richness(a) ? b : a;
   const secondary = preferred === a ? b : a;
@@ -167,6 +196,7 @@ function mergeGame(a, b) {
       return all.findIndex(other => (typeof other === 'string' ? other : other?.full || other?.thumb || JSON.stringify(other)) === key) === index;
     }),
     metadataSources:uniq([...(a.metadataSources || []), ...(b.metadataSources || [])]),
+    subscriptions:mergeSubscriptions(a.subscriptions || {}, b.subscriptions || {}),
     contentType:canonicalContentType(preferred.contentType || secondary.contentType),
     releases:mergeReleases([...(a.releases || []), ...(b.releases || [])])
   };

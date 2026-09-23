@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
+const require = createRequire(import.meta.url);
+const subscriptionHelpers = require('../enrich-subscriptions.js');
+
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
@@ -12,6 +16,25 @@ assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
 assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
 assert.equal(titleScore('Example II', 'Example 2'), 1);
 assert.ok(titleQueryVariants('Example II').includes('example 2'));
+
+assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
+assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');
+assert.ok(subscriptionHelpers.titleVariants('Half-Life® 2').includes('half life 2'));
+
+const subscriptionIndex = subscriptionHelpers.buildUniqueGameIndex([
+  { id:'a', name:'Unique Game', aliases:[] },
+  { id:'b', name:'Same Name', aliases:[] },
+  { id:'c', name:'Same Name', aliases:[] }
+]);
+assert.equal(subscriptionIndex.unique.get('unique game'), 0);
+assert.equal(subscriptionIndex.ambiguous.has('same name'), true);
+const subscriptionMatch = subscriptionHelpers.matchCatalogToGames(
+  [{ id:'x', title:'Unique Game' }, { id:'y', title:'Same Name' }],
+  [{ id:'a', name:'Unique Game', aliases:[] }, { id:'b', name:'Same Name', aliases:[] }, { id:'c', name:'Same Name', aliases:[] }],
+  subscriptionIndex
+);
+assert.equal(subscriptionMatch.byGame.get(0)?.length, 1);
+assert.equal(subscriptionMatch.ambiguous, 1);
 
 const microsoftZeroOnly = {
   DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Base Game' }] }, Availabilities:[{
