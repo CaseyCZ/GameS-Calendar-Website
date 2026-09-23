@@ -55,6 +55,40 @@ try {
 }
 
 try {
+  const tiers = ['TIER_10', 'TIER_20', 'TIER_30'];
+  const tierResults = {};
+  for (const tier of tiers) {
+    const payload = await providers.playstation.psPlus(tier, { force: true });
+    const candidates = [];
+    const seen = new Set();
+    const walk = value => {
+      if (!value || typeof value !== 'object') return;
+      if (!Array.isArray(value)) {
+        const id = String(value.productId || value.conceptId || value.id || '').trim();
+        const title = String(value.name || value.title || value.productName || value.conceptName || '').trim();
+        if (id && title && !seen.has(`${id}|${title}`)) {
+          seen.add(`${id}|${title}`);
+          candidates.push({ id, title });
+        }
+      }
+      if (Array.isArray(value)) value.forEach(walk);
+      else Object.values(value).forEach(walk);
+    };
+    walk(payload);
+    tierResults[tier] = {
+      candidates: candidates.length,
+      samples: candidates.slice(0, 5)
+    };
+  }
+  const ok = Object.values(tierResults).some(result => result.candidates > 0);
+  console.log(`${ok ? '✅' : '❌'} playstation PS Plus tier probe`, tierResults);
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ playstation PS Plus tier probe: ${error?.message || error}`);
+}
+
+try {
   const item = await providers.steam.product('292030', { force: true });
   const current = Number(item?.price?.current);
   const ok = Boolean(
