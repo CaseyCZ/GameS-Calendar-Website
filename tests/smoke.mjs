@@ -12,6 +12,7 @@ import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/
 import { calendarInternals } from '../games-api/src/lib/calendar.js';
 const require = createRequire(import.meta.url);
 const subscriptionHelpers = require('../enrich-subscriptions.js');
+const steamReleaseHelpers = require('../enrich-steam-release-dates.js');
 
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
@@ -47,6 +48,31 @@ const subscriptionMatch = subscriptionHelpers.matchCatalogToGames(
 );
 assert.equal(subscriptionMatch.byGame.get(0)?.length, 1);
 assert.equal(subscriptionMatch.ambiguous, 1);
+
+const steamReleaseGame = {
+  releases: [{
+    date:'2026-09-23',
+    precision:'day',
+    platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC' }]
+  }]
+};
+assert.equal(steamReleaseHelpers.applySteamReleaseDate(steamReleaseGame, '2026-10-20'), true);
+assert.equal(steamReleaseGame.releases[0].date, '2026-10-20');
+assert.equal(steamReleaseGame.releases[0].precisionSource, 'steam-store-live');
+
+const splitReleaseGame = {
+  releases: [{
+    date:'2026-09-23',
+    precision:'day',
+    platforms:[
+      { name:'PC (Microsoft Windows)', abbreviation:'PC' },
+      { name:'PlayStation 5', abbreviation:'PS5' }
+    ]
+  }]
+};
+assert.equal(steamReleaseHelpers.applySteamReleaseDate(splitReleaseGame, '2026-10-20'), true);
+assert.equal(splitReleaseGame.releases.find(release => release.platforms.some(platform => platform.abbreviation === 'PC'))?.date, '2026-10-20');
+assert.equal(splitReleaseGame.releases.find(release => release.platforms.some(platform => platform.abbreviation === 'PS5'))?.date, '2026-09-23');
 
 const microsoftZeroOnly = {
   DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Base Game' }] }, Availabilities:[{

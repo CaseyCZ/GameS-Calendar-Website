@@ -238,7 +238,7 @@ function fuzzifySuspicious(release = {}, placeholders = new Set()) {
     };
   }
 
-  const trustedExact = precisionSource.startsWith('igdb-date-format');
+  const trustedExact = precisionSource.startsWith('igdb-date-format') || precisionSource.startsWith('steam-store-live');
   const boundary = /^20\d{2}-(03-31|06-30|09-30|12-31)$/.test(date);
   const suspicious = placeholders.has(date) || (boundary && !trustedExact);
 

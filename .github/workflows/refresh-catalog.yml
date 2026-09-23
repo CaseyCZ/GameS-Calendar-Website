@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'enrich-live-igdb.js'
+      - 'enrich-steam-release-dates.js'
       - 'enrich-subscriptions.js'
       - 'repair-catalog.js'
       - 'build-web-index.js'
@@ -44,6 +45,13 @@ jobs:
           IGDB_LIVE_BATCH_SIZE: 500
           IGDB_LIVE_RETRIES: 6
         run: npm run enrich-live-igdb
+
+      - name: Verify exact Steam PC release dates
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+          STEAM_RELEASE_CONCURRENCY: 6
+          STEAM_RELEASE_RETRIES: 3
+        run: npm run enrich-steam-dates
 
       - name: Enrich subscription catalogs
         env:

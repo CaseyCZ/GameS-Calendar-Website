@@ -6,12 +6,13 @@
   "scripts": {
     "fetch-games": "node fetch-games.js",
     "enrich-public": "node enrich-public-metadata.js",
-    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check enrich-subscriptions.js && node --check enrich-steam-media.js && node --check build-web-index.js && node --check enrich-live-igdb.js && node --check repair-catalog.js && node --check audit-data.js && node --check compact-controls.js && node --check themes.js && node --check filter-section-accordion.js && node --check advanced-features.js && node --check badge-filter-controls.js && node --check detail-gesture-fix.js && node --check live-detail-enrichment.js && node --check js/api.js && node --check js/search.js && node --check js/icons.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js && node --check release-tracker.js && npm --prefix games-api run check",
+    "check": "node --check fetch-games.js && node --check enrich-public-metadata.js && node --check enrich-subscriptions.js && node --check enrich-steam-media.js && node --check build-web-index.js && node --check enrich-live-igdb.js && node --check enrich-steam-release-dates.js && node --check repair-catalog.js && node --check audit-data.js && node --check compact-controls.js && node --check themes.js && node --check filter-section-accordion.js && node --check advanced-features.js && node --check badge-filter-controls.js && node --check detail-gesture-fix.js && node --check live-detail-enrichment.js && node --check js/api.js && node --check js/search.js && node --check js/icons.js && node --check js/data.js && node --check js/calendar.js && node --check js/ui.js && node --check js/app.js && node --check release-tracker.js && npm --prefix games-api run check",
     "enrich-igdb": "node --env-file-if-exists=games-api/.env games-api/scripts/enrich-catalog-igdb.js",
     "build-index": "node build-web-index.js",
     "audit-data": "node audit-data.js",
     "test": "node tests/smoke.mjs",
     "enrich-live-igdb": "node enrich-live-igdb.js",
+    "enrich-steam-dates": "node enrich-steam-release-dates.js",
     "repair-catalog": "node repair-catalog.js",
     "enrich-subscriptions": "node enrich-subscriptions.js"
   },
