@@ -270,7 +270,34 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
     }
 
     const exactTitle = item.title;
-    const consolidated = consolidateMicrosoftSearch(item.title, [item, ...related]);
+    let candidates = [item, ...related];
+    let consolidated = consolidateMicrosoftSearch(item.title, candidates);
+
+    if (!consolidated[0]?.price) {
+      const searchHtml = await fetchText(xboxSearchUrl(item.title));
+      const searchLinks = xboxLinksFromSearch(searchHtml);
+      for (const [embeddedId, embeddedUrl] of xboxEmbeddedStoreLinks(searchHtml)) {
+        if (!searchLinks.has(embeddedId)) searchLinks.set(embeddedId, embeddedUrl);
+      }
+      const knownIds = new Set(candidates.map(candidate => String(candidate?.providerId || '').toUpperCase()).filter(Boolean));
+      const searchIds = [...searchLinks.keys()].filter(productId => !knownIds.has(productId)).slice(0, 30);
+      if (searchIds.length) {
+        const products = await displayProducts(searchIds, { force });
+        const productIds = products
+          .map(product => String(product?.ProductId || product?.productId || '').toUpperCase())
+          .filter(Boolean);
+        const membership = await subscriptionKindsForIds(productIds, { force });
+        const searchCandidates = products.map(product => {
+          const productId = String(product?.ProductId || product?.productId || '').toUpperCase();
+          return normalizeMicrosoftProduct(product, membership.get(productId) || [], {
+            storeUrl: searchLinks.get(productId) || xboxProductUrl(localProps(product).ProductTitle || '', productId)
+          });
+        }).filter(candidate => candidate && storefrontTitleScore(item.title, candidate.title) >= 0.70);
+        candidates = [...candidates, ...searchCandidates];
+        consolidated = consolidateMicrosoftSearch(item.title, candidates);
+      }
+    }
+
     const enriched = consolidated.find(candidate => String(candidate?.providerId || '').toUpperCase() === id)
       || consolidated[0]
       || item;
@@ -392,6 +419,33 @@ export async function search(query, { force = false, limit = 8 } = {}) {
         normalized = [...normalized, ...relatedNormalized];
         consolidated = consolidateMicrosoftSearch(q, normalized);
         primary = consolidated[0] || primary;
+      }
+
+      if (!primary?.price) {
+        const searchHtml = await fetchText(xboxSearchUrl(q));
+        const searchLinks = xboxLinksFromSearch(searchHtml);
+        for (const [embeddedId, embeddedUrl] of xboxEmbeddedStoreLinks(searchHtml)) {
+          if (!searchLinks.has(embeddedId)) searchLinks.set(embeddedId, embeddedUrl);
+        }
+        const knownIds = new Set(normalized.map(candidate => String(candidate?.providerId || '').toUpperCase()).filter(Boolean));
+        const searchIds = [...searchLinks.keys()].filter(id => !knownIds.has(id)).slice(0, 30);
+        if (searchIds.length) {
+          const searchProducts = await displayProducts(searchIds, { force });
+          const searchProductIds = searchProducts
+            .map(item => String(item?.ProductId || item?.productId || '').toUpperCase())
+            .filter(Boolean);
+          const searchMembership = await subscriptionKindsForIds(searchProductIds, { force });
+          const searchNormalized = searchProducts.map(item => {
+            const id = String(item?.ProductId || item?.productId || '').toUpperCase();
+            const title = localProps(item).ProductTitle || localProps(item).productTitle || '';
+            return normalizeMicrosoftProduct(item, searchMembership.get(id) || [], {
+              storeUrl: searchLinks.get(id) || xboxProductUrl(title, id)
+            });
+          }).filter(candidate => candidate && storefrontTitleScore(q, candidate.title) >= 0.70);
+          normalized = [...normalized, ...searchNormalized];
+          consolidated = consolidateMicrosoftSearch(q, normalized);
+          primary = consolidated[0] || primary;
+        }
       }
 
       const signals = xboxPageSignals(pageHtml);

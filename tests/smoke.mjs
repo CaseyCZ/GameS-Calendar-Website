@@ -384,8 +384,17 @@ assert.equal(microsoftProviderSource.includes('function xboxEmbeddedStoreLinks')
 assert.equal(microsoftProviderSource.includes('if (!item.price)'), true);
 assert.equal(microsoftProviderSource.includes('if (!primary?.price)'), true);
 assert.equal(microsoftProviderSource.includes('storefrontTitleScore(item.title, candidate.title) >= 0.70'), true);
+assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(item.title))'), true);
+assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(q))'), true);
 assert.equal(serverSource.includes('lastKnownProviders'), true);
 assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
+
+const steamReleaseSource = readFileSync(new URL('../enrich-steam-release-dates.js', import.meta.url), 'utf8');
+assert.equal(steamReleaseSource.includes('response.status === 429'), true);
+assert.equal(steamReleaseSource.includes('stopping Steam release-date verification for this run'), true);
+const refreshWorkflowSource = readFileSync(new URL('../.github/workflows/refresh-catalog.yml', import.meta.url), 'utf8');
+assert.equal(refreshWorkflowSource.includes('cancel-in-progress: true'), true);
+assert.equal(refreshWorkflowSource.includes('STEAM_RELEASE_CONCURRENCY: 1'), true);
 
 const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);

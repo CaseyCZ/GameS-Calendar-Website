@@ -6,7 +6,7 @@ const path = require('node:path');
 
 const OUTPUT = path.resolve(process.env.GAMES_OUTPUT || 'games.json');
 const API_ROOT = String(process.env.GAMES_LIVE_API || 'https://130.61.49.108/games-api').replace(/\/$/, '');
-const CONCURRENCY = Math.max(1, Math.min(12, Number(process.env.STEAM_RELEASE_CONCURRENCY || 6)));
+const CONCURRENCY = Math.max(1, Math.min(12, Number(process.env.STEAM_RELEASE_CONCURRENCY || 1)));
 const RETRIES = Math.max(1, Math.min(5, Number(process.env.STEAM_RELEASE_RETRIES || 3)));
 
 function isPcPlatform(platform = {}) {
@@ -108,9 +108,15 @@ async function fetchSteamProduct(steamId, attempt = 0) {
       headers: { Accept:'application/json' }
     });
     const text = await response.text();
+    if (response.status === 429) {
+      const error = new Error(`HTTP 429: ${text.slice(0, 180)}`);
+      error.rateLimited = true;
+      throw error;
+    }
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0, 180)}`);
     return JSON.parse(text);
   } catch (error) {
+    if (error?.rateLimited) throw error;
     if (attempt + 1 >= RETRIES) throw error;
     await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
     return fetchSteamProduct(steamId, attempt + 1);
@@ -136,8 +142,10 @@ async function main() {
   let checked = 0;
   let changed = 0;
   let failed = 0;
+  let rateLimited = false;
 
   await mapLimit(targets, CONCURRENCY, async game => {
+    if (rateLimited) return;
     try {
       const item = await fetchSteamProduct(String(game.steamId));
       checked += 1;
@@ -148,6 +156,11 @@ async function main() {
         console.log(`Steam release date: ${game.name} -> ${day}`);
       }
     } catch (error) {
+      if (error?.rateLimited) {
+        rateLimited = true;
+        console.warn('Steam rate limit reached (HTTP 429); stopping Steam release-date verification for this run.');
+        return;
+      }
       failed += 1;
       console.warn(`Steam release date failed: ${game.name} (${game.steamId}): ${error?.message || error}`);
     }
@@ -158,7 +171,7 @@ async function main() {
     await fs.writeFile(OUTPUT, `${JSON.stringify(payload, null, 2)}\n`);
   }
 
-  console.log(`Steam release dates: targets=${targets.length}, checked=${checked}, changed=${changed}, failed=${failed}`);
+  console.log(`Steam release dates: targets=${targets.length}, checked=${checked}, changed=${changed}, failed=${failed}, rateLimited=${rateLimited}`);
 }
 
 module.exports = {
