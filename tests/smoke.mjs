@@ -287,6 +287,12 @@ assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true
 assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
 assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
+assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
+
+const serverSource = readFileSync(new URL('../games-api/src/server.js', import.meta.url), 'utf8');
+assert.equal(serverSource.includes("change.field === 'prices'"), true);
+assert.equal(serverSource.includes("change.field === 'subscriptions'"), true);
+assert.equal(serverSource.includes("change.field === 'earlyAccess'"), true);
 
 const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
