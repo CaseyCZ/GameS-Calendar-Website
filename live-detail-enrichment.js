@@ -8,6 +8,7 @@ import { fetchApi } from './js/api.js';
   window.__gamesLiveDetailEnrichment = true;
 
   const cache = new Map();
+  const LIVE_CACHE_TTL_MS = 5 * 60 * 1000;
   let pendingTitle = '';
   let timer = 0;
 
@@ -544,15 +545,22 @@ import { fetchApi } from './js/api.js';
   async function enrichCurrent() {
     if (!dialog.open) return;
     const title = currentTitle();
-    if (!title || pendingTitle === title || content.dataset.liveEnrichedTitle === title) return;
+    const enrichedAt = Number(content.dataset.liveEnrichedAt || 0);
+    const stillFresh = content.dataset.liveEnrichedTitle === title
+      && enrichedAt > 0
+      && Date.now() - enrichedAt < LIVE_CACHE_TTL_MS;
+    if (!title || pendingTitle === title || stillFresh) return;
     pendingTitle = title;
     content.dataset.liveEnrichedTitle = title;
+    content.dataset.liveEnrichedAt = String(Date.now());
     setStatus('Ověřuji IGDB identitu, předplatné a média…', 'loading');
 
     try {
       const cacheKey = currentEnrichmentKey();
-      let payload = cache.get(cacheKey);
+      const cached = cache.get(cacheKey);
+      let payload = cached && cached.expiresAt > Date.now() ? cached.payload : null;
       if (!payload) {
+        if (cached) cache.delete(cacheKey);
         const providers = providersForPlatforms(platformTexts());
         const response = await fetchApi('/enrich', {
           method: 'POST',
@@ -563,10 +571,15 @@ import { fetchApi } from './js/api.js';
           })
         });
         payload = await response.json();
-        cache.set(cacheKey, payload);
+        cache.set(cacheKey, {
+          payload,
+          expiresAt: Date.now() + LIVE_CACHE_TTL_MS
+        });
       }
       if (currentTitle() !== title || !dialog.open) return;
       applyLiveData(title, payload);
+      clearTimeout(timer);
+      timer = setTimeout(schedule, LIVE_CACHE_TTL_MS + 250);
     } catch (error) {
       if (currentTitle() === title) setStatus(`Živé ověření se nepodařilo: ${error?.message || error}`, 'error');
     } finally {
@@ -584,6 +597,7 @@ import { fetchApi } from './js/api.js';
   dialog.addEventListener('close', () => {
     pendingTitle = '';
     content.removeAttribute('data-live-enriched-title');
+    content.removeAttribute('data-live-enriched-at');
   });
 
   schedule();

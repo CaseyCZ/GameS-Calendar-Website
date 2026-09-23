@@ -274,6 +274,9 @@ assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')
 
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
+assert.equal(liveEnrichmentSource.includes('LIVE_CACHE_TTL_MS = 5 * 60 * 1000'), true);
+assert.equal(liveEnrichmentSource.includes('cached.expiresAt > Date.now()'), true);
+assert.equal(liveEnrichmentSource.includes('data-live-enriched-at'), true);
 
 assert.equal(liveEnrichmentSource.includes("games:subscription-updated"), true);
 assert.equal(liveEnrichmentSource.includes('cache.get(cacheKey)'), true);
