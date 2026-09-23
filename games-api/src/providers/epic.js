@@ -4,7 +4,7 @@ import { fetchJson } from '../lib/http.js';
 import { canonicalGame, storefrontTitleScore } from '../lib/normalize.js';
 import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../lib/epic-store.js';
 
-const GRAPHQL = 'https://graphql.epicgames.com/graphql';
+const GRAPHQL = 'https://store.epicgames.com/graphql';
 
 const SEARCH_QUERY = `
 query searchStoreQuery(
