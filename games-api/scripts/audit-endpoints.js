@@ -55,10 +55,15 @@ try {
 
 try {
   const fallback = await providers.microsoft.search('Gears of War: E-Day', { force: true, limit: 5 });
-  const wrong = fallback.find(item => titleScore('Gears of War: E-Day', item?.title) < 0.55);
-  const ok = !wrong;
+  const primary = fallback[0] || null;
+  const primaryScore = primary ? storefrontTitleScore('Gears of War: E-Day', primary.title) : 0;
+  const unsafePrimary = !primary
+    || primaryScore < 0.55
+    || /\b(game pass ultimate|upgrade|add[- ]?on|dlc|season pass|coins?|credits?|points?|tokens?)\b/i.test(String(primary.title || ''));
+  const ok = !unsafePrimary;
   console.log(`${ok ? '✅' : '❌'} microsoft E-Day fallback safety probe`, {
     count: fallback.length,
+    primary: primary ? { id:primary.providerId, title:primary.title, price:primary.price || null, score:primaryScore } : null,
     titles: fallback.map(item => item?.title || null).slice(0, 5)
   });
   if (!ok) failed += 1;
@@ -72,28 +77,64 @@ try {
 try {
   const query = 'EA Sports FC 27';
   const checks = [];
-  for (const name of ['playstation','nintendo','steam']) {
+
+  try {
+    const items = await providers.microsoft.search(query, { force:true, limit:8 });
+    const item = items?.[0] || null;
+    checks.push({
+      provider:'microsoft',
+      providerId:item?.providerId || null,
+      title:item?.title || '',
+      score:item ? storefrontTitleScore(query, item.title) : 0,
+      wrongEdition:/\b(ultimate|deluxe|premium|upgrade|vault)\b/i.test(String(item?.title || '')),
+      price:item?.price || null,
+      storeUrl:item?.storeUrl || null
+    });
+  } catch (error) {
+    checks.push({ provider:'microsoft', error:error?.message || String(error) });
+  }
+
+  try {
+    const item = await providers.playstation.concept('10017332', { force:true });
+    checks.push({
+      provider:'playstation',
+      providerId:item?.providerId || null,
+      title:item?.title || '',
+      score:item ? storefrontTitleScore(query, item.title) : 0,
+      wrongEdition:/\b(ultimate|deluxe|premium|upgrade|vault)\b/i.test(String(item?.title || '')),
+      price:item?.price || null,
+      storeUrl:item?.storeUrl || null
+    });
+  } catch (error) {
+    checks.push({ provider:'playstation', error:error?.message || String(error) });
+  }
+
+  for (const name of ['nintendo','steam']) {
     const provider = providers[name];
-    if (!provider?.search) continue;
     try {
       const items = await provider.search(query, { force:true, limit:5 });
       const item = items?.[0] || null;
-      const title = String(item?.title || '');
-      const score = item ? storefrontTitleScore(query, title) : 0;
-      const wrongEdition = /\b(ultimate|deluxe|premium|upgrade|vault)\b/i.test(title);
-      const price = item?.price || null;
-      checks.push({ provider:name, title, score, wrongEdition, price, storeUrl:item?.storeUrl || null });
+      checks.push({
+        provider:name,
+        providerId:item?.providerId || null,
+        title:item?.title || '',
+        score:item ? storefrontTitleScore(query, item.title) : 0,
+        wrongEdition:/\b(ultimate|deluxe|premium|upgrade|vault)\b/i.test(String(item?.title || '')),
+        price:item?.price || null,
+        storeUrl:item?.storeUrl || null
+      });
     } catch (error) {
       checks.push({ provider:name, error:error?.message || String(error) });
     }
   }
 
-  const failedChecks = checks.filter(item =>
-    item.error
-    || !item.title
-    || item.score < 0.55
-    || item.wrongEdition
-  );
+  const failedChecks = checks.filter(item => {
+    if (item.error || !item.title || item.score < 0.55 || item.wrongEdition) return true;
+    const price = Number(item.price?.current);
+    if (!Number.isFinite(price) || price <= 0) return true;
+    if (item.provider === 'nintendo' && !/^700100\d+$/i.test(String(item.providerId || ''))) return true;
+    return false;
+  });
   const ok = failedChecks.length === 0;
   console.log(`${ok ? '✅' : '❌'} FC 27 storefront edition probe`, checks);
   if (!ok) failed += 1;
@@ -101,7 +142,6 @@ try {
   failed += 1;
   console.error(`❌ FC 27 storefront edition probe: ${error?.message || error}`);
 }
-
 
 try {
   const igdb = await igdbProvider.product('408819', { force:true });

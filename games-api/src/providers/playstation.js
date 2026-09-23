@@ -121,6 +121,60 @@ function collectImages(root) {
   return uniq(values.filter(url => /image|akamai|playstation|sndcdn|sony/i.test(url)));
 }
 
+function collectProductIds(root) {
+  const ids = [];
+  const pattern = /^[A-Z]{2}\d{4}-[A-Z0-9]+_[A-Z0-9-]+$/i;
+  walk(root, node => {
+    if (Array.isArray(node)) return;
+    for (const value of Object.values(node)) {
+      if (typeof value === 'string' && pattern.test(value.trim())) ids.push(value.trim());
+      else if (Array.isArray(value)) {
+        for (const item of value) {
+          if (typeof item === 'string' && pattern.test(item.trim())) ids.push(item.trim());
+          else if (typeof item?.id === 'string' && pattern.test(item.id.trim())) ids.push(item.id.trim());
+          else if (typeof item?.productId === 'string' && pattern.test(item.productId.trim())) ids.push(item.productId.trim());
+        }
+      }
+    }
+  });
+  return uniq(ids);
+}
+
+function mergeConceptProduct(conceptItem, productItem, conceptId, candidates = []) {
+  if (!productItem) return conceptItem;
+  return {
+    ...conceptItem,
+    ...productItem,
+    description: productItem.description || conceptItem.description,
+    shortDescription: productItem.shortDescription || conceptItem.shortDescription,
+    developers: productItem.developers?.length ? productItem.developers : conceptItem.developers,
+    publishers: productItem.publishers?.length ? productItem.publishers : conceptItem.publishers,
+    genres: productItem.genres?.length ? productItem.genres : conceptItem.genres,
+    categories: productItem.categories?.length ? productItem.categories : conceptItem.categories,
+    platforms: productItem.platforms?.length ? productItem.platforms : conceptItem.platforms,
+    releaseDate: productItem.releaseDate || conceptItem.releaseDate,
+    media: {
+      ...(conceptItem.media || {}),
+      ...(productItem.media || {}),
+      cover: productItem.media?.cover || conceptItem.media?.cover || '',
+      hero: productItem.media?.hero || conceptItem.media?.hero || '',
+      screenshots: productItem.media?.screenshots?.length
+        ? productItem.media.screenshots
+        : (conceptItem.media?.screenshots || [])
+    },
+    rawHints: {
+      ...(conceptItem.rawHints || {}),
+      ...(productItem.rawHints || {}),
+      conceptId: String(conceptId),
+      editionCandidates: candidates.map(item => ({
+        providerId:item.providerId,
+        title:item.title,
+        price:item.price || null
+      }))
+    }
+  };
+}
+
 function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
   const title = firstString(payload, ['name', 'title', 'productName', 'conceptName']);
   const description = firstString(payload, ['longDescription', 'description', 'shortDescription']);
@@ -177,9 +231,37 @@ export async function concept(conceptId, { force = false } = {}) {
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
+
   const normalized = normalizePsPayload(id, { payloads });
   normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
-  return normalized;
+
+  const productIds = collectProductIds(payloads).slice(0, 24);
+  if (!productIds.length) return normalized;
+
+  const detailed = [];
+  for (let offset = 0; offset < productIds.length; offset += 6) {
+    const batch = await Promise.allSettled(productIds.slice(offset, offset + 6).map(productId => product(productId, { force })));
+    for (const result of batch) {
+      if (result.status === 'fulfilled' && result.value?.title) detailed.push(result.value);
+    }
+  }
+  if (!detailed.length) return normalized;
+
+  const queryTitle = normalized.title || detailed[0]?.title || '';
+  const ranked = detailed
+    .map(item => ({ item, score: storefrontTitleScore(queryTitle, item.title) }))
+    .filter(entry => entry.score >= 0.35)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const aStandard = /\b(standard|base)\b/i.test(a.item.title || '') ? 1 : 0;
+      const bStandard = /\b(standard|base)\b/i.test(b.item.title || '') ? 1 : 0;
+      if (bStandard !== aStandard) return bStandard - aStandard;
+      const aPrice = Number(a.item.price?.regular ?? a.item.price?.current ?? Infinity);
+      const bPrice = Number(b.item.price?.regular ?? b.item.price?.current ?? Infinity);
+      return aPrice - bPrice;
+    });
+
+  return mergeConceptProduct(normalized, ranked[0]?.item || null, id, detailed);
 }
 
 export async function catalog(category = 'all', { force = false, size = 100, offset = 0 } = {}) {

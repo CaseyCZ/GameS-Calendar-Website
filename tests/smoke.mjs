@@ -287,6 +287,8 @@ assert.equal(microsoftProviderSource.includes('microsoft:search:v4'), true);
 
 const psProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
 assert.equal(psProviderSource.includes('storefrontTitleScore'), true);
+assert.equal(psProviderSource.includes('collectProductIds'), true);
+assert.equal(psProviderSource.includes('editionCandidates'), true);
 assert.equal(psProviderSource.includes('playstation:html-search:v2'), true);
 
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
