@@ -197,6 +197,46 @@ function selectPriceCandidate(root, providerId = '', { preferBase = false } = {}
   })[0] || null;
 }
 
+function collectProductReferences(root) {
+  const out = new Map();
+  walk(root, node => {
+    if (!node || Array.isArray(node) || typeof node !== 'object') return;
+    const direct = cleanText(node.productId || '');
+    const generic = cleanText(node.id || '');
+    const id = direct || (/^[A-Z]{2}\d{4}-[A-Z0-9]+_[0-9]{2}-[A-Z0-9]+$/i.test(generic) ? generic : '');
+    if (!id) return;
+    const title = cleanText(
+      node.name || node.title || node.productName || node.displayName ||
+      node.editionName || node.skuName || ''
+    );
+    if (!out.has(id.toUpperCase())) out.set(id.toUpperCase(), { id, title });
+  });
+  return [...out.values()];
+}
+
+function isPurchasableGameTitle(title = '') {
+  return !/\b(upgrade|add[- ]?on|dlc|season pass|expansion pass|soundtrack|art ?book|currency|coins?|credits?|points?)\b/i.test(cleanText(title));
+}
+
+async function pricedConceptProduct(root, targetTitle, { force = false } = {}) {
+  const refs = collectProductReferences(root).slice(0, 16);
+  if (!refs.length) return null;
+
+  const results = await Promise.allSettled(refs.map(async ref => {
+    const payload = await persisted('metGetProductById', { productId: String(ref.id) }, { force });
+    return normalizePsPayload(String(ref.id), payload);
+  }));
+
+  return results
+    .filter(result => result.status === 'fulfilled' && result.value?.price)
+    .map(result => ({
+      item: result.value,
+      score: storefrontTitleScore(targetTitle, result.value.title)
+    }))
+    .filter(entry => entry.score >= 0.55 && isPurchasableGameTitle(entry.item.title))
+    .sort((a, b) => b.score - a.score || Number(a.item?.price?.current ?? Infinity) - Number(b.item?.price?.current ?? Infinity))[0]?.item || null;
+}
+
 function collectImages(root) {
   const values = [];
   walk(root, node => {
@@ -262,7 +302,7 @@ export async function product(productId, { force = false } = {}) {
   return applyPsPlusMembership(normalizePsPayload(String(productId), payload), { force });
 }
 
-export async function concept(conceptId, { force = false } = {}) {
+export async function concept(conceptId, { force = false, preferredTitle = '' } = {}) {
   const id = String(conceptId);
   const requests = await Promise.allSettled([
     persisted('metGetConceptById', { conceptId: id }, { force }),
@@ -272,6 +312,20 @@ export async function concept(conceptId, { force = false } = {}) {
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
   const normalized = normalizePsPayload(id, { payloads }, BASE, { preferBase: true });
+
+  if (!normalized.price) {
+    const pricedProduct = await pricedConceptProduct({ payloads }, cleanText(preferredTitle) || normalized.title, { force });
+    if (pricedProduct?.price) {
+      normalized.price = { ...pricedProduct.price };
+      normalized.rawHints = {
+        ...(normalized.rawHints || {}),
+        priceProductId: pricedProduct.providerId || null,
+        priceOfferTitle: pricedProduct.title || '',
+        priceFallback: 'concept-product'
+      };
+    }
+  }
+
   normalized.storeUrl = `https://store.playstation.com/${config.psLocale}/concept/${id}`;
   return applyPsPlusMembership(normalized, { force });
 }
@@ -371,7 +425,7 @@ export async function search(query, { force = false, limit = 8 } = {}) {
   });
   const out = [];
   for (const hit of hits.slice(0, limit)) {
-    try { out.push(hit.kind === 'product' ? await product(hit.id, { force }) : await concept(hit.id, { force })); }
+    try { out.push(hit.kind === 'product' ? await product(hit.id, { force }) : await concept(hit.id, { force, preferredTitle: q })); }
     catch { out.push(canonicalGame('playstation', { providerId: hit.id, title: hit.title, storeUrl: hit.url, sourceUrl: url })); }
   }
   cachePut(key, 'playstation', out, config.ttl.search);

@@ -329,6 +329,11 @@ assert.equal(steamProviderSource.includes('data.is_free === true'), true);
 const playstationProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
 assert.equal(playstationProviderSource.includes('psPlusCatalog'), true);
 assert.equal(playstationProviderSource.includes("psPlusSource: 'playstation-monthly-category'"), true);
+assert.equal(playstationProviderSource.includes('function collectProductReferences'), true);
+assert.equal(playstationProviderSource.includes('async function pricedConceptProduct'), true);
+assert.equal(playstationProviderSource.includes("priceFallback: 'concept-product'"), true);
+assert.equal(playstationProviderSource.includes('preferredTitle: q'), true);
+assert.equal(playstationProviderSource.includes('upgrade|add[- ]?on|dlc'), true);
 
 const epicProviderSource = readFileSync(new URL('../games-api/src/providers/epic.js', import.meta.url), 'utf8');
 assert.equal(epicProviderSource.includes('PersistedQueryNotFound'), true);
