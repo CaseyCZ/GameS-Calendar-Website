@@ -22,6 +22,14 @@ assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitle
 assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
 assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
+assert.ok(
+  storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Standard Edition PS4 & PS5')
+  > storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Ultimate Edition PS4 & PS5')
+);
+assert.ok(
+  storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27')
+  > storefrontTitleScore('EA SPORTS FC 27', 'EA SPORTS FC 27 Ultimate Edition')
+);
 
 assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
 assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');
