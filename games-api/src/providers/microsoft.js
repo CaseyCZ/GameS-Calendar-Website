@@ -3,7 +3,7 @@ import { config } from '../config.js';
 import { cacheGet, cachePut } from '../db.js';
 import { fetchJson, fetchText } from '../lib/http.js';
 import { canonicalGame, cleanText, storefrontTitleScore, uniq } from '../lib/normalize.js';
-import { consolidateMicrosoftSearch, microsoftPriceOf } from '../lib/microsoft-pricing.js';
+import { consolidateMicrosoftSearch, microsoftPagePriceForTitle, microsoftPriceOf } from '../lib/microsoft-pricing.js';
 
 const SIGL_IDS = Object.freeze({
   console: 'f6f1f99f-9b49-4ccd-b3bf-4d9767a77f5e',
@@ -298,6 +298,22 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
       }
     }
 
+    if (!consolidated[0]?.price) {
+      const pagePrice = microsoftPagePriceForTitle(loadHtml(pageHtml).text(), exactTitle);
+      if (pagePrice) {
+        item.price = {
+          ...pagePrice,
+          preorder: signals.preorder,
+          offerTitle: exactTitle
+        };
+        item.rawHints = {
+          ...(item.rawHints || {}),
+          xboxPriceFallback: 'page-edition-text'
+        };
+        consolidated = consolidateMicrosoftSearch(item.title, candidates);
+      }
+    }
+
     const enriched = consolidated.find(candidate => String(candidate?.providerId || '').toUpperCase() === id)
       || consolidated[0]
       || item;
@@ -449,6 +465,20 @@ export async function search(query, { force = false, limit = 8 } = {}) {
       }
 
       const signals = xboxPageSignals(pageHtml);
+      if (primary && !primary.price) {
+        const pagePrice = microsoftPagePriceForTitle(loadHtml(pageHtml).text(), primary.title);
+        if (pagePrice) {
+          primary.price = {
+            ...pagePrice,
+            preorder: signals.preorder,
+            offerTitle: primary.title || ''
+          };
+          primary.rawHints = {
+            ...(primary.rawHints || {}),
+            xboxPriceFallback: 'page-edition-text'
+          };
+        }
+      }
       if (primary) {
         primary.subscriptions = { ...(primary.subscriptions || {}) };
         if (signals.gamePass) primary.subscriptions.gamePass = true;

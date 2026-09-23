@@ -213,6 +213,46 @@ try {
 }
 
 try {
+  const query = 'Grand Theft Auto VI';
+  const parentId = '9NL3WWNZLZZN';
+  const parent = await providers.microsoft.product(parentId, { force: true });
+  const searched = (await providers.microsoft.search(query, { force: true, limit: 5 }))[0] || null;
+  const parentPrice = Number(parent?.price?.current);
+  const searchPrice = Number(searched?.price?.current);
+  const parentOk = Boolean(
+    parent
+    && String(parent?.providerId || '').toUpperCase() === parentId
+    && Math.abs(parentPrice - 2009) < 0.01
+  );
+  const searchOk = Boolean(
+    searched
+    && Math.abs(searchPrice - 2009) < 0.01
+    && !/ultimate|deluxe|premium/i.test(String(searched?.title || ''))
+  );
+  const ok = parentOk && searchOk;
+  console.log((ok ? '✅' : '❌') + ' microsoft GTA VI edition price fallback probe', {
+    parent:{
+      providerId:parent?.providerId || null,
+      title:parent?.title || null,
+      price:parent?.price || null,
+      priceFallback:parent?.rawHints?.xboxPriceFallback || null,
+      storeUrl:parent?.storeUrl || null
+    },
+    search:{
+      providerId:searched?.providerId || null,
+      title:searched?.title || null,
+      price:searched?.price || null,
+      priceFallback:searched?.rawHints?.xboxPriceFallback || null,
+      storeUrl:searched?.storeUrl || null
+    }
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error('❌ microsoft GTA VI edition price fallback probe: ' + (error?.message || error));
+}
+
+try {
   const fallback = await providers.microsoft.search('Gears of War: E-Day', { force: true, limit: 5 });
   const primary = fallback[0] || null;
   const primaryTitle = String(primary?.title || '');

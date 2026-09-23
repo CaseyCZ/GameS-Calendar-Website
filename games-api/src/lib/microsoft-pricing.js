@@ -50,6 +50,68 @@ export function microsoftPriceOf(product) {
   return candidates[0];
 }
 
+
+function parseStorefrontPriceLabel(value = '') {
+  const label = cleanText(value).replace(/\+$/, '').trim();
+  if (!label) return null;
+
+  let currency = '';
+  if (/(?:Kč|CZK)\b/i.test(label)) currency = 'CZK';
+  else if (/(?:€|EUR)\b/i.test(label)) currency = 'EUR';
+  else if (/(?:£|GBP)\b/i.test(label)) currency = 'GBP';
+  else if (/(?:\$|USD)\b/i.test(label)) currency = 'USD';
+  if (!currency) return null;
+
+  let number = label
+    .replace(/\b(?:CZK|EUR|GBP|USD)\b/gi, '')
+    .replace(/[Kk][čc]/g, '')
+    .replace(/[€£$]/g, '')
+    .replace(/[\s\u00a0\u202f]/g, '')
+    .trim();
+  if (!number) return null;
+
+  const comma = number.lastIndexOf(',');
+  const dot = number.lastIndexOf('.');
+  if (comma > dot) number = number.replace(/\./g, '').replace(',', '.');
+  else if (dot > comma && comma >= 0) number = number.replace(/,/g, '');
+  else if (comma >= 0) number = number.replace(',', '.');
+  else if (currency === 'CZK' && /^\d{1,3}(?:\.\d{3})+$/.test(number)) number = number.replace(/\./g, '');
+
+  const current = Number(number);
+  if (!Number.isFinite(current) || current <= 0) return null;
+  return {
+    currency,
+    current,
+    regular: current,
+    currentText: label,
+    regularText: label,
+    purchasable: true,
+    isFree: false
+  };
+}
+
+export function microsoftPagePriceForTitle(text = '', title = '') {
+  const pageText = cleanText(text);
+  const exactTitle = cleanText(title);
+  if (!pageText || !exactTitle) return null;
+
+  const haystack = pageText.toLocaleLowerCase('en');
+  const needle = exactTitle.toLocaleLowerCase('en');
+  let offset = 0;
+  while (offset < haystack.length) {
+    const index = haystack.indexOf(needle, offset);
+    if (index < 0) break;
+    const after = pageText.slice(index + exactTitle.length, index + exactTitle.length + 120);
+    const match = after.match(/^\s+((?:(?:CZK|EUR|GBP|USD)\s*)?(?:[$€£]\s*)?\d{1,3}(?:[ \u00a0\u202f.]\d{3})*(?:[,.]\d{2})?\s*(?:Kč|CZK|€|EUR|£|GBP|\$|USD)\+?)/i);
+    if (match) {
+      const parsed = parseStorefrontPriceLabel(match[1]);
+      if (parsed) return parsed;
+    }
+    offset = index + needle.length;
+  }
+  return null;
+}
+
 function truthySubscriptions(items = []) {
   const keys = ['gamePass','gamePassConsole','gamePassPc','cloudGaming','eaPlay'];
   return Object.fromEntries(keys.map(key => [key, items.some(item => Boolean(item?.subscriptions?.[key]))]));

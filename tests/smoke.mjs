@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { formatLivePrice } from '../js/ui.js';
 import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
-import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
+import { consolidateMicrosoftSearch, microsoftPagePriceForTitle, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../games-api/src/lib/epic-store.js';
 import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
 import { calendarInternals } from '../games-api/src/lib/calendar.js';
@@ -29,6 +29,13 @@ assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitle
 assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
 assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
+const gtaXboxPagePrice = microsoftPagePriceForTitle(
+  'Porovnat edice Grand Theft Auto VI 2 009,00 Kč+ Grand Theft Auto VI: Ultimate Edition 2 499,00 Kč+',
+  'Grand Theft Auto VI'
+);
+assert.equal(gtaXboxPagePrice?.currency, 'CZK');
+assert.equal(gtaXboxPagePrice?.current, 2009);
+
 
 assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
 assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');
@@ -412,6 +419,8 @@ assert.equal(microsoftProviderSource.includes('if (!primary?.price)'), true);
 assert.equal(microsoftProviderSource.includes('storefrontTitleScore(item.title, candidate.title) >= 0.70'), true);
 assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(item.title))'), true);
 assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(q))'), true);
+assert.equal(microsoftProviderSource.includes('microsoftPagePriceForTitle'), true);
+assert.equal(microsoftProviderSource.includes("xboxPriceFallback: 'page-edition-text'"), true);
 assert.equal(serverSource.includes('lastKnownProviders'), true);
 assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
 
