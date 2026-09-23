@@ -17,7 +17,14 @@ function normalizeSteam(appId, data) {
     currency: data.price_overview.currency || null,
     current: Number(data.price_overview.final || 0) / 100,
     regular: Number(data.price_overview.initial || 0) / 100,
-    discountPercent: Number(data.price_overview.discount_percent || 0)
+    discountPercent: Number(data.price_overview.discount_percent || 0),
+    isFree: false
+  } : data.is_free === true ? {
+    currency: null,
+    current: 0,
+    regular: 0,
+    discountPercent: 0,
+    isFree: true
   } : null;
   return canonicalGame('steam', {
     providerId: appId,
