@@ -145,54 +145,62 @@ import { fetchApi } from './js/api.js';
       .filter(game => !screenFresh(game) && !screenPending.has(screenKey(game)));
     if (!cards.length) return;
 
-    for (let offset = 0; offset < cards.length; offset += 5) {
-      const batch = cards.slice(offset, offset + 5);
-      batch.forEach(game => screenPending.add(screenKey(game)));
-      try {
-        const providerNames = new Set();
-        batch.forEach(game => providersForPlatforms(game.platforms).forEach(name => providerNames.add(name)));
-        const response = await fetchApi('/enrich', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', accept: 'application/json' },
-          body: JSON.stringify({
-            games: batch.map(game => ({ id: game.gameId, igdbId: game.igdbId, title: game.title })),
-            providers: [...providerNames]
-          })
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const payload = await response.json();
-        (payload.results || []).forEach((result, index) => {
-          const game = batch[index];
-          if (!game) return;
-          screenCache.set(screenKey(game), { fetchedAt: Date.now(), payload: { results: [result] } });
-          const subscriptions = Object.values(result.providers || {}).reduce(
-            (all, provider) => Object.assign(all, provider?.subscriptions || {}),
-            { ...(result.merged?.subscriptions || {}) }
-          );
-          const verifiedAt = new Date().toISOString();
-          window.dispatchEvent(new CustomEvent('games:live-enriched', {
-            detail: {
-              gameId: game.gameId,
-              igdbId: String(result.identity?.igdbId || ''),
-              title: game.title,
-              providers: result.providers || {},
-              merged: result.merged || {},
-              verifiedAt
-            }
-          }));
-          window.dispatchEvent(new CustomEvent('games:subscription-updated', {
-            detail: {
-              gameId: game.gameId,
-              igdbId: String(result.identity?.igdbId || ''),
-              subscriptions,
-              verifiedAt
-            }
-          }));
-        });
-      } catch (error) {
-        console.warn('Live enrichment viditelných her:', error);
-      } finally {
-        batch.forEach(game => screenPending.delete(screenKey(game)));
+    const groups = new Map();
+    for (const game of cards) {
+      const providerNames = providersForPlatforms(game.platforms);
+      const signature = [...providerNames].sort().join(',');
+      if (!groups.has(signature)) groups.set(signature, { providerNames, games: [] });
+      groups.get(signature).games.push(game);
+    }
+
+    for (const group of groups.values()) {
+      for (let offset = 0; offset < group.games.length; offset += 5) {
+        const batch = group.games.slice(offset, offset + 5);
+        batch.forEach(game => screenPending.add(screenKey(game)));
+        try {
+          const response = await fetchApi('/enrich', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify({
+              games: batch.map(game => ({ id: game.gameId, igdbId: game.igdbId, title: game.title })),
+              providers: group.providerNames
+            })
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          (payload.results || []).forEach((result, index) => {
+            const game = batch[index];
+            if (!game) return;
+            screenCache.set(screenKey(game), { fetchedAt: Date.now(), payload: { results: [result] } });
+            const subscriptions = Object.values(result.providers || {}).reduce(
+              (all, provider) => Object.assign(all, provider?.subscriptions || {}),
+              { ...(result.merged?.subscriptions || {}) }
+            );
+            const verifiedAt = new Date().toISOString();
+            window.dispatchEvent(new CustomEvent('games:live-enriched', {
+              detail: {
+                gameId: game.gameId,
+                igdbId: String(result.identity?.igdbId || ''),
+                title: game.title,
+                providers: result.providers || {},
+                merged: result.merged || {},
+                verifiedAt
+              }
+            }));
+            window.dispatchEvent(new CustomEvent('games:subscription-updated', {
+              detail: {
+                gameId: game.gameId,
+                igdbId: String(result.identity?.igdbId || ''),
+                subscriptions,
+                verifiedAt
+              }
+            }));
+          });
+        } catch (error) {
+          console.warn('Live enrichment viditelných her:', error);
+        } finally {
+          batch.forEach(game => screenPending.delete(screenKey(game)));
+        }
       }
     }
   }
@@ -734,7 +742,7 @@ import { fetchApi } from './js/api.js';
     if (!title || pendingTitle === title || content.dataset.liveEnrichedTitle === title) return;
     pendingTitle = title;
     content.dataset.liveEnrichedTitle = title;
-    setStatus('Ověřuji IGDB identitu, předplatné a média…', 'loading');
+    setStatus('Ověřuji ceny, předplatné, odkazy a média…', 'loading');
 
     try {
       const cacheKey = currentEnrichmentKey();
