@@ -106,10 +106,14 @@ export const epicProvider = {
   capabilities: ['search', 'price', 'media'],
   search: searchStore,
   health: async () => {
-    const hits = await searchStore('Fortnite', { force: true, limit: 1 });
+    const hits = await searchStore('SILENT HILL: Townfall', { force: true, limit: 5 });
+    const sample = hits.find(item => /silent hill\s*:?\s*townfall/i.test(item?.title || '')) || hits[0] || null;
+    const current = Number(sample?.price?.current);
     return {
-      ok: Boolean(hits[0]?.title),
-      sample: hits[0]?.title || null,
+      ok: Boolean(sample?.title && (sample?.price?.isFree === true || (Number.isFinite(current) && current > 0))),
+      sample: sample?.title || null,
+      samplePrice: sample?.price || null,
+      storeUrl: sample?.storeUrl || null,
       country: config.epicCountry,
       locale: config.epicLocale
     };
