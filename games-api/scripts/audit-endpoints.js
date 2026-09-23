@@ -26,6 +26,35 @@ if (failed) {
 
 
 try {
+  const payload = await providers.playstation.catalog('psPlus', { force: true, size: 40, offset: 0 });
+  const candidates = [];
+  const seen = new Set();
+  const walk = value => {
+    if (!value || typeof value !== 'object') return;
+    if (!Array.isArray(value)) {
+      const id = String(value.productId || value.conceptId || value.id || '').trim();
+      const title = String(value.name || value.title || value.productName || value.conceptName || '').trim();
+      if (id && title && !seen.has(`${id}|${title}`)) {
+        seen.add(`${id}|${title}`);
+        candidates.push({ id, title });
+      }
+    }
+    if (Array.isArray(value)) value.forEach(walk);
+    else Object.values(value).forEach(walk);
+  };
+  walk(payload);
+  const ok = candidates.length > 0;
+  console.log(`${ok ? '✅' : '❌'} playstation PS Plus catalog probe`, {
+    candidates: candidates.length,
+    samples: candidates.slice(0, 8)
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ playstation PS Plus catalog probe: ${error?.message || error}`);
+}
+
+try {
   const item = await providers.steam.product('292030', { force: true });
   const current = Number(item?.price?.current);
   const ok = Boolean(
