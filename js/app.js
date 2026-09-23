@@ -249,6 +249,16 @@ const state = {
 let onlineSearchSequence = 0;
 let onlineSearchAbortController = null;
 let calendarFeedMode = 'watch';
+let liveRenderTimer = 0;
+
+function scheduleLiveRender() {
+  if (liveRenderTimer) return;
+  liveRenderTimer = setTimeout(() => {
+    liveRenderTimer = 0;
+    renderGames();
+    notifyAvailableRows();
+  }, 80);
+}
 
 const isWatched = game => state.watchlist.has(gameId(game));
 
@@ -1149,6 +1159,7 @@ function bindEvents() {
     if (igdbId) liveProviders[`igdb:${igdbId}`] = entry;
     writeLiveProviders(liveProviders);
 
+    let changed = false;
     const seen = new Set();
     for (const row of state.rows) {
       const game = row?.game;
@@ -1156,8 +1167,9 @@ function bindEvents() {
       seen.add(game);
       const sameIgdb = igdbId && String(game.igdbId || '') === igdbId;
       const sameId = gameId(game) === id;
-      if (sameIgdb || sameId) applyLiveProviderEntry(game, entry);
+      if (sameIgdb || sameId) changed = applyLiveProviderEntry(game, entry) || changed;
     }
+    if (changed) scheduleLiveRender();
   });
   window.addEventListener('games:subscription-updated', event => {
     const detail = event.detail || {};
@@ -1189,10 +1201,7 @@ function bindEvents() {
       if (JSON.stringify(game.subscriptions) !== before) changed = true;
     }
 
-    if (changed) {
-      renderGames();
-      notifyAvailableRows();
-    }
+    if (changed) scheduleLiveRender();
   });
   $('search-toggle').addEventListener('click', () => {
     const open = $('search-popover').hidden;
