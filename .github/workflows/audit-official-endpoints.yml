@@ -10,6 +10,12 @@ on:
     paths:
       - 'games-api/**'
       - '.github/workflows/audit-official-endpoints.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'games-api/**'
+      - '.github/workflows/audit-official-endpoints.yml'
 
 permissions:
   contents: read
