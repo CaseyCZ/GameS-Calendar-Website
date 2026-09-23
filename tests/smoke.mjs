@@ -272,6 +272,9 @@ assert.equal(advancedSource.includes("dy >= 88"), false);
 const appSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')"), true);
 
+const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
+assert.equal(nintendoProviderSource.includes('nintendo:search:v2:'), true);
+
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
 

@@ -231,7 +231,7 @@ export async function productByUrl(url, { force = false } = {}) {
 export async function search(query, { force = false, limit = 6 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `nintendo:search:${q.toLowerCase()}`;
+  const key = `nintendo:search:v2:${config.nintendoCountry}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
