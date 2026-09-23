@@ -684,6 +684,7 @@ async function refreshOnlineSearch(query) {
     if (sequence !== onlineSearchSequence || value !== state.search) return;
     state.onlineRows = makeOnlineRows(games);
     state.rows = [...state.catalogRows, ...state.onlineRows];
+    applyLiveProviderCache(state.rows);
     applyLiveSubscriptionCache(state.rows);
   } catch (error) {
     if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) {
