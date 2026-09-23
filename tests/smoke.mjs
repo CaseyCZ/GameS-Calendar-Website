@@ -326,6 +326,10 @@ assert.equal(serverSource.includes("change.field === 'prices'"), true);
 assert.equal(serverSource.includes("change.field === 'subscriptions'"), true);
 assert.equal(serverSource.includes("change.field === 'earlyAccess'"), true);
 assert.equal(serverSource.includes('result.value.storefrontScore >= threshold'), true);
+assert.equal(serverSource.includes("wanted.has('steam') && game.steamId"), true);
+assert.equal(serverSource.includes("if (!wanted.has(provider) || !price) continue"), true);
+assert.equal(serverSource.includes('subscriptionsForProviders(snapshot?.subscriptions || {}, wanted)'), true);
+assert.equal(serverSource.includes("if (wanted.has('igdb')) addFound(found, igdbIdentity)"), true);
 assert.equal(serverSource.includes('lastKnownProviders'), true);
 assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
 

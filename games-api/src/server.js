@@ -467,6 +467,24 @@ function selectedNames(providerNames) {
   return new Set(providerList(providerNames).map(provider => provider.name));
 }
 
+const SUBSCRIPTION_PROVIDER = Object.freeze({
+  gamePass: 'microsoft',
+  gamePassConsole: 'microsoft',
+  gamePassPc: 'microsoft',
+  cloudGaming: 'microsoft',
+  eaPlay: 'microsoft',
+  psPlus: 'playstation',
+  geforceNow: 'geforceNow'
+});
+
+function subscriptionsForProviders(subscriptions = {}, wanted = new Set()) {
+  return Object.fromEntries(
+    Object.entries(subscriptions || {}).filter(([key, enabled]) =>
+      Boolean(enabled) && wanted.has(SUBSCRIPTION_PROVIDER[key])
+    )
+  );
+}
+
 function psIdentity(ids = {}) {
   const explicitProduct = ids.playstationProduct || '';
   const explicitConcept = ids.playstationConcept || '';
@@ -526,13 +544,13 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const wanted = selectedNames(providerNames);
 
   const direct = [
-    game.steamId && providers.steam?.product(String(game.steamId), { force }),
-    game.xboxProductId && providers.microsoft?.product(String(game.xboxProductId), { force }),
-    game.microsoftProductId && providers.microsoft?.product(String(game.microsoftProductId), { force }),
-    game.psProductId && providers.playstation?.product(String(game.psProductId), { force }),
-    game.psConceptId && providers.playstation?.concept(String(game.psConceptId), { force }),
-    game.nintendoUrl && providers.nintendo?.productByUrl(String(game.nintendoUrl), { force }),
-    game.nintendoTitleId && providers.nintendo?.productById(String(game.nintendoTitleId), { force })
+    wanted.has('steam') && game.steamId && providers.steam?.product(String(game.steamId), { force }),
+    wanted.has('microsoft') && game.xboxProductId && providers.microsoft?.product(String(game.xboxProductId), { force }),
+    wanted.has('microsoft') && game.microsoftProductId && providers.microsoft?.product(String(game.microsoftProductId), { force }),
+    wanted.has('playstation') && game.psProductId && providers.playstation?.product(String(game.psProductId), { force }),
+    wanted.has('playstation') && game.psConceptId && providers.playstation?.concept(String(game.psConceptId), { force }),
+    wanted.has('nintendo') && game.nintendoUrl && providers.nintendo?.productByUrl(String(game.nintendoUrl), { force }),
+    wanted.has('nintendo') && game.nintendoTitleId && providers.nintendo?.productById(String(game.nintendoTitleId), { force })
   ].filter(Boolean);
 
   for (const result of await Promise.allSettled(direct)) {
@@ -541,7 +559,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
 
   const igdbIdentity = await resolveIgdbIdentity(game, title, { force });
   if (igdbIdentity) {
-    addFound(found, igdbIdentity);
+    if (wanted.has('igdb')) addFound(found, igdbIdentity);
     const directStoreResults = await directFromIdentity(igdbIdentity, wanted, { force });
     directStoreResults.forEach(item => addFound(found, item));
   }
@@ -567,7 +585,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const lastKnownProviders = [];
 
   for (const [provider, price] of Object.entries(snapshot?.prices || {})) {
-    if (!price) continue;
+    if (!wanted.has(provider) || !price) continue;
     const current = responseProviders[provider] || null;
     if (current?.price) continue;
     const providerId = current?.providerId || snapshot?.providerIds?.[provider] || null;
@@ -591,7 +609,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const responseMerged = merged ? {
     ...merged,
     subscriptions: {
-      ...(snapshot?.subscriptions || {}),
+      ...subscriptionsForProviders(snapshot?.subscriptions || {}, wanted),
       ...(merged.subscriptions || {})
     }
   } : merged;
