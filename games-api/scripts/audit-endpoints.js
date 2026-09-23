@@ -121,6 +121,30 @@ try {
 }
 
 try {
+  const productId = 'UP9000-PPSA26344_00-GHOST2CE00000000';
+  const item = await providers.playstation.product(productId, { force: true });
+  const current = Number(item?.price?.current);
+  const ok = Boolean(
+    item
+    && String(item?.providerId || '').toUpperCase() === productId
+    && Number.isFinite(current)
+    && Math.abs(current - 1899) < 0.01
+  );
+  console.log(`${ok ? '✅' : '❌'} playstation Ghost of Yotei Complete Edition direct product price probe`, {
+    providerId: item?.providerId || null,
+    title: item?.title || null,
+    price: item?.price || null,
+    priceProductId: item?.rawHints?.priceProductId || null,
+    priceConceptId: item?.rawHints?.priceConceptId || null,
+    priceFallback: item?.rawHints?.priceFallback || null
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ playstation Ghost of Yotei Complete Edition direct product price probe: ${error?.message || error}`);
+}
+
+try {
   const item = await providers.steam.product('292030', { force: true });
   const current = Number(item?.price?.current);
   const ok = Boolean(

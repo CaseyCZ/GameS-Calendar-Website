@@ -209,6 +209,18 @@ function selectPriceCandidate(root, providerId = '', { preferBase = false, prefe
   })[0] || null;
 }
 
+function conceptIdFromProductPayload(root) {
+  let found = '';
+  walk(root, node => {
+    if (found || !node || Array.isArray(node) || typeof node !== 'object') return;
+    const concept = node.concept;
+    if (!concept || Array.isArray(concept) || typeof concept !== 'object') return;
+    const id = cleanText(concept.id || concept.conceptId || '');
+    if (/^\d+$/.test(id)) found = id;
+  });
+  return found;
+}
+
 function collectProductReferences(root) {
   const out = new Map();
   walk(root, node => {
@@ -310,8 +322,31 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase 
 }
 
 export async function product(productId, { force = false } = {}) {
-  const payload = await persisted('metGetProductById', { productId: String(productId) }, { force });
-  return applyPsPlusMembership(normalizePsPayload(String(productId), payload), { force });
+  const id = String(productId);
+  const payload = await persisted('metGetProductById', { productId: id }, { force });
+  let normalized = normalizePsPayload(id, payload);
+
+  if (!normalized.price) {
+    const conceptId = conceptIdFromProductPayload(payload);
+    if (conceptId) {
+      try {
+        const pricing = await persisted('metGetPricingDataByConceptId', { conceptId }, { force });
+        const priced = normalizePsPayload(id, { payloads: [payload, pricing] });
+        if (priced?.price) {
+          normalized.price = { ...priced.price };
+          normalized.rawHints = {
+            ...(normalized.rawHints || {}),
+            priceProductId: priced.rawHints?.priceProductId || id,
+            priceEdition: priced.rawHints?.priceEdition || null,
+            priceFallback: 'product-concept-pricing',
+            priceConceptId: conceptId
+          };
+        }
+      } catch {}
+    }
+  }
+
+  return applyPsPlusMembership(normalized, { force });
 }
 
 export async function concept(conceptId, { force = false, preferredTitle = '' } = {}) {
