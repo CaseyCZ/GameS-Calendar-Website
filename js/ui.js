@@ -20,6 +20,64 @@ export function safeUrl(value) {
   } catch { return ''; }
 }
 
+const LIVE_PRICE_SOURCES = [
+  ['steam', 'Steam', 'steam'],
+  ['epic', 'Epic', 'epic'],
+  ['microsoft', 'Xbox', 'xbox'],
+  ['playstation', 'PlayStation', 'playstation'],
+  ['nintendo', 'Nintendo', 'nintendo']
+];
+
+export function formatLivePrice(price) {
+  if (!price || typeof price !== 'object') return '';
+  if (price.isFree === true) return 'Zdarma';
+
+  const value = Number(price.current);
+  const currency = String(price.currency || '').trim().toUpperCase();
+  let text = '';
+  if (Number.isFinite(value) && value >= 0 && currency) {
+    try {
+      text = new Intl.NumberFormat('cs-CZ', {
+        style: 'currency',
+        currency,
+        maximumFractionDigits: currency === 'CZK' ? 0 : 2
+      }).format(value);
+    } catch {}
+  }
+  if (!text) text = String(price.currentText || '').trim();
+  if (!text && Number.isFinite(value) && value >= 0) text = String(value);
+  if (!text) return '';
+
+  let discount = Number(price.discountPercent || 0);
+  const regular = Number(price.regular);
+  if (!discount && Number.isFinite(regular) && regular > 0 && Number.isFinite(value) && value > 0 && value < regular) {
+    discount = Math.round((1 - value / regular) * 100);
+  }
+  const prefix = price.from ? 'od ' : '';
+  return discount > 0
+    ? `${prefix}${text} · −${Math.round(discount)} %`
+    : `${prefix}${text}`;
+}
+
+function cardLivePrices(game, limit = 3) {
+  const items = LIVE_PRICE_SOURCES
+    .map(([provider, label, kind]) => ({ provider, label, kind, price: game.livePrices?.[provider] }))
+    .map(item => ({ ...item, text: formatLivePrice(item.price) }))
+    .filter(item => item.text);
+  if (!items.length) return '';
+
+  const shown = items.slice(0, limit);
+  const more = Math.max(0, items.length - shown.length);
+  return `<span class="card-live-prices" aria-label="Živé ceny">${shown.map(item =>
+    `<span class="card-price-chip" title="${escapeHtml(item.label)}">${sharedStoreIcon(item.kind, { className:'brand-icon--price' })}<span>${escapeHtml(item.text)}</span></span>`
+  ).join('')}${more ? `<span class="card-price-more">+${more}</span>` : ''}</span>`;
+}
+
+function livePriceForStore(game, kind) {
+  const provider = { steam:'steam', epic:'epic', xbox:'microsoft', playstation:'playstation', nintendo:'nintendo' }[kind];
+  return provider ? formatLivePrice(game.livePrices?.[provider]) : '';
+}
+
 export function formatDate(day, options = { day:'2-digit', month:'2-digit', year:'numeric' }) {
   if (!day) return '—';
   return new Intl.DateTimeFormat('cs-CZ', { ...options, timeZone:'UTC' }).format(new Date(`${day}T00:00:00Z`));
@@ -145,6 +203,8 @@ function serviceBadges(game, compact = false, excluded = []) {
   const skip = new Set(excluded);
   const services = [];
   if (game.subscriptions?.gamePass && !skip.has('gamepass')) services.push(['Game Pass','gamepass']);
+  if (game.subscriptions?.cloudGaming && !skip.has('cloud')) services.push(['Xbox Cloud','cloud']);
+  if (game.subscriptions?.eaPlay && !skip.has('eaplay')) services.push(['EA Play','eaplay']);
   if (game.subscriptions?.psPlus && !skip.has('psplus')) services.push(['PS Plus','psplus']);
   if (game.subscriptions?.geforceNow && !skip.has('gfn')) services.push(['GeForce NOW','gfn']);
   if (!services.length) return '';
@@ -177,6 +237,7 @@ export function rowCard(row, watched) {
         <span class="game-card__title">${escapeHtml(game.name)}</span>
         <span class="game-card__meta"><time class="game-card__date" ${row.day ? `datetime="${row.day}"` : ''}>${escapeHtml(releaseText(row))}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
         <span class="card-platforms">${platforms}</span>
+        ${cardLivePrices(game)}
         ${serviceBadges(game, true, ['gamepass'])}
       </span>
     </button>
@@ -224,23 +285,27 @@ function platformStoreLinks(row, links) {
   const groups = new Set(row.platformGroups);
   const names = row.platforms.map(platform => String(platform.name || '').toLowerCase());
   const items = [];
-  const add = (label, url, kind) => {
-    const button = linkButton(label, url, kind);
+  const pricedLabel = (label, kind) => {
+    const price = livePriceForStore(row.game, kind);
+    return price ? `${label} · ${price}` : label;
+  };
+  const add = (label, url, kind, includePrice = true) => {
+    const button = linkButton(includePrice ? pricedLabel(label, kind) : label, url, kind);
     if (button && !items.includes(button)) items.push(button);
   };
   if (groups.has('PC')) {
-    add(row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam, 'steam');
-    add(row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic, 'epic');
+    add(row.game.links?.steam ? 'Steam' : 'Hledat na Steam', links.steam, 'steam', Boolean(row.game.links?.steam));
+    add(row.game.links?.epic ? 'Epic Games' : 'Hledat na Epic', links.epic, 'epic', Boolean(row.game.links?.epic));
   }
-  if (groups.has('PS5')) add('PlayStation Store', links.playstation, 'playstation');
-  if (groups.has('Xbox Series')) add('Xbox Store', links.xbox, 'xbox');
+  if (groups.has('PS5') || groups.has('PS4')) add('PlayStation Store', links.playstation, 'playstation');
+  if (groups.has('Xbox Series') || groups.has('Xbox One') || groups.has('Xbox 360')) add('Xbox Store', links.xbox, 'xbox');
   if (groups.has('Switch') || groups.has('Switch 2')) add('Nintendo Store', links.nintendo, 'nintendo');
   if (groups.has('VR')) {
     let matched = false;
-    if (names.some(name => /quest|rift/.test(name))) { add('Meta Quest Store', links.meta, 'meta'); matched = true; }
+    if (names.some(name => /quest|rift/.test(name))) { add('Meta Quest Store', links.meta, 'meta', false); matched = true; }
     if (names.some(name => /playstation vr|ps vr/.test(name))) { add('PlayStation Store', links.playstation, 'playstation'); matched = true; }
     if (names.some(name => /steamvr|windows|pc/.test(name))) { add('Steam', links.steam, 'steam'); matched = true; }
-    if (!matched) add('Meta Quest Store', links.meta, 'meta');
+    if (!matched) add('Meta Quest Store', links.meta, 'meta', false);
   }
   return items.join('');
 }

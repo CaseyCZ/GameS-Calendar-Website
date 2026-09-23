@@ -196,6 +196,7 @@ import { fetchApi } from './js/api.js';
                 gameId: game.gameId,
                 igdbId: String(result.identity?.igdbId || ''),
                 subscriptions,
+                checkedProviders: group.providerNames,
                 verifiedAt
               }
             }));

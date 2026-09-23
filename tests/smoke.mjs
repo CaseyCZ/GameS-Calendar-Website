@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
+import { formatLivePrice } from '../js/ui.js';
 import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../games-api/src/lib/epic-store.js';
@@ -18,6 +19,8 @@ assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
 assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
 assert.equal(titleScore('Example II', 'Example 2'), 1);
 assert.ok(titleQueryVariants('Example II').includes('example 2'));
+assert.equal(formatLivePrice({ isFree:true, current:0 }), 'Zdarma');
+assert.equal(formatLivePrice({ current:90, regular:100, currency:'CZK' }).includes('−10 %'), true);
 
 assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Edition'));
 assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
@@ -306,6 +309,7 @@ assert.equal(liveEnrichmentSource.includes('cachedPayload(cacheKey)'), true);
 assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true);
 assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
 assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
+assert.equal(liveEnrichmentSource.includes('checkedProviders: group.providerNames'), true);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
@@ -330,6 +334,9 @@ assert.equal(dbSource.includes('suppressUnconfirmedPriceRemoval'), true);
 assert.equal(dbSource.includes('.map(stableHistoryItem)'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
+assert.equal(uiSource.includes('cardLivePrices(game)'), true);
+assert.equal(uiSource.includes("subscriptions?.eaPlay"), true);
+assert.equal(uiSource.includes("subscriptions?.cloudGaming"), true);
 assert.equal(uiSource.includes('card-service-badge'), true);
 assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
 
