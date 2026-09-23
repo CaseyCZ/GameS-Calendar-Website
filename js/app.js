@@ -33,6 +33,8 @@ const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
 const LIVE_SUBSCRIPTIONS_KEY = 'games-calendar-live-subscriptions-v1';
 const LIVE_SUBSCRIPTIONS_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+const LIVE_PROVIDER_KEY = 'games-calendar-live-providers-v1';
+const LIVE_PROVIDER_MAX_AGE = 24 * 60 * 60 * 1000;
 const PUSH_PUBLIC_KEY_PATH = '/push/public-key';
 const PUSH_SUBSCRIBE_PATH = '/push/subscribe';
 const CALENDAR_FEED_URL = apiUrl('/calendar.ics');
@@ -76,6 +78,22 @@ function writeLiveSubscriptions(cache) {
 }
 
 const liveSubscriptions = readLiveSubscriptions();
+
+function readLiveProviders() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LIVE_PROVIDER_KEY) || '{}');
+    const now = Date.now();
+    return Object.fromEntries(Object.entries(raw || {}).filter(([, entry]) =>
+      Number(entry?.updatedAt || 0) && now - Number(entry.updatedAt) <= LIVE_PROVIDER_MAX_AGE
+    ));
+  } catch { return {}; }
+}
+
+function writeLiveProviders(cache) {
+  try { localStorage.setItem(LIVE_PROVIDER_KEY, JSON.stringify(cache)); } catch {}
+}
+
+const liveProviders = readLiveProviders();
 
 function subscriptionKeys(game = {}) {
   const keys = [];
@@ -1031,6 +1049,18 @@ async function maybeNotifyUpcoming(force = false) {
 }
 
 function bindEvents() {
+  window.addEventListener('games:live-enriched', event => {
+    const detail = event.detail || {};
+    const id = String(detail.gameId || '').trim();
+    if (!id) return;
+    liveProviders[`id:${id}`] = {
+      providers: detail.providers || {},
+      merged: detail.merged || {},
+      verifiedAt: detail.verifiedAt || new Date().toISOString(),
+      updatedAt: Date.now()
+    };
+    writeLiveProviders(liveProviders);
+  });
   window.addEventListener('games:subscription-updated', event => {
     const detail = event.detail || {};
     const gameIdValue = String(detail.gameId || '').trim();
