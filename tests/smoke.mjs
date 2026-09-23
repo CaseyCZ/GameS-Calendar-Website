@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
+import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
+assert.equal(normalizeSearch('Final Fantasy XVI'), 'final fantasy 16');
+assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
+assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
+assert.equal(titleScore('Example II', 'Example 2'), 1);
+assert.ok(titleQueryVariants('Example II').includes('example 2'));
+
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
 assert.equal(matchesSearch({ name:'Call of Duty: Modern Warfare', aliases:[], developers:[], publishers:[], series:[] }, 'call warfare'), true);
 assert.ok(searchRelevance({ name:'Gears of War', aliases:[], developers:[], publishers:[], series:[] }, 'gears') > 70);

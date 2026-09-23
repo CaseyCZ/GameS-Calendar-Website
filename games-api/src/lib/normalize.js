@@ -1,5 +1,55 @@
 export const uniq = values => [...new Set((values || []).filter(Boolean))];
 
+const ROMAN_NUMERALS = new Map([
+  ['i','1'],
+  ['ii','2'],
+  ['iii','3'],
+  ['iv','4'],
+  ['v','5'],
+  ['vi','6'],
+  ['vii','7'],
+  ['viii','8'],
+  ['ix','9'],
+  ['x','10'],
+  ['xi','11'],
+  ['xii','12'],
+  ['xiii','13'],
+  ['xiv','14'],
+  ['xv','15'],
+  ['xvi','16'],
+  ['xvii','17'],
+  ['xviii','18'],
+  ['xix','19'],
+  ['xx','20']
+]);
+
+function normalizeRomanTokens(value = '') {
+  return String(value)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(token => ROMAN_NUMERALS.get(token) || token)
+    .join(' ');
+}
+
+function basicTitle(value = '') {
+  return String(value)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[™®©]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function titleQueryVariants(value = '') {
+  const raw = String(value || '').trim();
+  if (!raw) return [];
+  const plain = basicTitle(raw);
+  const roman = normalizeRomanTokens(plain);
+  return uniq([raw, ...(roman && roman !== plain ? [roman] : [])]);
+}
+
 export function cleanText(value = '') {
   return String(value)
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
@@ -14,7 +64,7 @@ export function cleanText(value = '') {
 }
 
 export function normalizeTitle(value = '') {
-  return String(value)
+  const cleaned = String(value)
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[™®©]/g, '')
@@ -24,6 +74,7 @@ export function normalizeTitle(value = '') {
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  return normalizeRomanTokens(cleaned);
 }
 
 export function slugify(value = '') {

@@ -23,6 +23,36 @@ const GAMEPASS_LISTS = {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const uniq = values => [...new Set((values || []).filter(Boolean))];
+const ROMAN_NUMERALS = new Map([
+  ['i','1'],
+  ['ii','2'],
+  ['iii','3'],
+  ['iv','4'],
+  ['v','5'],
+  ['vi','6'],
+  ['vii','7'],
+  ['viii','8'],
+  ['ix','9'],
+  ['x','10'],
+  ['xi','11'],
+  ['xii','12'],
+  ['xiii','13'],
+  ['xiv','14'],
+  ['xv','15'],
+  ['xvi','16'],
+  ['xvii','17'],
+  ['xviii','18'],
+  ['xix','19'],
+  ['xx','20']
+]);
+
+function normalizeRomanTokens(value = '') {
+  return String(value)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(token => ROMAN_NUMERALS.get(token) || token)
+    .join(' ');
+}
 
 function normalize(value = '') {
   return String(value)
@@ -43,7 +73,7 @@ function titleVariants(value = '') {
     .replace(/\b(game preview|preview)\b/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  return uniq([base, cleaned]);
+  return uniq([base, cleaned, normalizeRomanTokens(base), normalizeRomanTokens(cleaned)]);
 }
 
 function shortText(value, max = 640) {

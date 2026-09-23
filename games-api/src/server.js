@@ -24,7 +24,7 @@ import {
   syncCatalogGames,
   wasPushDelivered
 } from './db.js';
-import { mergeGames, normalizeTitle, titleScore } from './lib/normalize.js';
+import { mergeGames, normalizeTitle, titleQueryVariants, titleScore } from './lib/normalize.js';
 import { buildCalendarFeed } from './lib/calendar.js';
 import { providers, providerList } from './providers/index.js';
 
@@ -432,8 +432,19 @@ async function providerHealth(provider) {
 
 async function bestSearchHit(provider, title, { force = false } = {}) {
   if (typeof provider.search !== 'function') return null;
-  const hits = await provider.search(title, { force, limit: 5 });
-  return (hits || [])
+  const queries = titleQueryVariants(title);
+  const results = await Promise.allSettled(
+    queries.map(query => provider.search(query, { force, limit: 5 }))
+  );
+  const unique = new Map();
+  for (const result of results) {
+    if (result.status !== 'fulfilled') continue;
+    for (const item of result.value || []) {
+      const key = `${item?.provider || provider.name}:${item?.providerId || normalizeTitle(item?.title || '')}`;
+      if (!unique.has(key)) unique.set(key, item);
+    }
+  }
+  return [...unique.values()]
     .map(item => ({ item, score: titleScore(title, item?.title) }))
     .sort((a, b) => b.score - a.score)[0] || null;
 }
