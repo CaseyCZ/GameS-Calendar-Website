@@ -122,3 +122,40 @@ async function subscriptionCatalogDiagnostic() {
 }
 
 await subscriptionCatalogDiagnostic();
+
+
+try {
+  const payload = await providers.playstation.catalog('psPlus', { force:true, size:1000, offset:0 });
+  const found = [];
+  const seen = new Set();
+  const walk = (value, depth = 0) => {
+    if (!value || typeof value !== 'object' || depth > 10) return;
+    if (Array.isArray(value)) {
+      for (const item of value) walk(item, depth + 1);
+      return;
+    }
+    const title = value.name || value.title || value.productName || value.conceptName || value.displayName || '';
+    const id = value.id || value.productId || value.conceptId || value.npTitleId || '';
+    if (title && id) {
+      const key = `${id}|${title}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        found.push({
+          title:String(title),
+          id:String(id),
+          type:String(value.__typename || value.type || value.kind || ''),
+          keys:Object.keys(value).slice(0,16)
+        });
+      }
+    }
+    for (const child of Object.values(value)) walk(child, depth + 1);
+  };
+  walk(payload);
+  console.log('ℹ️ PS Plus game catalog diagnostic', {
+    topKeys:Object.keys(payload || {}).slice(0,20),
+    candidates:found.length,
+    sample:found.slice(0,12)
+  });
+} catch (error) {
+  console.log(`ℹ️ PS Plus game catalog diagnostic failed: ${error?.message || error}`);
+}
