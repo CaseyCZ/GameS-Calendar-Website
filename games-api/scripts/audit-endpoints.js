@@ -127,3 +127,28 @@ try {
 } catch (error) {
   console.log(`ℹ️ FC 27 production enrich diagnostic failed: ${error?.message || error}`);
 }
+
+try {
+  const ps = await providers.playstation.concept('10017332', { force:true });
+  console.log('ℹ️ FC 27 PS concept price candidates', {
+    title:ps?.title || null,
+    price:ps?.price || null,
+    candidates:ps?.rawHints?.priceCandidates || []
+  });
+} catch (error) {
+  console.log(`ℹ️ FC 27 PS concept price candidates failed: ${error?.message || error}`);
+}
+
+try {
+  const items = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:6 });
+  console.log('ℹ️ FC 27 Nintendo NSUID candidates', items.map(item => ({
+    id:item?.providerId || null,
+    title:item?.title || null,
+    releaseDate:item?.releaseDate || null,
+    price:item?.price || null,
+    storeUrl:item?.storeUrl || null,
+    rawHints:item?.rawHints || {}
+  })));
+} catch (error) {
+  console.log(`ℹ️ FC 27 Nintendo NSUID candidates failed: ${error?.message || error}`);
+}

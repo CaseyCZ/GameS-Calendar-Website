@@ -110,6 +110,47 @@ function collectStrings(root, keys) {
   return uniq(values.map(cleanText).filter(Boolean));
 }
 
+function collectPriceCandidates(root) {
+  const out = [];
+  walk(root, node => {
+    if (!node || Array.isArray(node) || typeof node !== 'object') return;
+    const title = cleanText(
+      node.name || node.title || node.productName || node.conceptName ||
+      node.displayName || node.editionName || node.skuName || ''
+    );
+    const regularText = [
+      node.basePrice, node.formattedBasePrice, node.strikethroughPrice,
+      node.regularPrice, node.price
+    ].find(value => typeof value === 'string' && value.trim()) || '';
+    const currentText = [
+      node.discountedPrice, node.salePrice, node.formattedDiscountedPrice,
+      node.formattedPrice
+    ].find(value => typeof value === 'string' && value.trim()) || regularText;
+    const regularValue = [
+      node.basePriceValue, node.regularPriceValue,
+      typeof node.basePrice === 'number' ? node.basePrice : null,
+      typeof node.regularPrice === 'number' ? node.regularPrice : null
+    ].find(value => typeof value === 'number' && Number.isFinite(value));
+    const currentValue = [
+      node.discountedPriceValue, node.salePriceValue,
+      typeof node.discountedPrice === 'number' ? node.discountedPrice : null,
+      typeof node.salePrice === 'number' ? node.salePrice : null
+    ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularValue;
+    if (!title && !regularText && regularValue == null) return;
+    if (!regularText && regularValue == null && !currentText && currentValue == null) return;
+    out.push({
+      title,
+      regularText: regularText || '',
+      currentText: currentText || '',
+      regularValue: regularValue ?? null,
+      currentValue: currentValue ?? null,
+      currency: cleanText(node.currencyCode || node.currency || ''),
+      id: cleanText(node.productId || node.id || node.skuId || '')
+    });
+  });
+  return out.slice(0, 80);
+}
+
 function collectImages(root) {
   const values = [];
   walk(root, node => {
@@ -159,7 +200,10 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE) {
     media: { cover: images[0] || '', hero: images[1] || '', screenshots: images.slice(2, 18) },
     storeUrl: providerId ? `https://store.playstation.com/${config.psLocale}/product/${providerId}` : '',
     sourceUrl,
-    rawHints: { operation: payload?.data ? 'graphql' : 'html' }
+    rawHints: {
+      operation: payload?.data ? 'graphql' : 'html',
+      priceCandidates: collectPriceCandidates(payload)
+    }
   });
 }
 

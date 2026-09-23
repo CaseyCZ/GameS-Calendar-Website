@@ -62,6 +62,7 @@ function normalizeDoc(doc = {}) {
     sourceUrl: `${SEARCH_HOST}/${config.nintendoLanguage}/select`,
     rawHints: {
       nsuid: nsuid || null,
+      allNsuids: uniq([...arr(doc.nsuid_txt), ...arr(doc.related_nsuids_txt)].map(String)),
       fsId: doc.fs_id || null,
       ageRating: doc.pretty_agerating_s || doc.age_rating_value || null,
       ageRatingType: doc.age_rating_type || null,
@@ -72,6 +73,9 @@ function normalizeDoc(doc = {}) {
       productCodes: arr(doc.product_code_txt),
       series: doc.game_series_t || null,
       playableOn: arr(doc.playable_on_txt),
+      sourceReleaseDates: arr(doc.dates_released_dts).map(String),
+      dateFrom: doc.date_from || null,
+      releaseDateOnEshop: doc.release_date_on_eshop || null,
       extraction: 'official-nintendo-europe-search'
     }
   });
