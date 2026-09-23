@@ -19,10 +19,32 @@ for (const provider of Object.values(providers)) {
 }
 
 if (failed) {
-  console.error(`\n${failed} provider(s) failed health checks.`);
-  process.exitCode = 1;
+  console.error(`\n${failed} provider(s) failed health checks so far.`);
 } else {
   console.log('\nAll provider health checks passed.');
+}
+
+
+try {
+  const item = await providers.steam.product('292030', { force: true });
+  const current = Number(item?.price?.current);
+  const ok = Boolean(
+    item
+    && /witcher\s*3/i.test(String(item.title || ''))
+    && Number.isFinite(current)
+    && current > 0
+    && /^https:\/\/store\.steampowered\.com\/app\/292030\//i.test(String(item.storeUrl || ''))
+  );
+  console.log(`${ok ? '✅' : '❌'} steam paid-price probe`, {
+    providerId: item?.providerId || null,
+    title: item?.title || null,
+    price: item?.price || null,
+    storeUrl: item?.storeUrl || null
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ steam paid-price probe: ${error?.message || error}`);
 }
 
 try {
@@ -92,8 +114,13 @@ try {
 
   const nintendoBase = exactNintendo.filter(item => /^700100/.test(String(item?.providerId || '')));
   const nintendoBundle = exactNintendo.filter(item => /^700700/.test(String(item?.providerId || '')));
+  const ninPriced = nintendoBase.some(item => {
+    const current = Number(item?.price?.current);
+    return item?.price?.isFree === true || (Number.isFinite(current) && current > 0);
+  });
   const ninOk = nintendoBase.length >= 1 && nintendoBundle.length === 0
-    && nintendoBase.every(item => item.releaseDate === '2026-09-25');
+    && nintendoBase.every(item => item.releaseDate === '2026-09-25')
+    && ninPriced;
 
   const ok = msOk && psOk && ninOk;
   console.log(`${ok ? '✅' : '❌'} FC 27 base-edition pricing regression`, {
@@ -111,10 +138,19 @@ try {
       providerId:item?.providerId || null,
       releaseDate:item?.releaseDate || null,
       price:item?.price || null
-    }))
+    })),
+    nintendoPriced:ninPriced
   });
   if (!ok) failed += 1;
 } catch (error) {
   failed += 1;
   console.error(`❌ FC 27 base-edition pricing regression: ${error?.message || error}`);
+}
+
+
+if (failed) {
+  console.error(`\nEndpoint audit failed: ${failed} check(s) failed.`);
+  process.exitCode = 1;
+} else {
+  console.log('\nEndpoint audit passed.');
 }
