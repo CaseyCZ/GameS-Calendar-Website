@@ -152,3 +152,17 @@ try {
 } catch (error) {
   console.log(`ℹ️ FC 27 Nintendo NSUID candidates failed: ${error?.message || error}`);
 }
+
+try {
+  const items = await providers.nintendo.search('EA Sports FC 27', { force:true, limit:4 });
+  console.log('ℹ️ FC 27 Nintendo raw arrays JSON', JSON.stringify(items.map(item => ({
+    id:item?.providerId || null,
+    releaseDate:item?.releaseDate || null,
+    allNsuids:item?.rawHints?.allNsuids || [],
+    productCodes:item?.rawHints?.productCodes || [],
+    sourceReleaseDates:item?.rawHints?.sourceReleaseDates || [],
+    playableOn:item?.rawHints?.playableOn || []
+  }))));
+} catch (error) {
+  console.log(`ℹ️ FC 27 Nintendo raw arrays JSON failed: ${error?.message || error}`);
+}
