@@ -6,6 +6,7 @@ import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } 
 import { consolidateMicrosoftSearch, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
 import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../games-api/src/lib/epic-store.js';
 import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
+import { calendarInternals } from '../games-api/src/lib/calendar.js';
 const require = createRequire(import.meta.url);
 const subscriptionHelpers = require('../enrich-subscriptions.js');
 
@@ -225,6 +226,11 @@ assert.equal(platformGroup('Xbox Series X|S'), 'Xbox Series');
 assert.equal(platformGroup('XONE'), 'Xbox One');
 assert.equal(platformGroup('Xbox 360'), 'Xbox 360');
 assert.equal(platformGroup('PC (Microsoft Windows)'), 'PC');
+assert.equal(calendarInternals.platformGroup('PlayStation 4'), 'PS4');
+assert.equal(calendarInternals.platformGroup('Xbox Series X|S'), 'Xbox Series');
+assert.equal(calendarInternals.platformGroup('Xbox One'), 'Xbox One');
+assert.equal(calendarInternals.platformGroup('Xbox 360'), 'Xbox 360');
+assert.equal(calendarInternals.platformGroup('PSVR2'), 'VR');
 
 const dataset = normalizePayload({
   version:5,
