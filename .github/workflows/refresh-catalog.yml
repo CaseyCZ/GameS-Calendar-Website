@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: game-catalog-writer
@@ -65,8 +66,10 @@ jobs:
         run: npm run audit-data
 
       - name: Commit refreshed catalog
+        id: catalog-commit
         if: github.ref == 'refs/heads/main'
         run: |
+          echo "changed=false" >> "$GITHUB_OUTPUT"
           if [[ -z "$(git status --porcelain -- games.json games-index.json)" ]]; then
             echo "catalog files are unchanged"
             exit 0
@@ -77,3 +80,11 @@ jobs:
           git commit -m "chore: refresh live game catalog"
           git pull --rebase origin main
           git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger server deploy for refreshed catalog
+        if: steps.catalog-commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-server.yml --ref main
