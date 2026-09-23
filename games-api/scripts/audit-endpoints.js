@@ -76,6 +76,25 @@ try {
 }
 
 try {
+  const catalog = await providers.playstation.psPlusCatalog({ force: true, size: 40 });
+  const sample = catalog[0] || null;
+  const item = sample ? await providers.playstation.product(sample.id, { force: true }) : null;
+  const ok = Boolean(sample && item?.subscriptions?.psPlus === true);
+  console.log(`${ok ? '✅' : '❌'} playstation PS Plus membership integration`, {
+    catalogCount: catalog.length,
+    sample: sample ? { id: sample.id, title: sample.title } : null,
+    productId: item?.providerId || null,
+    productTitle: item?.title || null,
+    psPlus: Boolean(item?.subscriptions?.psPlus),
+    psPlusSource: item?.rawHints?.psPlusSource || null
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ playstation PS Plus membership integration: ${error?.message || error}`);
+}
+
+try {
   const item = await providers.steam.product('292030', { force: true });
   const current = Number(item?.price?.current);
   const ok = Boolean(
