@@ -123,6 +123,25 @@ assert.equal(epicIsGameOffer(epicTownfall), true);
 assert.equal(epicPriceOf(epicTownfall)?.current, 49.99);
 assert.equal(epicPriceOf(epicTownfall)?.currency, 'USD');
 assert.equal(epicStoreUrlOf(epicTownfall), 'https://store.epicgames.com/en-US/p/silent-hill-townfall-0cb037');
+
+const epicComingSoon = {
+  ...epicTownfall,
+  title:'ArcheAge Chronicles',
+  prePurchase:null,
+  effectiveDate:'2099-12-31T00:00:00.000Z',
+  releaseDate:'2099-12-31T00:00:00.000Z',
+  pcReleaseDate:'2099-12-31T00:00:00.000Z',
+  price:{ totalPrice:{
+    discountPrice:429000,
+    originalPrice:429000,
+    currencyCode:'CZK',
+    currencyInfo:{ decimals:2 },
+    fmtPrice:{ discountPrice:'CZK 4,290.00', originalPrice:'CZK 4,290.00' }
+  }}
+};
+assert.equal(epicPriceOf(epicComingSoon), null);
+assert.equal(epicPriceOf({ ...epicComingSoon, prePurchase:true })?.current, 4290);
+assert.equal(epicPriceOf({ ...epicComingSoon, prePurchase:true })?.preorder, true);
 assert.equal(epicIsGameOffer({ categories:[{ path:'addons' }] }), false);
 
 const xboxBase = { provider:'microsoft', providerId:'BASE', title:'Gears of War: E-Day', price:null, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day/BASE', subscriptions:{ gamePass:true }, rawHints:{} };
@@ -362,6 +381,9 @@ const epicProviderSource = readFileSync(new URL('../games-api/src/providers/epic
 assert.equal(epicProviderSource.includes('PersistedQueryNotFound'), true);
 assert.equal(epicProviderSource.includes('query: SEARCH_QUERY'), true);
 assert.equal(epicProviderSource.includes("method: 'POST'"), true);
+assert.equal(epicProviderSource.includes('prePurchase'), true);
+assert.equal(epicProviderSource.includes('epic:search:v2'), true);
+assert.equal(epicProviderSource.includes('priceSuppressed'), true);
 
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);

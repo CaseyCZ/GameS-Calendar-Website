@@ -43,6 +43,7 @@ query searchStoreQuery(
         effectiveDate
         releaseDate
         pcReleaseDate
+        prePurchase
         offerType
         developerDisplayName
         publisherDisplayName
@@ -110,7 +111,11 @@ function normalizeEpic(item = {}) {
       namespace: item.namespace || '',
       offerType: item.offerType || '',
       categories: (item.categories || []).map(entry => entry?.path).filter(Boolean),
-      effectiveDate: item.effectiveDate || ''
+      effectiveDate: item.effectiveDate || '',
+      releaseDate: item.releaseDate || '',
+      pcReleaseDate: item.pcReleaseDate || '',
+      prePurchase: item.prePurchase ?? null,
+      priceSuppressed: Boolean(item?.price?.totalPrice && !price)
     }
   });
 }
@@ -120,7 +125,7 @@ async function searchStore(query, { force = false, limit = 8 } = {}) {
   if (!q) return [];
   const take = Math.max(1, Math.min(20, Number(limit) || 8));
   const requestCount = Math.min(40, Math.max(12, take * 4));
-  const key = `epic:search:${config.epicCountry}:${config.epicLocale}:${q.toLowerCase()}:${requestCount}`;
+  const key = `epic:search:v2:${config.epicCountry}:${config.epicLocale}:${q.toLowerCase()}:${requestCount}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, take);
@@ -195,7 +200,7 @@ export const epicProvider = {
     const sample = hits.find(item => /silent hill\s*:?\s*townfall/i.test(item?.title || '')) || hits[0] || null;
     const current = Number(sample?.price?.current);
     return {
-      ok: Boolean(sample?.title && (sample?.price?.isFree === true || (Number.isFinite(current) && current > 0))),
+      ok: Boolean(sample?.title && sample?.storeUrl),
       sample: sample?.title || null,
       samplePrice: sample?.price || null,
       storeUrl: sample?.storeUrl || null,

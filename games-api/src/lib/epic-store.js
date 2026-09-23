@@ -1,4 +1,22 @@
-export function epicPriceOf(item = {}) {
+function epicTime(value) {
+  const parsed = Date.parse(String(value || '').trim());
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function epicOfferAllowsPrice(item = {}, now = Date.now()) {
+  const prePurchase = item?.prePurchase === true || /^true$/i.test(String(item?.prePurchase || ''));
+  if (prePurchase) return true;
+
+  const futureGate = [item?.effectiveDate, item?.pcReleaseDate, item?.releaseDate]
+    .map(epicTime)
+    .filter(Number.isFinite)
+    .some(timestamp => timestamp > now);
+
+  return !futureGate;
+}
+
+export function epicPriceOf(item = {}, { now = Date.now() } = {}) {
+  if (!epicOfferAllowsPrice(item, now)) return null;
   const total = item?.price?.totalPrice || {};
   const decimals = Number(total?.currencyInfo?.decimals);
   const divisor = 10 ** (Number.isFinite(decimals) ? decimals : 2);
@@ -31,7 +49,8 @@ export function epicPriceOf(item = {}) {
     currentText: currentText || null,
     regularText: regularText || null,
     discountPercent,
-    isFree
+    isFree,
+    preorder: item?.prePurchase === true || /^true$/i.test(String(item?.prePurchase || ''))
   };
 }
 

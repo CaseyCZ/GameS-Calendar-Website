@@ -24,6 +24,39 @@ if (failed) {
   console.log('\nAll provider health checks passed.');
 }
 
+try {
+  const query = 'ArcheAge Chronicles';
+  const item = (await providers.epic.search(query, { force: true, limit: 5 }))
+    .find(candidate => storefrontTitleScore(query, candidate?.title) >= 0.95) || null;
+  const releaseAt = Date.parse(String(
+    item?.rawHints?.pcReleaseDate
+    || item?.rawHints?.releaseDate
+    || item?.rawHints?.effectiveDate
+    || ''
+  ));
+  const prePurchase = item?.rawHints?.prePurchase === true;
+  const futureWithoutPreorder = !prePurchase && Number.isFinite(releaseAt) && releaseAt > Date.now();
+  const ok = Boolean(
+    item
+    && /^https:\/\/store\.epicgames\.com\//i.test(String(item?.storeUrl || ''))
+    && (!futureWithoutPreorder || item?.price == null)
+  );
+  console.log(`${ok ? '✅' : '❌'} epic coming-soon price suppression probe`, {
+    title: item?.title || null,
+    price: item?.price || null,
+    prePurchase,
+    effectiveDate: item?.rawHints?.effectiveDate || null,
+    releaseDate: item?.rawHints?.releaseDate || null,
+    pcReleaseDate: item?.rawHints?.pcReleaseDate || null,
+    priceSuppressed: Boolean(item?.rawHints?.priceSuppressed),
+    storeUrl: item?.storeUrl || null
+  });
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ epic coming-soon price suppression probe: ${error?.message || error}`);
+}
+
 
 try {
   const payload = await providers.playstation.catalog('psPlus', { force: true, size: 40, offset: 0 });
