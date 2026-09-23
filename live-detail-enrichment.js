@@ -707,7 +707,7 @@ import { fetchApi } from './js/api.js';
     const providers = result.providers || {};
     const merged = result.merged || {};
     const checkedProviders = Array.isArray(result.matchedProviders) ? result.matchedProviders : Object.keys(providers);
-    const currentSubscriptions = { ...(merged?.subscriptions || {}) };
+    const currentSubscriptions = {};
     for (const provider of Object.values(providers || {})) Object.assign(currentSubscriptions, provider?.subscriptions || {});
     const verifiedAt = new Date().toISOString();
     window.dispatchEvent(new CustomEvent('games:live-enriched', {

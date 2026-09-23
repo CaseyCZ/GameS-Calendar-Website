@@ -304,7 +304,9 @@ assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
-assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
+assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), true);
+const enrichCurrentSource = liveEnrichmentSource.slice(liveEnrichmentSource.indexOf('async function enrichCurrent()'));
+assert.equal(enrichCurrentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
 
 const serverSource = readFileSync(new URL('../games-api/src/server.js', import.meta.url), 'utf8');
 assert.equal(serverSource.includes("change.field === 'prices'"), true);

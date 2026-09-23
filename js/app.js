@@ -1202,7 +1202,7 @@ function bindEvents() {
       || null;
     const subscriptions = { ...(previousEntry?.subscriptions || {}) };
     for (const [key, provider] of Object.entries(providerForSubscription)) {
-      if (!checkedProviders.size || checkedProviders.has(provider)) subscriptions[key] = Boolean(incoming[key]);
+      if (checkedProviders.has(provider)) subscriptions[key] = Boolean(incoming[key]);
     }
     const verifiedAt = detail.verifiedAt || new Date().toISOString();
     const updatedAt = Date.now();
