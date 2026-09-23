@@ -433,27 +433,36 @@ async function providerHealth(provider) {
   }
 }
 
-async function bestSearchHit(provider, title, { force = false } = {}) {
-  if (typeof provider.search !== 'function') return null;
+async function bestSearchHitDetailed(provider, title, { force = false } = {}) {
+  if (typeof provider.search !== 'function') return { hit: null, status: 'unsupported' };
   const queries = titleQueryVariants(title);
   const results = await Promise.allSettled(
     queries.map(query => provider.search(query, { force, limit: 5 }))
   );
+  const fulfilled = results.filter(result => result.status === 'fulfilled');
+  if (!fulfilled.length && results.some(result => result.status === 'rejected')) {
+    return { hit: null, status: 'error' };
+  }
+
   const unique = new Map();
-  for (const result of results) {
-    if (result.status !== 'fulfilled') continue;
+  for (const result of fulfilled) {
     for (const item of result.value || []) {
       const key = `${item?.provider || provider.name}:${item?.providerId || normalizeTitle(item?.title || '')}`;
       if (!unique.has(key)) unique.set(key, item);
     }
   }
-  return [...unique.values()]
+  const hit = [...unique.values()]
     .map(item => ({
       item,
       score: titleScore(title, item?.title),
       storefrontScore: storefrontTitleScore(title, item?.title)
     }))
     .sort((a, b) => b.storefrontScore - a.storefrontScore || b.score - a.score)[0] || null;
+  return { hit, status: hit ? 'candidate' : 'not_found' };
+}
+
+async function bestSearchHit(provider, title, { force = false } = {}) {
+  return (await bestSearchHitDetailed(provider, title, { force })).hit;
 }
 
 function addFound(found, item) {
@@ -542,6 +551,11 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
   const title = String(game.title || game.name || '').trim();
   const found = [];
   const wanted = selectedNames(providerNames);
+  const providerStatus = Object.fromEntries(
+    [...wanted]
+      .filter(name => name !== 'igdb')
+      .map(name => [name, { status: 'unknown' }])
+  );
 
   const direct = [
     wanted.has('steam') && game.steamId && providers.steam?.product(String(game.steamId), { force }),
@@ -569,12 +583,39 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
       .filter(provider => provider.name !== 'igdb')
       .filter(provider => typeof provider.search === 'function')
       .filter(provider => !found.some(item => item.provider === provider.name));
-    const searched = await Promise.allSettled(selected.map(provider => bestSearchHit(provider, title, { force })));
-    for (const result of searched) {
-      if (result.status !== 'fulfilled' || !result.value?.item) continue;
-      const threshold = result.value.item.provider === 'nintendo' ? 0.55 : 0.48;
-      if (result.value.storefrontScore >= threshold) addFound(found, result.value.item);
-    }
+    const searched = await Promise.allSettled(
+      selected.map(async provider => ({
+        provider: provider.name,
+        detail: await bestSearchHitDetailed(provider, title, { force })
+      }))
+    );
+    searched.forEach((result, index) => {
+      const providerName = selected[index]?.name || 'unknown';
+      if (result.status !== 'fulfilled') {
+        if (providerStatus[providerName]) providerStatus[providerName] = { status: 'error' };
+        return;
+      }
+      const detail = result.value.detail;
+      if (detail?.status === 'error') {
+        if (providerStatus[providerName]) providerStatus[providerName] = { status: 'error' };
+        return;
+      }
+      if (!detail?.hit?.item) {
+        if (providerStatus[providerName]) providerStatus[providerName] = { status: 'not_found' };
+        return;
+      }
+      const threshold = detail.hit.item.provider === 'nintendo' ? 0.55 : 0.48;
+      if (detail.hit.storefrontScore >= threshold) {
+        addFound(found, detail.hit.item);
+        if (providerStatus[providerName]) providerStatus[providerName] = { status: 'found' };
+      } else if (providerStatus[providerName]) {
+        providerStatus[providerName] = { status: 'not_found' };
+      }
+    });
+  }
+
+  for (const item of found) {
+    if (providerStatus[item?.provider]) providerStatus[item.provider] = { status: 'found' };
   }
 
   const merged = mergeGames(found);
@@ -622,6 +663,7 @@ async function enrichOne(input, { force = false, providerNames } = {}) {
       externalIds: igdbIdentity.externalIds || igdbIdentity.rawHints?.externalIds || {}
     } : null,
     matchedProviders: found.map(item => item.provider),
+    providerStatus,
     lastKnownProviders,
     merged: responseMerged,
     changes,

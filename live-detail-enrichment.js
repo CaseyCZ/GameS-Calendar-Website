@@ -678,6 +678,40 @@ import { fetchApi } from './js/api.js';
     return link;
   }
 
+  function isFallbackStoreLink(link, kind) {
+    const href = safeUrl(link?.href);
+    if (!href) return false;
+    try {
+      const url = new URL(href);
+      const host = url.hostname.toLowerCase();
+      const path = url.pathname.toLowerCase();
+      if (kind === 'steam') return host === 'store.steampowered.com' && path.startsWith('/search');
+      if (kind === 'epic') return host === 'store.epicgames.com' && path.includes('/browse');
+      if (kind === 'xbox') return host.endsWith('xbox.com') && path.toLowerCase().includes('/search/results');
+      if (kind === 'playstation') return host === 'store.playstation.com' && path.includes('/search/');
+      if (kind === 'nintendo') return host.endsWith('nintendo.com') && path.includes('/search/');
+    } catch {}
+    return false;
+  }
+
+  function applyStoreAvailability(providerStatus = {}) {
+    const providerByKind = {
+      steam: 'steam',
+      epic: 'epic',
+      xbox: 'microsoft',
+      playstation: 'playstation',
+      nintendo: 'nintendo'
+    };
+    for (const [kind, provider] of Object.entries(providerByKind)) {
+      if (providerStatus?.[provider]?.status !== 'not_found') continue;
+      content.querySelectorAll(`.store-link--${kind}`).forEach(link => {
+        if (isFallbackStoreLink(link, kind)) link.remove();
+      });
+    }
+    const grid = content.querySelector('.detail-store-grid');
+    if (grid && !grid.children.length) grid.closest('.detail-link-section--stores')?.remove();
+  }
+
   function improveStoreLinks(providers) {
     const stores = {
       steam: { provider: providers?.steam, label: 'Steam' },
@@ -743,6 +777,7 @@ import { fetchApi } from './js/api.js';
       }
     }));
     addSubscriptions(merged, providers);
+    applyStoreAvailability(result.providerStatus || {});
     window.dispatchEvent(new CustomEvent('games:subscription-updated', {
       detail: {
         gameId: currentGameId(),
