@@ -321,6 +321,8 @@ assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'pr
 assert.equal(dbSource.includes('lastMeaningfulHistoryValue'), true);
 assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
 assert.equal(dbSource.includes('storeUrls'), true);
+assert.equal(dbSource.includes('suppressUnconfirmedPriceRemoval'), true);
+assert.equal(dbSource.includes('.map(stableHistoryItem)'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('card-service-badge'), true);

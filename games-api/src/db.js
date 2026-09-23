@@ -298,6 +298,21 @@ export function gameSnapshot(gameKey) {
   catch { return null; }
 }
 
+function suppressUnconfirmedPriceRemoval(oldValue, newValue) {
+  const oldPrices = normalizeHistoryValue('prices', oldValue) || {};
+  const newPrices = normalizeHistoryValue('prices', newValue) || {};
+  return {
+    oldValue: oldPrices,
+    newValue: { ...oldPrices, ...newPrices }
+  };
+}
+
+function stableHistoryItem(item) {
+  if (item?.field !== 'prices') return item;
+  const stable = suppressUnconfirmedPriceRemoval(item.oldValue, item.newValue);
+  return { ...item, ...stable };
+}
+
 export function historyForGame(gameKey, limit = 100) {
   const take = Math.max(1, Math.min(500, Number(limit) || 100));
   const rows = db.prepare(`
@@ -308,7 +323,7 @@ export function historyForGame(gameKey, limit = 100) {
   return rows.map(row => {
     const oldValue = safeJson(row.old_value, row.old_value);
     const newValue = safeJson(row.new_value, row.new_value);
-    return {
+    return stableHistoryItem({
       id: Number(row.id),
       gameKey: row.game_key,
       field: row.field,
@@ -316,7 +331,7 @@ export function historyForGame(gameKey, limit = 100) {
       newValue,
       source: row.source,
       changedAt: new Date(row.changed_at).toISOString()
-    };
+    });
   }).filter(item => !historyValuesEqual(item.field, item.oldValue, item.newValue)).slice(0, take);
 }
 
@@ -438,7 +453,9 @@ export function listRecentChanges({ limit = 100, since = 0, type = 'all', gameKe
     WHERE ${clauses.join(' AND ')}
     ORDER BY h.changed_at DESC,h.id DESC LIMIT ?
   `).all(...params, take);
-  return rows.map(hydrateChange);
+  return rows.map(hydrateChange)
+    .map(stableHistoryItem)
+    .filter(item => !historyValuesEqual(item.field, item.oldValue, item.newValue));
 }
 
 export function latestChangeId() {
