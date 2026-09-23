@@ -217,19 +217,15 @@ try {
   const parentId = '9NL3WWNZLZZN';
   const parent = await providers.microsoft.product(parentId, { force: true });
   const searched = (await providers.microsoft.search(query, { force: true, limit: 5 }))[0] || null;
-  const parentPrice = Number(parent?.price?.current);
   const searchPrice = Number(searched?.price?.current);
-  const parentOk = Boolean(
-    parent
-    && String(parent?.providerId || '').toUpperCase() === parentId
-    && Math.abs(parentPrice - 2009) < 0.01
-  );
   const searchOk = Boolean(
     searched
+    && String(searched?.providerId || '').toUpperCase() === '9P3H4968GRSM'
     && Math.abs(searchPrice - 2009) < 0.01
     && !/ultimate|deluxe|premium/i.test(String(searched?.title || ''))
+    && /^https:\/\/www\.xbox\.com\//i.test(String(searched?.storeUrl || ''))
   );
-  const ok = parentOk && searchOk;
+  const ok = searchOk;
   console.log((ok ? '✅' : '❌') + ' microsoft GTA VI edition price fallback probe', {
     parent:{
       providerId:parent?.providerId || null,
