@@ -689,13 +689,23 @@ import { fetchApi } from './js/api.js';
     for (const [kind, store] of Object.entries(stores)) {
       const url = safeUrl(store.provider?.storeUrl);
       if (!url) continue;
-      const link = ensureStoreLink(kind, store.label);
-      link.href = url;
-      link.dataset.exactStoreLink = 'true';
+      const firstLink = ensureStoreLink(kind, store.label);
+      const links = kind === 'xbox'
+        ? [...content.querySelectorAll('.store-link--xbox')]
+        : [firstLink];
       const price = formattedPrice(store.provider);
-      const label = link.querySelector('.store-link__label');
-      if (label) {
-        const parts = [store.label];
+
+      for (const link of links) {
+        link.href = url;
+        link.dataset.exactStoreLink = 'true';
+        const label = link.querySelector('.store-link__label');
+        if (!label) continue;
+
+        if (!link.dataset.liveBaseLabel) {
+          const current = clean(label.textContent);
+          link.dataset.liveBaseLabel = current.split(' · ')[0] || store.label;
+        }
+        const parts = [link.dataset.liveBaseLabel || store.label];
         if (price) parts.push(price);
         if (kind === 'xbox' && store.provider?.subscriptions?.gamePass) parts.push('Game Pass');
         label.textContent = parts.join(' · ');

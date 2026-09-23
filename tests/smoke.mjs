@@ -316,6 +316,8 @@ assert.equal(liveEnrichmentSource.includes('screenObserver.disconnect()'), true)
 assert.equal(liveEnrichmentSource.includes('posl. známá'), true);
 assert.equal(liveEnrichmentSource.includes('wrap.replaceChildren()'), true);
 assert.equal(liveEnrichmentSource.includes("label: 'Microsoft / Xbox Store'"), true);
+assert.equal(liveEnrichmentSource.includes("querySelectorAll('.store-link--xbox')"), true);
+assert.equal(liveEnrichmentSource.includes('liveBaseLabel'), true);
 assert.equal(liveEnrichmentSource.includes('const displayProviders = stored?.providers || providers'), false);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
