@@ -66,3 +66,59 @@ try {
   console.error(`❌ microsoft E-Day fallback safety probe: ${error?.message || error}`);
 }
 
+
+
+async function subscriptionCatalogDiagnostic() {
+  console.log('\n--- subscription catalog diagnostic ---');
+
+  for (const kind of ['console','pc','cloud']) {
+    try {
+      const items = await providers.microsoft.gamePassCatalog(kind, { force:true, limit:5000 });
+      console.log(`ℹ️ Game Pass ${kind}: ${items.length} items`, items.slice(0,3).map(item => ({
+        id:item?.providerId || null,
+        title:item?.title || null
+      })));
+    } catch (error) {
+      console.log(`ℹ️ Game Pass ${kind} diagnostic failed: ${error?.message || error}`);
+    }
+  }
+
+  try {
+    const items = await providers.geforceNow.list({ force:true, maxPages:30 });
+    console.log(`ℹ️ GeForce NOW catalog: ${items.length} items`, items.slice(0,3).map(item => ({
+      id:item?.providerId || null,
+      title:item?.title || null
+    })));
+  } catch (error) {
+    console.log(`ℹ️ GeForce NOW diagnostic failed: ${error?.message || error}`);
+  }
+
+  for (const tier of ['TIER_10','TIER_20','TIER_30']) {
+    try {
+      const payload = await providers.playstation.psPlus(tier, { force:true });
+      const keys = payload && typeof payload === 'object' ? Object.keys(payload) : [];
+      const samples = [];
+      const seen = new Set();
+      const walk = (value, depth = 0) => {
+        if (!value || typeof value !== 'object' || depth > 8 || samples.length >= 8) return;
+        if (Array.isArray(value)) {
+          for (const item of value) walk(item, depth + 1);
+          return;
+        }
+        const title = value.name || value.title || value.productName || value.conceptName || value.displayName || '';
+        const id = value.id || value.productId || value.conceptId || value.npTitleId || '';
+        if (title && !seen.has(String(title))) {
+          seen.add(String(title));
+          samples.push({ title:String(title), id:String(id || ''), keys:Object.keys(value).slice(0,12) });
+        }
+        for (const child of Object.values(value)) walk(child, depth + 1);
+      };
+      walk(payload);
+      console.log(`ℹ️ PS Plus ${tier}`, { topKeys:keys.slice(0,20), samples });
+    } catch (error) {
+      console.log(`ℹ️ PS Plus ${tier} diagnostic failed: ${error?.message || error}`);
+    }
+  }
+}
+
+await subscriptionCatalogDiagnostic();
