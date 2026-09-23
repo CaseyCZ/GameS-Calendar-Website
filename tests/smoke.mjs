@@ -321,7 +321,7 @@ assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
 assert.equal(liveEnrichmentSource.includes('function providerSignature'), true);
 assert.equal(liveEnrichmentSource.includes('screenCache.get(screenKey({'), true);
-assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), true);
+assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
 const enrichCurrentSource = liveEnrichmentSource.slice(liveEnrichmentSource.indexOf('async function enrichCurrent()'));
 assert.equal(enrichCurrentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
 
