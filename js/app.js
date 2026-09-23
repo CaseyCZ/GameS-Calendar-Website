@@ -1104,6 +1104,7 @@ async function toggleNotifications() {
   localStorage.setItem(NOTIFY_KEY, '1');
   try {
     await syncPushSubscription();
+    maybeNotifyUpcoming().catch(error => console.warn('Upcoming notification:', error));
     toast('Upozornění na pozadí jsou zapnutá.');
   } catch (error) {
     localStorage.setItem(NOTIFY_KEY, '0');
@@ -1435,7 +1436,10 @@ async function init() {
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     navigator.serviceWorker.register('./sw.js').then(async () => {
       renderNotificationButton();
-      if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') await syncPushSubscription();
+      if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') {
+        await syncPushSubscription();
+        await maybeNotifyUpcoming();
+      }
     }).catch(error => console.warn('Service worker:', error));
   }
 }
