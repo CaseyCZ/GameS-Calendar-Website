@@ -1,6 +1,6 @@
 import { saveHealth } from '../src/db.js';
 import { providers } from '../src/providers/index.js';
-import { titleScore } from '../src/lib/normalize.js';
+import { storefrontTitleScore, titleScore } from '../src/lib/normalize.js';
 
 let failed = 0;
 for (const provider of Object.values(providers)) {
@@ -66,3 +66,37 @@ try {
   console.error(`❌ microsoft E-Day fallback safety probe: ${error?.message || error}`);
 }
 
+
+
+try {
+  const query = 'EA Sports FC 27';
+  const checks = [];
+  for (const name of ['playstation','nintendo','steam']) {
+    const provider = providers[name];
+    if (!provider?.search) continue;
+    try {
+      const items = await provider.search(query, { force:true, limit:5 });
+      const item = items?.[0] || null;
+      const title = String(item?.title || '');
+      const score = item ? storefrontTitleScore(query, title) : 0;
+      const wrongEdition = /\b(ultimate|deluxe|premium|upgrade|vault)\b/i.test(title);
+      const price = item?.price || null;
+      checks.push({ provider:name, title, score, wrongEdition, price, storeUrl:item?.storeUrl || null });
+    } catch (error) {
+      checks.push({ provider:name, error:error?.message || String(error) });
+    }
+  }
+
+  const failedChecks = checks.filter(item =>
+    item.error
+    || !item.title
+    || item.score < 0.55
+    || item.wrongEdition
+  );
+  const ok = failedChecks.length === 0;
+  console.log(`${ok ? '✅' : '❌'} FC 27 storefront edition probe`, checks);
+  if (!ok) failed += 1;
+} catch (error) {
+  failed += 1;
+  console.error(`❌ FC 27 storefront edition probe: ${error?.message || error}`);
+}
