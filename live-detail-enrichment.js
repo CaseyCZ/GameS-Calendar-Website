@@ -416,12 +416,15 @@ import { fetchApi } from './js/api.js';
   function formattedPrice(provider) {
     const price = provider?.price;
     if (!price) return '';
+    const value = Number(price.current);
+    if (price.isFree === true) return 'Zdarma';
+    if (!clean(price.currentText) && (!Number.isFinite(value) || value <= 0)) return '';
+
     const text = clean(price.currentText);
     let current = text;
     if (!current) {
-      const value = Number(price.current);
       const currency = clean(price.currency).toUpperCase();
-      if (Number.isFinite(value) && currency) {
+      if (Number.isFinite(value) && value > 0 && currency) {
         try {
           current = new Intl.NumberFormat('cs-CZ', {
             style: 'currency',
@@ -437,11 +440,12 @@ import { fetchApi } from './js/api.js';
 
     let discount = Number(price.discountPercent || 0);
     const regular = Number(price.regular);
-    const value = Number(price.current);
-    if (!discount && Number.isFinite(regular) && regular > 0 && Number.isFinite(value) && value < regular) {
+    if (!discount && Number.isFinite(regular) && regular > 0 && Number.isFinite(value) && value > 0 && value < regular) {
       discount = Math.round((1 - value / regular) * 100);
     }
-    return discount > 0 ? `${current} · −${Math.round(discount)} %` : current;
+    const prefix = price.from ? 'od ' : '';
+    const priced = `${prefix}${current}`;
+    return discount > 0 ? `${priced} · −${Math.round(discount)} %` : priced;
   }
 
   function improveStoreLinks(providers) {
@@ -460,7 +464,12 @@ import { fetchApi } from './js/api.js';
       link.dataset.exactStoreLink = 'true';
       const price = formattedPrice(store.provider);
       const label = link.querySelector('.store-link__label');
-      if (label) label.textContent = price ? `${store.label} · ${price}` : store.label;
+      if (label) {
+        const parts = [store.label];
+        if (price) parts.push(price);
+        if (kind === 'xbox' && store.provider?.subscriptions?.gamePass) parts.push('Game Pass');
+        label.textContent = parts.join(' · ');
+      }
     }
   }
 

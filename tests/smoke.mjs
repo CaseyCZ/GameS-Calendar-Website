@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
 import { normalizeTitle, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
+import { consolidateMicrosoftSearch, microsoftPriceOf, normalizeMicrosoftProduct } from '../games-api/src/providers/microsoft.js';
 import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
 
 assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
@@ -10,6 +11,43 @@ assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
 assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
 assert.equal(titleScore('Example II', 'Example 2'), 1);
 assert.ok(titleQueryVariants('Example II').includes('example 2'));
+
+const microsoftZeroOnly = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Base Game' }] }, Availabilities:[{
+    Actions:['Details'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:0, MSRP:0 } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftZeroOnly), null);
+
+const microsoftPaid = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Pre-Order' }] }, Availabilities:[{
+    Actions:['Purchase'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:1799, MSRP:1799 } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftPaid)?.current, 1799);
+assert.equal(microsoftPriceOf(microsoftPaid)?.preorder, true);
+
+const xboxBase = { provider:'microsoft', providerId:'BASE', title:'Gears of War: E-Day', price:null, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day/BASE', subscriptions:{ gamePass:true }, rawHints:{} };
+const xboxStandard = { provider:'microsoft', providerId:'STD', title:'Gears of War: E-Day Pre-Order', price:{ current:1799, regular:1799, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-pre-order/STD', subscriptions:{}, rawHints:{} };
+const xboxPremium = { provider:'microsoft', providerId:'PREM', title:'Gears of War: E-Day Premium Edition Pre-Order', price:{ current:2599, regular:2599, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-pre-order/PREM', subscriptions:{}, rawHints:{} };
+const xboxConsolidated = consolidateMicrosoftSearch('Gears of War: E-Day', [xboxBase, xboxStandard, xboxPremium])[0];
+assert.equal(xboxConsolidated.providerId, 'BASE');
+assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
+assert.equal(xboxConsolidated.price.current, 1799);
+assert.equal(xboxConsolidated.price.from, true);
+assert.equal(xboxConsolidated.subscriptions.gamePass, true);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
+
+const normalizedXbox = normalizeMicrosoftProduct({
+  ProductId:'TEST',
+  LocalizedProperties:[{ ProductTitle:'Test Xbox Game' }],
+  Properties:{},
+  MarketProperties:[{}],
+  DisplaySkuAvailabilities:[]
+}, [], { storeUrl:'https://www.xbox.com/cs-CZ/games/store/test-xbox-game/TEST' });
+assert.equal(normalizedXbox.storeUrl.includes('xbox.com'), true);
 
 assert.equal(normalizeSearch('Pokémon'), 'pokemon');
 assert.equal(matchesSearch({ name:'Call of Duty: Modern Warfare', aliases:[], developers:[], publishers:[], series:[] }, 'call warfare'), true);
