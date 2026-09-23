@@ -94,6 +94,13 @@ function writeLiveProviders(cache) {
 }
 
 const liveProviders = readLiveProviders();
+window.__gamesLiveProviderCache = (gameIdValue, igdbIdValue = '') => {
+  const igdbKey = String(igdbIdValue || '').trim();
+  const idKey = String(gameIdValue || '').trim();
+  return (igdbKey && liveProviders[`igdb:${igdbKey}`])
+    || (idKey && liveProviders[`id:${idKey}`])
+    || null;
+};
 
 function subscriptionKeys(game = {}) {
   const keys = [];
@@ -1053,12 +1060,15 @@ function bindEvents() {
     const detail = event.detail || {};
     const id = String(detail.gameId || '').trim();
     if (!id) return;
-    liveProviders[`id:${id}`] = {
+    const entry = {
       providers: detail.providers || {},
       merged: detail.merged || {},
       verifiedAt: detail.verifiedAt || new Date().toISOString(),
       updatedAt: Date.now()
     };
+    liveProviders[`id:${id}`] = entry;
+    const igdbId = String(detail.igdbId || '').trim();
+    if (igdbId) liveProviders[`igdb:${igdbId}`] = entry;
     writeLiveProviders(liveProviders);
   });
   window.addEventListener('games:subscription-updated', event => {
