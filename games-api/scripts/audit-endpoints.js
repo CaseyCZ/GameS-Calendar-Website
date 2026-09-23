@@ -95,18 +95,21 @@ try {
 }
 
 try {
-  const productId = 'UP9000-PPSA26344_00-GHOST2CE00000000';
-  const item = await providers.playstation.product(productId, { force: true });
+  const expectedProductId = 'UP9000-PPSA26344_00-GHOST2CE00000000';
+  const item = await providers.playstation.concept('10003923', {
+    force: true,
+    preferredTitle: 'Ghost of Yōtei Complete Edition'
+  });
   const current = Number(item?.price?.current);
+  const priceProductId = String(item?.rawHints?.priceProductId || '').toUpperCase();
   const ok = Boolean(
     item
-    && String(item?.providerId || '').toUpperCase() === productId
-    && /ghost\s+of\s+y[oō]tei/i.test(String(item?.title || ''))
+    && priceProductId === expectedProductId
     && Number.isFinite(current)
-    && current > 0
+    && Math.abs(current - 1899) < 0.01
   );
-  console.log(`${ok ? '✅' : '❌'} playstation Ghost of Yotei Complete Edition price probe`, {
-    providerId: item?.providerId || null,
+  console.log(`${ok ? '✅' : '❌'} playstation Ghost of Yotei Complete Edition concept price probe`, {
+    conceptId: item?.providerId || null,
     title: item?.title || null,
     price: item?.price || null,
     priceProductId: item?.rawHints?.priceProductId || null
@@ -114,7 +117,7 @@ try {
   if (!ok) failed += 1;
 } catch (error) {
   failed += 1;
-  console.error(`❌ playstation Ghost of Yotei Complete Edition price probe: ${error?.message || error}`);
+  console.error(`❌ playstation Ghost of Yotei Complete Edition concept price probe: ${error?.message || error}`);
 }
 
 try {

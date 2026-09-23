@@ -151,7 +151,7 @@ function collectPriceCandidates(root) {
       typeof priceNode.regularPrice === 'number' ? priceNode.regularPrice : null
     ].find(value => typeof value === 'number' && Number.isFinite(value));
     const currentRaw = [
-      priceNode.discountedPriceValue, priceNode.salePriceValue,
+      priceNode.discountedPriceValue, priceNode.discountedValue, priceNode.salePriceValue,
       typeof priceNode.discountedPrice === 'number' ? priceNode.discountedPrice : null,
       typeof priceNode.salePrice === 'number' ? priceNode.salePrice : null
     ].find(value => typeof value === 'number' && Number.isFinite(value)) ?? regularRaw;
@@ -176,22 +176,31 @@ function collectPriceCandidates(root) {
   return [...unique.values()];
 }
 
-function selectPriceCandidate(root, providerId = '', { preferBase = false } = {}) {
+function selectPriceCandidate(root, providerId = '', { preferBase = false, preferredTitle = '' } = {}) {
   const items = collectPriceCandidates(root);
   if (!items.length) return null;
   const requested = String(providerId || '').toUpperCase();
+  const wantedTitle = cleanText(preferredTitle);
   const editionText = item => `${item.id} ${item.title}`.toUpperCase();
   const exact = requested
     ? items.find(item => item.id && (String(item.id).toUpperCase() === requested || String(item.id).toUpperCase().startsWith(requested)))
     : null;
-  if (exact && !preferBase) return exact;
+  if (exact && !preferBase && !wantedTitle) return exact;
+
+  if (wantedTitle) {
+    const matched = items
+      .map(item => ({ item, score: storefrontTitleScore(wantedTitle, item.title) }))
+      .filter(entry => entry.score >= 0.55)
+      .sort((a, b) => b.score - a.score || Number(a.item?.current ?? a.item?.regular ?? Infinity) - Number(b.item?.current ?? b.item?.regular ?? Infinity));
+    if (matched[0]?.item) return matched[0].item;
+  }
 
   return [...items].sort((a,b) => {
     const at=editionText(a), bt=editionText(b);
     const aStandard=/STANDARD|BASE/.test(at);
     const bStandard=/STANDARD|BASE/.test(bt);
-    const aPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(at);
-    const bPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT/.test(bt);
+    const aPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT|COMPLETE/.test(at);
+    const bPremium=/ULTIMATE|DELUXE|PREMIUM|GOLD|COLLECTOR|VAULT|COMPLETE/.test(bt);
     if (preferBase && aStandard !== bStandard) return aStandard ? -1 : 1;
     if (preferBase && aPremium !== bPremium) return aPremium ? 1 : -1;
     const ap=Number(a.current ?? a.regular ?? Infinity);
@@ -251,7 +260,7 @@ function collectImages(root) {
   return uniq(values.filter(url => /image|akamai|playstation|sndcdn|sony/i.test(url)));
 }
 
-function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase = false } = {}) {
+function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase = false, preferredTitle = '' } = {}) {
   const title = firstString(payload, ['name', 'title', 'productName', 'conceptName']);
   const description = firstString(payload, ['longDescription', 'description', 'shortDescription']);
   const publisher = firstString(payload, ['publisherName', 'publisher']);
@@ -262,7 +271,7 @@ function normalizePsPayload(providerId, payload, sourceUrl = BASE, { preferBase 
   const ratingText = firstString(payload, ['averageRating', 'starRating']);
   const ratingNumber = firstNumber(payload, ['averageRating', 'starRating']);
   const ratingCount = firstNumber(payload, ['ratingCount', 'starRatingCount', 'totalRatingsCount']);
-  const selectedPrice = selectPriceCandidate(payload, providerId, { preferBase });
+  const selectedPrice = selectPriceCandidate(payload, providerId, { preferBase, preferredTitle });
   const regularText = selectedPrice?.regularText || firstString(payload, ['basePrice', 'formattedBasePrice', 'strikethroughPrice']);
   const currentText = selectedPrice?.currentText || firstString(payload, ['discountedPrice', 'salePrice', 'formattedDiscountedPrice']) || regularText;
   const regularValue = selectedPrice?.regular ?? parsePriceText(regularText) ?? firstNumber(payload, ['basePriceValue', 'basePrice', 'regularPriceValue']);
@@ -314,7 +323,10 @@ export async function concept(conceptId, { force = false, preferredTitle = '' } 
   ]);
   const payloads = requests.filter(result => result.status === 'fulfilled').map(result => result.value);
   if (!payloads.length) throw requests.find(result => result.status === 'rejected')?.reason || new Error('PlayStation concept failed');
-  const normalized = normalizePsPayload(id, { payloads }, BASE, { preferBase: true });
+  const normalized = normalizePsPayload(id, { payloads }, BASE, {
+    preferBase: !cleanText(preferredTitle),
+    preferredTitle
+  });
 
   if (!normalized.price) {
     const pricedProduct = await pricedConceptProduct({ payloads }, cleanText(preferredTitle) || normalized.title, { force });
