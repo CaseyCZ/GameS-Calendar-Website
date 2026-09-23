@@ -8,6 +8,22 @@ import { fetchApi } from './js/api.js';
   window.__gamesLiveDetailEnrichment = true;
 
   const cache = new Map();
+  const CACHE_TTL_MS = 2 * 60 * 1000;
+
+  function cachedPayload(key) {
+    const entry = cache.get(key);
+    if (!entry) return null;
+    if (!entry.fetchedAt || Date.now() - entry.fetchedAt >= CACHE_TTL_MS) {
+      cache.delete(key);
+      return null;
+    }
+    return entry.payload || null;
+  }
+
+  function cachePayload(key, payload) {
+    cache.set(key, { payload, fetchedAt: Date.now() });
+  }
+
   let pendingTitle = '';
   let timer = 0;
 
@@ -551,7 +567,7 @@ import { fetchApi } from './js/api.js';
 
     try {
       const cacheKey = currentEnrichmentKey();
-      let payload = cache.get(cacheKey);
+      let payload = cachedPayload(cacheKey);
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
         const response = await fetchApi('/enrich', {
@@ -563,7 +579,7 @@ import { fetchApi } from './js/api.js';
           })
         });
         payload = await response.json();
-        cache.set(cacheKey, payload);
+        cachePayload(cacheKey, payload);
       }
       if (currentTitle() !== title || !dialog.open) return;
       applyLiveData(title, payload);

@@ -279,7 +279,9 @@ const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js'
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
 
 assert.equal(liveEnrichmentSource.includes("games:subscription-updated"), true);
-assert.equal(liveEnrichmentSource.includes('cache.get(cacheKey)'), true);
+assert.equal(liveEnrichmentSource.includes('cachedPayload(cacheKey)'), true);
+assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true);
+assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('card-service-badge'), true);
