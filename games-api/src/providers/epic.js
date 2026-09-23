@@ -4,89 +4,9 @@ import { fetchJson } from '../lib/http.js';
 import { canonicalGame, storefrontTitleScore } from '../lib/normalize.js';
 import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../lib/epic-store.js';
 
-const GRAPHQL = 'https://store.epicgames.com/graphql';
-
-const SEARCH_QUERY = `
-query searchStoreQuery(
-  $count: Int,
-  $country: String!,
-  $keywords: String,
-  $locale: String,
-  $sortBy: String,
-  $sortDir: String,
-  $start: Int,
-  $withPrice: Boolean = true
-) {
-  Catalog {
-    searchStore(
-      count: $count,
-      country: $country,
-      keywords: $keywords,
-      locale: $locale,
-      sortBy: $sortBy,
-      sortDir: $sortDir,
-      start: $start
-    ) {
-      elements {
-        title
-        id
-        namespace
-        description
-        effectiveDate
-        releaseDate
-        pcReleaseDate
-        offerType
-        developerDisplayName
-        publisherDisplayName
-        productSlug
-        urlSlug
-        url
-        keyImages {
-          type
-          url
-        }
-        seller {
-          name
-        }
-        categories {
-          path
-        }
-        catalogNs {
-          mappings(pageType: "productHome") {
-            pageSlug
-            pageType
-          }
-        }
-        offerMappings {
-          pageSlug
-          pageType
-        }
-        price(country: $country) @include(if: $withPrice) {
-          totalPrice {
-            discountPrice
-            originalPrice
-            voucherDiscount
-            discount
-            currencyCode
-            currencyInfo {
-              decimals
-            }
-            fmtPrice(locale: $locale) {
-              originalPrice
-              discountPrice
-              intermediatePrice
-            }
-          }
-        }
-      }
-      paging {
-        count
-        total
-      }
-    }
-  }
-}
-`;
+const GRAPHQL = 'https://launcher.store.epicgames.com/graphql';
+const SEARCH_HASH = '7d58e12d9dd8cb14c84a3ff18d360bf9f0caa96bf218f2c5fda68ba88d68a437';
+const EPIC_LAUNCHER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) EpicGamesLauncher';
 
 function imageOf(item, types) {
   for (const type of types) {
@@ -138,27 +58,33 @@ async function searchStore(query, { force = false, limit = 8 } = {}) {
     if (cached) return cached.slice(0, take);
   }
 
-  const payload = await fetchJson(GRAPHQL, {
-    method: 'POST',
+  const variables = {
+    allowCountries: config.epicCountry,
+    category: 'games/edition/base|games/edition',
+    count: requestCount,
+    country: config.epicCountry,
+    keywords: q,
+    locale: config.epicLocale,
+    sortBy: 'relevancy,viewableDate',
+    sortDir: 'DESC,DESC',
+    start: 0,
+    tag: '9547',
+    withPrice: true
+  };
+  const url = new URL(GRAPHQL);
+  url.searchParams.set('operationName', 'searchStoreQuery');
+  url.searchParams.set('variables', JSON.stringify(variables));
+  url.searchParams.set('extensions', JSON.stringify({
+    persistedQuery: { version: 1, sha256Hash: SEARCH_HASH }
+  }));
+
+  const payload = await fetchJson(url, {
     headers: {
-      'content-type': 'application/json',
+      'user-agent': EPIC_LAUNCHER_UA,
+      'x-requested-with': 'XMLHttpRequest',
       origin: 'https://store.epicgames.com',
       referer: 'https://store.epicgames.com/'
-    },
-    body: JSON.stringify({
-      operationName: 'searchStoreQuery',
-      query: SEARCH_QUERY,
-      variables: {
-        count: requestCount,
-        country: config.epicCountry,
-        keywords: q,
-        locale: config.epicLocale,
-        sortBy: 'relevancy',
-        sortDir: 'DESC',
-        start: 0,
-        withPrice: true
-      }
-    })
+    }
   });
 
   if (payload?.errors?.length) {
