@@ -314,11 +314,37 @@ async function enrichExactXboxProduct(item, { force = false } = {}) {
       }
     }
 
+    if (!consolidated[0]?.price) {
+      const searchedEditions = await search(exactTitle, { force, limit: 8 });
+      const pricedEdition = searchedEditions.find(candidate => {
+        const current = Number(candidate?.price?.current);
+        const score = storefrontTitleScore(exactTitle, candidate?.title);
+        const titleText = cleanText(candidate?.title || '');
+        const premiumOrAuxiliary = /\b(ultimate|deluxe|premium|gold|collector'?s?|vault|special|anniversary|upgrade|dlc|add[- ]?on|season\s+pass)\b/i.test(titleText);
+        return score >= 0.95
+          && !premiumOrAuxiliary
+          && (candidate?.price?.isFree === true || (Number.isFinite(current) && current > 0));
+      }) || null;
+      if (pricedEdition?.price) {
+        item.price = {
+          ...pricedEdition.price,
+          offerTitle: pricedEdition.price?.offerTitle || pricedEdition.title || exactTitle
+        };
+        item.rawHints = {
+          ...(item.rawHints || {}),
+          xboxPriceFallback: 'search-edition',
+          xboxPriceProductId: pricedEdition.providerId || null,
+          xboxPriceOfferTitle: pricedEdition.title || exactTitle
+        };
+        consolidated = consolidateMicrosoftSearch(item.title, candidates);
+      }
+    }
+
     const enriched = consolidated.find(candidate => String(candidate?.providerId || '').toUpperCase() === id)
       || consolidated[0]
       || item;
-    const priceProductId = String(enriched.providerId || '').toUpperCase();
-    const priceOfferTitle = enriched.price?.offerTitle || enriched.title || '';
+    const priceProductId = String(enriched.rawHints?.xboxPriceProductId || enriched.providerId || '').toUpperCase();
+    const priceOfferTitle = enriched.rawHints?.xboxPriceOfferTitle || enriched.price?.offerTitle || enriched.title || '';
 
     enriched.providerId = id;
     enriched.title = exactTitle || enriched.title;
