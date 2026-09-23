@@ -224,6 +224,7 @@ function normalizeGame(game = {}) {
 
   return {
     id: game.id ?? game.slug ?? game.name,
+    igdbId: game.igdbId != null && String(game.igdbId).trim() ? String(game.igdbId).trim() : '',
     name: game.name || 'Neznámá hra',
     slug: game.slug || '',
     aliases: uniq(game.aliases || game.alternativeNames || []),

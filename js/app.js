@@ -31,6 +31,8 @@ const WATCH_KEY = 'games-calendar-watchlist-v2';
 const VIEW_KEY = 'games-calendar-view-v2';
 const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
 const NOTIFY_KEY = 'games-calendar-notifications-v1';
+const LIVE_SUBSCRIPTIONS_KEY = 'games-calendar-live-subscriptions-v1';
+const LIVE_SUBSCRIPTIONS_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 const PUSH_PUBLIC_KEY_PATH = '/push/public-key';
 const PUSH_SUBSCRIBE_PATH = '/push/subscribe';
 const CALENDAR_FEED_URL = apiUrl('/calendar.ics');
@@ -51,6 +53,58 @@ function readJsonSet(key) {
 
 function saveJsonSet(key, set) {
   try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+}
+
+function readLiveSubscriptions() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LIVE_SUBSCRIPTIONS_KEY) || '{}');
+    const now = Date.now();
+    const out = {};
+    for (const [key, entry] of Object.entries(raw && typeof raw === 'object' ? raw : {})) {
+      const updatedAt = Number(entry?.updatedAt || 0);
+      if (!updatedAt || now - updatedAt > LIVE_SUBSCRIPTIONS_MAX_AGE) continue;
+      out[key] = entry;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function writeLiveSubscriptions(cache) {
+  try { localStorage.setItem(LIVE_SUBSCRIPTIONS_KEY, JSON.stringify(cache)); } catch {}
+}
+
+const liveSubscriptions = readLiveSubscriptions();
+
+function subscriptionKeys(game = {}) {
+  const keys = [];
+  const igdbId = String(game.igdbId || '').trim();
+  const id = String(game.id || '').trim();
+  if (igdbId) keys.push(`igdb:${igdbId}`);
+  if (id) keys.push(`id:${id}`);
+  return keys;
+}
+
+function normalizeLiveSubscriptions(value = {}) {
+  const keys = ['gamePass','gamePassConsole','gamePassPc','cloudGaming','psPlus','geforceNow'];
+  return Object.fromEntries(keys.map(key => [key, Boolean(value?.[key])]));
+}
+
+function applyLiveSubscriptionCache(rows = []) {
+  const seen = new Set();
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || seen.has(game)) continue;
+    seen.add(game);
+    const entry = subscriptionKeys(game).map(key => liveSubscriptions[key]).find(Boolean);
+    if (!entry?.subscriptions) continue;
+    game.subscriptions = {
+      ...(game.subscriptions || {}),
+      ...normalizeLiveSubscriptions(entry.subscriptions),
+      checkedAt: entry.verifiedAt || game.subscriptions?.checkedAt || null
+    };
+  }
 }
 
 const gameId = game => String(game.id);
@@ -524,6 +578,7 @@ async function refreshOnlineSearch(query) {
     if (sequence !== onlineSearchSequence || value !== state.search) return;
     state.onlineRows = makeOnlineRows(games);
     state.rows = [...state.catalogRows, ...state.onlineRows];
+    applyLiveSubscriptionCache(state.rows);
   } catch (error) {
     if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) {
       state.onlineSearchError = String(error?.message || 'Online zdroje nejsou dostupné');
@@ -976,6 +1031,41 @@ async function maybeNotifyUpcoming(force = false) {
 }
 
 function bindEvents() {
+  window.addEventListener('games:subscription-updated', event => {
+    const detail = event.detail || {};
+    const gameIdValue = String(detail.gameId || '').trim();
+    const igdbIdValue = String(detail.igdbId || '').trim();
+    const subscriptions = normalizeLiveSubscriptions(detail.subscriptions || {});
+    const verifiedAt = detail.verifiedAt || new Date().toISOString();
+    const updatedAt = Date.now();
+
+    if (igdbIdValue) liveSubscriptions[`igdb:${igdbIdValue}`] = { subscriptions, verifiedAt, updatedAt };
+    if (gameIdValue) liveSubscriptions[`id:${gameIdValue}`] = { subscriptions, verifiedAt, updatedAt };
+    writeLiveSubscriptions(liveSubscriptions);
+
+    let changed = false;
+    const seen = new Set();
+    for (const row of state.rows) {
+      const game = row?.game;
+      if (!game || seen.has(game)) continue;
+      seen.add(game);
+      const sameIgdb = igdbIdValue && String(game.igdbId || '') === igdbIdValue;
+      const sameId = gameIdValue && gameId(game) === gameIdValue;
+      if (!sameIgdb && !sameId) continue;
+      const before = JSON.stringify(game.subscriptions || {});
+      game.subscriptions = {
+        ...(game.subscriptions || {}),
+        ...subscriptions,
+        checkedAt: verifiedAt
+      };
+      if (JSON.stringify(game.subscriptions) !== before) changed = true;
+    }
+
+    if (changed) {
+      renderGames();
+      notifyAvailableRows();
+    }
+  });
   $('search-toggle').addEventListener('click', () => {
     const open = $('search-popover').hidden;
     $('search-popover').hidden = !open;
@@ -1173,6 +1263,7 @@ function setDataset(dataset, { quiet = false, first = false } = {}) {
   state.dataset = dataset;
   state.catalogRows = flattenReleases(dataset);
   state.rows = [...state.catalogRows, ...state.onlineRows];
+  applyLiveSubscriptionCache(state.rows);
   if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
   hydrateControls();
   renderGames({resetLimit:true});

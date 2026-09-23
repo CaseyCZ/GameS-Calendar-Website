@@ -52,6 +52,14 @@ import { fetchApi } from './js/api.js';
     return clean(dialog.dataset.igdbId);
   }
 
+  function currentEnrichmentKey() {
+    const igdbId = currentIgdbId();
+    if (igdbId) return `igdb:${igdbId}`;
+    const gameId = currentGameId();
+    const title = currentTitle();
+    return `game:${gameId}:${title.toLowerCase()}`;
+  }
+
   function platformTexts() {
     return [...content.querySelectorAll('.detail-meta .badge')]
       .map(node => clean(node.textContent))
@@ -106,7 +114,7 @@ import { fetchApi } from './js/api.js';
     if (subscriptions.eaPlay) items.push(['EA Play', 'eaplay']);
     if (subscriptions.psPlus) items.push(['PS Plus', 'psplus']);
     if (subscriptions.geforceNow) items.push(['GeForce NOW', 'gfn']);
-    if (!items.length) return;
+    if (!items.length) return subscriptions;
 
     let wrap = content.querySelector('.detail-main > .service-badges');
     if (!wrap) {
@@ -125,6 +133,7 @@ import { fetchApi } from './js/api.js';
       badge.querySelector('span:last-child').textContent = label;
       wrap.appendChild(badge);
     }
+    return subscriptions;
   }
 
   function youtubeId(value) {
@@ -506,7 +515,15 @@ import { fetchApi } from './js/api.js';
     if (!result) throw new Error('API nevrátilo detail hry');
     const providers = result.providers || {};
     const merged = result.merged || {};
-    addSubscriptions(merged, providers);
+    const subscriptions = addSubscriptions(merged, providers) || {};
+    window.dispatchEvent(new CustomEvent('games:subscription-updated', {
+      detail: {
+        gameId: currentGameId(),
+        igdbId: String(result.identity?.igdbId || currentIgdbId() || ''),
+        subscriptions,
+        verifiedAt: new Date().toISOString()
+      }
+    }));
     improveStoreLinks(providers);
     addTrailer(merged, providers);
     addHistory(result.gameKey || result.query?.id || '');
@@ -530,7 +547,8 @@ import { fetchApi } from './js/api.js';
     setStatus('Ověřuji IGDB identitu, předplatné a média…', 'loading');
 
     try {
-      let payload = cache.get(title);
+      const cacheKey = currentEnrichmentKey();
+      let payload = cache.get(cacheKey);
       if (!payload) {
         const providers = providersForPlatforms(platformTexts());
         const response = await fetchApi('/enrich', {
@@ -542,7 +560,7 @@ import { fetchApi } from './js/api.js';
           })
         });
         payload = await response.json();
-        cache.set(title, payload);
+        cache.set(cacheKey, payload);
       }
       if (currentTitle() !== title || !dialog.open) return;
       applyLiveData(title, payload);

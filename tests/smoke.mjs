@@ -183,6 +183,14 @@ assert.equal(dataset.games[0].releases[0].day, null);
 assert.equal(dataset.games[0].releases[0].from, '2026-10-01');
 assert.equal(dataset.games[0].releases[0].to, '2026-12-31');
 
+const igdbDataset = normalizePayload({ version:5, games:[{
+  id:'igdb-preserve',
+  igdbId:'348202',
+  name:'IGDB Preserve',
+  releases:[{ date:'2026-10-01', platforms:['Xbox Series'] }]
+}]});
+assert.equal(igdbDataset.games[0].igdbId, '348202');
+
 const sameDayDataset = normalizePayload({
   version:5,
   games:[{
@@ -211,6 +219,17 @@ assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')
 
 const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
+
+assert.equal(liveEnrichmentSource.includes("games:subscription-updated"), true);
+assert.equal(liveEnrichmentSource.includes('cache.get(cacheKey)'), true);
+
+const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
+assert.equal(uiSource.includes('card-service-badge'), true);
+assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
+
+const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
+assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
 
 const moduleSources = [
   '../compact-controls.js',

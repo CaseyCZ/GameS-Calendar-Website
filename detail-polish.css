@@ -39,3 +39,27 @@
     gap: 3px;
   }
 }
+
+.card-badges .card-service-badge{
+  min-height:24px;
+  padding:3px 7px;
+  gap:5px;
+  color:#d8ffd0;
+  border-color:rgba(82,196,26,.52);
+  background:rgba(20,83,29,.78);
+  box-shadow:0 4px 14px rgba(20,83,29,.18);
+  backdrop-filter:blur(10px);
+}
+.card-badges .card-service-badge .brand-icon--service{
+  width:16px;
+  height:16px;
+  flex-basis:16px;
+  background:rgba(82,196,26,.15);
+}
+@media (max-width:560px){
+  .card-badges .card-service-badge{
+    min-height:22px;
+    padding:2px 6px;
+    font-size:8px;
+  }
+}

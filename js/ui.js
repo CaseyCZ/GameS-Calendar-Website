@@ -141,11 +141,12 @@ function coverMarkup(game) {
   return `<div class="game-card__cover"><img src="${escapeHtml(cover)}" alt="Obal hry ${escapeHtml(game.name)}" loading="lazy" decoding="async" width="360" height="480"><div class="game-card__gradient"></div></div>`;
 }
 
-function serviceBadges(game, compact = false) {
+function serviceBadges(game, compact = false, excluded = []) {
+  const skip = new Set(excluded);
   const services = [];
-  if (game.subscriptions?.gamePass) services.push(['Game Pass','gamepass']);
-  if (game.subscriptions?.psPlus) services.push(['PS Plus','psplus']);
-  if (game.subscriptions?.geforceNow) services.push(['GeForce NOW','gfn']);
+  if (game.subscriptions?.gamePass && !skip.has('gamepass')) services.push(['Game Pass','gamepass']);
+  if (game.subscriptions?.psPlus && !skip.has('psplus')) services.push(['PS Plus','psplus']);
+  if (game.subscriptions?.geforceNow && !skip.has('gfn')) services.push(['GeForce NOW','gfn']);
   if (!services.length) return '';
   return `<span class="service-badges ${compact ? 'service-badges--compact' : ''}">${services.map(([label, key]) => `<span class="service-badge service-badge--${key}">${serviceIcon(key, { className:'brand-icon--service' })}<span>${escapeHtml(label)}</span></span>`).join('')}</span>`;
 }
@@ -162,7 +163,10 @@ export function rowCard(row, watched) {
   const extraBadges = [
     row.onlineResult ? '<span class="badge badge--online">Nalezeno online</span>' : '',
     game.earlyAccess ? '<span class="badge badge--early">Early Access</span>' : '',
-    game.scale ? `<span class="badge badge--scale">${escapeHtml(game.scale)}</span>` : ''
+    game.scale ? `<span class="badge badge--scale">${escapeHtml(game.scale)}</span>` : '',
+    game.subscriptions?.gamePass
+      ? `<span class="service-badge service-badge--gamepass card-service-badge">${serviceIcon('gamepass', { className:'brand-icon--service' })}<span>Game Pass</span></span>`
+      : ''
   ].filter(Boolean).join('');
   return `<article class="game-card" data-row-key="${escapeHtml(row.key)}">
     <button class="game-card__button" type="button" data-open-game="${escapeHtml(row.key)}" aria-label="Detail hry ${escapeHtml(game.name)}">
@@ -172,7 +176,7 @@ export function rowCard(row, watched) {
         <span class="game-card__title">${escapeHtml(game.name)}</span>
         <span class="game-card__meta"><time class="game-card__date" ${row.day ? `datetime="${row.day}"` : ''}>${escapeHtml(releaseText(row))}</time>${rating ? `<span class="rating">★ ${rating}%</span>` : ''}</span>
         <span class="card-platforms">${platforms}</span>
-        ${serviceBadges(game, true)}
+        ${serviceBadges(game, true, ['gamepass'])}
       </span>
     </button>
     <div class="game-card__actions">
