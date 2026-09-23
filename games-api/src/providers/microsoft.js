@@ -159,6 +159,48 @@ export async function gamePassIds(kind, { force = false } = {}) {
   return cachePut(key, 'microsoft', { kind, ids, count: ids.length, sourceUrl: url.href }, config.ttl.gamePass);
 }
 
+async function displayCatalogSearch(query, { force = false, limit = 20 } = {}) {
+  const q = String(query || '').trim();
+  if (!q) return [];
+  const take = Math.max(1, Math.min(50, Number(limit) || 20));
+  const key = `microsoft:catalog-search:v1:${config.market}:${config.language}:${q.toLowerCase()}:${take}`;
+  if (!force) {
+    const cached = cacheGet(key);
+    if (cached) return cached;
+  }
+
+  const url = new URL('https://displaycatalog.mp.microsoft.com/v7.0/productFamilies/Games/products');
+  url.searchParams.set('query', q);
+  url.searchParams.set('market', config.market);
+  url.searchParams.set('languages', config.language);
+  url.searchParams.set('fieldsTemplate', 'Details');
+  url.searchParams.set('platformdependencyname', 'windows.xbox');
+  url.searchParams.set('top', String(take));
+
+  const payload = await fetchJson(url, { attempts: 2, timeoutMs: 12_000 });
+  const raw = payload?.Products
+    || payload?.products
+    || payload?.Items
+    || payload?.items
+    || payload?.Payload?.Products
+    || payload?.payload?.products
+    || [];
+
+  let products = Array.isArray(raw) ? raw.filter(Boolean) : [];
+  const needsDetails = products.some(item =>
+    !(item?.LocalizedProperties || item?.localizedProperties)
+    && (item?.ProductId || item?.productId || item?.BigId || item?.bigId)
+  );
+  if (needsDetails) {
+    const ids = uniq(products.map(item =>
+      item?.ProductId || item?.productId || item?.BigId || item?.bigId
+    ).filter(Boolean).map(String));
+    if (ids.length) products = await displayProducts(ids, { force });
+  }
+
+  return cachePut(key, 'microsoft', products, config.ttl.search);
+}
+
 export async function displayProducts(ids, { force = false } = {}) {
   const unique = uniq((ids || []).map(String)).slice(0, 200);
   if (!unique.length) return [];
@@ -267,26 +309,31 @@ export async function gamePassCatalog(kind, { force = false, limit = 1000 } = {}
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `microsoft:search:v3:${config.market}:${config.language}:${q.toLowerCase()}`;
+  const key = `microsoft:search:v4:${config.market}:${config.language}:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
   }
-  const locale = config.language;
-  const url = `https://www.xbox.com/${locale}/Search/Results?q=${encodeURIComponent(q)}`;
-  const html = await fetchText(url);
-  const xboxLinks = xboxLinksFromSearch(html);
-  const ids = new Set(xboxLinks.keys());
-  const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
-  for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
+  let products = await displayCatalogSearch(q, { force, limit: Math.max(20, limit * 4) }).catch(() => []);
+  let xboxLinks = new Map();
 
-  const products = await displayProducts([...ids].slice(0, 20), { force });
+  if (!products.length) {
+    const locale = config.language;
+    const url = `https://www.xbox.com/${locale}/Search/Results?q=${encodeURIComponent(q)}`;
+    const html = await fetchText(url);
+    xboxLinks = xboxLinksFromSearch(html);
+    const ids = new Set(xboxLinks.keys());
+    const regex = /\/games\/store\/[^"'<>\s]+\/([A-Z0-9]{10,16})(?=[\/?#"'<>\s]|$)/gi;
+    for (const match of html.matchAll(regex)) ids.add(match[1].toUpperCase());
+    products = await displayProducts([...ids].slice(0, 20), { force });
+  }
+
   const productIds = products.map(item => String(item?.ProductId || item?.productId || '')).filter(Boolean);
   const membership = await subscriptionKindsForIds(productIds, { force });
   let normalized = products.map(item => {
     const id = String(item?.ProductId || item?.productId || '');
     return normalizeMicrosoftProduct(item, membership.get(id) || [], {
-      storeUrl: xboxLinks.get(id.toUpperCase()) || ''
+      storeUrl: xboxLinks.get(id.toUpperCase()) || xboxProductUrl(localProps(item).ProductTitle || '', id)
     });
   }).filter(Boolean);
 

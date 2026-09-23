@@ -14,9 +14,14 @@ const arr = value => value == null ? [] : Array.isArray(value) ? value : [value]
 const first = value => Array.isArray(value) ? value[0] : value;
 
 function nsuidFromDoc(doc = {}) {
-  return String(arr(doc.nsuid_txt).find(value => /^7\d{13}$/.test(String(value)))
-    || arr(doc.related_nsuids_txt).find(value => /^7\d{13}$/.test(String(value)))
-    || '').trim();
+  const ids = uniq([
+    ...arr(doc.nsuid_txt),
+    ...arr(doc.related_nsuids_txt)
+  ].map(String).filter(value => /^7\d{13}$/.test(value)));
+
+  // 700100... identifies the actual Nintendo application. 700700... is
+  // commonly a bundle / edition SKU and can expose Ultimate/Deluxe pricing.
+  return String(ids.find(value => /^700100\d+$/i.test(value)) || ids[0] || '').trim();
 }
 
 function normalizePlatforms(doc = {}) {
@@ -211,7 +216,7 @@ export async function productByUrl(url, { force = false } = {}) {
 export async function search(query, { force = false, limit = 6 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
-  const key = `nintendo:search:v2:${q.toLowerCase()}`;
+  const key = `nintendo:search:v3:${q.toLowerCase()}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);

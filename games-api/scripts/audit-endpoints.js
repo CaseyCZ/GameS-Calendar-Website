@@ -158,7 +158,7 @@ try {
 
 
 try {
-  const response = await fetch('https://130.61.49.108/games-api/api/enrich?refresh=1', {
+  const response = await fetch('https://130.61.49.108/games-api/enrich?refresh=1', {
     method:'POST',
     headers:{ 'content-type':'application/json', accept:'application/json' },
     body:JSON.stringify({
@@ -167,10 +167,11 @@ try {
     })
   });
   const payload = await response.json();
+  const result = payload?.results?.[0] || null;
   console.log('ℹ️ FC 27 live enrich diagnostic', {
     status:response.status,
-    identity:payload?.identity || null,
-    providers:Object.fromEntries(Object.entries(payload?.providers || {}).map(([name,item]) => [name, item ? {
+    identity:result?.identity || null,
+    providers:Object.fromEntries(Object.entries(result?.providers || {}).map(([name,item]) => [name, item ? {
       providerId:item.providerId || null,
       title:item.title || null,
       price:item.price || null,
@@ -210,7 +211,7 @@ try {
 
 
 try {
-  const response = await fetch('https://130.61.49.108/games-api/api/igdb/catalog-batch?refresh=1', {
+  const response = await fetch('https://130.61.49.108/games-api/igdb/catalog-batch?refresh=1', {
     method:'POST',
     headers:{ 'content-type':'application/json', accept:'application/json' },
     body:JSON.stringify({ ids:[408819], refresh:true })

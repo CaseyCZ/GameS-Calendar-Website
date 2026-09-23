@@ -281,13 +281,19 @@ const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.u
 assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
 assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
 
+const microsoftProviderSource = readFileSync(new URL('../games-api/src/providers/microsoft.js', import.meta.url), 'utf8');
+assert.equal(microsoftProviderSource.includes('productFamilies/Games/products'), true);
+assert.equal(microsoftProviderSource.includes('microsoft:search:v4'), true);
+
 const psProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
 assert.equal(psProviderSource.includes('storefrontTitleScore'), true);
 assert.equal(psProviderSource.includes('playstation:html-search:v2'), true);
 
 const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
 assert.equal(nintendoProviderSource.includes('storefrontTitleScore'), true);
-assert.equal(nintendoProviderSource.includes('nintendo:search:v2'), true);
+assert.equal(nintendoProviderSource.includes('700100'), true);
+assert.equal(nintendoProviderSource.includes('nintendo:search:v3'), true);
+
 
 const priceUiSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
 assert.equal(priceUiSource.includes("new Intl.NumberFormat('cs-CZ'"), true);
