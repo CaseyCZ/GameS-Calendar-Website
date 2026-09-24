@@ -331,6 +331,8 @@ assert.equal(compactControlsSource.includes("import('./advanced-features.js')"),
 assert.equal(compactControlsSource.includes('function setupInfo()'), true);
 assert.equal(compactControlsSource.includes("details.className = 'info-menu'"), true);
 assert.equal(compactControlsSource.includes('Jsi tu nový?'), true);
+assert.equal(compactControlsSource.includes('data-info-close'), true);
+assert.equal(compactControlsSource.includes("details.open = false"), true);
 assert.equal(compactControlsSource.includes('Gesta v detailu'), true);
 assert.equal(compactControlsSource.includes('Co znamenají značky a barvy'), true);
 assert.equal(compactControlsSource.includes('Nadcházející'), true);
@@ -343,6 +345,8 @@ const compactControlsCssSource = readFileSync(new URL('../compact-controls.css',
 assert.equal(compactControlsCssSource.includes('.info-summary'), true);
 assert.equal(compactControlsCssSource.includes('.info-popover'), true);
 assert.equal(compactControlsCssSource.includes('.info-help-item'), true);
+assert.equal(compactControlsCssSource.includes('.info-title-row'), true);
+assert.equal(compactControlsCssSource.includes('.info-close'), true);
 assert.equal(compactControlsCssSource.includes('.info-legend'), true);
 assert.equal(compactControlsCssSource.includes('.info-demo-price.is-stale'), true);
 assert.equal(compactControlsCssSource.includes('.info-demo-badge--early'), true);

@@ -189,7 +189,10 @@
     popover.innerHTML = `
       <div class="info-intro">
         <span class="info-kicker">Rychlý průvodce</span>
-        <h3>Jsi tu nový?</h3>
+        <div class="info-title-row">
+          <h3>Jsi tu nový?</h3>
+          <button class="info-close" type="button" data-info-close aria-label="Zavřít nápovědu">Zavřít</button>
+        </div>
         <p>GameS hlídá vydání her, obchody, ceny a předplatná. Tady je nejrychlejší způsob, jak se zorientovat.</p>
       </div>
       <div class="info-help-list" aria-label="Ovládání GameS">
@@ -227,6 +230,12 @@
       </div>
       <div class="info-note"><strong>⚙ Nastavení</strong><span>Vzhled, moje platformy, zobrazení karet, upozornění a gesta.</span></div>
     `;
+
+    popover.querySelector('[data-info-close]')?.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      details.open = false;
+    });
 
     details.append(summary, popover);
     const settings = $('settings-menu');
