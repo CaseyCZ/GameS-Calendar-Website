@@ -18,6 +18,7 @@ import {
   escapeHtml,
   formatDate,
   formatGenre,
+  formatLivePrice,
   formatMonth,
   formatter,
   gameDialogHtml,
@@ -1176,12 +1177,204 @@ async function shareCurrent() {
   await shareUrl(location.href, 'Herní Kalendář', 'Aktuální výběr her');
 }
 
-async function shareGame(row) {
+function gameShareUrl(row) {
   const q = buildQuery({ includeOpenGame: false });
   q.set('game', gameId(row.game));
   if (row.day) q.set('release', row.day);
-  const url = `${location.origin}${location.pathname}?${q}`;
-  await shareUrl(url, row.game.name, `${row.game.name} – ${row.day ? formatDate(row.day) : row.window || 'TBA'}`);
+  return `${location.origin}${location.pathname}?${q}`;
+}
+
+function shareCardPrice(row) {
+  const prices = Object.values(row?.game?.livePrices || {})
+    .map(price => ({ price, value: Number(price?.current) }))
+    .filter(item => item.price && Number.isFinite(item.value) && item.value >= 0);
+  if (!prices.length) return '';
+  prices.sort((a, b) => a.value - b.value);
+  return formatLivePrice(prices[0].price);
+}
+
+function shareCardServices(game) {
+  const out = [];
+  if (game?.subscriptions?.gamePass) out.push('Game Pass');
+  if (game?.subscriptions?.psPlus) out.push('PS Plus');
+  if (game?.subscriptions?.geforceNow) out.push('GeForce NOW');
+  if (game?.subscriptions?.eaPlay) out.push('EA Play');
+  return out.slice(0, 3);
+}
+
+function wrapCanvasText(ctx, text, maxWidth) {
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(next).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+async function loadShareImage(url) {
+  if (!url) return null;
+  try {
+    const response = await fetch(url, { mode: 'cors', credentials: 'omit' });
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    if ('createImageBitmap' in window) return await createImageBitmap(blob);
+    const objectUrl = URL.createObjectURL(blob);
+    try {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = objectUrl;
+      await image.decode();
+      return image;
+    } finally {
+      URL.revokeObjectURL(objectUrl);
+    }
+  } catch {
+    return null;
+  }
+}
+
+function drawSharePill(ctx, text, x, y, { accent = '#c084fc', fill = 'rgba(255,255,255,.08)' } = {}) {
+  ctx.font = '700 30px system-ui, -apple-system, sans-serif';
+  const width = Math.ceil(ctx.measureText(text).width) + 42;
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, 54, 27);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#f8f3fb';
+  ctx.fillText(text, x + 21, y + 37);
+  return width;
+}
+
+async function createGameShareCard(row) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas není dostupný');
+
+  const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+  bg.addColorStop(0, '#110919');
+  bg.addColorStop(.58, '#180d22');
+  bg.addColorStop(1, '#08040d');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 1080, 1350);
+
+  const image = await loadShareImage(row?.game?.cover);
+  if (image) {
+    const iw = image.width || image.naturalWidth;
+    const ih = image.height || image.naturalHeight;
+    const targetH = 760;
+    const scale = Math.max(1080 / iw, targetH / ih);
+    const sw = 1080 / scale;
+    const sh = targetH / scale;
+    const sx = Math.max(0, (iw - sw) / 2);
+    const sy = Math.max(0, (ih - sh) / 2);
+    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, 1080, targetH);
+    image.close?.();
+  } else {
+    const fallback = ctx.createLinearGradient(0, 0, 1080, 760);
+    fallback.addColorStop(0, '#251130');
+    fallback.addColorStop(1, '#4c1d3f');
+    ctx.fillStyle = fallback;
+    ctx.fillRect(0, 0, 1080, 760);
+  }
+
+  const overlay = ctx.createLinearGradient(0, 390, 0, 850);
+  overlay.addColorStop(0, 'rgba(8,4,13,0)');
+  overlay.addColorStop(.7, 'rgba(8,4,13,.78)');
+  overlay.addColorStop(1, '#110919');
+  ctx.fillStyle = overlay;
+  ctx.fillRect(0, 360, 1080, 520);
+
+  ctx.fillStyle = '#ff6db0';
+  ctx.font = '800 28px system-ui, -apple-system, sans-serif';
+  ctx.fillText('GameS · Herní kalendář', 70, 835);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 64px system-ui, -apple-system, sans-serif';
+  const titleLines = wrapCanvasText(ctx, row?.game?.name || '', 940).slice(0, 3);
+  let y = 910;
+  for (const line of titleLines) {
+    ctx.fillText(line, 70, y);
+    y += 72;
+  }
+
+  const release = row?.day ? formatDate(row.day) : (row?.window || row?.game?.announcedWindow || 'TBA');
+  ctx.fillStyle = '#c9bdcf';
+  ctx.font = '650 34px system-ui, -apple-system, sans-serif';
+  ctx.fillText(`📅 ${release}`, 70, y + 12);
+
+  let pillX = 70;
+  let pillY = y + 54;
+  const labels = [...new Set((row?.platformGroups || row?.platforms?.map(item => item?.name) || []).filter(Boolean))].slice(0, 5);
+  for (const label of labels) {
+    const width = Math.ceil(ctx.measureText(label).width) + 42;
+    if (pillX + width > 1010) {
+      pillX = 70;
+      pillY += 66;
+    }
+    pillX += drawSharePill(ctx, label, pillX, pillY) + 12;
+  }
+
+  const price = shareCardPrice(row);
+  const services = shareCardServices(row?.game);
+  let metaY = Math.max(1170, pillY + 92);
+
+  if (price) {
+    ctx.fillStyle = '#86efac';
+    ctx.font = '800 40px system-ui, -apple-system, sans-serif';
+    ctx.fillText(price, 70, metaY);
+  }
+  if (services.length) {
+    const text = services.join(' · ');
+    ctx.fillStyle = '#d8ffd0';
+    ctx.font = '750 30px system-ui, -apple-system, sans-serif';
+    ctx.fillText(text, 70, metaY + (price ? 52 : 0));
+  }
+
+  ctx.fillStyle = '#a99cb4';
+  ctx.font = '600 24px system-ui, -apple-system, sans-serif';
+  ctx.fillText('caseycz.github.io/GameS-Calendar-Website', 70, 1300);
+
+  return await new Promise((resolve, reject) => {
+    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG se nepodařilo vytvořit')), 'image/png', .95);
+  });
+}
+
+async function shareGame(row) {
+  const url = gameShareUrl(row);
+  const text = `${row.game.name} – ${row.day ? formatDate(row.day) : row.window || 'TBA'}`;
+  try {
+    const blob = await createGameShareCard(row);
+    const file = new File([blob], `${slugify(row.game.name)}-games.png`, { type: 'image/png' });
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: row.game.name, text, url, files: [file] });
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = file.name;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    try { await navigator.clipboard.writeText(url); } catch {}
+    toast('Karta byla uložena jako obrázek a odkaz zkopírován.');
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    await shareUrl(url, row.game.name, text);
+  }
 }
 
 function setView(view) {

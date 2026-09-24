@@ -474,7 +474,7 @@ export function gameDialogHtml(row, watched) {
       <div class="detail-actions">
         ${row.day ? `<button class="primary-btn" type="button" data-dialog-calendar="${escapeHtml(row.key)}">📅 Přidat do kalendáře</button>` : ''}
         <button class="secondary-btn" type="button" data-dialog-watch="${escapeHtml(String(game.id))}">${watched ? '♥ Sledováno' : '♡ Sledovat'}</button>
-        <button class="secondary-btn" type="button" data-dialog-share="${escapeHtml(row.key)}">↗ Sdílet hru</button>
+        <button class="secondary-btn" type="button" data-dialog-share="${escapeHtml(row.key)}">▣ Sdílet kartu</button>
       </div>
       ${mediaMarkup(game)}
       ${storeLinks ? `<section class="detail-link-section detail-link-section--stores" aria-label="Obchody pro toto vydání"><p class="detail-section-label">Kde hru najít</p><div class="detail-store-grid">${storeLinks}</div></section>` : ''}
