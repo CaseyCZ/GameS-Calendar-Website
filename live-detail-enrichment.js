@@ -573,9 +573,22 @@ import { fetchApi } from './js/api.js';
       section.className = 'detail-link-section detail-history-section';
       section.setAttribute('aria-label', 'Historie změn hry');
 
-      const label = document.createElement('p');
-      label.className = 'detail-section-label';
+      const disclosure = document.createElement('details');
+      disclosure.className = 'detail-history-disclosure';
+
+      const summary = document.createElement('summary');
+      summary.className = 'detail-history-summary';
+
+      const label = document.createElement('span');
+      label.className = 'detail-history-summary__label';
       label.textContent = 'Historie změn';
+
+      const count = document.createElement('span');
+      count.className = 'detail-history-summary__count';
+      count.textContent = String(Math.min(items.length, 8));
+      count.setAttribute('aria-label', `${Math.min(items.length, 8)} záznamů`);
+
+      summary.append(label, count);
 
       const list = document.createElement('div');
       list.className = 'detail-history-list';
@@ -592,7 +605,8 @@ import { fetchApi } from './js/api.js';
         list.appendChild(row);
       }
 
-      section.append(label, list);
+      disclosure.append(summary, list);
+      section.append(disclosure);
       const main = content.querySelector('.detail-main');
       if (main) main.appendChild(section);
     } catch {}

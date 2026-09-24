@@ -409,6 +409,9 @@ assert.equal(liveEnrichmentSource.includes('isFallbackStoreLink'), true);
 assert.equal(liveEnrichmentSource.includes('const displayProviders = stored?.providers || providers'), false);
 assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
 assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
+assert.equal(liveEnrichmentSource.includes("document.createElement('details')"), true);
+assert.equal(liveEnrichmentSource.includes('detail-history-disclosure'), true);
+assert.equal(liveEnrichmentSource.includes('detail-history-summary__count'), true);
 assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
 assert.equal(liveEnrichmentSource.includes('function providerSignature'), true);
 assert.equal(liveEnrichmentSource.includes('screenCache.get(screenKey({'), true);
@@ -467,6 +470,10 @@ assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
 assert.equal(dbSource.includes('storeUrls'), true);
 assert.equal(dbSource.includes('suppressUnconfirmedPriceRemoval'), true);
 assert.equal(dbSource.includes('.map(stableHistoryItem)'), true);
+
+const detailPolishSource = readFileSync(new URL('../detail-polish.css', import.meta.url), 'utf8');
+assert.equal(detailPolishSource.includes('.detail-history-summary'), true);
+assert.equal(detailPolishSource.includes('.detail-history-disclosure[open]'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('cardLivePrices(row)'), true);
