@@ -13,6 +13,10 @@
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.37a1.7 1.7 0 0 0-1 .63 1.7 1.7 0 0 0-.37 1.08V21h-4v-.08A1.7 1.7 0 0 0 8.6 19.3a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.23 15a1.7 1.7 0 0 0-.63-1 1.7 1.7 0 0 0-1.08-.37H2.5v-4h.08A1.7 1.7 0 0 0 4.2 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.57 4.2a1.7 1.7 0 0 0 1-.63A1.7 1.7 0 0 0 9.94 2.5V2h4v.08A1.7 1.7 0 0 0 15 3.7a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 8a1.7 1.7 0 0 0 .63 1 1.7 1.7 0 0 0 1.08.37H21.5v4h-.08A1.7 1.7 0 0 0 19.8 14a1.7 1.7 0 0 0-.4 1Z"/></svg>';
   }
 
+  function iconInfo() {
+    return '<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10.5v6M12 7.3h.01"/></svg>';
+  }
+
   function iconSun() {
     return '<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   }
@@ -95,8 +99,10 @@
       if (details.open) {
         const filters = $('filters-disclosure');
         const settings = $('settings-menu');
+        const info = $('info-menu');
         if (filters) filters.open = false;
         if (settings) settings.open = false;
+        if (info) info.open = false;
       }
     });
     quick.appendChild(details);
@@ -154,12 +160,61 @@
       if (details.open) {
         const settings = $('settings-menu');
         const sorting = $('sort-disclosure');
+        const info = $('info-menu');
         if (settings) settings.open = false;
         if (sorting) sorting.open = false;
+        if (info) info.open = false;
       }
     });
 
     return platformMemory;
+  }
+
+  function setupInfo() {
+    const actions = document.querySelector('.topbar__actions');
+    if (!actions || $('info-menu')) return;
+
+    const details = document.createElement('details');
+    details.className = 'info-menu';
+    details.id = 'info-menu';
+
+    const summary = document.createElement('summary');
+    summary.className = 'info-summary';
+    summary.title = 'Jak GameS používat';
+    summary.setAttribute('aria-label', 'Jak GameS používat');
+    summary.innerHTML = `${iconInfo()}<span class="sr-only">Informace a ovládání</span>`;
+
+    const popover = document.createElement('div');
+    popover.className = 'info-popover';
+    popover.innerHTML = `
+      <div class="info-intro">
+        <span class="info-kicker">Rychlý průvodce</span>
+        <h3>Jsi tu nový?</h3>
+        <p>GameS hlídá vydání her, obchody, ceny a předplatná. Tady je nejrychlejší způsob, jak se zorientovat.</p>
+      </div>
+      <div class="info-help-list" aria-label="Ovládání GameS">
+        <div class="info-help-item"><span class="info-help-icon">↗</span><div><strong>Detail hry</strong><small>Klepni nebo klikni na kartu a zobrazí se termín, obchody, média a historie změn.</small></div></div>
+        <div class="info-help-item"><span class="info-help-icon">⌕</span><div><strong>Hledání a filtry</strong><small>Použij lupu, platformy a Filtry. Na počítači otevře hledání také klávesa <kbd>/</kbd>.</small></div></div>
+        <div class="info-help-item"><span class="info-help-icon">♡</span><div><strong>Sledované hry</strong><small>Srdcem si hru uložíš. Sledované hry pak můžeš filtrovat a používat pro upozornění nebo kalendář.</small></div></div>
+        <div class="info-help-item"><span class="info-help-icon">⇆</span><div><strong>Gesta v detailu</strong><small>Na mobilu přejeď vlevo nebo vpravo pro předchozí či další hru. Gesta lze vypnout v Nastavení.</small></div></div>
+        <div class="info-help-item"><span class="info-help-icon">◷</span><div><strong>Živá data</strong><small>Ceny a dostupnost obchodů se průběžně ověřují. Po načtení se karta nebo detail automaticky aktualizují.</small></div></div>
+      </div>
+      <div class="info-note"><strong>⚙ Nastavení</strong><span>Vzhled, moje platformy, zobrazení karet, upozornění a gesta.</span></div>
+    `;
+
+    details.append(summary, popover);
+    const settings = $('settings-menu');
+    actions.insertBefore(details, settings || actions.firstElementChild || null);
+
+    details.addEventListener('toggle', () => {
+      if (!details.open) return;
+      const filters = $('filters-disclosure');
+      const sorting = $('sort-disclosure');
+      const settingsMenu = $('settings-menu');
+      if (filters) filters.open = false;
+      if (sorting) sorting.open = false;
+      if (settingsMenu) settingsMenu.open = false;
+    });
   }
 
   function setupSettings(platformMemory) {
@@ -248,8 +303,10 @@
       if (details.open) {
         const filters = $('filters-disclosure');
         const sorting = $('sort-disclosure');
+        const info = $('info-menu');
         if (filters) filters.open = false;
         if (sorting) sorting.open = false;
+        if (info) info.open = false;
       }
     });
   }
@@ -258,9 +315,11 @@
     const filters = $('filters-disclosure');
     const sorting = $('sort-disclosure');
     const settings = $('settings-menu');
+    const info = $('info-menu');
     if (filters?.open && !filters.contains(event.target)) filters.open = false;
     if (sorting?.open && !sorting.contains(event.target)) sorting.open = false;
     if (settings?.open && !settings.contains(event.target)) settings.open = false;
+    if (info?.open && !info.contains(event.target)) info.open = false;
   }
 
   function observeFilterState() {
@@ -286,6 +345,7 @@
     if (document.documentElement.dataset.compactControls === '1') return;
     const platformMemory = setupFilters();
     setupSettings(platformMemory);
+    setupInfo();
     observeFilterState();
     document.documentElement.dataset.compactControls = '1';
     document.addEventListener('pointerdown', closeMenusOutside);
@@ -294,9 +354,11 @@
       const filters = $('filters-disclosure');
       const sorting = $('sort-disclosure');
       const settings = $('settings-menu');
+      const info = $('info-menu');
       if (filters) filters.open = false;
       if (sorting) sorting.open = false;
       if (settings) settings.open = false;
+      if (info) info.open = false;
     });
   }
 

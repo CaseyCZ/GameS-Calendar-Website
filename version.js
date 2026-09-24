@@ -1,1 +1,1 @@
-globalThis.GAMES_APP_VERSION = '3.12.22';
+globalThis.GAMES_APP_VERSION = '3.12.23';
