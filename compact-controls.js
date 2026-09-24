@@ -199,6 +199,32 @@
         <div class="info-help-item"><span class="info-help-icon">⇆</span><div><strong>Gesta v detailu</strong><small>Na mobilu přejeď vlevo nebo vpravo pro předchozí či další hru. Gesta lze vypnout v Nastavení.</small></div></div>
         <div class="info-help-item"><span class="info-help-icon">◷</span><div><strong>Živá data</strong><small>Ceny a dostupnost obchodů se průběžně ověřují. Po načtení se karta nebo detail automaticky aktualizují.</small></div></div>
       </div>
+      <div class="info-legend" aria-label="Význam značek a barev">
+        <span class="info-section-title">Co znamenají značky a barvy</span>
+        <div class="info-legend-list">
+          <div class="info-legend-item">
+            <span class="info-demo-badge info-demo-badge--soon">Nadcházející</span>
+            <small>Datum vydání je dnes nebo v budoucnu. Zelená značí aktivní nebo aktuálně potvrzený stav.</small>
+          </div>
+          <div class="info-legend-item">
+            <span class="info-demo-badge info-demo-badge--gamepass">Game Pass</span>
+            <small>Hra je evidovaná v Game Pass. Detail může upřesnit PC, konzoli nebo cloud.</small>
+          </div>
+          <div class="info-legend-item">
+            <span class="info-demo-price">od 1 499 Kč</span>
+            <small><strong>od</strong> znamená nejnižší nalezenou odpovídající nabídku. U více edic se konečná cena může lišit.</small>
+          </div>
+          <div class="info-legend-item">
+            <span class="info-demo-price is-stale">posl. 1 499 Kč</span>
+            <small><strong>posl. známá</strong> je dříve ověřená cena, kterou obchod teď nepotvrdil. Nemusí být stále aktuální.</small>
+          </div>
+          <div class="info-legend-item">
+            <span class="info-demo-badge info-demo-badge--early">Early Access</span>
+            <small>Oranžová upozorňuje na předběžný nebo zvláštní stav, například Early Access.</small>
+          </div>
+        </div>
+        <p class="info-color-note"><span class="info-color-dot info-color-dot--muted"></span>Šedá nebo přerušovaný okraj = starší / méně jistý údaj. Barvy ikon obchodů jen rozlišují zdroj.</p>
+      </div>
       <div class="info-note"><strong>⚙ Nastavení</strong><span>Vzhled, moje platformy, zobrazení karet, upozornění a gesta.</span></div>
     `;
 

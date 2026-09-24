@@ -326,6 +326,89 @@ html:not([data-compact-controls="1"]) .filters {
   font: inherit;
   font-weight: 850;
 }
+.info-legend {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.065);
+}
+.info-section-title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.info-legend-list {
+  display: grid;
+  gap: 7px;
+}
+.info-legend-item {
+  display: grid;
+  grid-template-columns: minmax(92px,auto) 1fr;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+}
+.info-legend-item small {
+  color: var(--muted);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+.info-legend-item small strong {
+  color: var(--text);
+}
+.info-demo-badge,
+.info-demo-price {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 8px;
+  font-weight: 850;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.info-demo-badge--soon,
+.info-demo-badge--gamepass,
+.info-demo-price {
+  color: #c8f7df;
+  border-color: color-mix(in srgb,var(--green) 34%,transparent);
+  background: color-mix(in srgb,var(--green) 8%,transparent);
+}
+.info-demo-badge--early {
+  color: #ffd18a;
+  border-color: rgba(245,158,11,.42);
+  background: rgba(245,158,11,.1);
+}
+.info-demo-price.is-stale {
+  color: var(--muted);
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: rgba(255,255,255,.02);
+}
+.info-color-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.info-color-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--muted);
+}
 .info-note {
   display: grid;
   gap: 2px;
