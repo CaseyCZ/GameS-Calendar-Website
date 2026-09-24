@@ -1,5 +1,5 @@
 importScripts('./version.js');
-const VERSION = `games-calendar-v${globalThis.GAMES_APP_VERSION || '3.12.24'}`;
+const VERSION = `games-calendar-v${globalThis.GAMES_APP_VERSION || '3.12.25'}`;
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const SHELL = [

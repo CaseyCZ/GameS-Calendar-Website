@@ -493,6 +493,15 @@ const detailPolishSource = readFileSync(new URL('../detail-polish.css', import.m
 assert.equal(detailPolishSource.includes('.detail-history-summary'), true);
 assert.equal(detailPolishSource.includes('.detail-history-disclosure[open]'), true);
 
+const themesSource = readFileSync(new URL('../themes.css', import.meta.url), 'utf8');
+assert.equal(themesSource.includes('Light-theme polish: stronger layer separation'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .chip--platform.is-active'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .card-price-chip'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .card-price-chip.is-stale'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .info-popover'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .badge--soon'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .service-badge--gamepass'), true);
+
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('cardLivePrices(row)'), true);
 assert.equal(uiSource.includes('function livePriceAllowed(row, provider, price)'), true);

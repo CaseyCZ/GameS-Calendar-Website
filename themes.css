@@ -626,6 +626,229 @@ html[data-theme$="-light"] .control {
   background: var(--input);
 }
 
+/* Light-theme polish: stronger layer separation and readable interactive states. */
+html[data-theme$="-light"] {
+  --light-surface-1: color-mix(in srgb, var(--panel-solid) 95%, var(--text) 5%);
+  --light-surface-2: color-mix(in srgb, var(--panel-solid) 90%, var(--text) 10%);
+  --light-accent-surface: color-mix(in srgb, var(--panel-solid) 88%, var(--pink) 12%);
+  --light-green-surface: color-mix(in srgb, var(--panel-solid) 88%, #16a34a 12%);
+  --light-blue-surface: color-mix(in srgb, var(--panel-solid) 89%, #2563eb 11%);
+  --light-amber-surface: color-mix(in srgb, var(--panel-solid) 88%, #f59e0b 12%);
+}
+
+html[data-theme$="-light"] .game-card {
+  background: var(--panel-solid);
+  border-color: color-mix(in srgb, var(--border) 88%, var(--text) 12%);
+  box-shadow: 0 7px 22px color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+html[data-theme$="-light"] .game-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--text) 11%, transparent);
+}
+
+html[data-theme$="-light"] .chip,
+html[data-theme$="-light"] .filter-summary,
+html[data-theme$="-light"] .settings-summary,
+html[data-theme$="-light"] .info-summary,
+html[data-theme$="-light"] .sort-option,
+html[data-theme$="-light"] .genre-filter-chip,
+html[data-theme$="-light"] .trait-filter-chip,
+html[data-theme$="-light"] .filter-choice-chip,
+html[data-theme$="-light"] .month-tile,
+html[data-theme$="-light"] .card-action,
+html[data-theme$="-light"] .calendar-feed-choice,
+html[data-theme$="-light"] .advanced-setting i {
+  color: var(--text);
+  background: var(--light-surface-1);
+  border-color: color-mix(in srgb, var(--border) 90%, var(--text) 10%);
+}
+
+html[data-theme$="-light"] .chip:hover,
+html[data-theme$="-light"] .filter-summary:hover,
+html[data-theme$="-light"] .settings-summary:hover,
+html[data-theme$="-light"] .info-summary:hover,
+html[data-theme$="-light"] .sort-option:hover,
+html[data-theme$="-light"] .genre-filter-chip:hover,
+html[data-theme$="-light"] .trait-filter-chip:hover,
+html[data-theme$="-light"] .filter-choice-chip:hover,
+html[data-theme$="-light"] .month-tile:hover,
+html[data-theme$="-light"] .card-action:hover {
+  color: var(--text);
+  background: var(--light-surface-2);
+  border-color: var(--border-strong);
+}
+
+html[data-theme$="-light"] .chip--platform.is-active,
+html[data-theme$="-light"] .genre-filter-chip.is-active,
+html[data-theme$="-light"] .trait-filter-chip.is-active,
+html[data-theme$="-light"] .filter-choice-chip.is-active,
+html[data-theme$="-light"] .month-tile.is-active,
+html[data-theme$="-light"] .calendar-feed-choice.is-active,
+html[data-theme$="-light"] .sort-option.is-active,
+html[data-theme$="-light"] .filters-disclosure[open] > .filter-summary,
+html[data-theme$="-light"] .filter-summary.has-active,
+html[data-theme$="-light"] .sort-disclosure[open] > .sort-summary,
+html[data-theme$="-light"] .sort-disclosure.has-active > .sort-summary,
+html[data-theme$="-light"] .settings-menu[open] > .settings-summary,
+html[data-theme$="-light"] .info-menu[open] > .info-summary {
+  color: var(--text) !important;
+  background: var(--light-accent-surface);
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--pink) 10%, transparent);
+}
+
+html[data-theme$="-light"] .filter-panel,
+html[data-theme$="-light"] .settings-popover,
+html[data-theme$="-light"] .info-popover,
+html[data-theme$="-light"] .sort-panel,
+html[data-theme$="-light"] .filter-panel-footer,
+html[data-theme$="-light"] .theme-picker {
+  color: var(--text);
+  background: color-mix(in srgb, var(--panel-solid) 98%, transparent);
+  border-color: color-mix(in srgb, var(--border) 86%, var(--text) 14%);
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+html[data-theme$="-light"] .info-help-item,
+html[data-theme$="-light"] .info-note,
+html[data-theme$="-light"] .settings-notification-row,
+html[data-theme$="-light"] .fact,
+html[data-theme$="-light"] .region-release,
+html[data-theme$="-light"] .release-change,
+html[data-theme$="-light"] .detail-history-item,
+html[data-theme$="-light"] .detail-history-summary__count,
+html[data-theme$="-light"] .store-link,
+html[data-theme$="-light"] .gallery-item {
+  color: var(--text);
+  background: var(--light-surface-1);
+  border-color: color-mix(in srgb, var(--border) 90%, var(--text) 10%);
+}
+
+html[data-theme$="-light"] .store-link:hover,
+html[data-theme$="-light"] .release-change:hover {
+  color: var(--text);
+  background: var(--light-surface-2);
+  border-color: var(--border-strong);
+}
+
+html[data-theme$="-light"] .badge--soon {
+  color: #166534;
+  background: rgba(240, 253, 244, .94);
+  border-color: #86efac;
+}
+
+html[data-theme$="-light"] .badge--released {
+  color: #475569;
+  background: rgba(248, 250, 252, .94);
+  border-color: #cbd5e1;
+}
+
+html[data-theme$="-light"] .badge--online {
+  color: #166534;
+  background: rgba(240, 253, 244, .94);
+  border-color: #86efac;
+}
+
+html[data-theme$="-light"] .badge--precision,
+html[data-theme$="-light"] .badge--early,
+html[data-theme$="-light"] .detail-flag--early {
+  color: #92400e !important;
+  background: var(--light-amber-surface) !important;
+  border-color: color-mix(in srgb, #d97706 42%, var(--border)) !important;
+}
+
+html[data-theme$="-light"] .badge--content-type,
+html[data-theme$="-light"] .detail-flag--content-type {
+  color: #854d0e;
+  background: var(--light-amber-surface);
+  border-color: color-mix(in srgb, #ca8a04 38%, var(--border));
+}
+
+html[data-theme$="-light"] .badge--scale {
+  color: #166534 !important;
+  background: var(--light-green-surface) !important;
+  border-color: color-mix(in srgb, #16a34a 38%, var(--border)) !important;
+}
+
+html[data-theme$="-light"] .service-badge--gamepass,
+html[data-theme$="-light"] .card-badges .service-badge--gamepass {
+  color: #166534 !important;
+  background: rgba(240, 253, 244, .94) !important;
+  border-color: #86efac !important;
+  box-shadow: none;
+}
+
+html[data-theme$="-light"] .service-badge--psplus {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+html[data-theme$="-light"] .service-badge--gfn {
+  color: #3f6212;
+  background: #f7fee7;
+  border-color: #bef264;
+}
+
+html[data-theme$="-light"] .card-price-chip {
+  color: #166534;
+  background: rgba(240, 253, 244, .96);
+  border-color: #86efac;
+}
+
+html[data-theme$="-light"] .card-price-more {
+  color: var(--muted);
+  background: var(--light-surface-1);
+  border-color: color-mix(in srgb, var(--border) 86%, var(--text) 14%);
+}
+
+html[data-theme$="-light"] .card-price-chip.is-stale {
+  color: #64748b;
+  background: rgba(248, 250, 252, .96);
+  border-color: #94a3b8;
+}
+
+html[data-theme$="-light"] .platform-tag {
+  color: color-mix(in srgb, var(--purple) 88%, #111827 12%);
+  background: color-mix(in srgb, var(--panel-solid) 91%, var(--purple) 9%);
+  border-color: color-mix(in srgb, var(--purple) 28%, var(--border));
+}
+
+html[data-theme$="-light"] .search-field,
+html[data-theme$="-light"] .control,
+html[data-theme$="-light"] .settings-theme-grid .theme-choice {
+  color: var(--text);
+  background: var(--light-surface-1);
+  border-color: color-mix(in srgb, var(--border) 88%, var(--text) 12%);
+}
+
+html[data-theme$="-light"] .info-help-icon {
+  color: var(--purple);
+  background: color-mix(in srgb, var(--panel-solid) 90%, var(--purple) 10%);
+  border-color: color-mix(in srgb, var(--purple) 30%, var(--border));
+}
+
+html[data-theme$="-light"] .info-demo-badge--soon,
+html[data-theme$="-light"] .info-demo-badge--gamepass,
+html[data-theme$="-light"] .info-demo-price {
+  color: #166534;
+  background: rgba(240, 253, 244, .96);
+  border-color: #86efac;
+}
+
+html[data-theme$="-light"] .info-demo-price.is-stale {
+  color: #64748b;
+  background: rgba(248, 250, 252, .96);
+  border-color: #94a3b8;
+}
+
+html[data-theme$="-light"] .info-demo-badge--early {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
 @media (max-width: 760px) {
   html[data-theme] .topbar {
     background: var(--theme-topbar);
