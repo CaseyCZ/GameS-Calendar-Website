@@ -213,8 +213,10 @@ function mergeSparseTrackedSnapshot(previous, next, observedProviders = new Set(
   merged.prices = { ...(previous.prices || {}) };
   for (const [provider, price] of Object.entries(next.prices || {})) {
     if (price) merged.prices[provider] = price;
-    else if (authoritativePriceRemovals.has(provider)) merged.prices[provider] = null;
     else if (!(provider in merged.prices)) merged.prices[provider] = null;
+  }
+  for (const provider of authoritativePriceRemovals) {
+    delete merged.prices[provider];
   }
   merged.providerIds = {
     ...(previous.providerIds || {}),

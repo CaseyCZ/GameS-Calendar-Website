@@ -461,6 +461,7 @@ const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url)
 assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
 assert.equal(dbSource.includes("if (price) merged.prices[provider] = price"), true);
 assert.equal(dbSource.includes("else if (!(provider in merged.prices)) merged.prices[provider] = null"), true);
+assert.equal(dbSource.includes('delete merged.prices[provider]'), true);
 assert.equal(dbSource.includes('lastMeaningfulHistoryValue'), true);
 assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
 assert.equal(dbSource.includes('storeUrls'), true);
@@ -469,6 +470,9 @@ assert.equal(dbSource.includes('.map(stableHistoryItem)'), true);
 
 const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
 assert.equal(uiSource.includes('cardLivePrices(row)'), true);
+assert.equal(uiSource.includes('function livePriceAllowed(row, provider, price)'), true);
+assert.equal(uiSource.includes("provider !== 'epic'"), true);
+assert.equal(uiSource.includes('price.preorder === true'), true);
 assert.equal(uiSource.includes('priceProvidersForRow'), true);
 assert.equal(uiSource.includes('serviceKindsForRow'), true);
 assert.equal(uiSource.includes("'Microsoft / Xbox Store'"), true);
@@ -483,6 +487,7 @@ assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
 const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
 assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
+assert.equal(appSubscriptionSource.includes('games-calendar-live-providers-v2'), true);
 assert.equal(appSubscriptionSource.includes('const priceSuppressed = Boolean(provider?.rawHints?.priceSuppressed)'), true);
 assert.equal(appSubscriptionSource.includes('price: priceSuppressed ? null : (provider?.price || prior.price || null)'), true);
 
@@ -590,7 +595,7 @@ try {
   }, 'smoke');
 
   const suppressedSnapshot = dbModule.gameSnapshot(suppressedKey);
-  assert.equal(suppressedSnapshot?.prices?.epic, null);
+  assert.equal('epic' in (suppressedSnapshot?.prices || {}), false);
 } finally {
   dbModule.db.close();
   rmSync(dbTempDir, { recursive:true, force:true });

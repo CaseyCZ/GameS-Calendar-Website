@@ -86,6 +86,14 @@ function serviceKindsForRow(row) {
   return services;
 }
 
+function livePriceAllowed(row, provider, price) {
+  if (!price || typeof price !== 'object') return false;
+  if (provider !== 'epic') return true;
+  if (price.preorder === true) return true;
+  const day = String(row?.day || '').slice(0, 10);
+  return !(day && day > todayLocal());
+}
+
 function cardLivePrices(row, limit = 3) {
   const game = row.game;
   const allowedProviders = priceProvidersForRow(row);
@@ -98,6 +106,7 @@ function cardLivePrices(row, limit = 3) {
       price: game.livePrices?.[provider],
       lastKnownPrice: Boolean(game.livePriceMeta?.[provider]?.lastKnownPrice)
     }))
+    .filter(item => livePriceAllowed(row, item.provider, item.price))
     .map(item => ({
       ...item,
       text: item.lastKnownPrice ? `posl. ${formatLivePrice(item.price)}` : formatLivePrice(item.price)
@@ -112,12 +121,14 @@ function cardLivePrices(row, limit = 3) {
   ).join('')}${more ? `<span class="card-price-more">+${more}</span>` : ''}</span>`;
 }
 
-function livePriceForStore(game, kind) {
+function livePriceForStore(row, kind) {
   const provider = { steam:'steam', epic:'epic', xbox:'microsoft', playstation:'playstation', nintendo:'nintendo' }[kind];
   if (!provider) return '';
-  const text = formatLivePrice(game.livePrices?.[provider]);
+  const price = row?.game?.livePrices?.[provider];
+  if (!livePriceAllowed(row, provider, price)) return '';
+  const text = formatLivePrice(price);
   if (!text) return '';
-  return game.livePriceMeta?.[provider]?.lastKnownPrice ? `${text} · posl. známá` : text;
+  return row.game.livePriceMeta?.[provider]?.lastKnownPrice ? `${text} · posl. známá` : text;
 }
 
 export function formatDate(day, options = { day:'2-digit', month:'2-digit', year:'numeric' }) {
@@ -330,7 +341,7 @@ function platformStoreLinks(row, links) {
   const names = row.platforms.map(platform => String(platform.name || '').toLowerCase());
   const items = [];
   const pricedLabel = (label, kind) => {
-    const price = livePriceForStore(row.game, kind);
+    const price = livePriceForStore(row, kind);
     return price ? `${label} · ${price}` : label;
   };
   const add = (label, url, kind, includePrice = true) => {
