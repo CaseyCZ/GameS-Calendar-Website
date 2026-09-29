@@ -82,8 +82,8 @@ jobs:
             echo "catalog files are unchanged"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "CaseyCZ"
+          git config user.email "25530709+CaseyCZ@users.noreply.github.com"
           git add games.json games-index.json
           git commit -m "chore: refresh live game catalog"
           git pull --rebase origin main
