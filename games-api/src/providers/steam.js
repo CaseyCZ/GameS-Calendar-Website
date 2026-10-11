@@ -7,7 +7,6 @@ const STORE_SEARCH = 'https://store.steampowered.com/api/storesearch/';
 const APP_DETAILS = 'https://store.steampowered.com/api/appdetails';
 const STEAM_REQUEST_GAP_MS = 250;
 const STEAM_NOT_FOUND_TTL_MS = 6 * 60 * 60_000;
-const STEAM_ALLOW_FORCE_REFRESH = process.env.STEAM_ALLOW_FORCE_REFRESH === '1';
 
 let steamRateLimitedUntil = 0;
 let steamRequestQueue = Promise.resolve();
@@ -120,7 +119,6 @@ function normalizeSteam(appId, data) {
 }
 
 export async function appDetails(appId, { force = false, language = 'english' } = {}) {
-  force = Boolean(force && STEAM_ALLOW_FORCE_REFRESH);
   const id = String(appId || '').replace(/\D/g, '');
   if (!id) throw new Error('Invalid Steam App ID');
   const key = `steam:app:${id}:cz:${language}`;
@@ -162,7 +160,6 @@ export async function appDetails(appId, { force = false, language = 'english' } 
 }
 
 export async function search(query, { force = false, limit = 8 } = {}) {
-  force = Boolean(force && STEAM_ALLOW_FORCE_REFRESH);
   const q = String(query || '').trim();
   if (!q) return [];
   const key = `steam:search:${q.toLowerCase()}`;
@@ -215,7 +212,6 @@ export async function search(query, { force = false, limit = 8 } = {}) {
 }
 
 export async function appList({ ifModifiedSince = 0, force = false } = {}) {
-  force = Boolean(force && STEAM_ALLOW_FORCE_REFRESH);
   if (!config.steamWebApiKey) throw new Error('STEAM_WEB_API_KEY is not configured');
   const key = `steam:official-app-list:${ifModifiedSince}`;
   if (!force) {
@@ -244,7 +240,7 @@ export const steamProvider = {
   product: appDetails,
   appList,
   health: async () => {
-    const result = await appDetails('570', { force: false });
+    const result = await appDetails('570', { force: true });
     return { ok: Boolean(result?.title), sample: result?.title || null, documentedListAvailable: Boolean(config.steamWebApiKey) };
   }
 };
