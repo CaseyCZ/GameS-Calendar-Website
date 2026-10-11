@@ -1,0 +1,67 @@
+name: Audit official game endpoints
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 5 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'games-api/**'
+      - 'enrich-subscriptions.js'
+      - '.github/workflows/audit-official-endpoints.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'games-api/**'
+      - 'enrich-subscriptions.js'
+      - '.github/workflows/audit-official-endpoints.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-official-game-endpoints
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Install API dependencies
+        working-directory: games-api
+        run: npm install --no-audit --no-fund
+
+      - name: Syntax check
+        working-directory: games-api
+        run: npm run check
+
+      - name: Audit official endpoints
+        working-directory: games-api
+        env:
+          GAMES_API_MARKET: CZ
+          GAMES_API_LANGUAGE: cs-cz
+          GAMES_API_PS_LOCALE: en-cz
+          GAMES_API_NINTENDO_COUNTRY: CZ
+          GAMES_API_NINTENDO_LANGUAGE: en
+          GAMES_API_GFN_COUNTRY: CZ
+          GAMES_API_GFN_LANGUAGE: en_US
+          STEAM_WEB_API_KEY: ${{ secrets.STEAM_WEB_API_KEY }}
+        run: npm run audit
+
+      - name: Dry-run subscription enrichment
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+        run: node enrich-subscriptions.js --dry-run
+

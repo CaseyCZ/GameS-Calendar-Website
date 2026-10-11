@@ -1,0 +1,94 @@
+/* Individual card-badge visibility controls live inside the filter sheet. */
+
+.badge-visibility-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.065);
+}
+
+.badge-visibility-summary {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.badge-visibility-summary::-webkit-details-marker { display: none; }
+.badge-visibility-summary::after {
+  content: '›';
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 18px;
+  transform: rotate(90deg);
+  transition: transform .16s ease;
+}
+.badge-visibility-section[open] .badge-visibility-summary::after { transform: rotate(-90deg); }
+.badge-visibility-summary small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.badge-visibility-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  padding: 8px 0 2px;
+}
+
+.badge-visibility-group { min-width: 0; }
+.badge-visibility-label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.badge-visibility-list { display: grid; gap: 1px; }
+.badge-visibility-setting { min-height: 29px; }
+
+/* Individual visibility switches. */
+.hide-card-badge-release #games .card-badges > .badge--soon,
+.hide-card-badge-release #games .card-badges > .badge--released { display: none !important; }
+
+.hide-card-badge-aaa #games .badge--scale-aaa,
+.hide-card-badge-indie #games .badge--scale-indie,
+.hide-card-badge-small #games .badge--scale-small { display: none !important; }
+
+.hide-card-badge-early #games .badge--early { display: none !important; }
+.hide-card-badge-rating #games .rating { display: none !important; }
+
+.hide-card-badge-full #games .badge--content-type[data-card-badge-type="full"],
+.hide-card-badge-dlc #games .badge--content-type[data-card-badge-type="dlc"],
+.hide-card-badge-expansion #games .badge--content-type[data-card-badge-type="expansion"],
+.hide-card-badge-remake #games .badge--content-type[data-card-badge-type="remake"],
+.hide-card-badge-remaster #games .badge--content-type[data-card-badge-type="remaster"],
+.hide-card-badge-demo #games .badge--content-type[data-card-badge-type="demo"],
+.hide-card-badge-mod #games .badge--content-type[data-card-badge-type="mod"] { display: none !important; }
+
+.hide-card-badge-gamepass #games .service-badge--gamepass,
+.hide-card-badge-psplus #games .service-badge--psplus,
+.hide-card-badge-gfn #games .service-badge--gfn { display: none !important; }
+
+@media (max-width: 760px) {
+  .badge-visibility-section { margin-top: 9px; padding-top: 8px; }
+  .badge-visibility-body { grid-template-columns: 1fr; gap: 8px; padding-top: 6px; }
+  .badge-visibility-summary { min-height: 31px; }
+  .badge-visibility-setting { min-height: 28px; }
+}
+
+@media (max-width: 760px) and (max-height: 600px) {
+  .badge-visibility-body { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; }
+  .badge-visibility-setting { min-height: 25px; font-size: 10px; }
+}
+
+html[data-theme="light"] .badge-visibility-section { border-color: rgba(62,35,72,.09); }

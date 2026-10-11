@@ -1,0 +1,649 @@
+import assert from 'node:assert/strict';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createRequire } from 'node:module';
+import { flattenReleases, normalizePayload, platformGroup, releaseBounds } from '../js/data.js';
+import { formatLivePrice } from '../js/ui.js';
+import { normalizeTitle, storefrontTitleScore, titleQueryVariants, titleScore } from '../games-api/src/lib/normalize.js';
+import { consolidateMicrosoftSearch, microsoftPagePriceForTitle, microsoftPriceOf } from '../games-api/src/lib/microsoft-pricing.js';
+import { epicIsGameOffer, epicPriceOf, epicStoreUrlOf } from '../games-api/src/lib/epic-store.js';
+import { historyValuesEqual, normalizeHistoryValue } from '../games-api/src/lib/history.js';
+import { calendarInternals } from '../games-api/src/lib/calendar.js';
+const require = createRequire(import.meta.url);
+const subscriptionHelpers = require('../enrich-subscriptions.js');
+const steamReleaseHelpers = require('../enrich-steam-release-dates.js');
+
+import { collapseCalendarRows, collapseDisplayRows, collapseGameRows, countWatchedFamilies, displayFamilyKey, gameIdentity, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from '../js/search.js';
+
+assert.equal(normalizeSearch('Call of Duty IV™'), 'call of duty 4');
+assert.equal(normalizeSearch('Final Fantasy XVI'), 'final fantasy 16');
+assert.equal(normalizeTitle('Example II'), normalizeTitle('Example 2'));
+assert.equal(normalizeTitle('Final Fantasy XVI'), 'final fantasy 16');
+assert.equal(titleScore('Example II', 'Example 2'), 1);
+assert.ok(titleQueryVariants('Example II').includes('example 2'));
+assert.equal(formatLivePrice({ isFree:true, current:0 }), 'Zdarma');
+assert.equal(formatLivePrice({ current:90, regular:100, currency:'CZK' }).includes('−10 %'), true);
+
+assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2') > storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Edition'));
+assert.ok(storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2: Deluxe Edition') > storefrontTitleScore('Planet Zoo 2: Deluxe Edition', 'Planet Zoo 2'));
+assert.ok(storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day') > storefrontTitleScore('Gears of War: E-Day', 'Gears of War: E-Day Premium Edition'));
+assert.ok(storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2: Deluxe Upgrade Pack') < storefrontTitleScore('Planet Zoo 2', 'Planet Zoo 2'));
+const gtaXboxPagePrice = microsoftPagePriceForTitle(
+  'Porovnat edice Grand Theft Auto VI 2 009,00 Kč+ Grand Theft Auto VI: Ultimate Edition 2 499,00 Kč+',
+  'Grand Theft Auto VI'
+);
+assert.equal(gtaXboxPagePrice?.currency, 'CZK');
+assert.equal(gtaXboxPagePrice?.current, 2009);
+
+
+assert.equal(subscriptionHelpers.normalizeTitle('Final Fantasy XVI™'), 'final fantasy 16');
+assert.equal(subscriptionHelpers.stripStoreSuffix('Yakuza: Like a Dragon PS4 & PS5'), 'Yakuza: Like a Dragon');
+assert.ok(subscriptionHelpers.titleVariants('Half-Life® 2').includes('half life 2'));
+
+const subscriptionIndex = subscriptionHelpers.buildUniqueGameIndex([
+  { id:'a', name:'Unique Game', aliases:[] },
+  { id:'b', name:'Same Name', aliases:[] },
+  { id:'c', name:'Same Name', aliases:[] }
+]);
+assert.equal(subscriptionIndex.unique.get('unique game'), 0);
+assert.equal(subscriptionIndex.ambiguous.has('same name'), true);
+const subscriptionMatch = subscriptionHelpers.matchCatalogToGames(
+  [{ id:'x', title:'Unique Game' }, { id:'y', title:'Same Name' }],
+  [{ id:'a', name:'Unique Game', aliases:[] }, { id:'b', name:'Same Name', aliases:[] }, { id:'c', name:'Same Name', aliases:[] }],
+  subscriptionIndex
+);
+assert.equal(subscriptionMatch.byGame.get(0)?.length, 1);
+assert.equal(subscriptionMatch.ambiguous, 1);
+
+const steamReleaseGame = {
+  releases: [{
+    date:'2026-09-23',
+    precision:'day',
+    platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC' }]
+  }]
+};
+assert.equal(steamReleaseHelpers.applySteamReleaseDate(steamReleaseGame, '2026-10-20'), true);
+assert.equal(steamReleaseGame.releases[0].date, '2026-10-20');
+assert.equal(steamReleaseGame.releases[0].precisionSource, 'steam-store-live');
+
+const splitReleaseGame = {
+  releases: [{
+    date:'2026-09-23',
+    precision:'day',
+    platforms:[
+      { name:'PC (Microsoft Windows)', abbreviation:'PC' },
+      { name:'PlayStation 5', abbreviation:'PS5' }
+    ]
+  }]
+};
+assert.equal(steamReleaseHelpers.applySteamReleaseDate(splitReleaseGame, '2026-10-20'), true);
+assert.equal(splitReleaseGame.releases.find(release => release.platforms.some(platform => platform.abbreviation === 'PC'))?.date, '2026-10-20');
+assert.equal(splitReleaseGame.releases.find(release => release.platforms.some(platform => platform.abbreviation === 'PS5'))?.date, '2026-09-23');
+
+const microsoftZeroOnly = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Base Game' }] }, Availabilities:[{
+    Actions:['Details'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:0, MSRP:0 } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftZeroOnly), null);
+
+const microsoftTrialZero = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Free Trial' }] }, Availabilities:[{
+    Actions:['Purchase'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:0, MSRP:0, IsFree:true } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftTrialZero), null);
+
+const microsoftPaid = {
+  DisplaySkuAvailabilities:[{ Sku:{ LocalizedProperties:[{ SkuTitle:'Pre-Order' }] }, Availabilities:[{
+    Actions:['Purchase'],
+    OrderManagementData:{ Price:{ CurrencyCode:'CZK', ListPrice:1799, MSRP:1799 } }
+  }]}]
+};
+assert.equal(microsoftPriceOf(microsoftPaid)?.current, 1799);
+assert.equal(microsoftPriceOf(microsoftPaid)?.preorder, true);
+
+const epicTownfall = {
+  title:'SILENT HILL: Townfall',
+  id:'townfall-base',
+  productSlug:'silent-hill-townfall-0cb037/home',
+  categories:[{ path:'games' }, { path:'games/edition/base' }],
+  price:{ totalPrice:{
+    discountPrice:4999,
+    originalPrice:4999,
+    currencyCode:'USD',
+    currencyInfo:{ decimals:2 },
+    fmtPrice:{ discountPrice:'$49.99', originalPrice:'$49.99' }
+  }}
+};
+assert.equal(epicIsGameOffer(epicTownfall), true);
+assert.equal(epicPriceOf(epicTownfall)?.current, 49.99);
+assert.equal(epicPriceOf(epicTownfall)?.currency, 'USD');
+assert.equal(epicStoreUrlOf(epicTownfall), 'https://store.epicgames.com/en-US/p/silent-hill-townfall-0cb037');
+
+const epicComingSoon = {
+  ...epicTownfall,
+  title:'ArcheAge Chronicles',
+  prePurchase:null,
+  effectiveDate:'2099-12-31T00:00:00.000Z',
+  releaseDate:'2099-12-31T00:00:00.000Z',
+  pcReleaseDate:'2099-12-31T00:00:00.000Z',
+  price:{ totalPrice:{
+    discountPrice:429000,
+    originalPrice:429000,
+    currencyCode:'CZK',
+    currencyInfo:{ decimals:2 },
+    fmtPrice:{ discountPrice:'CZK 4,290.00', originalPrice:'CZK 4,290.00' }
+  }}
+};
+assert.equal(epicPriceOf(epicComingSoon), null);
+assert.equal(epicPriceOf({ ...epicComingSoon, prePurchase:true })?.current, 4290);
+assert.equal(epicPriceOf({ ...epicComingSoon, prePurchase:true })?.preorder, true);
+assert.equal(epicIsGameOffer({ categories:[{ path:'addons' }] }), false);
+
+const xboxBase = { provider:'microsoft', providerId:'BASE', title:'Gears of War: E-Day', price:null, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day/BASE', subscriptions:{ gamePass:true }, rawHints:{} };
+const xboxStandard = { provider:'microsoft', providerId:'STD', title:'Gears of War: E-Day Pre-Order', price:{ current:1799, regular:1799, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-pre-order/STD', subscriptions:{}, rawHints:{} };
+const xboxPremium = { provider:'microsoft', providerId:'PREM', title:'Gears of War: E-Day Premium Edition Pre-Order', price:{ current:2599, regular:2599, currency:'CZK', preorder:true }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-pre-order/PREM', subscriptions:{}, rawHints:{} };
+const xboxUpgrade = { provider:'microsoft', providerId:'UPGRADE', title:'Gears of War: E-Day Premium Edition Upgrade', price:{ current:800, regular:800, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/gears-of-war-e-day-premium-edition-upgrade/UPGRADE', subscriptions:{}, rawHints:{} };
+const xboxConsolidated = consolidateMicrosoftSearch('Gears of War: E-Day', [xboxBase, xboxStandard, xboxPremium, xboxUpgrade])[0];
+assert.equal(xboxConsolidated.providerId, 'STD');
+assert.equal(xboxConsolidated.storeUrl.includes('xbox.com'), true);
+assert.equal(xboxConsolidated.price.current, 1799);
+assert.equal(xboxConsolidated.price.from, true);
+assert.equal(xboxConsolidated.subscriptions.gamePass, true);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.length, 2);
+assert.equal(xboxConsolidated.rawHints.xboxOffers.some(offer => offer.providerId === 'UPGRADE'), false);
+
+const xboxStandardEdition = { provider:'microsoft', providerId:'STD27', title:'Example 27 Standard Edition', price:{ current:1899, regular:1899, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-standard/STD27', subscriptions:{}, rawHints:{} };
+const xboxUltimateCheaper = { provider:'microsoft', providerId:'ULT27', title:'Example 27 Ultimate Edition', price:{ current:1499, regular:2599, currency:'CZK' }, storeUrl:'https://www.xbox.com/cs-CZ/games/store/example-27-ultimate/ULT27', subscriptions:{}, rawHints:{} };
+const xboxBaseChoice = consolidateMicrosoftSearch('Example 27', [xboxUltimateCheaper, xboxStandardEdition])[0];
+assert.equal(xboxBaseChoice.providerId, 'STD27');
+assert.equal(xboxBaseChoice.price.current, 1899);
+assert.equal(xboxBaseChoice.rawHints.selectedEdition, 'standard');
+
+const xboxWrongSearch = [
+  { provider:'microsoft', providerId:'GAMEPASS', title:'Xbox Game Pass Ultimate', price:{ current:499, currency:'CZK' }, subscriptions:{ gamePass:true }, rawHints:{} }
+];
+assert.deepEqual(consolidateMicrosoftSearch('Gears of War: E-Day', xboxWrongSearch), []);
+
+
+assert.equal(historyValuesEqual('prices', { microsoft:null }, {}), true);
+assert.equal(historyValuesEqual('subscriptions', { gamePass:false }, {}), true);
+assert.equal(historyValuesEqual('releaseDates', {}, []), true);
+assert.equal(historyValuesEqual('prices', {}, { microsoft:{ current:1799, currency:'CZK' } }), false);
+assert.equal(historyValuesEqual('subscriptions', {}, { gamePass:true }), false);
+assert.deepEqual(normalizeHistoryValue('prices', { microsoft:null, steam:{ current:69.99, currency:'EUR' } }), {
+  steam:{ currency:'EUR', currentText:'', current:69.99, regular:null, isFree:false }
+});
+
+
+assert.equal(normalizeSearch('Pokémon'), 'pokemon');
+assert.equal(matchesSearch({ name:'Call of Duty: Modern Warfare', aliases:[], developers:[], publishers:[], series:[] }, 'call warfare'), true);
+assert.ok(searchRelevance({ name:'Gears of War', aliases:[], developers:[], publishers:[], series:[] }, 'gears') > 70);
+
+assert.equal(gameIdentity({ id:'legacy-1', igdbId:'42', name:'Same Game' }), 'igdb:42');
+assert.equal(gameIdentity({ id:'legacy-1', name:'Same Game' }), 'id:legacy-1');
+
+const duplicateReleaseRows = [
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-11-01' }
+];
+assert.equal(collapseGameRows(duplicateReleaseRows).length, 1);
+
+const multiPlatformRows = [
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PlayStation 5', abbreviation:'PS5', group:'PS5' }], platformGroups:['PS5'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-11-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] }
+];
+const collapsedPlatformGame = collapseDisplayRows(multiPlatformRows, (current, candidate) => current.day <= candidate.day ? current : candidate)[0];
+assert.equal(collapsedPlatformGame.platforms.length, 2);
+assert.deepEqual(new Set(collapsedPlatformGame.platformGroups), new Set(['PS5','PC']));
+
+const reconstructedFamilyCard = collapseDisplayRows(multiPlatformRows, preferDisplayRow)[0];
+assert.equal(reconstructedFamilyCard.platforms.length, 2);
+assert.deepEqual(new Set(reconstructedFamilyCard.platformGroups), new Set(['PS5','PC']));
+
+const calendarRows = collapseCalendarRows([
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PlayStation 5', abbreviation:'PS5', group:'PS5' }], platformGroups:['PS5'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-10-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] },
+  { game:{ id:'igdb-99', igdbId:'99', name:'Platform Game' }, day:'2026-11-01', platforms:[{ name:'PC (Microsoft Windows)', abbreviation:'PC', group:'PC' }], platformGroups:['PC'] }
+]);
+assert.equal(calendarRows.length, 2);
+assert.equal(calendarRows.find(row => row.day === '2026-10-01').platforms.length, 2);
+
+assert.notEqual(releaseRecordKey(multiPlatformRows[0]), releaseRecordKey(multiPlatformRows[1]));
+const duplicatePs5Record = { ...multiPlatformRows[0], onlineResult:true };
+assert.equal(releaseRecordKey(multiPlatformRows[0]), releaseRecordKey(duplicatePs5Record));
+
+const distinctSameTitleRows = [
+  { game:{ id:'igdb-42', igdbId:'42', name:'Same Game' }, day:'2026-10-01' },
+  { game:{ id:'igdb-43', igdbId:'43', name:'Same Game' }, day:'2026-10-01' }
+];
+assert.equal(collapseGameRows(distinctSameTitleRows).length, 2);
+
+const reskinRows = [
+  { game:{ id:'cats-ar', name:'100 Cats Argentina', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-gr', name:'100 Cats Greece', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-pk', name:'100 Cats Pakistan', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-ph', name:'100 Cats Philippines', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-amsterdam', name:'100 Amsterdam Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-astro', name:'100 Astro Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' },
+  { game:{ id:'cats-barcelona', name:'100 Barcelona Cats', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
+];
+assert.equal(collapseDisplayRows(reskinRows).length, 1);
+
+assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','cats-gr'])), 1);
+assert.equal(countWatchedFamilies(reskinRows, new Set(['cats-ar','missing-old-id'])), 2);
+
+const watchedCatsFamilies = watchedFamilyKeys(reskinRows, new Set(['cats-ar']));
+assert.equal(watchedCatsFamilies.size, 1);
+assert.ok(watchedCatsFamilies.has(displayFamilyKey(reskinRows[1])));
+
+const unrelatedNumericRows = [
+  ...reskinRows.slice(0, 1),
+  { game:{ id:'rooms-100', name:'100 Hidden Rooms', developers:['Same Studio'], contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' }
+];
+assert.equal(collapseDisplayRows(unrelatedNumericRows).length, 2);
+
+assert.equal(releaseCertaintyRank({ day:'2026-09-25', precision:'day' }), 0);
+assert.equal(releaseCertaintyRank({ precision:'month', window:'September 2026' }), 1);
+assert.equal(releaseCertaintyRank({ precision:'q4', window:'Q4 2026' }), 2);
+assert.equal(releaseCertaintyRank({ precision:'year', window:'2026' }), 3);
+assert.equal(releaseCertaintyRank({ precision:'unknown', window:'TBA' }), 4);
+
+const fuzzyRated = { game:{ id:'fuzzy', name:'Family Game', ratingCount:5000, contentType:'Main Game' }, precision:'year', window:'2026', sortDay:'2026-07-01' };
+const exactUnrated = { game:{ id:'exact', name:'Family Game', ratingCount:0, contentType:'Main Game' }, day:'2026-10-15', precision:'day', sortDay:'2026-10-15' };
+assert.equal(preferDisplayRow(fuzzyRated, exactUnrated), exactUnrated);
+
+const quarterRated = { game:{ id:'q', name:'Family Game', ratingCount:999, contentType:'Main Game' }, precision:'q4', window:'Q4 2026', sortDay:'2026-11-15' };
+const monthUnrated = { game:{ id:'m', name:'Family Game', ratingCount:0, contentType:'Main Game' }, precision:'month', window:'October 2026', sortDay:'2026-10-15' };
+assert.equal(preferDisplayRow(quarterRated, monthUnrated), monthUnrated);
+
+const septemberRange = { from:'2026-09-01', to:'2026-09-30' };
+assert.equal(matchesReleaseRange({ day:'2026-09-18', precision:'day', from:'2026-09-18', to:'2026-09-18' }, septemberRange, 'month'), true);
+assert.equal(matchesReleaseRange({ precision:'month', window:'September 2026', from:'2026-09-01', to:'2026-09-30' }, septemberRange, 'month'), true);
+assert.equal(matchesReleaseRange({ precision:'q3', window:'Q3 2026', from:'2026-07-01', to:'2026-09-30' }, septemberRange, 'month'), false);
+assert.equal(matchesReleaseRange({ precision:'year', window:'2026', from:'2026-01-01', to:'2026-12-31' }, septemberRange, 'month'), false);
+
+assert.deepEqual(releaseBounds({ precision:'year', window:'2027' }), {
+  from:'2027-01-01', to:'2027-12-31', sortDay:'2027-07-01'
+});
+assert.deepEqual(releaseBounds({ precision:'q2', window:'Q2 2027' }), {
+  from:'2027-04-01', to:'2027-06-30', sortDay:'2027-05-15'
+});
+assert.deepEqual(releaseBounds({ precision:'month', window:'September 2026' }), {
+  from:'2026-09-01', to:'2026-09-30', sortDay:'2026-09-15'
+});
+assert.equal(platformGroup('PlayStation 5'), 'PS5');
+assert.equal(platformGroup('PlayStation 4'), 'PS4');
+assert.equal(platformGroup('Series X|S'), 'Xbox Series');
+assert.equal(platformGroup('Xbox Series X|S'), 'Xbox Series');
+assert.equal(platformGroup('XONE'), 'Xbox One');
+assert.equal(platformGroup('Xbox 360'), 'Xbox 360');
+assert.equal(platformGroup('PC (Microsoft Windows)'), 'PC');
+assert.equal(calendarInternals.platformGroup('PlayStation 4'), 'PS4');
+assert.equal(calendarInternals.platformGroup('Xbox Series X|S'), 'Xbox Series');
+assert.equal(calendarInternals.platformGroup('Xbox One'), 'Xbox One');
+assert.equal(calendarInternals.platformGroup('Xbox 360'), 'Xbox 360');
+assert.equal(calendarInternals.platformGroup('PSVR2'), 'VR');
+
+const dataset = normalizePayload({
+  version:5,
+  games:[{
+    id:1,
+    name:'Fuzzy Game',
+    releases:[{ date:null, window:'Q4 2026', precision:'q4', platforms:[{name:'PC'}] }]
+  }]
+});
+assert.equal(dataset.games[0].releases[0].day, null);
+assert.equal(dataset.games[0].releases[0].from, '2026-10-01');
+assert.equal(dataset.games[0].releases[0].to, '2026-12-31');
+
+const igdbDataset = normalizePayload({ version:5, games:[{
+  id:'igdb-preserve',
+  igdbId:'348202',
+  name:'IGDB Preserve',
+  releases:[{ date:'2026-10-01', platforms:['Xbox Series'] }]
+}]});
+assert.equal(igdbDataset.games[0].igdbId, '348202');
+
+const sameDayDataset = normalizePayload({
+  version:5,
+  games:[{
+    id:'same-day',
+    name:'Same Day Game',
+    releases:[
+      { date:'2026-10-01', platforms:['PS5'] },
+      { date:'2026-10-01', platforms:['PC'] }
+    ]
+  }]
+});
+const sameDayRows = flattenReleases(sameDayDataset);
+assert.equal(sameDayRows.length, 2);
+assert.equal(new Set(sameDayRows.map(row => row.key)).size, 2);
+
+
+
+const compactControlsSource = readFileSync(new URL('../compact-controls.js', import.meta.url), 'utf8');
+assert.equal(compactControlsSource.includes("import('./advanced-features.js')"), false);
+assert.equal(compactControlsSource.includes('function setupInfo()'), true);
+assert.equal(compactControlsSource.includes("details.className = 'info-menu'"), true);
+assert.equal(compactControlsSource.includes('Jsi tu nový?'), true);
+assert.equal(compactControlsSource.includes('data-info-close'), true);
+assert.equal(compactControlsSource.includes("details.open = false"), true);
+assert.equal(compactControlsSource.includes('Gesta v detailu'), true);
+assert.equal(compactControlsSource.includes('Co znamenají značky a barvy'), true);
+assert.equal(compactControlsSource.includes('Nadcházející'), true);
+assert.equal(compactControlsSource.includes('Game Pass'), true);
+assert.equal(compactControlsSource.includes('posl. známá'), true);
+assert.equal(compactControlsSource.includes('nejnižší nalezenou odpovídající nabídku'), true);
+assert.equal(compactControlsSource.includes("const info = $('info-menu')"), true);
+
+const compactControlsCssSource = readFileSync(new URL('../compact-controls.css', import.meta.url), 'utf8');
+assert.equal(compactControlsCssSource.includes('.info-summary'), true);
+assert.equal(compactControlsCssSource.includes('.info-popover'), true);
+assert.equal(compactControlsCssSource.includes('.info-help-item'), true);
+assert.equal(compactControlsCssSource.includes('.info-title-row'), true);
+assert.equal(compactControlsCssSource.includes('.info-close'), true);
+assert.equal(compactControlsCssSource.includes('.info-legend'), true);
+assert.equal(compactControlsCssSource.includes('.info-demo-price.is-stale'), true);
+assert.equal(compactControlsCssSource.includes('.info-demo-badge--early'), true);
+
+const advancedSource = readFileSync(new URL('../advanced-features.js', import.meta.url), 'utf8');
+assert.equal(advancedSource.includes("dy >= 88"), false);
+
+const appSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+assert.equal(appSource.includes("window.addEventListener('games:live-release-date'"), true);
+assert.equal(appSource.includes('function applyLiveReleaseDateCache'), true);
+assert.equal(appSource.includes('releaseDates?.steam'), true);
+assert.equal(appSource.includes('applyLiveReleaseDateCache(state.rows)'), true);
+assert.equal(appSource.includes("provider !== 'steam'"), true);
+assert.equal(appSource.includes("includes('PC')"), true);
+assert.equal(appSource.includes("dataset.igdbId = String(row.game?.igdbId || '')"), true);
+assert.equal(appSource.includes("removeAttribute('data-live-enriched-title')"), true);
+assert.equal(appSource.includes("'eaPlay'"), true);
+assert.equal(appSource.includes('compactLiveProviderEntry'), true);
+assert.equal(appSource.includes('dataset.livePlatforms'), true);
+assert.equal(appSource.includes('function patchGameDialog'), true);
+assert.equal(appSource.includes('async function createGameShareCard(row)'), true);
+assert.equal(appSource.includes("canvas.width = 1080"), true);
+assert.equal(appSource.includes("canvas.height = 1350"), true);
+assert.equal(appSource.includes("navigator.canShare?.({ files: [file] })"), true);
+assert.equal(appSource.includes("new File([blob]"), true);
+assert.equal(appSource.includes('GameS · Herní kalendář'), true);
+assert.equal(appSource.includes('function syncDialogNode'), true);
+assert.equal(appSource.includes('patchGameDialog(row);'), true);
+assert.equal(appSource.includes("const liveApplied = liveState === 'ok' || liveState === 'empty'"), true);
+assert.equal(appSource.includes('checkedProviders'), true);
+assert.equal(appSource.includes('function patchVisibleLiveCard'), true);
+assert.equal(appSource.includes('function scheduleLiveCardPatch'), true);
+assert.equal(appSource.includes("for (const selector of ['.card-badges', '.game-card__body'])"), true);
+assert.equal(appSource.includes('scheduleLiveCardPatch(id, igdbId)'), true);
+assert.equal(appSource.includes('scheduleLiveCardPatch(gameIdValue, igdbIdValue)'), true);
+
+const nintendoProviderSource = readFileSync(new URL('../games-api/src/providers/nintendo.js', import.meta.url), 'utf8');
+assert.equal(nintendoProviderSource.includes('nintendo:search:v2:'), true);
+
+const steamProviderSource = readFileSync(new URL('../games-api/src/providers/steam.js', import.meta.url), 'utf8');
+assert.equal(steamProviderSource.includes('data.is_free === true'), true);
+
+const playstationProviderSource = readFileSync(new URL('../games-api/src/providers/playstation.js', import.meta.url), 'utf8');
+assert.equal(playstationProviderSource.includes('psPlusCatalog'), true);
+assert.equal(playstationProviderSource.includes("psPlusSource: 'playstation-monthly-category'"), true);
+assert.equal(playstationProviderSource.includes('function collectProductReferences'), true);
+assert.equal(playstationProviderSource.includes('function conceptIdFromProductPayload'), true);
+assert.equal(playstationProviderSource.includes("priceFallback: 'product-concept-pricing'"), true);
+assert.equal(playstationProviderSource.includes("metGetPricingDataByConceptId', { conceptId }"), true);
+assert.equal(playstationProviderSource.includes("const priceNode = node.price && typeof node.price === 'object'"), true);
+assert.equal(playstationProviderSource.includes('priceNode.discountedValue'), true);
+assert.equal(playstationProviderSource.includes("preferredTitle = ''"), true);
+assert.equal(playstationProviderSource.includes('storefrontTitleScore(wantedTitle, item.title)'), true);
+assert.equal(playstationProviderSource.includes('async function pricedConceptProduct'), true);
+assert.equal(playstationProviderSource.includes("priceFallback: 'concept-product'"), true);
+assert.equal(playstationProviderSource.includes('preferredTitle: q'), true);
+assert.equal(playstationProviderSource.includes('upgrade|add[- ]?on|dlc'), true);
+
+const epicProviderSource = readFileSync(new URL('../games-api/src/providers/epic.js', import.meta.url), 'utf8');
+assert.equal(epicProviderSource.includes('PersistedQueryNotFound'), true);
+assert.equal(epicProviderSource.includes('query: SEARCH_QUERY'), true);
+assert.equal(epicProviderSource.includes("method: 'POST'"), true);
+assert.equal(epicProviderSource.includes('prePurchase'), true);
+assert.equal(epicProviderSource.includes('epic:search:v2'), true);
+assert.equal(epicProviderSource.includes('priceSuppressed'), true);
+
+const liveEnrichmentSource = readFileSync(new URL('../live-detail-enrichment.js', import.meta.url), 'utf8');
+assert.equal(liveEnrichmentSource.includes('igdbId: currentIgdbId()'), true);
+
+assert.equal(liveEnrichmentSource.includes("games:subscription-updated"), true);
+assert.equal(liveEnrichmentSource.includes('cachedPayload(cacheKey)'), true);
+assert.equal(liveEnrichmentSource.includes('CACHE_TTL_MS = 2 * 60 * 1000'), true);
+assert.equal(liveEnrichmentSource.includes('cachePayload(cacheKey, payload)'), true);
+assert.equal(liveEnrichmentSource.includes('ensureStoreLink'), true);
+assert.equal(liveEnrichmentSource.includes('checkedProviders: group.providerNames'), true);
+assert.equal(liveEnrichmentSource.includes('screenObserver.disconnect()'), true);
+assert.equal(liveEnrichmentSource.includes('posl. známá'), true);
+assert.equal(liveEnrichmentSource.includes('wrap.replaceChildren()'), true);
+assert.equal(liveEnrichmentSource.includes("label: 'Microsoft / Xbox Store'"), true);
+assert.equal(liveEnrichmentSource.includes("querySelectorAll('.store-link--xbox')"), true);
+assert.equal(liveEnrichmentSource.includes('liveBaseLabel'), true);
+assert.equal(liveEnrichmentSource.includes('function applyStoreAvailability'), true);
+assert.equal(liveEnrichmentSource.includes('function applySteamReleaseDate'), true);
+assert.equal(liveEnrichmentSource.includes("matchedProviders.includes('steam')"), true);
+assert.equal(liveEnrichmentSource.includes("provider: 'steam'"), true);
+assert.equal(liveEnrichmentSource.includes("status !== 'not_found'"), true);
+assert.equal(liveEnrichmentSource.includes('isFallbackStoreLink'), true);
+assert.equal(liveEnrichmentSource.includes('const displayProviders = stored?.providers || providers'), false);
+assert.equal(liveEnrichmentSource.includes("dialog.dataset.livePlatforms"), true);
+assert.equal(liveEnrichmentSource.includes('lastKnownProviders'), true);
+assert.equal(liveEnrichmentSource.includes("document.createElement('details')"), true);
+assert.equal(liveEnrichmentSource.includes('detail-history-disclosure'), true);
+assert.equal(liveEnrichmentSource.includes('detail-history-summary__count'), true);
+assert.equal(liveEnrichmentSource.includes('screenEntry?.payload'), true);
+assert.equal(liveEnrichmentSource.includes('function providerSignature'), true);
+assert.equal(liveEnrichmentSource.includes('screenCache.get(screenKey({'), true);
+assert.equal(liveEnrichmentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
+const enrichCurrentSource = liveEnrichmentSource.slice(liveEnrichmentSource.indexOf('async function enrichCurrent()'));
+assert.equal(enrichCurrentSource.includes('window.__gamesLiveProviderCache?.(currentGameId(), currentIgdbId())'), false);
+
+const serverSource = readFileSync(new URL('../games-api/src/server.js', import.meta.url), 'utf8');
+assert.equal(serverSource.includes("change.field === 'prices'"), true);
+assert.equal(serverSource.includes("change.field === 'subscriptions'"), true);
+assert.equal(serverSource.includes("change.field === 'earlyAccess'"), true);
+assert.equal(serverSource.includes('detail.hit.storefrontScore >= threshold'), true);
+assert.equal(serverSource.includes("wanted.has('steam') && game.steamId"), true);
+assert.equal(serverSource.includes("if (!wanted.has(provider) || !price) continue"), true);
+assert.equal(serverSource.includes('subscriptionsForProviders(snapshot?.subscriptions || {}, wanted)'), true);
+assert.equal(serverSource.includes("if (wanted.has('igdb')) addFound(found, igdbIdentity)"), true);
+assert.equal(serverSource.includes("providers.playstation?.concept(String(game.psConceptId), { force, preferredTitle: title })"), true);
+assert.equal(serverSource.includes("directFromIdentity(igdbIdentity, wanted, { force, preferredTitle: title })"), true);
+assert.equal(serverSource.includes('bestSearchHitDetailed'), true);
+assert.equal(serverSource.includes('function providerNamesForPlatforms'), true);
+assert.equal(serverSource.includes('extendWantedFromIdentity(wanted, igdbIdentity, providerStatus)'), true);
+assert.equal(serverSource.includes('providerList([...wanted])'), true);
+assert.equal(serverSource.includes('providerStatus,'), true);
+assert.equal(serverSource.includes("status: 'not_found'"), true);
+assert.equal(serverSource.includes("status: 'error'"), true);
+const microsoftProviderSource = readFileSync(new URL('../games-api/src/providers/microsoft.js', import.meta.url), 'utf8');
+assert.equal(microsoftProviderSource.includes('function xboxEmbeddedStoreLinks'), true);
+assert.equal(microsoftProviderSource.includes('if (!item.price)'), true);
+assert.equal(microsoftProviderSource.includes('if (!primary?.price)'), true);
+assert.equal(microsoftProviderSource.includes('storefrontTitleScore(item.title, candidate.title) >= 0.70'), true);
+assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(item.title))'), true);
+assert.equal(microsoftProviderSource.includes('const searchHtml = await fetchText(xboxSearchUrl(q))'), true);
+assert.equal(microsoftProviderSource.includes('microsoftPagePriceForTitle'), true);
+assert.equal(microsoftProviderSource.includes("xboxPriceFallback: 'page-edition-text'"), true);
+assert.equal(microsoftProviderSource.includes("xboxPriceFallback: 'search-edition'"), true);
+assert.equal(microsoftProviderSource.includes("if (!item.price) {\n      const searchedEditions = await search(exactTitle, { force, limit: 8 });"), true);
+assert.equal(microsoftProviderSource.includes('await search(exactTitle, { force, limit: 8 })'), true);
+assert.equal(microsoftProviderSource.includes('enriched.rawHints?.xboxPriceProductId || enriched.providerId'), true);
+assert.equal(serverSource.includes('lastKnownProviders'), true);
+assert.equal(serverSource.includes('gameSnapshot(gameKey)'), true);
+
+const steamReleaseSource = readFileSync(new URL('../enrich-steam-release-dates.js', import.meta.url), 'utf8');
+assert.equal(steamReleaseSource.includes('response.status === 429'), true);
+assert.equal(steamReleaseSource.includes('stopping Steam release-date verification for this run'), true);
+const refreshWorkflowSource = readFileSync(new URL('../.github/workflows/refresh-catalog.yml', import.meta.url), 'utf8');
+assert.equal(refreshWorkflowSource.includes('cancel-in-progress: true'), true);
+assert.equal(refreshWorkflowSource.includes('STEAM_RELEASE_CONCURRENCY: 1'), true);
+
+const dbSource = readFileSync(new URL('../games-api/src/db.js', import.meta.url), 'utf8');
+assert.equal(dbSource.includes("['gameAdded', 'releaseDates', 'gameRemoved', 'prices', 'subscriptions', 'earlyAccess']"), true);
+assert.equal(dbSource.includes("if (price) merged.prices[provider] = price"), true);
+assert.equal(dbSource.includes("else if (!(provider in merged.prices)) merged.prices[provider] = null"), true);
+assert.equal(dbSource.includes('delete merged.prices[provider]'), true);
+assert.equal(dbSource.includes('lastMeaningfulHistoryValue'), true);
+assert.equal(dbSource.includes('mergeSparseTrackedSnapshot'), true);
+assert.equal(dbSource.includes('storeUrls'), true);
+assert.equal(dbSource.includes('suppressUnconfirmedPriceRemoval'), true);
+assert.equal(dbSource.includes('.map(stableHistoryItem)'), true);
+
+const detailPolishSource = readFileSync(new URL('../detail-polish.css', import.meta.url), 'utf8');
+assert.equal(detailPolishSource.includes('.detail-history-summary'), true);
+assert.equal(detailPolishSource.includes('.detail-history-disclosure[open]'), true);
+
+const themesSource = readFileSync(new URL('../themes.css', import.meta.url), 'utf8');
+assert.equal(themesSource.includes('Light-theme polish: stronger layer separation'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .chip--platform.is-active'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .card-price-chip'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .card-price-chip.is-stale'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .info-popover'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .badge--soon'), true);
+assert.equal(themesSource.includes('html[data-theme$="-light"] .service-badge--gamepass'), true);
+
+const uiSource = readFileSync(new URL('../js/ui.js', import.meta.url), 'utf8');
+assert.equal(uiSource.includes('cardLivePrices(row)'), true);
+assert.equal(uiSource.includes('function livePriceAllowed(row, provider, price)'), true);
+assert.equal(uiSource.includes("provider !== 'epic'"), true);
+assert.equal(uiSource.includes('price.preorder === true'), true);
+assert.equal(uiSource.includes('priceProvidersForRow'), true);
+assert.equal(uiSource.includes('serviceKindsForRow'), true);
+assert.equal(uiSource.includes("'Microsoft / Xbox Store'"), true);
+assert.equal(uiSource.includes("'Hledat na Microsoft / Xbox'"), true);
+assert.equal(uiSource.includes("subscriptions?.eaPlay"), true);
+assert.equal(uiSource.includes("subscriptions?.cloudGaming"), true);
+assert.equal(uiSource.includes('livePriceMeta'), true);
+assert.equal(uiSource.includes('posl. známá'), true);
+assert.equal(uiSource.includes('card-service-badge'), true);
+assert.equal(uiSource.includes('▣ Sdílet kartu'), true);
+assert.equal(uiSource.includes('<span>Game Pass</span>'), true);
+
+const appSubscriptionSource = readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+assert.equal(appSubscriptionSource.includes("games:subscription-updated"), true);
+assert.equal(appSubscriptionSource.includes('games-calendar-live-subscriptions-v1'), true);
+assert.equal(appSubscriptionSource.includes('games-calendar-live-providers-v2'), true);
+assert.equal(appSubscriptionSource.includes('const priceSuppressed = Boolean(provider?.rawHints?.priceSuppressed)'), true);
+assert.equal(appSubscriptionSource.includes('price: priceSuppressed ? null : (provider?.price || prior.price || null)'), true);
+
+const moduleSources = [
+  '../compact-controls.js',
+  '../advanced-features.js',
+  '../badge-filter-controls.js',
+  '../filter-section-accordion.js',
+  '../detail-gesture-fix.js',
+  '../live-detail-enrichment.js',
+  '../release-tracker.js',
+  '../js/app.js'
+];
+for (const source of moduleSources) {
+  const url = new URL(source, import.meta.url);
+  const text = readFileSync(url, 'utf8');
+  for (const match of text.matchAll(/import\(\s*['"]([^'"]+)['"]\s*\)/g)) {
+    const specifier = match[1];
+    if (!specifier.startsWith('.')) continue;
+    assert.equal(existsSync(new URL(specifier, url)), true, `Missing local import ${specifier} from ${source}`);
+  }
+}
+
+const compactPayload = JSON.parse(readFileSync(new URL('../games-index.json', import.meta.url), 'utf8'));
+assert.equal(compactPayload.compact, true);
+const compactDataset = normalizePayload(compactPayload);
+assert.equal(compactDataset.games.length, compactPayload.games.length);
+assert.ok(compactDataset.games.every(game => Array.isArray(game.releases)));
+
+const versionSource = readFileSync(new URL('../version.js', import.meta.url), 'utf8');
+const versionMatch = versionSource.match(/GAMES_APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+assert.ok(versionMatch, 'Missing GAMES_APP_VERSION');
+const releaseVersion = versionMatch[1];
+const rootPackage = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const rootLock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'));
+const swSource = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+assert.equal(rootPackage.version, releaseVersion);
+assert.equal(rootLock.version, releaseVersion);
+assert.equal(rootLock.packages?.['']?.version, releaseVersion);
+assert.equal(swSource.includes(`globalThis.GAMES_APP_VERSION || '${releaseVersion}'`), true);
+assert.equal(serverSource.includes('url: `./?${query}`'), true);
+
+const dbTempDir = mkdtempSync(join(tmpdir(), 'games-api-smoke-'));
+process.env.GAMES_API_DB = join(dbTempDir, 'snapshot.sqlite');
+const dbModule = await import('../games-api/src/db.js');
+try {
+  const key = 'smoke-last-known-price';
+  dbModule.saveGameSnapshot(key, {
+    title: 'Smoke Price Game',
+    providers: {
+      steam: {
+        provider:'steam',
+        providerId:'123',
+        storeUrl:'https://store.steampowered.com/app/123/',
+        price:{ current:19.99, regular:19.99, currency:'EUR' }
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  dbModule.saveGameSnapshot(key, {
+    title: 'Smoke Price Game',
+    providers: {
+      steam: {
+        provider:'steam',
+        providerId:'123',
+        storeUrl:'https://store.steampowered.com/app/123/',
+        price:null
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  const snapshot = dbModule.gameSnapshot(key);
+  assert.equal(snapshot?.prices?.steam?.current, 19.99);
+  assert.equal(snapshot?.prices?.steam?.currency, 'EUR');
+
+  const suppressedKey = 'smoke-suppressed-price';
+  dbModule.saveGameSnapshot(suppressedKey, {
+    title: 'Smoke Suppressed Price Game',
+    providers: {
+      epic: {
+        provider:'epic',
+        providerId:'epic-123',
+        storeUrl:'https://store.epicgames.com/en-US/p/smoke-game',
+        price:{ current:4290, regular:4290, currency:'CZK' },
+        rawHints:{}
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  dbModule.saveGameSnapshot(suppressedKey, {
+    title: 'Smoke Suppressed Price Game',
+    providers: {
+      epic: {
+        provider:'epic',
+        providerId:'epic-123',
+        storeUrl:'https://store.epicgames.com/en-US/p/smoke-game',
+        price:null,
+        rawHints:{ priceSuppressed:true }
+      }
+    },
+    subscriptions:{}
+  }, 'smoke');
+
+  const suppressedSnapshot = dbModule.gameSnapshot(suppressedKey);
+  assert.equal('epic' in (suppressedSnapshot?.prices || {}), false);
+} finally {
+  dbModule.db.close();
+  rmSync(dbTempDir, { recursive:true, force:true });
+}
+
+console.log('Smoke tests passed.');

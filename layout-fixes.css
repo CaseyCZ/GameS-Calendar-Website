@@ -1,0 +1,117 @@
+/* Layout fixes for filters and month rail */
+
+/* The outer filter bar wraps into real rows. Horizontal scrolling happens
+   inside the platform and genre rails, so sections never overlap. */
+.filters {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow-x: visible;
+  gap: 7px;
+}
+
+.platform-filter-row,
+.genre-filter-wrap {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.platform-filter-row .platforms {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.platform-filter-row .platforms::-webkit-scrollbar,
+.genre-filter-list::-webkit-scrollbar,
+.month-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Genre filters always get their own complete row. */
+.genre-filter-wrap {
+  width: 100%;
+  padding-top: 7px;
+  border-top: 1px solid rgba(255,255,255,.045);
+}
+
+.genre-filter-list {
+  width: 100%;
+  min-width: 0;
+  scrollbar-width: none;
+}
+
+/* Month cards: month and year wrap onto two lines and the numbers have
+   their own column. Three cards fit comfortably on most phones. */
+.month-tile {
+  min-width: 118px;
+  display: grid;
+  grid-template-columns: minmax(45px, 1fr) auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "date games"
+    "date releases";
+  align-items: center;
+  gap: 1px 6px;
+  padding: 8px 8px;
+}
+
+.month-tile > span:first-child {
+  grid-area: date;
+  width: 52px;
+  max-width: 52px;
+  white-space: normal;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.month-tile > strong {
+  grid-area: games;
+  justify-self: end;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.month-tile > small {
+  grid-area: releases;
+  justify-self: end;
+  margin: 0;
+  white-space: nowrap;
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+@media (max-width: 760px) {
+  .filters {
+    gap: 6px;
+  }
+
+  .platform-filter-row {
+    gap: 7px;
+  }
+
+  .genre-filter-wrap {
+    padding-top: 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  .month-rail {
+    gap: 6px;
+  }
+
+  .month-tile {
+    min-width: 116px;
+    padding-inline: 7px;
+  }
+
+  .month-tile > span:first-child {
+    width: 49px;
+    max-width: 49px;
+    font-size: 10px;
+  }
+
+  .month-tile > strong {
+    font-size: 14px;
+  }
+}

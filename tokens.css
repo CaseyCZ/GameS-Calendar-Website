@@ -1,0 +1,44 @@
+:root {
+  color-scheme: dark;
+
+  /* Core palette */
+  --bg: #08040d;
+  --bg-elevated: #110919;
+  --panel: rgba(24, 13, 34, .78);
+  --panel-solid: #180d22;
+  --panel-hover: #21112e;
+  --input: #160b20;
+  --border: rgba(255, 255, 255, .09);
+  --border-strong: rgba(255, 71, 155, .38);
+  --text: #f8f3fb;
+  --muted: #a99cb4;
+  --pink: #ff479b;
+  --pink-soft: rgba(255, 71, 155, .14);
+  --purple: #c084fc;
+  --blue: #38bdf8;
+  --green: #34d399;
+  --danger: #fb7185;
+
+  /* Surfaces */
+  --surface-soft: rgba(255, 255, 255, .035);
+  --surface-hover: rgba(255, 71, 155, .07);
+  --theme-topbar: rgba(8, 4, 13, .86);
+  --theme-body-bg:
+    radial-gradient(circle at 15% -10%, rgba(192, 132, 252, .14), transparent 30rem),
+    radial-gradient(circle at 85% -10%, rgba(255, 71, 155, .12), transparent 34rem),
+    var(--bg);
+
+  /* Geometry */
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius: 16px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --shell: 1860px;
+
+  /* Effects */
+  --shadow: 0 22px 70px rgba(0, 0, 0, .35);
+}

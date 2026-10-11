@@ -1,0 +1,106 @@
+name: Enrich game metadata
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '35 4 * * 1'
+  push:
+    branches:
+      - main
+    paths:
+      - 'fetch-games.js'
+      - 'enrich-public-metadata.js'
+      - 'games-api/scripts/enrich-catalog-igdb.js'
+      - '.github/workflows/update-games.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: game-catalog-writer
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
+      IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Enrich games.json
+        env:
+          METADATA_CONCURRENCY: 8
+          METADATA_RETRY_DAYS: 30
+          STEAM_CONCURRENCY: 2
+          STEAM_RETRY_DAYS: 14
+        run: |
+          set -o pipefail
+          log="$(mktemp)"
+          if npm run fetch-games 2>&1 | tee "$log"; then
+            rm -f "$log"
+            exit 0
+          fi
+          if grep -q 'maxlag: Waiting for wdqs' "$log"; then
+            echo "::warning::Wikidata Query Service is temporarily lagged; keeping the current games.json and continuing."
+            rm -f "$log"
+            exit 0
+          fi
+          rm -f "$log"
+          exit 1
+
+      - name: Enrich catalog from IGDB
+        if: ${{ env.IGDB_CLIENT_ID != '' && env.IGDB_CLIENT_SECRET != '' }}
+        env:
+          IGDB_ENRICH_CONCURRENCY: 4
+          IGDB_ENRICH_RETRY_DAYS: 30
+        run: npm run enrich-igdb
+
+      - name: Refresh rolling catalog through live GameS IGDB API
+        env:
+          GAMES_LIVE_API: https://130.61.49.108/games-api
+          IGDB_LIVE_BATCH_SIZE: 500
+          IGDB_LIVE_RETRIES: 6
+        run: npm run enrich-live-igdb
+
+      - name: Improve descriptions and subscription catalogs
+        run: npm run enrich-public
+
+      - name: Repair and normalize catalog
+        run: npm run repair-catalog
+
+      - name: Build compact web catalog
+        run: npm run build-index
+
+      - name: Check JavaScript
+        run: npm run check
+
+      - name: Run smoke tests
+        run: npm test
+
+      - name: Audit repaired catalog
+        run: npm run audit-data
+
+      - name: Commit changed data
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if [[ -z "$(git status --porcelain -- games.json games-index.json)" ]]; then
+            echo "catalog files are unchanged"
+            exit 0
+          fi
+          git config user.name "CaseyCZ"
+          git config user.email "25530709+CaseyCZ@users.noreply.github.com"
+          git add games.json games-index.json
+          git commit -m "chore: enrich game metadata"
+          git pull --rebase origin main
+          git push origin HEAD:main

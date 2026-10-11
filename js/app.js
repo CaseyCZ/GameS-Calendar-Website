@@ -1,0 +1,1886 @@
+import {
+  PLATFORM_GROUPS,
+  addDays,
+  flattenReleases,
+  loadGameData,
+  loadGameDetail,
+  monthRange,
+  platformGroup,
+  searchOnlineGames,
+  todayLocal
+} from './data.js';
+import { downloadIcs, googleCalendarUrl } from './calendar.js';
+import { apiUrl, fetchApi } from './api.js';
+import { collapseCalendarRows, collapseDisplayRows, countWatchedFamilies, displayFamilyKey, matchesReleaseRange, matchesSearch, normalizeSearch, preferDisplayRow, releaseCertaintyRank, releaseRecordKey, searchRelevance, watchedFamilyKeys } from './search.js';
+import { platformIcon } from './icons.js';
+import {
+  MONTHS,
+  escapeHtml,
+  formatDate,
+  formatGenre,
+  formatLivePrice,
+  formatMonth,
+  formatter,
+  gameDialogHtml,
+  rowCard
+} from './ui.js';
+
+const $ = id => document.getElementById(id);
+const PAGE_SIZE = 72;
+const MAX_GENRE_FILTERS = 32;
+const WATCH_KEY = 'games-calendar-watchlist-v2';
+const VIEW_KEY = 'games-calendar-view-v2';
+const PLATFORM_PREF_KEY = 'games-calendar-my-platforms-v1';
+const NOTIFY_KEY = 'games-calendar-notifications-v1';
+const NOTIFY_LAST_KEY = 'games-calendar-notifications-last-v1';
+const LIVE_SUBSCRIPTIONS_KEY = 'games-calendar-live-subscriptions-v1';
+const LIVE_SUBSCRIPTIONS_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+const LIVE_PROVIDER_KEY = 'games-calendar-live-providers-v2';
+const LIVE_PROVIDER_MAX_AGE = 24 * 60 * 60 * 1000;
+const PUSH_PUBLIC_KEY_PATH = '/push/public-key';
+const PUSH_SUBSCRIBE_PATH = '/push/subscribe';
+const CALENDAR_FEED_URL = apiUrl('/calendar.ics');
+const DEFAULT_TITLE = 'Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo';
+const DEFAULT_DESCRIPTION = 'Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.';
+
+function debounce(fn, wait = 180) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), wait); };
+}
+
+function readJsonSet(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || '[]');
+    return new Set(Array.isArray(value) ? value.map(String) : []);
+  } catch { return new Set(); }
+}
+
+function saveJsonSet(key, set) {
+  try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+}
+
+function readLiveSubscriptions() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LIVE_SUBSCRIPTIONS_KEY) || '{}');
+    const now = Date.now();
+    const out = {};
+    for (const [key, entry] of Object.entries(raw && typeof raw === 'object' ? raw : {})) {
+      const updatedAt = Number(entry?.updatedAt || 0);
+      if (!updatedAt || now - updatedAt > LIVE_SUBSCRIPTIONS_MAX_AGE) continue;
+      out[key] = entry;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function writeLiveSubscriptions(cache) {
+  try { localStorage.setItem(LIVE_SUBSCRIPTIONS_KEY, JSON.stringify(cache)); } catch {}
+}
+
+const liveSubscriptions = readLiveSubscriptions();
+
+function readLiveProviders() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LIVE_PROVIDER_KEY) || '{}');
+    const now = Date.now();
+    return Object.fromEntries(Object.entries(raw || {}).filter(([, entry]) =>
+      Number(entry?.updatedAt || 0) && now - Number(entry.updatedAt) <= LIVE_PROVIDER_MAX_AGE
+    ));
+  } catch { return {}; }
+}
+
+function compactLiveProviderEntry(detail = {}, previous = null) {
+  const providers = { ...(previous?.providers || {}) };
+  for (const [name, provider] of Object.entries(detail.providers || {})) {
+    const prior = providers[name] || {};
+    const priceSuppressed = Boolean(provider?.rawHints?.priceSuppressed);
+    providers[name] = {
+      ...prior,
+      provider: provider?.provider || name,
+      providerId: provider?.providerId || prior.providerId || null,
+      title: provider?.title || prior.title || '',
+      price: priceSuppressed ? null : (provider?.price || prior.price || null),
+      subscriptions: provider?.subscriptions || {},
+      storeUrl: provider?.storeUrl || prior.storeUrl || '',
+      rating: provider?.rating || prior.rating || null,
+      ratingCount: provider?.ratingCount || prior.ratingCount || null,
+      fetchedAt: provider?.fetchedAt || detail.verifiedAt || prior.fetchedAt || null,
+      rawHints: {
+        ...(prior?.rawHints || {}),
+        ...(provider?.rawHints || {})
+      },
+      lastKnownPrice: priceSuppressed ? false : Boolean(
+        provider?.rawHints?.lastKnownPrice
+        || provider?.lastKnownPrice
+        || (!provider?.price && prior.price)
+      )
+    };
+  }
+  return {
+    providers,
+    merged: {
+      subscriptions: detail.merged?.subscriptions || previous?.merged?.subscriptions || {},
+      fieldSources: detail.merged?.fieldSources || previous?.merged?.fieldSources || {}
+    },
+    releaseDates: {
+      ...(previous?.releaseDates || {}),
+      ...(detail.releaseDates || {})
+    },
+    verifiedAt: detail.verifiedAt || new Date().toISOString(),
+    updatedAt: Date.now()
+  };
+}
+
+function writeLiveProviders(cache) {
+  try { localStorage.setItem(LIVE_PROVIDER_KEY, JSON.stringify(cache)); } catch {}
+}
+
+const liveProviders = readLiveProviders();
+window.__gamesLiveProviderCache = (gameIdValue, igdbIdValue = '') => {
+  const igdbKey = String(igdbIdValue || '').trim();
+  const idKey = String(gameIdValue || '').trim();
+  return (igdbKey && liveProviders[`igdb:${igdbKey}`])
+    || (idKey && liveProviders[`id:${idKey}`])
+    || null;
+};
+
+function subscriptionKeys(game = {}) {
+  const keys = [];
+  const igdbId = String(game.igdbId || '').trim();
+  const id = String(game.id || '').trim();
+  if (igdbId) keys.push(`igdb:${igdbId}`);
+  if (id) keys.push(`id:${id}`);
+  return keys;
+}
+
+function normalizeLiveSubscriptions(value = {}) {
+  const keys = ['gamePass','gamePassConsole','gamePassPc','cloudGaming','eaPlay','psPlus','geforceNow'];
+  return Object.fromEntries(keys.map(key => [key, Boolean(value?.[key])]));
+}
+
+function applyLiveSubscriptionCache(rows = []) {
+  const seen = new Set();
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || seen.has(game)) continue;
+    seen.add(game);
+    const entry = subscriptionKeys(game).map(key => liveSubscriptions[key]).find(Boolean);
+    if (!entry?.subscriptions) continue;
+    game.subscriptions = {
+      ...(game.subscriptions || {}),
+      ...normalizeLiveSubscriptions(entry.subscriptions),
+      checkedAt: entry.verifiedAt || game.subscriptions?.checkedAt || null
+    };
+  }
+}
+
+function applyLiveProviderEntry(game, entry) {
+  if (!game || !entry?.providers) return false;
+  const before = JSON.stringify({
+    links: game.links || {},
+    livePrices: game.livePrices || {},
+    livePriceMeta: game.livePriceMeta || {},
+    liveVerifiedAt: game.liveVerifiedAt || '',
+    steamId: game.steamId || '',
+    rating: game.rating || 0,
+    ratingCount: game.ratingCount || 0
+  });
+  const providers = entry.providers || {};
+  const linkMap = {
+    steam: providers.steam?.storeUrl,
+    epic: providers.epic?.storeUrl,
+    xbox: providers.microsoft?.storeUrl,
+    playstation: providers.playstation?.storeUrl,
+    nintendo: providers.nintendo?.storeUrl
+  };
+  game.links = {
+    ...(game.links || {}),
+    ...Object.fromEntries(Object.entries(linkMap).filter(([, value]) => Boolean(value)))
+  };
+  game.livePrices = Object.fromEntries(
+    Object.entries(providers)
+      .filter(([, provider]) => provider?.price)
+      .map(([name, provider]) => [name, provider.price])
+  );
+  game.livePriceMeta = Object.fromEntries(
+    Object.entries(providers)
+      .filter(([, provider]) => provider?.price)
+      .map(([name, provider]) => [name, {
+        lastKnownPrice: Boolean(provider?.lastKnownPrice || provider?.rawHints?.lastKnownPrice)
+      }])
+  );
+  game.liveVerifiedAt = entry.verifiedAt || game.liveVerifiedAt || null;
+  if (providers.steam?.providerId) game.steamId = String(providers.steam.providerId);
+  const rated = providers.igdb?.rating
+    ? providers.igdb
+    : Object.values(providers).find(provider => Number(provider?.rating) > 0);
+  if (rated?.rating && (!game.rating || Number(rated.ratingCount || 0) >= Number(game.ratingCount || 0))) {
+    game.rating = Number(rated.rating);
+    if (rated.ratingCount) game.ratingCount = Number(rated.ratingCount);
+  }
+  return JSON.stringify({
+    links: game.links || {},
+    livePrices: game.livePrices || {},
+    livePriceMeta: game.livePriceMeta || {},
+    liveVerifiedAt: game.liveVerifiedAt || '',
+    steamId: game.steamId || '',
+    rating: game.rating || 0,
+    ratingCount: game.ratingCount || 0
+  }) !== before;
+}
+
+function applyLiveProviderCache(rows = []) {
+  const seen = new Set();
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || seen.has(game)) continue;
+    seen.add(game);
+    const entry = subscriptionKeys(game).map(key => liveProviders[key]).find(Boolean);
+    if (entry) applyLiveProviderEntry(game, entry);
+  }
+}
+
+function applyLiveReleaseDateCache(rows = []) {
+  for (const row of rows) {
+    const game = row?.game;
+    if (!game || !(row.platformGroups || []).includes('PC')) continue;
+    const entry = subscriptionKeys(game).map(key => liveProviders[key]).find(Boolean);
+    const day = String(entry?.releaseDates?.steam || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || row.day === day) continue;
+    row.day = day;
+    row.timestamp = Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
+    row.from = day;
+    row.to = day;
+    row.sortDay = day;
+    row.precision = 'day';
+  }
+}
+
+const gameId = game => String(game.id);
+const readWatchlist = () => readJsonSet(WATCH_KEY);
+const readPlatformPrefs = () => readJsonSet(PLATFORM_PREF_KEY);
+
+const state = {
+  dataset: null,
+  rows: [],
+  catalogRows: [],
+  onlineRows: [],
+  onlineSearchLoading: false,
+  onlineSearchError: '',
+  filtered: [],
+  search: '',
+  platforms: new Set(),
+  genres: new Set(),
+  company: null,
+  series: '',
+  status: 'upcoming',
+  precision: 'all',
+  period: 'all',
+  range: null,
+  sort: 'date-asc',
+  view: localStorage.getItem(VIEW_KEY) || 'grid',
+  watchlistOnly: false,
+  watchlist: readWatchlist(),
+  savedPlatforms: readPlatformPrefs(),
+  queryHadPlatforms: false,
+  requestedGameId: '',
+  requestedRelease: '',
+  openRowKey: '',
+  limit: PAGE_SIZE
+};
+
+let onlineSearchSequence = 0;
+let onlineSearchAbortController = null;
+let calendarFeedMode = 'watch';
+let liveRenderTimer = 0;
+let liveCardPatchTimer = 0;
+const pendingLiveCardPatches = new Map();
+
+function scheduleLiveRender() {
+  if (liveRenderTimer) return;
+  liveRenderTimer = setTimeout(() => {
+    liveRenderTimer = 0;
+    renderGames();
+    notifyAvailableRows();
+  }, 80);
+}
+
+function patchVisibleLiveCard(card) {
+  const rowKey = String(card?.dataset?.rowKey || '').trim();
+  if (!rowKey) return;
+  const row = rowByKey(rowKey);
+  if (!row) return;
+
+  const template = document.createElement('template');
+  template.innerHTML = rowCard(
+    row,
+    state.watchlist.has(gameId(row.game)) || isFamilyWatched(row)
+  ).trim();
+  const nextCard = template.content.firstElementChild;
+  if (!nextCard) return;
+
+  for (const selector of ['.card-badges', '.game-card__body']) {
+    const current = card.querySelector(selector);
+    const next = nextCard.querySelector(selector);
+    if (!current || !next || current.outerHTML === next.outerHTML) continue;
+    current.replaceWith(next.cloneNode(true));
+  }
+}
+
+function scheduleLiveCardPatch(gameIdValue = '', igdbIdValue = '') {
+  const id = String(gameIdValue || '').trim();
+  const igdbId = String(igdbIdValue || '').trim();
+  if (!id && !igdbId) return;
+  pendingLiveCardPatches.set(`${id}|${igdbId}`, { id, igdbId });
+  if (liveCardPatchTimer) return;
+
+  liveCardPatchTimer = setTimeout(() => {
+    liveCardPatchTimer = 0;
+    const pending = [...pendingLiveCardPatches.values()];
+    pendingLiveCardPatches.clear();
+
+    document.querySelectorAll('#games .game-card').forEach(card => {
+      const cardId = String(card.dataset.liveGameId || '').trim();
+      const cardIgdbId = String(card.dataset.liveIgdbId || '').trim();
+      const matched = pending.some(item =>
+        (item.id && cardId === item.id)
+        || (item.igdbId && cardIgdbId === item.igdbId)
+      );
+      if (matched) patchVisibleLiveCard(card);
+    });
+  }, 80);
+}
+
+const isWatched = game => state.watchlist.has(gameId(game));
+
+function rowByKey(rowKey) {
+  const visible = state.filtered.find(row => row.key === rowKey);
+  if (visible) return visible;
+
+  const source = state.rows.find(row => row.key === rowKey);
+  if (!source) return null;
+
+  const familyKey = displayFamilyKey(source);
+  const familyRows = state.rows.filter(row => displayFamilyKey(row) === familyKey);
+  return collapseDisplayRows(familyRows, preferDisplayRow)[0] || source;
+}
+
+function isFamilyWatched(row) {
+  if (!row) return false;
+  if (isWatched(row.game)) return true;
+  const familyKey = displayFamilyKey(row);
+  return state.rows.some(item =>
+    displayFamilyKey(item) === familyKey
+    && state.watchlist.has(gameId(item.game))
+  );
+}
+
+function uniqueReleaseCount(rows) {
+  return new Set(rows.map(releaseRecordKey)).size;
+}
+
+function preferSearchRow(current, candidate) {
+  return preferDisplayRow(current, candidate);
+}
+
+function collapseSearchRows(rows) {
+  return collapseDisplayRows(rows, preferSearchRow);
+}
+
+function uniqueGameCount(rows) {
+  return new Set(rows.map(displayFamilyKey)).size;
+}
+
+function setDefaultPeriod() {
+  state.period = 'all';
+  state.range = null;
+}
+
+function rangeForPeriod(kind) {
+  const today = todayLocal();
+  const now = new Date(`${today}T00:00:00Z`);
+  if (kind === 'week') {
+    const weekday = now.getUTCDay() || 7;
+    const from = addDays(today, 1 - weekday);
+    return { from, to:addDays(from, 6) };
+  }
+  if (kind === '30') return { from:today, to:addDays(today, 29) };
+  if (kind === '90') return { from:today, to:addDays(today, 89) };
+  if (kind === 'year') return { from:`${now.getUTCFullYear()}-01-01`, to:`${now.getUTCFullYear()}-12-31` };
+  if (kind === 'next') return monthRange(now.getUTCFullYear(), now.getUTCMonth() + 1);
+  if (kind === 'month') return monthRange(now.getUTCFullYear(), now.getUTCMonth());
+  return null;
+}
+
+function parseQuery() {
+  const query = new URLSearchParams(location.search);
+  if (query.has('q')) state.search = query.get('q') || '';
+  if (query.has('platforms')) {
+    state.queryHadPlatforms = true;
+    state.platforms = new Set(query.get('platforms').split(',').filter(Boolean));
+  }
+  if (query.has('genres')) state.genres = new Set(query.get('genres').split(',').filter(Boolean));
+  else if (query.has('genre')) state.genres = new Set([query.get('genre')].filter(Boolean));
+  if (query.has('developer')) state.company = { type: 'developer', value: query.get('developer') || '' };
+  if (query.has('publisher')) state.company = { type: 'publisher', value: query.get('publisher') || '' };
+  if (query.has('series')) state.series = query.get('series') || '';
+  if (['upcoming','released','all'].includes(query.get('status'))) state.status = query.get('status');
+  if (['all','day','month','quarter','year','unknown'].includes(query.get('precision'))) state.precision = query.get('precision');
+  if (['date-asc','date-desc','name-asc','name-desc','rating-desc','rating-asc'].includes(query.get('sort'))) state.sort = query.get('sort');
+  else if (state.search) state.sort = 'date-desc';
+  if (['grid','compact'].includes(query.get('view'))) state.view = query.get('view');
+  state.requestedGameId = query.get('game') || '';
+  state.requestedRelease = query.get('release') || '';
+
+  const from = query.get('from');
+  const to = query.get('to');
+  const month = query.get('month');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(from || '') && /^\d{4}-\d{2}-\d{2}$/.test(to || '') && from <= to) {
+    state.period = 'custom'; state.range = {from, to};
+  } else if (/^\d{4}-\d{2}$/.test(month || '')) {
+    const [year, m] = month.split('-').map(Number);
+    state.period = 'month'; state.range = monthRange(year, m - 1);
+  } else if (['all','next','week','30','90','year','undated'].includes(query.get('period'))) {
+    state.period = query.get('period');
+    state.range = rangeForPeriod(state.period);
+  }
+}
+
+function buildQuery({ includeOpenGame = true } = {}) {
+  const q = new URLSearchParams();
+  if (state.search) q.set('q', state.search);
+  if (state.platforms.size) q.set('platforms', [...state.platforms].join(','));
+  if (state.genres.size) q.set('genres', [...state.genres].join(','));
+  if (state.company?.type === 'developer') q.set('developer', state.company.value);
+  if (state.company?.type === 'publisher') q.set('publisher', state.company.value);
+  if (state.series) q.set('series', state.series);
+  if (state.status !== 'upcoming') q.set('status', state.status);
+  if (state.precision !== 'all') q.set('precision', state.precision);
+  if (state.sort !== 'date-asc') q.set('sort', state.sort);
+  if (state.view !== 'grid') q.set('view', state.view);
+  if (['next','week','30','90','year','undated'].includes(state.period)) q.set('period', state.period);
+  else if (state.period === 'custom' && state.range) { q.set('from', state.range.from); q.set('to', state.range.to); }
+  else if (state.range?.from) q.set('month', state.range.from.slice(0, 7));
+  if (includeOpenGame && state.openRowKey) {
+    const row = rowByKey(state.openRowKey);
+    if (row) {
+      q.set('game', gameId(row.game));
+      if (row.day) q.set('release', row.day);
+    }
+  }
+  return q;
+}
+
+function updateQuery(options) {
+  const q = buildQuery(options);
+  history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
+}
+
+function matchesBase(row, { includeStatus = true, ignoreGenres = false, watchedFamilies = null } = {}) {
+  const game = row.game;
+  const search = normalizeSearch(state.search);
+  if (search && !matchesSearch(game, search)) return false;
+  if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
+  if (!ignoreGenres && state.genres.size) {
+    const labels = new Set((game.genres || []).map(formatGenre));
+    if (![...state.genres].some(genre => labels.has(genre))) return false;
+  }
+  if (state.company?.value) {
+    const haystack = state.company.type === 'developer' ? game.developers : game.publishers;
+    if (!(haystack || []).some(value => value === state.company.value)) return false;
+  }
+  if (state.series && !(game.series || []).includes(state.series)) return false;
+  if (state.watchlistOnly && !isWatched(game) && !watchedFamilies?.has(displayFamilyKey(row))) return false;
+  const precision = String(row.precision || (row.day ? 'day' : 'unknown')).toLowerCase();
+  const precisionGroup = /^q[1-4]$|quarter|quarterly/.test(precision) ? 'quarter' : precision;
+  if (!search && state.precision !== 'all' && precisionGroup !== state.precision) return false;
+  if (includeStatus) {
+    const today = todayLocal();
+    const from = row.from || row.day || null;
+    const to = row.to || row.day || null;
+    if (state.status === 'upcoming' && to && to < today) return false;
+    if (state.status === 'released' && (!to || to >= today)) return false;
+  }
+  return true;
+}
+
+function inActiveRange(row) {
+  return matchesReleaseRange(row, state.range, state.period);
+}
+
+function matchesSearchContext(row, { ignoreGenres = false, watchedFamilies = null } = {}) {
+  if (!matchesSearch(row.game, state.search)) return false;
+  if (state.platforms.size && !row.platformGroups.some(group => state.platforms.has(group))) return false;
+  if (!ignoreGenres && state.genres.size) {
+    const labels = new Set((row.game.genres || []).map(formatGenre));
+    if (![...state.genres].some(genre => labels.has(genre))) return false;
+  }
+  if (state.company?.value) {
+    const source = state.company.type === 'developer' ? row.game.developers : row.game.publishers;
+    if (!(source || []).includes(state.company.value)) return false;
+  }
+  if (state.series && !(row.game.series || []).includes(state.series)) return false;
+  if (state.watchlistOnly && !isWatched(row.game) && !watchedFamilies?.has(displayFamilyKey(row))) return false;
+  return true;
+}
+
+function ratingValue(row) {
+  const value = Number(row?.game?.rating || 0);
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function compareRatingRows(a, b, direction = 'desc') {
+  const ar = ratingValue(a);
+  const br = ratingValue(b);
+  if (ar == null && br == null) return 0;
+  if (ar == null) return 1;
+  if (br == null) return -1;
+  const score = direction === 'asc' ? ar - br : br - ar;
+  if (score) return score;
+  const ac = Number(a?.game?.ratingCount || 0);
+  const bc = Number(b?.game?.ratingCount || 0);
+  return bc - ac;
+}
+
+function visibleReleaseRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  return searching
+    ? state.rows.filter(row => matchesSearchContext(row, { watchedFamilies }))
+    : state.rows.filter(row =>
+        matchesBase(row, { includeStatus: !row.onlineResult, watchedFamilies })
+        && (row.onlineResult || inActiveRange(row))
+      );
+}
+
+function filterRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  const filtered = visibleReleaseRows();
+  // Always render one card per game. Keep all matching release rows separately
+  // for counters, month statistics and calendar data.
+  const rows = collapseSearchRows(filtered);
+  rows.sort((a, b) => {
+    const ad = a.sortDay || a.day || '';
+    const bd = b.sortDay || b.day || '';
+
+    if (state.sort === 'name-desc') return b.game.name.localeCompare(a.game.name, 'cs') || ad.localeCompare(bd);
+    if (state.sort === 'name-asc') return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+
+    if (state.sort === 'rating-desc' || state.sort === 'rating-asc') {
+      const byRating = compareRatingRows(a, b, state.sort === 'rating-asc' ? 'asc' : 'desc');
+      if (byRating) return byRating;
+      if (searching) {
+        const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+        if (relevance) return relevance;
+      }
+      return a.game.name.localeCompare(b.game.name, 'cs') || ad.localeCompare(bd);
+    }
+
+    const certainty = releaseCertaintyRank(a) - releaseCertaintyRank(b);
+    if (certainty) return certainty;
+    if (!ad && bd) return 1;
+    if (ad && !bd) return -1;
+    if (ad !== bd) return state.sort === 'date-desc' ? bd.localeCompare(ad) : ad.localeCompare(bd);
+
+    if (searching) {
+      const relevance = searchRelevance(b.game, state.search) - searchRelevance(a.game, state.search);
+      if (relevance) return relevance;
+    }
+
+    return a.game.name.localeCompare(b.game.name, 'cs');
+  });
+  return rows;
+}
+
+function renderPlatformFilters() {
+  const available = new Set(state.rows.flatMap(row => row.platformGroups));
+  const items = PLATFORM_GROUPS.filter(item => available.has(item.key));
+  $('platform-filters').innerHTML = items.map(item => `
+    <button class="chip chip--platform ${state.platforms.has(item.key) ? 'is-active' : ''}" type="button" data-platform="${escapeHtml(item.key)}" aria-pressed="${state.platforms.has(item.key)}">
+      ${platformIcon(item.key, { className:'brand-icon--filter' })}<span>${escapeHtml(item.label)}</span>
+    </button>`).join('');
+  const sameAsSaved = state.savedPlatforms.size > 0 && state.savedPlatforms.size === state.platforms.size && [...state.savedPlatforms].every(value => state.platforms.has(value));
+  $('platform-my').classList.toggle('is-active', sameAsSaved);
+  $('platform-my').disabled = state.savedPlatforms.size === 0;
+  $('platform-save').disabled = state.platforms.size === 0;
+}
+
+function genreCountRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  if (searching) return state.rows.filter(row => matchesSearchContext(row, { ignoreGenres: true, watchedFamilies }));
+  return state.rows.filter(row => matchesBase(row, { ignoreGenres: true, watchedFamilies }) && inActiveRange(row));
+}
+
+function renderGenres() {
+  const counts = new Map();
+  const seen = new Map();
+  for (const row of genreCountRows()) {
+    for (const genre of [...new Set((row.game.genres || []).map(formatGenre).filter(Boolean))]) {
+      if (!seen.has(genre)) seen.set(genre, new Set());
+      seen.get(genre).add(displayFamilyKey(row));
+    }
+  }
+  for (const [genre, ids] of seen) counts.set(genre, ids.size);
+  const available = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'cs'));
+  const featured = available.filter(([genre, count]) => count > 1 || state.genres.has(genre)).slice(0, MAX_GENRE_FILTERS);
+  const selectedAvailable = available.filter(([genre]) => state.genres.has(genre));
+  const selectedMissing = [...state.genres].filter(genre => !counts.has(genre)).map(genre => [genre, 0]);
+  const genres = [...featured, ...selectedAvailable, ...selectedMissing]
+    .filter((item, index, all) => all.findIndex(other => other[0] === item[0]) === index);
+  $('genre-filters').innerHTML = genres.length
+    ? genres.map(([genre, count]) => `<button type="button" class="genre-filter-chip ${state.genres.has(genre) ? 'is-active' : ''}" data-genre="${escapeHtml(genre)}" aria-pressed="${state.genres.has(genre)}"><span>${escapeHtml(genre)}</span><small>${formatter.format(count)}</small></button>`).join('')
+    : '<span class="genre-empty">Žánry nejsou pro tento výběr dostupné.</span>';
+  $('genre-clear').hidden = state.genres.size === 0;
+}
+
+function renderContextFilters() {
+  const items = [];
+  if (state.company?.value) items.push(`<button type="button" class="context-filter" data-clear-context="company">${state.company.type === 'developer' ? 'Vývojář' : 'Vydavatel'}: <strong>${escapeHtml(state.company.value)}</strong> ×</button>`);
+  if (state.series) items.push(`<button type="button" class="context-filter" data-clear-context="series">Série: <strong>${escapeHtml(state.series)}</strong> ×</button>`);
+  $('active-context-filters').innerHTML = items.join('');
+  $('active-context-filters').hidden = items.length === 0;
+}
+
+function renderMonthSelectors() {
+  const reference = state.range?.from || todayLocal();
+  const [year, month] = reference.split('-').map(Number);
+  $('month-filter').innerHTML = MONTHS.map((name, index) => `<option value="${index}" ${index === month - 1 ? 'selected' : ''}>${name}</option>`).join('');
+  const days = state.rows.map(row => row.sortDay || row.day || row.from).filter(Boolean).sort();
+  const minYear = Math.min(year - 1, Number(days[0]?.slice(0,4) || year));
+  const maxYear = Math.max(year + 2, Number(days.at(-1)?.slice(0,4) || year));
+  $('year-filter').innerHTML = Array.from({length: maxYear - minYear + 1}, (_, i) => minYear + i).map(value => `<option value="${value}" ${value === year ? 'selected' : ''}>${value}</option>`).join('');
+  document.querySelectorAll('[data-period]').forEach(button => button.classList.toggle('is-active', button.dataset.period === state.period));
+}
+
+function monthCounts() {
+  const map = new Map();
+  const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  for (const row of state.rows) {
+    if (searching
+      ? !matchesSearchContext(row, { watchedFamilies })
+      : !matchesBase(row, { watchedFamilies })) continue;
+    const from = row.from || row.day || null;
+    const to = row.to || row.day || null;
+    if (!from || !to || from.slice(0,7) !== to.slice(0,7)) continue;
+    const key = from.slice(0,7);
+    if (!map.has(key)) map.set(key, { releases: 0, releaseKeys: new Set(), games: new Set() });
+    const item = map.get(key);
+    item.releaseKeys.add(releaseRecordKey(row));
+    item.releases = item.releaseKeys.size;
+    item.games.add(displayFamilyKey(row));
+  }
+  return [...map.entries()].sort(([a],[b]) => a.localeCompare(b));
+}
+
+function renderMonthRail() {
+  const counts = monthCounts();
+  if (normalizeSearch(state.search) && state.sort === 'date-desc') counts.reverse();
+  const active = state.range?.from?.slice(0,7) || '';
+  $('month-rail').innerHTML = counts.map(([key, count]) => {
+    const [year, month] = key.split('-').map(Number);
+    return `<button class="month-tile ${active === key ? 'is-active' : ''}" type="button" data-month="${key}">
+      <span>${MONTHS[month-1]} ${year}</span><strong>${formatter.format(count.games.size)} her</strong><small>${formatter.format(count.releases)} vydání</small>
+    </button>`;
+  }).join('');
+}
+
+function renderGames({ resetLimit = false } = {}) {
+  if (resetLimit) state.limit = PAGE_SIZE;
+  state.filtered = filterRows();
+  const shown = state.filtered.slice(0, state.limit);
+  const watchedFamilies = new Set(
+    state.rows
+      .filter(row => state.watchlist.has(gameId(row.game)))
+      .map(displayFamilyKey)
+  );
+  $('games').dataset.view = state.view;
+  $('games').setAttribute('aria-busy', String(state.onlineSearchLoading));
+  $('games').innerHTML = shown.map(row => rowCard(
+    row,
+    state.watchlist.has(gameId(row.game)) || watchedFamilies.has(displayFamilyKey(row))
+  )).join('');
+  $('games').hidden = shown.length === 0;
+  $('empty-state').hidden = state.filtered.length !== 0 || state.onlineSearchLoading;
+  $('load-more-wrap').hidden = state.filtered.length <= shown.length;
+  if (!state.filtered.length) $('games').innerHTML = '';
+  if (state.onlineSearchLoading && !state.filtered.length) {
+    $('empty-state').hidden = false;
+    $('empty-state').querySelector('h2').textContent = 'Hledám ve všech zdrojích…';
+    $('empty-state').querySelector('p').textContent = 'Kontroluji IGDB, Steam, Xbox, PlayStation a Nintendo.';
+    $('empty-reset').hidden = true;
+  } else {
+    $('empty-state').querySelector('h2').textContent = state.search && state.onlineSearchError
+      ? 'Online hledání není dostupné'
+      : 'Nic jsme nenašli';
+    $('empty-state').querySelector('p').textContent = state.search
+      ? (state.onlineSearchError
+          ? 'Zobrazuji jen lokální katalog. Zkus hledání znovu za chvíli.'
+          : 'Hra není v katalogu ani v připojených herních zdrojích.')
+      : 'Zkus jinou platformu, žánr, období nebo název hry.';
+    $('empty-reset').hidden = false;
+  }
+  updateSummary();
+  renderMonthRail();
+  renderGenres();
+  renderContextFilters();
+  updateQuery();
+}
+
+function notifyAvailableRows() {
+  window.dispatchEvent(new CustomEvent('games:rows-updated', {
+    detail: { rows: state.rows, searching: Boolean(normalizeSearch(state.search)) }
+  }));
+}
+
+function makeOnlineRows(games) {
+  const rows = [];
+  games.forEach((game, onlineOrder) => {
+    const releases = game.releases?.length ? game.releases : [{}];
+    releases.forEach((release, releaseOrder) => {
+      const platforms = release.platforms || [];
+      rows.push({
+        key: `online:${game.id}:${release.day || release.window || 'window'}:${releaseOrder}`,
+        game,
+        day: release.day,
+        timestamp: release.timestamp,
+        platforms,
+        platformGroups: [...new Set(platforms.map(item => item.group || platformGroup(item.name)))],
+        window: release.window,
+        precision: release.precision,
+        regions: [...new Set(release.regions || [])],
+        from: release.from,
+        to: release.to,
+        sortDay: release.sortDay,
+        onlineResult: true,
+        onlineOrder,
+        onlineReleaseOrder: releaseOrder
+      });
+    });
+  });
+  return rows;
+}
+
+async function refreshOnlineSearch(query) {
+  const sequence = ++onlineSearchSequence;
+  onlineSearchAbortController?.abort();
+  onlineSearchAbortController = null;
+  const value = String(query || '').trim();
+  state.onlineRows = [];
+  state.rows = state.catalogRows;
+  state.onlineSearchError = '';
+  if (value.length < 2) {
+    state.onlineSearchLoading = false;
+    renderGames({ resetLimit: true });
+    notifyAvailableRows();
+    return;
+  }
+  state.onlineSearchLoading = true;
+  onlineSearchAbortController = new AbortController();
+  const { signal } = onlineSearchAbortController;
+  renderGames({ resetLimit: true });
+  try {
+    const games = await searchOnlineGames(value, { signal });
+    if (sequence !== onlineSearchSequence || value !== state.search) return;
+    state.onlineRows = makeOnlineRows(games);
+    state.rows = [...state.catalogRows, ...state.onlineRows];
+    applyLiveProviderCache(state.rows);
+    applyLiveSubscriptionCache(state.rows);
+  } catch (error) {
+    if (error?.name !== 'AbortError' && sequence === onlineSearchSequence) {
+      state.onlineSearchError = String(error?.message || 'Online zdroje nejsou dostupné');
+      console.warn('Online hledání:', error);
+    }
+  } finally {
+    if (sequence === onlineSearchSequence) {
+      state.onlineSearchLoading = false;
+      renderGames({ resetLimit: true });
+      notifyAvailableRows();
+      const requested = findRequestedRow();
+      if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
+    }
+  }
+}
+
+function statBaseRows() {
+  const searching = Boolean(normalizeSearch(state.search));
+  const watchedFamilies = state.watchlistOnly ? watchedFamilyKeys(state.rows, state.watchlist) : null;
+  if (searching) return state.rows.filter(row => matchesSearchContext(row, { watchedFamilies }));
+  return state.rows.filter(row => matchesBase(row, { includeStatus: false, watchedFamilies }));
+}
+
+function updateSummary() {
+  const today = todayLocal();
+  const next30End = addDays(today, 29);
+  const now = new Date();
+  const nextMonth = monthRange(now.getFullYear(), now.getMonth() + 1);
+  const base = statBaseRows();
+  const searching = Boolean(normalizeSearch(state.search));
+  const visibleGames = uniqueGameCount(state.filtered);
+  const visibleReleases = uniqueReleaseCount(visibleReleaseRows());
+  $('stat-visible').textContent = formatter.format(visibleGames);
+  $('stat-visible-label').textContent = visibleGames === 1 ? 'hra ve výběru' : 'her ve výběru';
+  $('stat-30').textContent = formatter.format(uniqueGameCount(
+    base.filter(row => row.day && row.day >= today && row.day <= next30End)
+  ));
+  $('stat-next').textContent = formatter.format(uniqueGameCount(
+    base.filter(row => matchesReleaseRange(row, nextMonth, 'next'))
+  ));
+  $('stat-watchlist').textContent = formatter.format(countWatchedFamilies(state.rows, state.watchlist));
+
+  const periodTitles = {
+    week: 'Vydání tento týden',
+    '30': 'Vydání během příštích 30 dní',
+    '90': 'Vydání během příštích 90 dní',
+    year: `Vydání v roce ${new Date().getFullYear()}`,
+    undated: 'Hry bez přesného data',
+    all: 'Všechna dostupná vydání'
+  };
+  const rangeTitle = state.search
+    ? `Výsledky hledání „${state.search}“`
+    : state.watchlistOnly
+    ? 'Moje sledované hry'
+    : state.period === 'all' && state.status === 'upcoming'
+    ? 'Nadcházející hry'
+    : periodTitles[state.period] || (state.period === 'custom' && state.range ? `${formatDate(state.range.from)} – ${formatDate(state.range.to)}` : state.range ? formatMonth(state.range.from) : periodTitles.all);
+  $('range-title').textContent = rangeTitle;
+  const parts = [`${formatter.format(visibleGames)} her`, `${formatter.format(visibleReleases)} vydání`];
+  if (state.platforms.size) parts.push([...state.platforms].join(', '));
+  if (state.genres.size) parts.push([...state.genres].join(' + '));
+  if (state.search) parts.push(`„${state.search}“`);
+  if (state.search && state.onlineSearchError) parts.push('online zdroje momentálně nedostupné');
+  if (state.dataset?.generatedAt) parts.push(`data ${new Date(state.dataset.generatedAt).toLocaleString('cs-CZ')}`);
+  $('result-summary').textContent = parts.join(' · ');
+  $('watchlist-toggle').classList.toggle('is-active', state.watchlistOnly);
+}
+
+function setPeriod(kind) {
+  state.period = kind;
+  state.range = rangeForPeriod(kind);
+  renderMonthSelectors();
+  renderGames({resetLimit:true});
+}
+
+function selectMonth(year, monthIndex) {
+  state.period = 'month';
+  state.range = monthRange(Number(year), Number(monthIndex));
+  renderMonthSelectors();
+  renderGames({resetLimit:true});
+}
+
+function changeMonth(offset) {
+  const reference = state.range?.from || todayLocal();
+  const [year, month] = reference.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1 + offset, 1));
+  selectMonth(date.getUTCFullYear(), date.getUTCMonth());
+}
+
+function resetFilters() {
+  state.search = '';
+  onlineSearchSequence += 1;
+  state.onlineRows = [];
+  state.rows = state.catalogRows;
+  state.onlineSearchLoading = false;
+  state.platforms.clear();
+  state.genres.clear();
+  state.company = null;
+  state.series = '';
+  state.status = 'upcoming';
+  state.precision = 'all';
+  state.sort = 'date-asc';
+  state.watchlistOnly = false;
+  setDefaultPeriod();
+  $('search-input').value = '';
+  $('status-filter').value = 'upcoming';
+  $('precision-filter').value = 'all';
+  $('sort-filter').value = 'date-asc';
+  $('sort-filter').dispatchEvent(new Event('sortsync'));
+  renderPlatformFilters();
+  renderMonthSelectors();
+  renderGames({resetLimit:true});
+  notifyAvailableRows();
+}
+
+function toggleWatch(gameIdValue) {
+  const id = String(gameIdValue);
+  const sourceRow = state.rows.find(row => gameId(row.game) === id);
+  const familyKey = sourceRow ? displayFamilyKey(sourceRow) : '';
+  const familyIds = familyKey
+    ? [...new Set(state.rows.filter(row => displayFamilyKey(row) === familyKey).map(row => gameId(row.game)))]
+    : [id];
+  const watchedFamilyIds = familyIds.filter(value => state.watchlist.has(value));
+
+  if (watchedFamilyIds.length) {
+    watchedFamilyIds.forEach(value => state.watchlist.delete(value));
+  } else {
+    state.watchlist.add(id);
+  }
+
+  saveJsonSet(WATCH_KEY, state.watchlist);
+  syncPushSubscription().catch(error => console.warn('Push sync:', error));
+  renderGames();
+  if ($('game-dialog').open) {
+    const row = rowByKey(state.openRowKey);
+    if (row) renderGameDialog(row);
+  }
+}
+
+function slugify(value) {
+  return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70) || 'hra';
+}
+
+function calendarFeedUrl(mode = calendarFeedMode) {
+  const url = new URL(CALENDAR_FEED_URL, location.origin);
+  if (mode === 'watch') {
+    if (state.watchlist.size) url.searchParams.set('ids', [...state.watchlist].slice(0, 500).join(','));
+  } else {
+    if (state.platforms.size) url.searchParams.set('platforms', [...state.platforms].join(','));
+    if (state.genres.size) {
+      const rawGenres = new Set();
+      for (const row of state.rows) {
+        for (const genre of row.game.genres || []) if (state.genres.has(formatGenre(genre))) rawGenres.add(genre);
+      }
+      if (rawGenres.size) url.searchParams.set('genres', [...rawGenres].join(','));
+    }
+    if (state.company?.type === 'developer') url.searchParams.set('developer', state.company.value);
+    if (state.company?.type === 'publisher') url.searchParams.set('publisher', state.company.value);
+    if (state.series) url.searchParams.set('series', state.series);
+  }
+  url.searchParams.set('status', 'upcoming');
+  return url;
+}
+
+function setCalendarFeedMode(mode) {
+  calendarFeedMode = mode === 'filters' ? 'filters' : 'watch';
+  document.querySelectorAll('[data-calendar-feed]').forEach(button => {
+    const active = button.dataset.calendarFeed === calendarFeedMode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  const url = calendarFeedUrl();
+  const webcal = `webcal://${url.host}${url.pathname}${url.search}`;
+  $('calendar-google').href = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+  $('calendar-webcal').href = webcal;
+}
+
+function openCalendarDialog() {
+  const count = countWatchedFamilies(state.rows, state.watchlist);
+  $('calendar-watch-count').textContent = `${formatter.format(count)} ${count === 1 ? 'sledovaná hra' : count > 1 && count < 5 ? 'sledované hry' : 'sledovaných her'}`;
+  setCalendarFeedMode(count ? 'watch' : 'filters');
+  if (!$('calendar-dialog').open) $('calendar-dialog').showModal();
+}
+
+function setMeta(selector, value) {
+  const node = document.querySelector(selector);
+  if (node) node.setAttribute('content', value);
+}
+
+function updateSeoForGame(row) {
+  const description = (row.game.summary || `${row.game.name} – ${row.day ? formatDate(row.day) : row.window || 'TBA'}`).replace(/\s+/g, ' ').trim().slice(0, 190);
+  document.title = `${row.game.name} – Herní Kalendář`;
+  setMeta('meta[name="description"]', description);
+  setMeta('meta[property="og:title"]', `${row.game.name} – Herní Kalendář`);
+  setMeta('meta[property="og:description"]', description);
+  setMeta('meta[property="og:url"]', location.href);
+  if (row.game.cover) setMeta('meta[property="og:image"]', row.game.cover);
+}
+
+function restoreSeo() {
+  document.title = DEFAULT_TITLE;
+  setMeta('meta[name="description"]', DEFAULT_DESCRIPTION);
+  setMeta('meta[property="og:title"]', DEFAULT_TITLE);
+  setMeta('meta[property="og:description"]', DEFAULT_DESCRIPTION);
+  setMeta('meta[property="og:url"]', `${location.origin}${location.pathname}`);
+  setMeta('meta[property="og:image"]', `${location.origin}${location.pathname.replace(/[^/]*$/, '')}CaseyCZ.png`);
+}
+
+function renderGameDialog(row) {
+  state.openRowKey = row.key;
+  $('game-dialog').dataset.rowKey = row.key;
+  $('game-dialog').dataset.gameId = gameId(row.game);
+  $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
+  const livePlatforms = new Set();
+  const addPlatform = platform => {
+    const value = typeof platform === 'string' ? platform : (platform?.name || platform?.abbreviation || '');
+    if (value) livePlatforms.add(String(value));
+  };
+  (row.platforms || []).forEach(addPlatform);
+  for (const release of row.game?.releases || []) (release.platforms || []).forEach(addPlatform);
+  $('game-dialog').dataset.livePlatforms = JSON.stringify([...livePlatforms]);
+  $('dialog-content').removeAttribute('data-live-enriched-title');
+  $('dialog-content').innerHTML = gameDialogHtml(row, isFamilyWatched(row));
+  updateQuery();
+  updateSeoForGame(row);
+}
+
+function syncDialogNode(currentRoot, nextRoot, selector, {
+  parentSelector = '.detail-main',
+  before = []
+} = {}) {
+  const current = currentRoot.querySelector(selector);
+  const next = nextRoot.querySelector(selector);
+
+  if (current && next) {
+    if (current.outerHTML !== next.outerHTML) current.replaceWith(next.cloneNode(true));
+    return;
+  }
+  if (current && !next) {
+    current.remove();
+    return;
+  }
+  if (!next) return;
+
+  const parent = currentRoot.querySelector(parentSelector);
+  if (!parent) return;
+  const clone = next.cloneNode(true);
+  const anchor = before.map(item => parent.querySelector(item)).find(Boolean);
+  if (anchor) parent.insertBefore(clone, anchor);
+  else parent.appendChild(clone);
+}
+
+function patchGameDialog(row) {
+  const content = $('dialog-content');
+  const currentRoot = content.querySelector('.detail-hero');
+  if (!currentRoot) return renderGameDialog(row);
+
+  const template = document.createElement('template');
+  template.innerHTML = gameDialogHtml(row, isFamilyWatched(row)).trim();
+  const nextRoot = template.content.firstElementChild;
+  if (!nextRoot) return;
+
+  syncDialogNode(currentRoot, nextRoot, '.detail-cover', {
+    parentSelector: '.detail-hero',
+    before: ['.detail-main']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-kicker', { before: ['h2'] });
+  syncDialogNode(currentRoot, nextRoot, '.detail-aliases', { before: ['.detail-meta'] });
+  syncDialogNode(currentRoot, nextRoot, '.detail-meta', {
+    before: ['.detail-flags', '.service-badges', '.detail-summary']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-flags', {
+    before: ['.service-badges', '.detail-summary']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-summary', {
+    before: ['.detail-genres', '.detail-facts', '.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-genres', {
+    before: ['.detail-facts', '.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-facts', {
+    before: ['.detail-subsection', '.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-subsection', {
+    before: ['.detail-actions']
+  });
+  syncDialogNode(currentRoot, nextRoot, '.detail-actions', {
+    before: ['.detail-media-section', '.detail-link-section--stores', '.detail-link-section']
+  });
+
+  const liveState = content.querySelector('.live-enrich-status')?.dataset.state || '';
+  const liveApplied = liveState === 'ok' || liveState === 'empty';
+  if (!liveApplied) {
+    syncDialogNode(currentRoot, nextRoot, '.detail-media-section', {
+      before: ['.detail-link-section--stores', '.detail-link-section']
+    });
+    syncDialogNode(currentRoot, nextRoot, '.detail-link-section--stores', {
+      before: ['.detail-link-section:not(.detail-link-section--stores)']
+    });
+  }
+  syncDialogNode(currentRoot, nextRoot, '.detail-link-section:not(.detail-link-section--stores)');
+
+  $('game-dialog').dataset.igdbId = String(row.game?.igdbId || '');
+  const livePlatforms = new Set();
+  const addPlatform = platform => {
+    const value = typeof platform === 'string' ? platform : (platform?.name || platform?.abbreviation || '');
+    if (value) livePlatforms.add(String(value));
+  };
+  (row.platforms || []).forEach(addPlatform);
+  for (const release of row.game?.releases || []) (release.platforms || []).forEach(addPlatform);
+  $('game-dialog').dataset.livePlatforms = JSON.stringify([...livePlatforms]);
+  updateQuery();
+  updateSeoForGame(row);
+}
+
+async function openGame(rowKey, { updateUrl = true } = {}) {
+  const row = rowByKey(rowKey);
+  if (!row) return;
+  renderGameDialog(row);
+  if (!$('game-dialog').open) $('game-dialog').showModal();
+  if (!updateUrl) updateSeoForGame(row);
+
+  try {
+    const detail = await loadGameDetail(row.game);
+    if (!detail || state.openRowKey !== rowKey || !$('game-dialog').open) return;
+    Object.assign(row.game, detail);
+    patchGameDialog(row);
+  } catch (error) {
+    console.warn('Detail hry:', error);
+  }
+}
+
+function closeGameDialog() {
+  if ($('game-dialog').open) $('game-dialog').close();
+  state.openRowKey = '';
+  updateQuery({ includeOpenGame: false });
+  restoreSeo();
+}
+
+function findRequestedRow() {
+  if (!state.requestedGameId) return null;
+  const candidates = state.rows.filter(row => gameId(row.game) === String(state.requestedGameId) || row.game.slug === state.requestedGameId);
+  if (!candidates.length) return null;
+  if (state.requestedRelease) return candidates.find(row => row.day === state.requestedRelease) || candidates[0];
+  return candidates[0];
+}
+
+function openCalendarMenu(row) {
+  if (!row.day) { toast('Tato hra zatím nemá přesné datum pro kalendář.'); return; }
+  const google = googleCalendarUrl(row);
+  const choice = document.createElement('div');
+  choice.className = 'toast';
+  choice.innerHTML = `<strong>${escapeHtml(row.game.name)}</strong><div style="display:flex;gap:6px;margin-top:8px"><a class="store-link" href="${escapeHtml(google)}" target="_blank" rel="noopener noreferrer">Google</a><button class="store-link" type="button" data-ics-now>Apple / Outlook (.ics)</button></div>`;
+  $('toast-region').appendChild(choice);
+  choice.querySelector('[data-ics-now]').addEventListener('click', () => {
+    downloadIcs([row], `${slugify(row.game.name)}-${row.day}.ics`);
+    choice.remove();
+  });
+  setTimeout(() => choice.remove(), 9000);
+}
+
+function toast(message) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = message;
+  $('toast-region').appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+async function shareUrl(url, title, text) {
+  if (navigator.share) {
+    try { await navigator.share({ title, text, url }); return true; } catch (error) { if (error?.name === 'AbortError') return false; }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    toast('Odkaz byl zkopírován.');
+    return true;
+  } catch {
+    prompt('Zkopíruj odkaz:', url);
+    return true;
+  }
+}
+
+async function shareCurrent() {
+  updateQuery();
+  await shareUrl(location.href, 'Herní Kalendář', 'Aktuální výběr her');
+}
+
+function gameShareUrl(row) {
+  const q = buildQuery({ includeOpenGame: false });
+  q.set('game', gameId(row.game));
+  if (row.day) q.set('release', row.day);
+  return `${location.origin}${location.pathname}?${q}`;
+}
+
+function shareCardPrice(row) {
+  const prices = Object.values(row?.game?.livePrices || {})
+    .map(price => ({ price, value: Number(price?.current) }))
+    .filter(item => item.price && Number.isFinite(item.value) && item.value >= 0);
+  if (!prices.length) return '';
+  prices.sort((a, b) => a.value - b.value);
+  return formatLivePrice(prices[0].price);
+}
+
+function shareCardServices(game) {
+  const out = [];
+  if (game?.subscriptions?.gamePass) out.push('Game Pass');
+  if (game?.subscriptions?.psPlus) out.push('PS Plus');
+  if (game?.subscriptions?.geforceNow) out.push('GeForce NOW');
+  if (game?.subscriptions?.eaPlay) out.push('EA Play');
+  return out.slice(0, 3);
+}
+
+function wrapCanvasText(ctx, text, maxWidth) {
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(next).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+async function loadShareImage(url) {
+  if (!url) return null;
+  try {
+    const response = await fetch(url, { mode: 'cors', credentials: 'omit' });
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    if ('createImageBitmap' in window) return await createImageBitmap(blob);
+    const objectUrl = URL.createObjectURL(blob);
+    try {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = objectUrl;
+      await image.decode();
+      return image;
+    } finally {
+      URL.revokeObjectURL(objectUrl);
+    }
+  } catch {
+    return null;
+  }
+}
+
+function drawSharePill(ctx, text, x, y, { accent = '#c084fc', fill = 'rgba(255,255,255,.08)' } = {}) {
+  ctx.font = '700 30px system-ui, -apple-system, sans-serif';
+  const width = Math.ceil(ctx.measureText(text).width) + 42;
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, 54, 27);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#f8f3fb';
+  ctx.fillText(text, x + 21, y + 37);
+  return width;
+}
+
+async function createGameShareCard(row) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas není dostupný');
+
+  const bg = ctx.createLinearGradient(0, 0, 1080, 1350);
+  bg.addColorStop(0, '#110919');
+  bg.addColorStop(.58, '#180d22');
+  bg.addColorStop(1, '#08040d');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 1080, 1350);
+
+  const image = await loadShareImage(row?.game?.cover);
+  if (image) {
+    const iw = image.width || image.naturalWidth;
+    const ih = image.height || image.naturalHeight;
+    const targetH = 760;
+    const scale = Math.max(1080 / iw, targetH / ih);
+    const sw = 1080 / scale;
+    const sh = targetH / scale;
+    const sx = Math.max(0, (iw - sw) / 2);
+    const sy = Math.max(0, (ih - sh) / 2);
+    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, 1080, targetH);
+    image.close?.();
+  } else {
+    const fallback = ctx.createLinearGradient(0, 0, 1080, 760);
+    fallback.addColorStop(0, '#251130');
+    fallback.addColorStop(1, '#4c1d3f');
+    ctx.fillStyle = fallback;
+    ctx.fillRect(0, 0, 1080, 760);
+  }
+
+  const overlay = ctx.createLinearGradient(0, 390, 0, 850);
+  overlay.addColorStop(0, 'rgba(8,4,13,0)');
+  overlay.addColorStop(.7, 'rgba(8,4,13,.78)');
+  overlay.addColorStop(1, '#110919');
+  ctx.fillStyle = overlay;
+  ctx.fillRect(0, 360, 1080, 520);
+
+  ctx.fillStyle = '#ff6db0';
+  ctx.font = '800 28px system-ui, -apple-system, sans-serif';
+  ctx.fillText('GameS · Herní kalendář', 70, 835);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 64px system-ui, -apple-system, sans-serif';
+  const titleLines = wrapCanvasText(ctx, row?.game?.name || '', 940).slice(0, 3);
+  let y = 910;
+  for (const line of titleLines) {
+    ctx.fillText(line, 70, y);
+    y += 72;
+  }
+
+  const release = row?.day ? formatDate(row.day) : (row?.window || row?.game?.announcedWindow || 'TBA');
+  ctx.fillStyle = '#c9bdcf';
+  ctx.font = '650 34px system-ui, -apple-system, sans-serif';
+  ctx.fillText(`📅 ${release}`, 70, y + 12);
+
+  let pillX = 70;
+  let pillY = y + 54;
+  const labels = [...new Set((row?.platformGroups || row?.platforms?.map(item => item?.name) || []).filter(Boolean))].slice(0, 5);
+  for (const label of labels) {
+    const width = Math.ceil(ctx.measureText(label).width) + 42;
+    if (pillX + width > 1010) {
+      pillX = 70;
+      pillY += 66;
+    }
+    pillX += drawSharePill(ctx, label, pillX, pillY) + 12;
+  }
+
+  const price = shareCardPrice(row);
+  const services = shareCardServices(row?.game);
+  let metaY = Math.max(1170, pillY + 92);
+
+  if (price) {
+    ctx.fillStyle = '#86efac';
+    ctx.font = '800 40px system-ui, -apple-system, sans-serif';
+    ctx.fillText(price, 70, metaY);
+  }
+  if (services.length) {
+    const text = services.join(' · ');
+    ctx.fillStyle = '#d8ffd0';
+    ctx.font = '750 30px system-ui, -apple-system, sans-serif';
+    ctx.fillText(text, 70, metaY + (price ? 52 : 0));
+  }
+
+  ctx.fillStyle = '#a99cb4';
+  ctx.font = '600 24px system-ui, -apple-system, sans-serif';
+  ctx.fillText('caseycz.github.io/GameS-Calendar-Website', 70, 1300);
+
+  return await new Promise((resolve, reject) => {
+    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG se nepodařilo vytvořit')), 'image/png', .95);
+  });
+}
+
+async function shareGame(row) {
+  const url = gameShareUrl(row);
+  const text = `${row.game.name} – ${row.day ? formatDate(row.day) : row.window || 'TBA'}`;
+  try {
+    const blob = await createGameShareCard(row);
+    const file = new File([blob], `${slugify(row.game.name)}-games.png`, { type: 'image/png' });
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: row.game.name, text, url, files: [file] });
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = file.name;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    try { await navigator.clipboard.writeText(url); } catch {}
+    toast('Karta byla uložena jako obrázek a odkaz zkopírován.');
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    await shareUrl(url, row.game.name, text);
+  }
+}
+
+function setView(view) {
+  state.view = view;
+  localStorage.setItem(VIEW_KEY, view);
+  document.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('is-active', button.dataset.view === view));
+  renderGames();
+}
+
+function applyCompanyFilter(type, value) {
+  state.company = { type, value };
+  closeGameDialog();
+  state.period = 'all';
+  state.range = null;
+  renderMonthSelectors();
+  renderGames({resetLimit:true});
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function applySeriesFilter(value) {
+  state.series = value;
+  closeGameDialog();
+  state.period = 'all';
+  state.range = null;
+  renderMonthSelectors();
+  renderGames({resetLimit:true});
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function saveCurrentPlatforms() {
+  if (!state.platforms.size) { toast('Nejdřív vyber platformy, které chceš uložit.'); return; }
+  state.savedPlatforms = new Set(state.platforms);
+  saveJsonSet(PLATFORM_PREF_KEY, state.savedPlatforms);
+  renderPlatformFilters();
+  toast(`Uloženo: ${[...state.savedPlatforms].join(', ')}.`);
+}
+
+function applyMyPlatforms() {
+  if (!state.savedPlatforms.size) { toast('Zatím nemáš uložené žádné platformy.'); return; }
+  state.platforms = new Set(state.savedPlatforms);
+  renderPlatformFilters();
+  renderGames({resetLimit:true});
+}
+
+function notificationSupported() {
+  return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+}
+
+function urlBase64Bytes(value) {
+  const padding = '='.repeat((4 - value.length % 4) % 4);
+  const raw = atob((value + padding).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...raw].map(char => char.charCodeAt(0)));
+}
+
+async function syncPushSubscription() {
+  if (!notificationSupported() || Notification.permission !== 'granted' || localStorage.getItem(NOTIFY_KEY) !== '1') return false;
+  const registration = await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+  if (!subscription) {
+    const response = await fetchApi(PUSH_PUBLIC_KEY_PATH, { headers:{ Accept:'application/json' } });
+    if (!response.ok) throw new Error(`Push key HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.enabled || !data.publicKey) throw new Error('Push notifications are not configured');
+    subscription = await registration.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:urlBase64Bytes(data.publicKey) });
+  }
+  const response = await fetchApi(PUSH_SUBSCRIBE_PATH, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Accept:'application/json' },
+    body:JSON.stringify({ subscription:subscription.toJSON(), gameIds:[...state.watchlist] })
+  });
+  if (!response.ok) throw new Error(`Push subscription HTTP ${response.status}`);
+  return true;
+}
+
+async function removePushSubscriptionFromServer() {
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription) return;
+  try {
+    await fetchApi(PUSH_SUBSCRIBE_PATH, {
+      method:'DELETE', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ endpoint:subscription.endpoint })
+    });
+  } finally {
+    await subscription.unsubscribe();
+  }
+}
+
+function renderNotificationButton() {
+  const button = $('notification-toggle');
+  if (!button) return;
+  if (!notificationSupported()) { button.hidden = true; return; }
+  const enabled = localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted';
+  button.classList.toggle('is-active', enabled);
+  button.title = enabled ? 'Upozornění na sledované hry jsou zapnutá' : 'Zapnout upozornění na sledované hry';
+}
+
+async function toggleNotifications() {
+  if (!notificationSupported()) { toast('Tento prohlížeč upozornění nepodporuje.'); return; }
+  if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') {
+    await removePushSubscriptionFromServer().catch(error => console.warn('Push unsubscribe:', error));
+    localStorage.setItem(NOTIFY_KEY, '0');
+    renderNotificationButton();
+    toast('Upozornění byla vypnuta.');
+    return;
+  }
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') { toast('Povolení pro upozornění nebylo uděleno.'); return; }
+  localStorage.setItem(NOTIFY_KEY, '1');
+  try {
+    await syncPushSubscription();
+    maybeNotifyUpcoming().catch(error => console.warn('Upcoming notification:', error));
+    toast('Upozornění na pozadí jsou zapnutá.');
+  } catch (error) {
+    localStorage.setItem(NOTIFY_KEY, '0');
+    console.warn('Push subscribe:', error);
+    toast('Upozornění se nepodařilo zapnout. Zkuste to znovu.');
+  }
+  renderNotificationButton();
+}
+
+async function maybeNotifyUpcoming(force = false) {
+  if (!notificationSupported() || Notification.permission !== 'granted' || localStorage.getItem(NOTIFY_KEY) !== '1' || !state.rows.length) return;
+  const today = todayLocal();
+  if (!force && localStorage.getItem(NOTIFY_LAST_KEY) === today) return;
+  const end = addDays(today, 7);
+  const watchedFamilies = watchedFamilyKeys(state.rows, state.watchlist);
+  const upcoming = state.rows.filter(row =>
+    row.day
+    && row.day >= today
+    && row.day <= end
+    && (isWatched(row.game) || watchedFamilies.has(displayFamilyKey(row)))
+  );
+  if (!upcoming.length) {
+    if (force) toast('Žádná sledovaná hra nevychází během příštích 7 dní.');
+    localStorage.setItem(NOTIFY_LAST_KEY, today);
+    return;
+  }
+  const unique = collapseDisplayRows(upcoming, preferDisplayRow);
+  const first = unique[0];
+  const body = unique.slice(0,3).map(row => `${row.game.name} – ${formatDate(row.day)}`).join('\n') + (unique.length > 3 ? `\n+ ${unique.length - 3} další` : '');
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    await registration.showNotification('Herní Kalendář – blíží se vydání', {
+      body,
+      icon: './CaseyCZ.png',
+      badge: './CaseyCZ.png',
+      tag: `game-release-${today}`,
+      data: { url: `./?game=${encodeURIComponent(gameId(first.game))}&release=${encodeURIComponent(first.day)}` }
+    });
+    localStorage.setItem(NOTIFY_LAST_KEY, today);
+  } catch (error) {
+    console.warn('Notification:', error);
+  }
+}
+
+function bindEvents() {
+  window.addEventListener('games:live-release-date', event => {
+    const detail = event.detail || {};
+    const day = String(detail.day || '').trim();
+    const provider = String(detail.provider || '').trim();
+    if (provider !== 'steam' || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+
+    const id = String(detail.gameId || '').trim();
+    const igdbId = String(detail.igdbId || '').trim();
+    const timestamp = Math.floor(Date.parse(`${day}T00:00:00Z`) / 1000);
+
+    const previous = (igdbId && liveProviders[`igdb:${igdbId}`])
+      || (id && liveProviders[`id:${id}`])
+      || null;
+    const cached = {
+      ...(previous || {}),
+      releaseDates: {
+        ...(previous?.releaseDates || {}),
+        steam: day
+      },
+      updatedAt: Date.now()
+    };
+    if (id) liveProviders[`id:${id}`] = cached;
+    if (igdbId) liveProviders[`igdb:${igdbId}`] = cached;
+    writeLiveProviders(liveProviders);
+
+    let changed = false;
+
+    for (const row of state.rows) {
+      const sameId = id && gameId(row.game) === id;
+      const sameIgdb = igdbId && String(row.game?.igdbId || '') === igdbId;
+      const isPcRelease = (row.platformGroups || []).includes('PC');
+      if (!(sameId || sameIgdb) || !isPcRelease || row.day === day) continue;
+      row.day = day;
+      row.timestamp = timestamp;
+      row.from = day;
+      row.to = day;
+      row.sortDay = day;
+      row.precision = 'day';
+      changed = true;
+    }
+
+    if (changed) scheduleLiveRender();
+  });
+
+  window.addEventListener('games:live-enriched', event => {
+    const detail = event.detail || {};
+    const id = String(detail.gameId || '').trim();
+    if (!id) return;
+    const igdbId = String(detail.igdbId || '').trim();
+    const previous = (igdbId && liveProviders[`igdb:${igdbId}`]) || liveProviders[`id:${id}`] || null;
+    const entry = compactLiveProviderEntry(detail, previous);
+    liveProviders[`id:${id}`] = entry;
+    if (igdbId) liveProviders[`igdb:${igdbId}`] = entry;
+    writeLiveProviders(liveProviders);
+
+    let changed = false;
+    const seen = new Set();
+    for (const row of state.rows) {
+      const game = row?.game;
+      if (!game || seen.has(game)) continue;
+      seen.add(game);
+      const sameIgdb = igdbId && String(game.igdbId || '') === igdbId;
+      const sameId = gameId(game) === id;
+      if (sameIgdb || sameId) changed = applyLiveProviderEntry(game, entry) || changed;
+    }
+    if (changed) scheduleLiveCardPatch(id, igdbId);
+  });
+  window.addEventListener('games:subscription-updated', event => {
+    const detail = event.detail || {};
+    const gameIdValue = String(detail.gameId || '').trim();
+    const igdbIdValue = String(detail.igdbId || '').trim();
+    const incoming = normalizeLiveSubscriptions(detail.subscriptions || {});
+    const checkedProviders = new Set(Array.isArray(detail.checkedProviders) ? detail.checkedProviders : []);
+    const providerForSubscription = {
+      gamePass:'microsoft', gamePassConsole:'microsoft', gamePassPc:'microsoft',
+      cloudGaming:'microsoft', eaPlay:'microsoft', psPlus:'playstation', geforceNow:'geforceNow'
+    };
+    const previousEntry = (igdbIdValue && liveSubscriptions[`igdb:${igdbIdValue}`])
+      || (gameIdValue && liveSubscriptions[`id:${gameIdValue}`])
+      || null;
+    const subscriptions = { ...(previousEntry?.subscriptions || {}) };
+    for (const [key, provider] of Object.entries(providerForSubscription)) {
+      if (checkedProviders.has(provider)) subscriptions[key] = Boolean(incoming[key]);
+    }
+    const verifiedAt = detail.verifiedAt || new Date().toISOString();
+    const updatedAt = Date.now();
+
+    if (igdbIdValue) liveSubscriptions[`igdb:${igdbIdValue}`] = { subscriptions, verifiedAt, updatedAt };
+    if (gameIdValue) liveSubscriptions[`id:${gameIdValue}`] = { subscriptions, verifiedAt, updatedAt };
+    writeLiveSubscriptions(liveSubscriptions);
+
+    let changed = false;
+    const seen = new Set();
+    for (const row of state.rows) {
+      const game = row?.game;
+      if (!game || seen.has(game)) continue;
+      seen.add(game);
+      const sameIgdb = igdbIdValue && String(game.igdbId || '') === igdbIdValue;
+      const sameId = gameIdValue && gameId(game) === gameIdValue;
+      if (!sameIgdb && !sameId) continue;
+      const before = JSON.stringify(game.subscriptions || {});
+      game.subscriptions = {
+        ...(game.subscriptions || {}),
+        ...subscriptions,
+        checkedAt: verifiedAt
+      };
+      if (JSON.stringify(game.subscriptions) !== before) changed = true;
+    }
+
+    if (changed) scheduleLiveCardPatch(gameIdValue, igdbIdValue);
+  });
+  $('search-toggle').addEventListener('click', () => {
+    const open = $('search-popover').hidden;
+    $('search-popover').hidden = !open;
+    $('search-toggle').setAttribute('aria-expanded', String(open));
+    if (open) requestAnimationFrame(() => $('search-input').focus());
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === '/' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)) {
+      event.preventDefault();
+      $('search-popover').hidden = false;
+      $('search-toggle').setAttribute('aria-expanded','true');
+      $('search-input').focus();
+    }
+    if (event.key === 'Escape' && !$('search-popover').hidden) {
+      $('search-popover').hidden = true;
+      $('search-toggle').setAttribute('aria-expanded','false');
+    }
+  });
+
+  $('search-input').addEventListener('input', debounce(event => {
+    const wasSearching = Boolean(normalizeSearch(state.search));
+    state.search = event.target.value.trim();
+    const isSearching = Boolean(normalizeSearch(state.search));
+
+    if (!wasSearching && isSearching) {
+      state.sort = 'date-desc';
+      $('sort-filter').value = 'date-desc';
+      $('sort-filter').dispatchEvent(new Event('sortsync'));
+    } else if (wasSearching && !isSearching) {
+      state.sort = 'date-asc';
+      $('sort-filter').value = 'date-asc';
+      $('sort-filter').dispatchEvent(new Event('sortsync'));
+    }
+
+    refreshOnlineSearch(state.search);
+  }, 350));
+  $('platform-filters').addEventListener('click', event => {
+    const button = event.target.closest('[data-platform]');
+    if (!button) return;
+    const key = button.dataset.platform;
+    if (state.platforms.has(key)) state.platforms.delete(key); else state.platforms.add(key);
+    renderPlatformFilters();
+    renderGames({resetLimit:true});
+  });
+  $('platform-save').addEventListener('click', saveCurrentPlatforms);
+  $('platform-my').addEventListener('click', applyMyPlatforms);
+  $('genre-filters').addEventListener('click', event => {
+    const button = event.target.closest('[data-genre]');
+    if (!button) return;
+    const genre = button.dataset.genre;
+    if (state.genres.has(genre)) state.genres.delete(genre); else state.genres.add(genre);
+    renderGames({resetLimit:true});
+  });
+  $('genre-clear').addEventListener('click', () => { state.genres.clear(); renderGames({resetLimit:true}); });
+  $('active-context-filters').addEventListener('click', event => {
+    const button = event.target.closest('[data-clear-context]');
+    if (!button) return;
+    if (button.dataset.clearContext === 'company') state.company = null;
+    if (button.dataset.clearContext === 'series') state.series = '';
+    renderGames({resetLimit:true});
+  });
+  $('status-filter').addEventListener('change', event => { state.status = event.target.value; renderGames({resetLimit:true}); });
+  $('precision-filter').addEventListener('change', event => { state.precision = event.target.value; renderGames({resetLimit:true}); });
+  $('sort-filter').addEventListener('change', event => { state.sort = event.target.value; renderGames({resetLimit:true}); });
+  document.querySelector('.period-control').addEventListener('click', event => {
+    const button = event.target.closest('[data-period]');
+    if (button) setPeriod(button.dataset.period);
+  });
+  $('month-filter').addEventListener('change', () => selectMonth($('year-filter').value, $('month-filter').value));
+  $('year-filter').addEventListener('change', () => selectMonth($('year-filter').value, $('month-filter').value));
+  $('prev-month').addEventListener('click', () => changeMonth(-1));
+  $('next-month').addEventListener('click', () => changeMonth(1));
+  $('month-rail').addEventListener('click', event => {
+    const button = event.target.closest('[data-month]');
+    if (!button) return;
+    const [year, month] = button.dataset.month.split('-').map(Number);
+    selectMonth(year, month - 1);
+    window.scrollTo({top: 0, behavior:'smooth'});
+  });
+  $('reset-filters').addEventListener('click', resetFilters);
+  $('empty-reset').addEventListener('click', resetFilters);
+  $('watchlist-toggle').addEventListener('click', () => { state.watchlistOnly = !state.watchlistOnly; renderGames({resetLimit:true}); });
+  document.querySelectorAll('[data-stat-jump]').forEach(button => button.addEventListener('click', () => {
+    const action = button.dataset.statJump;
+    if (action === '30') {
+      state.status = 'upcoming';
+      $('status-filter').value = 'upcoming';
+      setPeriod('30');
+    } else if (action === 'next') setPeriod('next');
+    else $('games').scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+  $('share-button').addEventListener('click', shareCurrent);
+  $('notification-toggle').addEventListener('click', toggleNotifications);
+  $('calendar-all').addEventListener('click', openCalendarDialog);
+  $('calendar-dialog-close').addEventListener('click', () => $('calendar-dialog').close());
+  $('calendar-dialog').addEventListener('click', event => {
+    if (event.target === $('calendar-dialog')) $('calendar-dialog').close();
+    const choice = event.target.closest('[data-calendar-feed]');
+    if (choice) setCalendarFeedMode(choice.dataset.calendarFeed);
+  });
+  $('calendar-copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(calendarFeedUrl().href);
+      toast('Adresa živého kalendáře byla zkopírována.');
+    } catch {
+      toast('Adresu se nepodařilo zkopírovat.');
+    }
+  });
+  $('calendar-download').addEventListener('click', () => {
+    const dated = collapseCalendarRows(visibleReleaseRows().filter(row => row.day));
+    if (!downloadIcs(dated, `herni-kalendar-${state.range?.from || 'vse'}.ics`)) toast('Aktuální výběr nemá žádné přesné datum.');
+  });
+  document.querySelector('.view-toggle').addEventListener('click', event => {
+    const button = event.target.closest('[data-view]');
+    if (button) setView(button.dataset.view);
+  });
+  $('load-more').addEventListener('click', () => { state.limit += PAGE_SIZE; renderGames(); });
+
+  $('games').addEventListener('error', event => {
+    if (event.target instanceof HTMLImageElement) event.target.remove();
+  }, true);
+  $('games').addEventListener('click', event => {
+    const open = event.target.closest('[data-open-game]');
+    if (open) { openGame(open.dataset.openGame); return; }
+    const watch = event.target.closest('[data-watch]');
+    if (watch) { toggleWatch(watch.dataset.watch); return; }
+    const calendar = event.target.closest('[data-calendar]');
+    if (calendar) {
+      const row = rowByKey(calendar.dataset.calendar);
+      if (row) openCalendarMenu(row);
+    }
+  });
+
+  $('dialog-close').addEventListener('click', closeGameDialog);
+  $('game-dialog').addEventListener('close', () => {
+    if (state.openRowKey) {
+      state.openRowKey = '';
+      updateQuery({ includeOpenGame: false });
+      restoreSeo();
+    }
+  });
+  $('game-dialog').addEventListener('click', event => {
+    if (event.target === $('game-dialog')) { closeGameDialog(); return; }
+    const watch = event.target.closest('[data-dialog-watch]');
+    if (watch) { toggleWatch(watch.dataset.dialogWatch); return; }
+    const calendar = event.target.closest('[data-dialog-calendar]');
+    if (calendar) {
+      const row = rowByKey(calendar.dataset.dialogCalendar);
+      if (row) openCalendarMenu(row);
+      return;
+    }
+    const share = event.target.closest('[data-dialog-share]');
+    if (share) {
+      const row = rowByKey(share.dataset.dialogShare);
+      if (row) shareGame(row);
+      return;
+    }
+    const company = event.target.closest('[data-filter-company]');
+    if (company) { applyCompanyFilter(company.dataset.filterCompany, company.dataset.filterValue); return; }
+    const series = event.target.closest('[data-filter-series]');
+    if (series) { applySeriesFilter(series.dataset.filterSeries); return; }
+    const genre = event.target.closest('[data-dialog-genre]');
+    if (genre) {
+      state.genres = new Set([genre.dataset.dialogGenre]);
+      closeGameDialog();
+      renderGames({resetLimit:true});
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+    const gallery = event.target.closest('[data-gallery-image]');
+    if (gallery) {
+      $('image-dialog-img').src = gallery.dataset.galleryImage;
+      $('image-dialog').showModal();
+    }
+  });
+  $('image-dialog-close').addEventListener('click', () => $('image-dialog').close());
+  $('image-dialog').addEventListener('click', event => { if (event.target === $('image-dialog')) $('image-dialog').close(); });
+}
+
+function hydrateControls() {
+  $('search-input').value = state.search;
+  $('status-filter').value = state.status;
+  $('precision-filter').value = state.precision;
+  $('sort-filter').value = state.sort;
+  $('sort-filter').dispatchEvent(new Event('sortsync'));
+  renderPlatformFilters();
+  renderGenres();
+  renderMonthSelectors();
+  renderContextFilters();
+  renderNotificationButton();
+  document.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('is-active', button.dataset.view === state.view));
+}
+
+function setDataset(dataset, { quiet = false, first = false } = {}) {
+  state.dataset = dataset;
+  state.catalogRows = flattenReleases(dataset);
+  state.rows = [...state.catalogRows, ...state.onlineRows];
+  applyLiveProviderCache(state.rows);
+  applyLiveReleaseDateCache(state.rows);
+  applyLiveSubscriptionCache(state.rows);
+  if (first && !state.queryHadPlatforms && state.savedPlatforms.size) state.platforms = new Set(state.savedPlatforms);
+  hydrateControls();
+  renderGames({resetLimit:true});
+  notifyAvailableRows();
+  $('skeleton-grid').hidden = true;
+  $('games').hidden = state.filtered.length === 0;
+  if (!quiet) toast(`Načteno ${formatter.format(uniqueGameCount(state.rows))} her / ${formatter.format(state.rows.length)} vydání.`);
+  const requested = findRequestedRow();
+  if (requested && !state.openRowKey) openGame(requested.key, { updateUrl: false });
+  if (first && state.search) refreshOnlineSearch(state.search);
+}
+
+async function init() {
+  setDefaultPeriod();
+  parseQuery();
+  bindEvents();
+  restoreSeo();
+  try {
+    const result = await loadGameData({ onRevalidated: fresh => setDataset(fresh, {quiet:true}) });
+    setDataset(result.dataset, {quiet:true, first:true});
+    if (result.stale) toast('Síť není dostupná – zobrazuji poslední uložená data.');
+  } catch (error) {
+    console.error(error);
+    $('skeleton-grid').hidden = true;
+    $('empty-state').hidden = false;
+    $('empty-state').querySelector('h2').textContent = 'Data se nepodařilo načíst';
+    $('empty-state').querySelector('p').textContent = 'Zkontroluj games.json nebo připojení a obnov stránku.';
+  }
+
+  setInterval(() => { if (state.dataset) renderGames(); }, 60_000);
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('./sw.js').then(async () => {
+      renderNotificationButton();
+      if (localStorage.getItem(NOTIFY_KEY) === '1' && Notification.permission === 'granted') {
+        await syncPushSubscription();
+        await maybeNotifyUpcoming();
+      }
+    }).catch(error => console.warn('Service worker:', error));
+  }
+}
+
+init();

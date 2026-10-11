@@ -1,0 +1,109 @@
+name: Deploy GameS to server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-games-stremio-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Validate before deployment
+        run: |
+          npm run check
+          npm test
+
+      - name: Check commit is still current main
+        id: current-main
+        run: |
+          set -euo pipefail
+          remote_sha="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [[ "$remote_sha" != "$GITHUB_SHA" ]]; then
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "Deployment skipped: workflow commit $GITHUB_SHA was superseded by $remote_sha."
+          else
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check deployment configuration
+        if: steps.current-main.outputs.current == 'true'
+        env:
+          DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$DEPLOY_KEY_B64" ]]; then
+            echo "::error::Missing repository secret GAMES_DEPLOY_SSH_KEY_B64."
+            exit 1
+          fi
+
+      - name: Configure SSH
+        if: steps.current-main.outputs.current == 'true'
+        env:
+          DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s' "$DEPLOY_KEY_B64" | base64 --decode > ~/.ssh/games-deploy
+          chmod 600 ~/.ssh/games-deploy
+
+          # Fail early with a clear message if the secret is damaged.
+          ssh-keygen -y -f ~/.ssh/games-deploy >/dev/null
+
+          ssh-keyscan -T 10 -p 22 130.61.49.108 > /tmp/games-host-keys 2>/dev/null
+          test -s /tmp/games-host-keys
+
+          if ! ssh-keygen -lf /tmp/games-host-keys | awk '{print $2}' | grep -Fxq 'SHA256:SHoVgKDg5pnIiJP70GQCO90OZTECuaNlKnfLK/WZF5Y'; then
+            echo "::error::Oracle SSH host key fingerprint does not match the pinned server fingerprint."
+            ssh-keygen -lf /tmp/games-host-keys || true
+            exit 1
+          fi
+
+          ssh-keyscan -T 10 -p 22 -H 130.61.49.108 >> ~/.ssh/known_hosts
+
+      - name: Deploy current main to server
+        if: steps.current-main.outputs.current == 'true'
+        run: |
+          ssh \
+            -i ~/.ssh/games-deploy \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=3 \
+            ubuntu@130.61.49.108 \
+            'bash /home/ubuntu/games-calendar/repo/games-api/deploy/stremio-server-update.sh'
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "### GameS deployment"
+            echo
+            echo "- GitHub commit: \`${GITHUB_SHA}\`"
+            echo "- Server: \`130.61.49.108\`"
+            echo "- Web: \`/games/\`"
+            if [[ "${{ steps.current-main.outputs.current }}" == "true" ]]; then
+              echo "- Result: deployment script completed successfully"
+            else
+              echo "- Result: skipped because a newer main commit exists"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

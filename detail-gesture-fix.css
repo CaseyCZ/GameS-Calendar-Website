@@ -1,0 +1,315 @@
+/* Keep game-detail gestures inside the modal on iOS/Safari. */
+html.game-detail-open,
+body.game-detail-open {
+  overscroll-behavior-y: none;
+}
+
+/*
+ * Game detail stays card-like, but gets more room on desktop. Keep the scroll
+ * inside this card and never let long links/media widen the dialog or create
+ * a page-wide horizontal scrollbar.
+ */
+.game-dialog {
+  width: min(720px, calc(100vw - 24px)) !important;
+  max-width: 720px !important;
+  max-height: min(88dvh, 820px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.game-dialog #dialog-content,
+.game-dialog .detail-hero,
+.game-dialog .detail-main,
+.game-dialog .detail-cover,
+.game-dialog .detail-subsection,
+.game-dialog .detail-media-section,
+.game-dialog .detail-link-section,
+.game-dialog .detail-store-grid,
+.game-dialog .detail-more-links,
+.game-dialog .detail-facts,
+.game-dialog .screenshot-rail,
+.game-dialog .detail-video,
+.game-dialog iframe,
+.game-dialog video,
+.game-dialog img {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.game-dialog #dialog-content {
+  width: 100%;
+  overflow-x: hidden;
+  transform: translate3d(0,0,0);
+  transition: transform .16s ease, opacity .16s ease;
+  will-change: transform, opacity;
+}
+
+/* One-column detail even on desktop: it should look like a card, not a page. */
+.game-dialog .detail-hero {
+  display: block !important;
+  min-height: 0 !important;
+  width: 100%;
+}
+
+.game-dialog .detail-cover {
+  width: 100%;
+  min-height: 0 !important;
+  max-height: 270px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.game-dialog .detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-dialog .detail-main {
+  width: 100%;
+  padding: 20px !important;
+  overflow-x: hidden;
+}
+
+.game-dialog .detail-main h2 {
+  font-size: clamp(22px, 6vw, 30px) !important;
+  overflow-wrap: anywhere;
+}
+
+.game-dialog .detail-summary,
+.game-dialog .fact,
+.game-dialog .store-link,
+.game-dialog .live-enrich-status,
+.game-dialog a,
+.game-dialog strong,
+.game-dialog span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.game-dialog .detail-facts,
+.game-dialog .detail-store-grid {
+  grid-template-columns: 1fr !important;
+}
+
+/* Galleries may scroll internally, but can never widen the detail card. */
+.game-dialog .screenshot-rail {
+  width: 100%;
+  grid-auto-columns: minmax(220px, 82%);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.game-dialog .detail-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.game-dialog .detail-video iframe,
+.game-dialog .detail-video video {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+
+.game-dialog.is-gesture-dragging #dialog-content {
+  transition: none;
+}
+
+@media (max-width: 560px) {
+  .game-dialog {
+    width: calc(100vw - 18px) !important;
+    max-width: calc(100vw - 18px) !important;
+    max-height: calc(100dvh - 18px) !important;
+    border-radius: 15px;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .game-dialog .detail-cover {
+    max-height: 220px;
+  }
+
+  .game-dialog .detail-main {
+    padding: 16px !important;
+  }
+
+  .game-dialog .screenshot-rail {
+    grid-auto-columns: 88%;
+  }
+}
+
+@media (min-width: 561px) and (max-width: 820px) {
+  .game-dialog {
+    touch-action: pan-y pinch-zoom;
+  }
+}
+
+/* Live detail enrichment from the Oracle API. */
+.live-enrich-status {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.live-enrich-status[data-state="loading"]::before { content: '↻ '; color: var(--pink); }
+.live-enrich-status[data-state="ok"] { color: #9de6c8; border-color: rgba(52,211,153,.25); background: rgba(52,211,153,.05); }
+.live-enrich-status[data-state="empty"] { color: var(--muted); }
+.live-enrich-status[data-state="error"] { color: #f6a6b5; border-color: rgba(244,63,94,.24); background: rgba(244,63,94,.05); }
+
+.service-badge--cloud { color:#9edcff; border-color:rgba(56,189,248,.35); background:rgba(56,189,248,.08); }
+.service-badge--eaplay { color:#ffb8b8; border-color:rgba(239,68,68,.32); background:rgba(239,68,68,.07); }
+
+/* Late contrast guard for the optional light theme.
+ * ui-upgrades.css is injected at runtime, so critical controls use explicit
+ * light-mode values here to remain readable regardless of stylesheet order. */
+html[data-theme="light"] .icon-btn,
+html[data-theme="light"] .secondary-btn,
+html[data-theme="light"] .chip,
+html[data-theme="light"] .filter-summary,
+html[data-theme="light"] .settings-summary,
+html[data-theme="light"] .theme-choice__button,
+html[data-theme="light"] .genre-filter-chip,
+html[data-theme="light"] .filter-choice-chip,
+html[data-theme="light"] .card-action,
+html[data-theme="light"] .store-link {
+  color: #35263b !important;
+  background: #ffffff !important;
+  border-color: rgba(62,35,72,.24) !important;
+  box-shadow: 0 1px 2px rgba(75,45,82,.06);
+}
+
+html[data-theme="light"] .icon-btn:hover,
+html[data-theme="light"] .secondary-btn:hover,
+html[data-theme="light"] .chip:hover,
+html[data-theme="light"] .filter-summary:hover,
+html[data-theme="light"] .settings-summary:hover,
+html[data-theme="light"] .theme-choice__button:hover,
+html[data-theme="light"] .genre-filter-chip:hover,
+html[data-theme="light"] .filter-choice-chip:hover,
+html[data-theme="light"] .card-action:hover,
+html[data-theme="light"] .store-link:hover {
+  color: #26182c !important;
+  background: #f9edf4 !important;
+  border-color: rgba(219,47,131,.55) !important;
+}
+
+html[data-theme="light"] .chip.is-active,
+html[data-theme="light"] .chip--platform.is-active,
+html[data-theme="light"] .genre-filter-chip.is-active,
+html[data-theme="light"] .filter-choice-chip.is-active,
+html[data-theme="light"] .filters-disclosure[open] > .filter-summary,
+html[data-theme="light"] .filter-summary.has-active {
+  color: #ffffff !important;
+  background: linear-gradient(105deg,#db2f83,#a952d0) !important;
+  border-color: transparent !important;
+  box-shadow: 0 5px 16px rgba(183,38,113,.22) !important;
+}
+
+html[data-theme="light"] .icon-btn.is-active,
+html[data-theme="light"] .settings-menu[open] > .settings-summary,
+html[data-theme="light"] .theme-choice__button.is-active {
+  color: #b71f68 !important;
+  background: #fbe7f1 !important;
+  border-color: rgba(219,47,131,.62) !important;
+}
+
+html[data-theme="light"] .genre-filter-chip.is-active small,
+html[data-theme="light"] .filter-summary__count {
+  color: #ffffff !important;
+  background: rgba(87,20,68,.28) !important;
+}
+
+html[data-theme="light"] .genre-filter-chip.is-empty {
+  color: #8e8195 !important;
+  background: #f5f1f6 !important;
+  border-color: rgba(62,35,72,.12) !important;
+}
+
+html[data-theme="light"] .watch-btn.is-active {
+  color: #0f7653 !important;
+  background: #e8f6f0 !important;
+  border-color: rgba(22,138,98,.42) !important;
+}
+
+html[data-theme="light"] .settings-notification-row,
+html[data-theme="light"] .context-filter,
+html[data-theme="light"] .text-filter-link {
+  color: var(--text) !important;
+}
+
+html[data-theme="light"] .control,
+html[data-theme="light"] .search-field,
+html[data-theme="light"] kbd {
+  color: var(--text) !important;
+  background: #ffffff !important;
+  border-color: rgba(62,35,72,.24) !important;
+}
+
+html[data-theme="light"] .control:focus,
+html[data-theme="light"] .search-field:focus-within {
+  border-color: rgba(219,47,131,.62) !important;
+}
+
+html[data-theme="light"] .stat-pill:hover,
+html[data-theme="light"] .month-tile:hover {
+  background: #f9edf4 !important;
+  border-color: rgba(219,47,131,.35) !important;
+}
+
+html[data-theme="light"] .service-badge--gamepass {
+  color: #2f741f !important;
+  background: #edf8e9 !important;
+  border-color: rgba(61,143,33,.35) !important;
+}
+
+html[data-theme="light"] .service-badge--psplus {
+  color: #2c5ba7 !important;
+  background: #edf3ff !important;
+  border-color: rgba(49,93,168,.32) !important;
+}
+
+html[data-theme="light"] .service-badge--gfn {
+  color: #517b12 !important;
+  background: #f1f8e5 !important;
+  border-color: rgba(82,125,20,.32) !important;
+}
+html[data-theme="light"] .service-badge--cloud {
+  color:#12658b !important;
+  background:#eaf7fd !important;
+  border-color:rgba(22,101,139,.28) !important;
+}
+html[data-theme="light"] .service-badge--eaplay {
+  color:#a62d39 !important;
+  background:#fff0f1 !important;
+  border-color:rgba(166,45,57,.26) !important;
+}
+html[data-theme="light"] .live-enrich-status {
+  color: var(--text);
+  background: #ffffff;
+  border-color: rgba(62,35,72,.18);
+}
+html[data-theme="light"] .live-enrich-status[data-state="ok"] {
+  color:#0f7653;
+  background:#eef9f4;
+  border-color:rgba(22,138,98,.28);
+}
+html[data-theme="light"] .live-enrich-status[data-state="error"] {
+  color:#a52d45;
+  background:#fff1f4;
+  border-color:rgba(165,45,69,.25);
+}
+
+html[data-theme="light"] button:disabled,
+html[data-theme="light"] .is-disabled {
+  opacity: .52;
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="cs" data-theme="manager-dark">
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Herní Kalendář">
+  <meta property="og:title" content="Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo">
+  <meta property="og:description" content="Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody.">
+  <meta property="og:url" content="https://130.61.49.108/games/">
+  <meta property="og:image" content="https://caseycz.github.io/GameS-Calendar-Website/CaseyCZ.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo">
+  <meta name="twitter:description" content="Přehled připravovaných a vydaných her napříč platformami.">
+  <link rel="canonical" href="https://130.61.49.108/games/">
+  <link rel="preconnect" href="https://images.igdb.com" crossorigin>
+  <link rel="preconnect" href="https://130.61.49.108" crossorigin>
+  <title>Herní Kalendář – nové hry pro PC, PS5, Xbox a Nintendo</title>
+<!-- Google Analytics loads only after explicit consent. -->
+<script src="analytics-consent.js?v=20261001-footer3"></script>
+  <link rel="icon" href="CaseyCZ.png">
+  <link rel="apple-touch-icon" href="CaseyCZ.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="icons.css">
+  <link rel="stylesheet" href="detail-polish.css">
+  <link rel="stylesheet" href="layout-fixes.css">
+  <link rel="stylesheet" href="compact-controls.css">
+  <link rel="stylesheet" href="advanced-features.css" data-advanced-features>
+  <link rel="stylesheet" href="badge-filter-controls.css">
+  <link rel="stylesheet" href="filter-section-accordion.css">
+  <link rel="stylesheet" href="detail-gesture-fix.css">
+  <link rel="stylesheet" href="ui-upgrades.css">
+  <link rel="stylesheet" href="themes.css">
+  <script src="version.js"></script>
+  <script src="themes.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Herní Kalendář",
+    "url":"https://caseycz.github.io/GameS-Calendar-Website/",
+    "applicationCategory":"EntertainmentApplication",
+    "operatingSystem":"Web",
+    "inLanguage":"cs",
+    "description":"Přehled připravovaných a vydaných her, termínů, platforem, žánrů a odkazů na obchody."
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#games">Přejít na hry</a>
+
+  <header class="topbar">
+    <div class="topbar__row shell">
+      <a class="brand" href="./" aria-label="Herní Kalendář – domů">
+        <img class="brand__logo" src="CaseyCZ.webp" alt="" width="42" height="42">
+        <span class="brand__copy">
+          <strong>Herní Kalendář</strong>
+          <small>Herní vydání napříč platformami</small>
+        </span>
+      </a>
+
+      <div class="topbar__stats" aria-label="Souhrn">
+        <button class="stat-pill" type="button" data-stat-jump="visible" title="Zobrazit aktuální výběr">
+          <strong id="stat-visible">0</strong><span id="stat-visible-label">her ve výběru</span>
+        </button>
+        <button class="stat-pill" type="button" data-stat-jump="30" title="Příštích 30 dní">
+          <strong id="stat-30">0</strong><span>30 dní</span>
+        </button>
+        <button class="stat-pill" type="button" data-stat-jump="next" title="Příští měsíc">
+          <strong id="stat-next">0</strong><span>příští měsíc</span>
+        </button>
+        <button class="stat-pill stat-pill--watch" type="button" id="watchlist-toggle" title="Zobrazit sledované hry">
+          <strong id="stat-watchlist">0</strong><span>sledované</span>
+        </button>
+        <button class="stat-pill stat-pill--changes" type="button" id="changes-toggle" title="Nové hry a změny termínů" aria-expanded="false" aria-controls="release-changes">
+          <strong id="stat-changes">0</strong><span>změny</span>
+        </button>
+      </div>
+
+      <div class="topbar__actions">
+        <button class="icon-btn" id="search-toggle" type="button" aria-expanded="false" aria-controls="search-popover" title="Hledat">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+          <span class="sr-only">Hledat</span>
+        </button>
+        <button class="icon-btn" id="notification-toggle" type="button" title="Upozornění na sledované hry">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+          <span class="sr-only">Upozornění</span>
+        </button>
+        <button class="icon-btn" id="share-button" type="button" title="Sdílet aktuální filtry">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V3m0 0 4 4m-4-4L8 7M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+          <span class="sr-only">Sdílet</span>
+        </button>
+        <button class="primary-btn" id="calendar-all" type="button" title="Přidat průběžně aktualizovaný kalendář">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Přidat výběr</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-popover shell" id="search-popover" hidden>
+      <label class="search-field" for="search-input">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+        <input id="search-input" type="search" inputmode="search" autocomplete="off" placeholder="Hledat název, alternativní název, studio nebo sérii…">
+        <kbd>/</kbd>
+      </label>
+    </div>
+
+    <div class="filters-wrap">
+      <div class="filters shell" aria-label="Filtry her">
+        <div class="platform-filter-row">
+          <div class="platforms" id="platform-filters" aria-label="Platformy"></div>
+          <div class="platform-memory" aria-label="Moje platformy">
+            <button class="chip chip--utility" id="platform-my" type="button" disabled>★ Moje</button>
+            <button class="chip chip--utility" id="platform-save" type="button" disabled>Uložit</button>
+          </div>
+        </div>
+
+        <div class="genre-filter-wrap" aria-label="Žánry">
+          <div class="genre-filter-heading"><span>Žánry</span><button id="genre-clear" type="button" hidden>Zrušit výběr</button></div>
+          <div class="genre-filter-list" id="genre-filters"></div>
+        </div>
+
+        <select class="control" id="status-filter" aria-label="Stav vydání">
+          <option value="upcoming">Nadcházející</option>
+          <option value="released">Již vydané</option>
+          <option value="all">Všechny</option>
+        </select>
+
+        <select class="control" id="precision-filter" aria-label="Jistota termínu">
+          <option value="all">Všechny termíny</option>
+          <option value="day">Přesné datum</option>
+          <option value="month">Oznámený měsíc</option>
+          <option value="quarter">Oznámené čtvrtletí</option>
+          <option value="year">Oznámený rok</option>
+          <option value="unknown">Bez data (TBA)</option>
+        </select>
+
+        <div class="period-control" aria-label="Období">
+          <button class="chip" type="button" data-period="month">Tento měsíc</button>
+          <button class="chip" type="button" data-period="next">Příští měsíc</button>
+          <button class="chip" type="button" data-period="week">Tento týden</button>
+          <button class="chip" type="button" data-period="30">Příštích 30 dní</button>
+          <button class="chip" type="button" data-period="90">Příštích 90 dní</button>
+          <button class="chip" type="button" data-period="year">Tento rok</button>
+          <button class="chip" type="button" data-period="undated">Bez data</button>
+          <button class="chip" type="button" data-period="all">Vše</button>
+          <button class="icon-btn icon-btn--small" type="button" id="prev-month" title="Předchozí měsíc" aria-label="Předchozí měsíc" hidden>‹</button>
+          <select class="control control--month" id="month-filter" aria-label="Měsíc" hidden></select>
+          <select class="control control--year" id="year-filter" aria-label="Rok" hidden></select>
+          <button class="icon-btn icon-btn--small" type="button" id="next-month" title="Další měsíc" aria-label="Další měsíc" hidden>›</button>
+        </div>
+
+        <select class="control" id="sort-filter" aria-label="Řazení">
+          <option value="name-asc">Název A–Z</option>
+          <option value="name-desc">Název Z–A</option>
+          <option value="date-desc">Termín vydání – nejnovější</option>
+          <option value="date-asc" selected>Termín vydání – nejbližší</option>
+          <option value="rating-desc">Hodnocení – nejvyšší</option>
+          <option value="rating-asc">Hodnocení – nejnižší</option>
+        </select>
+
+        <button class="chip chip--reset" id="reset-filters" type="button">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell main" id="main">
+    <section class="hero-strip" aria-label="Informace o výběru">
+      <div>
+        <p class="eyebrow">Aktuální výběr</p>
+        <h1 id="range-title">Načítám herní vydání…</h1>
+        <p id="result-summary" class="muted" aria-live="polite">Připravuji data.</p>
+        <div id="active-context-filters" class="active-context-filters" hidden></div>
+      </div>
+      <div class="view-toggle" role="group" aria-label="Zobrazení">
+        <button class="icon-btn icon-btn--small is-active" type="button" data-view="grid" title="Mřížka" aria-label="Mřížka">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></svg>
+        </button>
+        <button class="icon-btn icon-btn--small" type="button" data-view="compact" title="Kompaktní" aria-label="Kompaktní">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h4v4H4zm7 0h9M4 14h4v4H4zm7 0h9"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="release-changes" id="release-changes" aria-label="Nové hry a změny termínů" hidden>
+      <div class="release-changes__head">
+        <div><p class="eyebrow">Co se změnilo</p><h2>Nové hry a termíny</h2></div>
+        <div class="release-changes__filters" role="group" aria-label="Druh změny">
+          <button type="button" class="chip is-active" data-change-type="all">Vše</button>
+          <button type="button" class="chip" data-change-type="date">Termíny</button>
+          <button type="button" class="chip" data-change-type="price">Cena</button>
+          <button type="button" class="chip" data-change-type="subscription">Předplatné</button>
+          <button type="button" class="chip" data-change-type="early">Early Access</button>
+          <button type="button" class="chip" data-change-type="new">Nové hry</button>
+        </div>
+      </div>
+      <div class="release-changes__list" id="release-changes-list"><p class="muted">Načítám změny…</p></div>
+    </section>
+
+    <section class="month-rail" id="month-rail" aria-label="Rychlý výběr měsíce"></section>
+
+    <section class="skeleton-grid" id="skeleton-grid" aria-label="Načítání her">
+      <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+      <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+    </section>
+
+    <section id="games" class="games-grid" aria-label="Hry" hidden></section>
+
+    <div class="load-more-wrap" id="load-more-wrap" hidden>
+      <button class="secondary-btn" id="load-more" type="button">Načíst další</button>
+    </div>
+
+    <section class="empty-state" id="empty-state" hidden>
+      <div class="empty-state__icon">🎮</div>
+      <h2>Nic jsme nenašli</h2>
+      <p>Zkus jinou platformu, žánr, období nebo název hry.</p>
+      <button class="secondary-btn" type="button" id="empty-reset">Zrušit filtry</button>
+    </section>
+  </main>
+
+  <footer class="shell" style="padding:0 0 28px;color:var(--muted);font-size:11px">
+    Hry nalezené přes vyhledávání a doplňující informace čerpají z IGDB. Další údaje pocházejí z <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikidata</a>, české i anglické <a href="https://www.wikipedia.org/" target="_blank" rel="noopener noreferrer" style="color:var(--pink)">Wikipedie</a>, Steamu a veřejného katalogu Microsoftu. Dostupnost v předplatných je zobrazena jen tehdy, když ji lze ověřit v katalogu.
+  </footer>
+
+  <dialog class="game-dialog" id="game-dialog" aria-label="Detail hry">
+    <button class="dialog-close icon-btn" id="dialog-close" type="button" aria-label="Zavřít">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <dialog class="calendar-dialog" id="calendar-dialog" aria-labelledby="calendar-dialog-title">
+    <button class="dialog-close icon-btn" id="calendar-dialog-close" type="button" aria-label="Zavřít">×</button>
+    <div class="calendar-dialog__content">
+      <p class="eyebrow">Živý kalendář</p>
+      <h2 id="calendar-dialog-title">Přidat herní vydání</h2>
+      <p class="muted">Kalendář si změny a nově přidané termíny pravidelně načte sám.</p>
+      <div class="calendar-feed-choices" role="group" aria-label="Obsah kalendáře">
+        <button class="calendar-feed-choice is-active" type="button" data-calendar-feed="watch">
+          <strong>Moje sledované hry</strong>
+          <span id="calendar-watch-count">0 sledovaných her</span>
+        </button>
+        <button class="calendar-feed-choice" type="button" data-calendar-feed="filters">
+          <strong>Aktuální platformy a filtry</strong>
+          <span>Budoucí vydání podle tohoto výběru</span>
+        </button>
+      </div>
+      <div class="calendar-subscribe-actions">
+        <a class="primary-btn" id="calendar-google" href="#" target="_blank" rel="noopener noreferrer">Google Kalendář</a>
+        <a class="secondary-btn" id="calendar-webcal" href="#">Apple / Outlook</a>
+        <button class="secondary-btn" id="calendar-copy" type="button">Kopírovat adresu</button>
+      </div>
+      <div class="calendar-download-row">
+        <span>Chceš jen dnešní podobu výběru?</span>
+        <button class="text-btn" id="calendar-download" type="button">Stáhnout jednorázový .ics soubor</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="image-dialog" id="image-dialog" aria-label="Náhled screenshotu">
+    <button class="dialog-close icon-btn" id="image-dialog-close" type="button" aria-label="Zavřít">×</button>
+    <img id="image-dialog-img" alt="Screenshot hry">
+  </dialog>
+
+  <div class="toast-region" id="toast-region" style="pointer-events:auto" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript">Tato stránka potřebuje JavaScript pro vyhledávání a filtrování her.</p></noscript>
+
+  <script src="compact-controls.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="release-tracker.js"></script>
+  <script type="module" src="live-detail-enrichment.js"></script>
+  <script type="module" src="advanced-features.js"></script>
+  <script type="module" src="badge-filter-controls.js"></script>
+  <script src="filter-section-accordion.js"></script>
+  <script src="detail-gesture-fix.js"></script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+/* Extra UI improvements: desktop density, mobile filters and optional light theme. */
+
+/* Six full-size cards across on larger desktops. */
+@media (min-width: 1181px) {
+  .games-grid,
+  .skeleton-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Mobile Safari creates a containing block for position:fixed descendants
+ * when an ancestor uses backdrop-filter. The filter sheet lives inside the
+ * sticky topbar, so disable that blur on phones and use an opaque-enough
+ * background instead. This makes the sheet use the real viewport height.
+ */
+@media (max-width: 760px) {
+  .topbar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(8, 4, 13, .97);
+  }
+
+  .filter-panel {
+    position: fixed !important;
+    inset: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)) 8px !important;
+    z-index: 1000;
+    width: auto !important;
+    height: auto;
+    max-height: none !important;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    border-radius: var(--radius-lg);
+  }
+
+  .filter-panel .genre-filter-wrap {
+    padding-bottom: 8px;
+  }
+
+  .filter-panel .genre-filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: min(28dvh, 190px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-controls-row {
+    padding-top: 9px;
+    gap: 7px;
+  }
+
+  .filter-panel-footer {
+    position: sticky;
+    bottom: -12px;
+    z-index: 3;
+    margin: 9px -12px -12px;
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+    background: rgba(18,9,26,.985);
+    backdrop-filter: blur(18px);
+  }
+}
+
+@media (max-width: 560px) {
+  .filter-panel .genre-filter-list {
+    max-height: min(24dvh, 150px);
+  }
+
+  .filter-controls-row > .control {
+    min-width: 0;
+  }
+
+  .filter-controls-row .period-control {
+    gap: 5px;
+  }
+
+  .filter-controls-row .period-control .chip {
+    padding-inline: 9px;
+  }
+}
+
+/* Extra compact filter sheet on short / landscape phone viewports. */
+@media (max-width: 760px) and (max-height: 560px) {
+  .filter-panel {
+    padding: 9px 10px;
+    border-radius: 14px;
+  }
+
+  .filter-panel .genre-filter-list {
+    max-height: 78px;
+  }
+
+  .genre-filter-heading {
+    margin-bottom: 5px;
+  }
+
+  .genre-filter-chip {
+    min-height: 27px;
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .filter-controls-row {
+    padding-top: 7px;
+    gap: 5px;
+  }
+
+  .filter-panel-footer {
+    bottom: -9px;
+    margin: 7px -10px -9px;
+    padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+  }
+}
+
+/*
+ * Game detail in landscape used almost the whole iPhone screen. Keep it
+ * deliberately narrower and reduce the large hero dimensions so it feels
+ * like a dialog rather than a full-screen page.
+ */
+@media (orientation: landscape) and (max-height: 620px) {
+  .game-dialog {
+    width: min(700px, calc(100vw - 56px));
+    max-width: 700px;
+    max-height: calc(100dvh - 28px);
+    border-radius: 15px;
+  }
+
+  .detail-hero {
+    grid-template-columns: minmax(150px, 27%) minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .detail-cover {
+    min-height: 0;
+    background: #1a0e24;
+  }
+
+  .detail-main {
+    min-width: 0;
+    padding: 17px 19px 20px;
+  }
+
+  .detail-kicker {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+
+  .detail-main h2 {
+    font-size: clamp(21px, 4vw, 30px);
+    line-height: 1.05;
+  }
+
+  .detail-meta {
+    gap: 5px;
+    margin: 9px 0;
+  }
+
+  .detail-meta .badge {
+    min-height: 20px;
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+
+  .detail-summary {
+    margin-block: 9px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .detail-genres {
+    margin: 11px 0 3px;
+  }
+
+  .genre-chip {
+    min-height: 25px;
+    padding: 3px 8px;
+    font-size: 9px;
+  }
+
+  .detail-facts {
+    gap: 7px;
+    margin: 11px 0;
+  }
+
+  .fact {
+    padding: 7px 9px;
+  }
+
+  .detail-actions,
+  .detail-subsection,
+  .detail-media-section,
+  .detail-link-section {
+    margin-top: 12px;
+  }
+
+  .dialog-close {
+    top: 6px;
+    margin: 6px 6px -42px 0;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+}
+
+/* Appearance controls in Settings. */
+.legacy-theme-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.legacy-theme-choice__button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: var(--surface-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 760;
+  cursor: pointer;
+}
+
+.legacy-theme-choice__button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.legacy-theme-choice__button.is-active {
+  color: var(--pink);
+  border-color: rgba(255,71,155,.5);
+  background: rgba(255,71,155,.1);
+}
+
+/* Unified four-theme selector inside Settings. */
+.settings-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.settings-theme-grid .theme-choice {
+  width: 100%;
+}
+.settings-version {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.settings-version__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.settings-version__row strong {
+  color: var(--pink);
+  font-size: 13px;
+}
+.settings-version__row span {
+  color: var(--muted);
+  font-size: 10px;
+  text-align: right;
+}
+@media (max-width: 390px) {
+  .settings-theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Audit 3.11: keep controls comfortably tappable and readable on touch devices. */
+@media (pointer: coarse) {
+  .icon-btn {
+    min-width: 42px;
+    min-height: 42px;
+  }
+
+  .icon-btn--small {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .chip,
+  .genre-filter-chip,
+  .trait-filter-chip,
+  .sort-option,
+  .primary-btn,
+  .secondary-btn,
+  .card-action,
+  .calendar-feed-choice {
+    min-height: 40px;
+  }
+
+  .sort-option {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 820px) {
+  .stat-pill {
+    min-height: 42px;
+  }
+
+  .stat-pill span {
+    font-size: 9px;
+    letter-spacing: .035em;
+  }
+}
+
+@media (max-width: 560px) {
+  .game-card__title {
+    font-size: 12px;
+  }
+
+  .game-card__meta {
+    font-size: 10px;
+  }
+
+  .badge,
+  .platform-tag {
+    font-size: 9px;
+  }
+}

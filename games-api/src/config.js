@@ -1,0 +1,54 @@
+import path from 'node:path';
+import { readFileSync } from 'node:fs';
+
+const num = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const version = String(packageJson.version || '0.0.0');
+const apiRoot = path.resolve(new URL('..', import.meta.url).pathname);
+const configuredDbFile = String(process.env.GAMES_API_DB || '').trim();
+const dbFile = configuredDbFile
+  ? (path.isAbsolute(configuredDbFile) ? configuredDbFile : path.resolve(apiRoot, configuredDbFile))
+  : path.join(apiRoot, 'data/games-api.sqlite');
+
+export const config = Object.freeze({
+  version,
+  host: String(process.env.HOST || process.env.GAMES_API_HOST || '127.0.0.1').trim() || '127.0.0.1',
+  port: num(process.env.PORT, 8787),
+  dbFile,
+  market: String(process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
+  language: String(process.env.GAMES_API_LANGUAGE || 'cs-cz').toLowerCase(),
+  psLocale: String(process.env.GAMES_API_PS_LOCALE || 'en-cz').toLowerCase(),
+  epicCountry: String(process.env.GAMES_API_EPIC_COUNTRY || process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
+  epicLocale: String(process.env.GAMES_API_EPIC_LOCALE || 'en-US').trim() || 'en-US',
+  nintendoRegion: String(process.env.GAMES_API_NINTENDO_REGION || 'us').toLowerCase(),
+  nintendoCountry: String(process.env.GAMES_API_NINTENDO_COUNTRY || process.env.GAMES_API_MARKET || 'CZ').toUpperCase(),
+  nintendoLanguage: String(process.env.GAMES_API_NINTENDO_LANGUAGE || 'en').toLowerCase(),
+  gfnCountry: String(process.env.GAMES_API_GFN_COUNTRY || 'CZ').toUpperCase(),
+  gfnLanguage: String(process.env.GAMES_API_GFN_LANGUAGE || 'en_US'),
+  steamWebApiKey: String(process.env.STEAM_WEB_API_KEY || '').trim(),
+  igdbClientId: String(process.env.IGDB_CLIENT_ID || '').trim(),
+  igdbClientSecret: String(process.env.IGDB_CLIENT_SECRET || '').trim(),
+  igdbConfigured: Boolean(String(process.env.IGDB_CLIENT_ID || '').trim() && String(process.env.IGDB_CLIENT_SECRET || '').trim()),
+  vapidPublicKey: String(process.env.VAPID_PUBLIC_KEY || '').trim(),
+  vapidPrivateKey: String(process.env.VAPID_PRIVATE_KEY || '').trim(),
+  vapidSubject: String(process.env.VAPID_SUBJECT || 'https://caseycz.github.io/GameS-Calendar-Website/').trim(),
+  pushIntervalMs: Math.max(60_000, num(process.env.PUSH_INTERVAL_MS, 15 * 60_000)),
+  rateLimitPerMinute: Math.max(30, num(process.env.GAMES_API_RATE_LIMIT_PER_MINUTE, 180)),
+  corsOrigins: Object.freeze(
+    String(process.env.GAMES_API_CORS_ORIGINS || 'https://caseycz.github.io,https://130.61.49.108,https://130.61.49.108:8443,http://localhost,http://127.0.0.1')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean)
+  ),
+  userAgent: `GameS-Calendar-API/${version} (+https://github.com/CaseyCZ/GameS-Calendar-Website)`,
+  ttl: Object.freeze({
+    search: 30 * 60_000,
+    product: 6 * 60 * 60_000,
+    media: 24 * 60 * 60_000,
+    gamePass: 60 * 60_000,
+    gfn: 60 * 60_000,
+    nintendo: 12 * 60 * 60_000,
+    igdb: 24 * 60 * 60_000,
+    health: 15 * 60_000
+  })
+});
