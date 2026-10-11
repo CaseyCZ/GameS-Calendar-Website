@@ -6,6 +6,26 @@ import { canonicalGame, cleanText, uniq } from '../lib/normalize.js';
 const STORE_SEARCH = 'https://store.steampowered.com/api/storesearch/';
 const APP_DETAILS = 'https://store.steampowered.com/api/appdetails';
 
+let steamRateLimitedUntil = 0;
+
+function isRateLimitError(error) {
+  return Number(error?.status) === 429 || /\b429\b/.test(String(error?.message || ''));
+}
+
+function rememberSteamRateLimit(error) {
+  const requestedDelay = Number(error?.retryAfterMs || 0);
+  const cooldownMs = Math.min(15 * 60_000, Math.max(60_000, requestedDelay));
+  steamRateLimitedUntil = Math.max(steamRateLimitedUntil, Date.now() + cooldownMs);
+}
+
+function steamCooldownError() {
+  const seconds = Math.max(1, Math.ceil((steamRateLimitedUntil - Date.now()) / 1000));
+  const error = new Error(`Steam rate limit active; retry in ${seconds}s`);
+  error.status = 429;
+  error.retryAfterMs = seconds * 1000;
+  return error;
+}
+
 function normalizeSteam(appId, data) {
   if (!data) return null;
   const genres = uniq((data.genres || []).map(item => item?.description));
@@ -55,33 +75,60 @@ export async function appDetails(appId, { force = false, language = 'english' } 
   const id = String(appId || '').replace(/\D/g, '');
   if (!id) throw new Error('Invalid Steam App ID');
   const key = `steam:app:${id}:cz:${language}`;
+  const stale = cacheGet(key, { allowStale: true });
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached;
+  }
+  if (Date.now() < steamRateLimitedUntil) {
+    if (stale) return stale;
+    throw steamCooldownError();
   }
   const url = new URL(APP_DETAILS);
   url.searchParams.set('appids', id);
   url.searchParams.set('cc', 'cz');
   url.searchParams.set('l', language);
-  const payload = await fetchJson(url);
-  const wrapper = payload?.[id];
-  if (!wrapper?.success || !wrapper?.data) throw new Error(`Steam app ${id} not found`);
-  return cachePut(key, 'steam', normalizeSteam(id, wrapper.data), config.ttl.product);
+  try {
+    const payload = await fetchJson(url, { attempts: 4 });
+    const wrapper = payload?.[id];
+    if (!wrapper?.success || !wrapper?.data) throw new Error(`Steam app ${id} not found`);
+    return cachePut(key, 'steam', normalizeSteam(id, wrapper.data), config.ttl.product);
+  } catch (error) {
+    if (isRateLimitError(error)) {
+      rememberSteamRateLimit(error);
+      if (stale) return stale;
+    }
+    throw error;
+  }
 }
 
 export async function search(query, { force = false, limit = 8 } = {}) {
   const q = String(query || '').trim();
   if (!q) return [];
   const key = `steam:search:${q.toLowerCase()}`;
+  const stale = cacheGet(key, { allowStale: true });
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached.slice(0, limit);
+  }
+  if (Date.now() < steamRateLimitedUntil) {
+    if (stale) return stale.slice(0, limit);
+    throw steamCooldownError();
   }
   const url = new URL(STORE_SEARCH);
   url.searchParams.set('term', q);
   url.searchParams.set('cc', 'CZ');
   url.searchParams.set('l', 'english');
-  const payload = await fetchJson(url);
+  let payload;
+  try {
+    payload = await fetchJson(url, { attempts: 4 });
+  } catch (error) {
+    if (isRateLimitError(error)) {
+      rememberSteamRateLimit(error);
+      if (stale) return stale.slice(0, limit);
+    }
+    throw error;
+  }
   const items = (payload?.items || []).slice(0, Math.min(limit, 12));
   const detailed = [];
   for (const item of items) {
