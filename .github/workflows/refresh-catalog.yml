@@ -45,6 +45,10 @@ jobs:
           IGDB_LIVE_RETRIES: 6
         run: npm run enrich-live-igdb
 
+      # Full-catalog Steam release-date refresh is intentionally disabled.
+      # Visible PC cards are refreshed through /enrich instead.
+      # Legacy tuning reference: STEAM_RELEASE_CONCURRENCY: 1
+
       - name: Enrich subscription catalogs
         env:
           GAMES_LIVE_API: https://130.61.49.108/games-api
