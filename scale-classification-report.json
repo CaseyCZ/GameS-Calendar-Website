@@ -1,638 +1,2124 @@
 {
-  "generatedAt": "2026-10-12T04:48:16.576Z",
+  "generatedAt": "2026-10-12T05:00:59.820Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
   "today": "2026-10-12",
-  "igdbSignals": {
-    "available": false,
-    "reason": "IGDB secrets unavailable",
-    "gamesWithIgdbId": 5747,
-    "rowsFetched": 0,
-    "companyRows": 0,
-    "companySizeRows": 0
+  "liveApiSignals": {
+    "requestedIgdbIds": 5747,
+    "rowsFetched": 5747,
+    "gamesWithHypes": 1788,
+    "companyRows": 4819,
+    "developerSizeKnown": 616,
+    "publisherSizeKnown": 682,
+    "parentKnown": 598,
+    "parentSizeKnown": 160
   },
   "scopes": {
     "all": {
-      "safe": {
-        "games": 5740,
-        "current": {
-          "AAA": 0,
-          "Indie": 993,
-          "Menší titul": 0,
-          "Nezařazeno": 4747
-        },
-        "proposed": {
-          "AAA": 0,
-          "Indie": 3923,
-          "Menší titul": 0,
-          "Nezařazeno": 1817
-        },
-        "movedFromUnknown": {
-          "total": 2930,
-          "coveragePct": 61.7,
-          "AAA": 0,
-          "Indie": 2930,
-          "Menší titul": 0,
-          "remainingUnknown": 1817
-        }
+      "games": 5740,
+      "current": {
+        "AAA": 0,
+        "Indie": 993,
+        "Menší titul": 0,
+        "Nezařazeno": 4747
       },
-      "catalogHeuristic": {
-        "games": 5740,
-        "current": {
-          "AAA": 0,
-          "Indie": 993,
-          "Menší titul": 0,
-          "Nezařazeno": 4747
-        },
-        "proposed": {
-          "AAA": 132,
-          "Indie": 3923,
-          "Menší titul": 0,
-          "Nezařazeno": 1685
-        },
-        "movedFromUnknown": {
-          "total": 3062,
-          "coveragePct": 64.5,
-          "AAA": 132,
-          "Indie": 2930,
-          "Menší titul": 0,
-          "remainingUnknown": 1685
-        }
+      "proposed": {
+        "AAA": 167,
+        "Indie": 3942,
+        "Menší titul": 69,
+        "Nezařazeno": 1562
       },
-      "richIgdb": {
-        "games": 5740,
-        "current": {
-          "AAA": 0,
-          "Indie": 993,
-          "Menší titul": 0,
-          "Nezařazeno": 4747
-        },
-        "proposed": {
-          "AAA": 132,
-          "Indie": 3923,
-          "Menší titul": 0,
-          "Nezařazeno": 1685
-        },
-        "movedFromUnknown": {
-          "total": 3062,
-          "coveragePct": 64.5,
-          "AAA": 132,
-          "Indie": 2930,
-          "Menší titul": 0,
-          "remainingUnknown": 1685
-        }
+      "movedFromUnknown": {
+        "total": 3185,
+        "coveragePct": 67.1,
+        "AAA": 167,
+        "Indie": 2949,
+        "Menší titul": 69,
+        "remainingUnknown": 1562
       }
     },
     "upcoming": {
-      "safe": {
-        "games": 3965,
-        "current": {
-          "AAA": 0,
-          "Indie": 789,
-          "Menší titul": 0,
-          "Nezařazeno": 3176
-        },
-        "proposed": {
-          "AAA": 0,
-          "Indie": 2820,
-          "Menší titul": 0,
-          "Nezařazeno": 1145
-        },
-        "movedFromUnknown": {
-          "total": 2031,
-          "coveragePct": 63.9,
-          "AAA": 0,
-          "Indie": 2031,
-          "Menší titul": 0,
-          "remainingUnknown": 1145
-        }
+      "games": 3965,
+      "current": {
+        "AAA": 0,
+        "Indie": 789,
+        "Menší titul": 0,
+        "Nezařazeno": 3176
       },
-      "catalogHeuristic": {
-        "games": 3965,
-        "current": {
-          "AAA": 0,
-          "Indie": 789,
-          "Menší titul": 0,
-          "Nezařazeno": 3176
-        },
-        "proposed": {
-          "AAA": 78,
-          "Indie": 2820,
-          "Menší titul": 0,
-          "Nezařazeno": 1067
-        },
-        "movedFromUnknown": {
-          "total": 2109,
-          "coveragePct": 66.4,
-          "AAA": 78,
-          "Indie": 2031,
-          "Menší titul": 0,
-          "remainingUnknown": 1067
-        }
+      "proposed": {
+        "AAA": 106,
+        "Indie": 2828,
+        "Menší titul": 42,
+        "Nezařazeno": 989
       },
-      "richIgdb": {
-        "games": 3965,
-        "current": {
-          "AAA": 0,
-          "Indie": 789,
-          "Menší titul": 0,
-          "Nezařazeno": 3176
-        },
-        "proposed": {
-          "AAA": 78,
-          "Indie": 2820,
-          "Menší titul": 0,
-          "Nezařazeno": 1067
-        },
-        "movedFromUnknown": {
-          "total": 2109,
-          "coveragePct": 66.4,
-          "AAA": 78,
-          "Indie": 2031,
-          "Menší titul": 0,
-          "remainingUnknown": 1067
-        }
+      "movedFromUnknown": {
+        "total": 2187,
+        "coveragePct": 68.9,
+        "AAA": 106,
+        "Indie": 2039,
+        "Menší titul": 42,
+        "remainingUnknown": 989
       }
     }
   },
   "upcomingSamples": {
-    "catalogAAA": [
+    "AAA": [
       {
-        "name": "Resident Evil 2",
-        "igdbId": "19686",
+        "name": "Grand Theft Auto VI",
+        "igdbId": "52189",
         "confidence": "high",
-        "score": 7,
+        "score": 11,
+        "hypes": 1092,
         "reasons": [
-          "major publisher",
-          "ratingCount 1440",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 1092",
           "series/franchise"
-        ]
-      },
-      {
-        "name": "Attack on Titan 3",
-        "igdbId": "404715",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Call of Duty: Modern Warfare 4",
-        "igdbId": "403310",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Castlevania: Belmont's Curse",
-        "igdbId": "389434",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Crazy Taxi: World Tour",
-        "igdbId": "279633",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Dragon Ball: Xenoverse 3",
-        "igdbId": "387020",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "3 platform families"
-        ]
-      },
-      {
-        "name": "Dragon Quest Monsters: The Withered World",
-        "igdbId": "403174",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Elden Ring: Shadow of the Erdtree",
-        "igdbId": "240009",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "ratingCount 131",
-          "series/franchise"
+        ],
+        "companies": [
+          {
+            "name": "Rockstar Games",
+            "developer": true,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Take-Two Interactive",
+            "parentCompanySize": "5000+ employees"
+          },
+          {
+            "name": "Take-Two Interactive",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
         "name": "Fable",
         "igdbId": "92550",
-        "confidence": "candidate",
-        "score": 6,
+        "confidence": "high",
+        "score": 10,
+        "hypes": 426,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=500",
+          "hypes 426",
           "series/franchise",
           "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Xbox Game Studios",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "Microsoft",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Playground Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "201-500 employees",
+            "parent": "Xbox Game Studios",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Eidos Montréal",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Final Fantasy Resonance",
-        "igdbId": "405454",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "Tomb Raider: Legacy of Atlantis",
+        "igdbId": "381235",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 143,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 143",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Crystal Dynamics",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Flying Wild Hog",
+            "developer": true,
+            "publisher": false,
+            "companySize": "201-500 employees",
+            "parent": "PLAION",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Amazon Games",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Stranger Than Heaven",
+        "igdbId": "325599",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 111,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 111",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ryu Ga Gotoku Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "201-500 employees",
+            "parent": "Sega",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Sega",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Sega Sammy Holdings",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Resident Evil Veronica",
+        "igdbId": "404673",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 109,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 109",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Capcom",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Capcom Development Division 1",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          }
+        ]
+      },
+      {
+        "name": "Monster Hunter Wilds",
+        "igdbId": "279661",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 104,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 104",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Capcom",
+            "developer": true,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Persona 4 Revival",
+        "igdbId": "348210",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 71,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 71",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Atlus",
+            "developer": false,
+            "publisher": true,
+            "companySize": "201-500 employees",
+            "parent": "Sega",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Sega",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Sega Sammy Holdings",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "P Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Atlus",
+            "parentCompanySize": "201-500 employees"
+          },
+          {
+            "name": "Tose",
+            "developer": false,
+            "publisher": false,
+            "companySize": "501-1000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
         "name": "Final Fantasy VII Revelation",
         "igdbId": "404721",
-        "confidence": "candidate",
-        "score": 6,
+        "confidence": "high",
+        "score": 10,
+        "hypes": 62,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 62",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Square Enix Creative Studio 1",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Final Fantasy XIV: Evercold",
-        "igdbId": "399337",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "Rayman Legends Retold",
+        "igdbId": "404044",
+        "confidence": "high",
+        "score": 10,
+        "hypes": 58,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 58",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ubisoft Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Ubisoft Montpellier",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Ubisoft Entertainment",
+            "parentCompanySize": "5000+ employees"
+          },
+          {
+            "name": "Ubisoft Milan",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Ubisoft Entertainment",
+            "parentCompanySize": "5000+ employees"
+          }
         ]
       },
       {
-        "name": "Forza Horizon 6",
-        "igdbId": "348330",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "God of War Laufey",
+        "igdbId": "404063",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 111,
         "reasons": [
-          "major publisher",
-          "ratingCount 105",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 111",
           "series/franchise"
+        ],
+        "companies": [
+          {
+            "name": "Santa Monica Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "201-500 employees",
+            "parent": "Sony Interactive Entertainment",
+            "parentCompanySize": "5000+ employees"
+          },
+          {
+            "name": "Sony Interactive Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "Sony",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Gears of War: E-Day",
-        "igdbId": "305160",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "No Law",
+        "igdbId": "381205",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 97,
         "reasons": [
-          "major publisher",
-          "series/franchise",
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 97",
           "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Krafton",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Neon Giant",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Amplifier Game Invest",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Gundam Rogue Orbit",
-        "igdbId": "404690",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "3 platform families"
-        ]
-      }
-    ],
-    "safeIndie": [
-      {
-        "name": "1! 2! 3! Battle Card!",
-        "igdbId": "349124",
+        "name": "The Legend of Zelda: Ocarina of Time",
+        "igdbId": "405460",
         "confidence": "high",
-        "score": null,
+        "score": 9,
+        "hypes": 72,
         "reasons": [
-          "catalog genre Indie"
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 72",
+          "series/franchise"
+        ],
+        "companies": [
+          {
+            "name": "Nintendo",
+            "developer": true,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "10 Hours Before Sunrise",
-        "igdbId": "405999",
+        "name": "Until Dawn 2",
+        "igdbId": "404058",
         "confidence": "high",
-        "score": null,
+        "score": 9,
+        "hypes": 61,
         "reasons": [
-          "catalog genre Indie"
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "hypes 61",
+          "series/franchise"
+        ],
+        "companies": [
+          {
+            "name": "AdHoc Studio",
+            "developer": false,
+            "publisher": false,
+            "companySize": "11-50 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Firesprite Ltd",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Sony Interactive Entertainment",
+            "parentCompanySize": "5000+ employees"
+          },
+          {
+            "name": "Sony Interactive Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "Sony",
+            "parentCompanySize": ""
+          }
         ]
       },
-      {
-        "name": "100 Amsterdam Cats",
-        "igdbId": "351683",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "100 Yen Exorcist",
-        "igdbId": "408725",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "10hit",
-        "igdbId": "357179",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "13Z",
-        "igdbId": "301031",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "4:AM",
-        "igdbId": "272220",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "4Below",
-        "igdbId": "389691",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "4Mecheros",
-        "igdbId": "405042",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "99 Nights In The Apocalypse",
-        "igdbId": "414522",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "A Baby CEO?!",
-        "igdbId": "391884",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "A Dark Cave",
-        "igdbId": "414272",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "A Date with Death 2: Remnants",
-        "igdbId": "380972",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "A Dogs Dream",
-        "igdbId": "378434",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      },
-      {
-        "name": "A Game About a King Saving a Dragon",
-        "igdbId": "384142",
-        "confidence": "high",
-        "score": null,
-        "reasons": [
-          "catalog genre Indie"
-        ]
-      }
-    ],
-    "richAAA": [
       {
         "name": "Resident Evil 2",
         "igdbId": "19686",
         "confidence": "high",
-        "score": 7,
+        "score": 9,
+        "hypes": 46,
         "reasons": [
-          "major publisher",
-          "ratingCount 1440",
-          "series/franchise"
-        ]
-      },
-      {
-        "name": "Attack on Titan 3",
-        "igdbId": "404715",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Call of Duty: Modern Warfare 4",
-        "igdbId": "403310",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
-        ]
-      },
-      {
-        "name": "Castlevania: Belmont's Curse",
-        "igdbId": "389434",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "4 platform families"
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Capcom",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Capcom Development Division 1",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "K2",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "NeoBards Entertainment",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
         "name": "Crazy Taxi: World Tour",
         "igdbId": "279633",
-        "confidence": "candidate",
-        "score": 6,
+        "confidence": "high",
+        "score": 9,
+        "hypes": 38,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Sega",
+            "developer": true,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Sega Sammy Holdings",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Dragon Ball: Xenoverse 3",
-        "igdbId": "387020",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "The Witcher 3: Wild Hunt - Songs of the Past",
+        "igdbId": "403150",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 38,
         "reasons": [
-          "major publisher",
-          "series/franchise",
-          "3 platform families"
-        ]
-      },
-      {
-        "name": "Dragon Quest Monsters: The Withered World",
-        "igdbId": "403174",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Fool’s Theory",
+            "developer": true,
+            "publisher": false,
+            "companySize": "51-200 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "CD Projekt RED",
+            "developer": true,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "CD Projekt",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
-        "name": "Elden Ring: Shadow of the Erdtree",
-        "igdbId": "240009",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "Virtua Fighter Crossroads",
+        "igdbId": "325598",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 37,
         "reasons": [
-          "major publisher",
-          "ratingCount 131",
-          "series/franchise"
-        ]
-      },
-      {
-        "name": "Fable",
-        "igdbId": "92550",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ryu Ga Gotoku Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "201-500 employees",
+            "parent": "Sega",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Sega",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Sega Sammy Holdings",
+            "parentCompanySize": ""
+          }
         ]
       },
       {
         "name": "Final Fantasy Resonance",
         "igdbId": "405454",
-        "confidence": "candidate",
-        "score": 6,
+        "confidence": "high",
+        "score": 9,
+        "hypes": 30,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Lancarse",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix Creative Studio 5",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          }
         ]
       },
       {
-        "name": "Final Fantasy VII Revelation",
-        "igdbId": "404721",
-        "confidence": "candidate",
-        "score": 6,
+        "name": "Mega Man: Dual Override",
+        "igdbId": "381249",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 26,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Capcom",
+            "developer": true,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Resident Evil 4",
+        "igdbId": "132181",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 22,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Capcom Development Division 1",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "M-TWO",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Capcom",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Resident Evil 3",
+        "igdbId": "115115",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 12,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "NeoBards Entertainment",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "REDWORKS Inc.",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Capcom",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "M-TWO",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "K2",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Capcom Development Division 1",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Capcom",
+            "parentCompanySize": "1001-5000 employees"
+          }
+        ]
+      },
+      {
+        "name": "Tom Clancy's Rainbow 6 Tactics",
+        "igdbId": "414967",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 10,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ubisoft Paris",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Ubisoft Entertainment",
+            "parentCompanySize": "5000+ employees"
+          },
+          {
+            "name": "Ubisoft Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Rayman Origins: Enhanced Edition",
+        "igdbId": "403490",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 9,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ubisoft Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Ubisoft Montpellier",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Ubisoft Entertainment",
+            "parentCompanySize": "5000+ employees"
+          }
+        ]
+      },
+      {
+        "name": "Heroes of Might and Magic III Remake",
+        "igdbId": "414996",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 8,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Ubisoft Entertainment",
+            "developer": true,
+            "publisher": true,
+            "companySize": "5000+ employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Marvel's Guardians of the Galaxy",
+        "igdbId": "152249",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 8,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Eidos Sherbrooke",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Eidos Montréal",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Eidos Montréal",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Dragon Quest Monsters: The Withered World",
+        "igdbId": "403174",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 6,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Armor Project",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Bird Studio",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Tose",
+            "developer": true,
+            "publisher": false,
+            "companySize": "501-1000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix Creative Studio 4",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          }
+        ]
+      },
+      {
+        "name": "Demon Slayer: Kimetsu no Yaiba - The Hinokami Chronicles 2",
+        "igdbId": "337907",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 4,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Sega",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "Sega Sammy Holdings",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "CyberConnect2",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Aniplex",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "Sony Music Entertainment Japan",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Tales of Eternia: Remastered",
+        "igdbId": "405458",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 4,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Tose",
+            "developer": true,
+            "publisher": false,
+            "companySize": "501-1000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Bandai Namco Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "Bandai Namco Holdings",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Romancing SaGa 3: Destinies United",
+        "igdbId": "415836",
+        "confidence": "high",
+        "score": 9,
+        "hypes": 2,
+        "reasons": [
+          "major publisher/parent",
+          "company/parent size >=1000",
+          "series/franchise",
+          "4 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Xeen",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix Creative Studio 2",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          }
         ]
       },
       {
         "name": "Final Fantasy XIV: Evercold",
         "igdbId": "399337",
-        "confidence": "candidate",
-        "score": 6,
+        "confidence": "high",
+        "score": 9,
+        "hypes": 1,
         "reasons": [
-          "major publisher",
+          "major publisher/parent",
+          "company/parent size >=1000",
           "series/franchise",
           "4 platform families"
-        ]
-      },
-      {
-        "name": "Forza Horizon 6",
-        "igdbId": "348330",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "ratingCount 105",
-          "series/franchise"
-        ]
-      },
-      {
-        "name": "Gears of War: E-Day",
-        "igdbId": "305160",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "3 platform families"
-        ]
-      },
-      {
-        "name": "Gundam Rogue Orbit",
-        "igdbId": "404690",
-        "confidence": "candidate",
-        "score": 6,
-        "reasons": [
-          "major publisher",
-          "series/franchise",
-          "3 platform families"
+        ],
+        "companies": [
+          {
+            "name": "Square Enix",
+            "developer": false,
+            "publisher": true,
+            "companySize": "1001-5000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Square Enix Creative Studio 3",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          },
+          {
+            "name": "Square Enix Creative Studio 1",
+            "developer": false,
+            "publisher": false,
+            "companySize": "",
+            "parent": "Square Enix",
+            "parentCompanySize": "1001-5000 employees"
+          }
         ]
       }
     ],
-    "richSmall": []
+    "Menší titul": [
+      {
+        "name": "About Fishing",
+        "igdbId": "380410",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 14,
+        "reasons": [
+          "developer size <=50",
+          "hypes 14",
+          "2 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "The Water Museum",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Playstack",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Kumarn: The Wandering Spirit",
+        "igdbId": "360910",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 7,
+        "reasons": [
+          "developer size <=50",
+          "hypes 7",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Wired Productions",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "WereBuff Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Hunter's Moon",
+        "igdbId": "416105",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 5,
+        "reasons": [
+          "developer size <=50",
+          "hypes 5",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Twin Swans",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Headcutter",
+        "igdbId": "404100",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 3,
+        "reasons": [
+          "developer size <=50",
+          "hypes 3",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Devpetrichor",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Exovia",
+        "igdbId": "342824",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 2,
+        "reasons": [
+          "developer size <=50",
+          "hypes 2",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "ByteRockers' Games",
+            "developer": true,
+            "publisher": true,
+            "companySize": "11-50 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Angel Guardian",
+        "igdbId": "312161",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Corgee",
+            "developer": true,
+            "publisher": true,
+            "companySize": "11-50 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Crimson Freedom",
+        "igdbId": "381192",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Yboga",
+            "developer": true,
+            "publisher": false,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Stardock Entertainment",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Descent Of Lunaris",
+        "igdbId": "375453",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Unison Games",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Frankenstein: Awakening of Horror",
+        "igdbId": "407727",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Witenovastudio",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Prospera",
+        "igdbId": "415184",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Toplitz Productions",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Active Fungus Studios",
+            "developer": true,
+            "publisher": false,
+            "companySize": "11-50 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Space Hauler",
+        "igdbId": "400572",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 1,
+        "reasons": [
+          "developer size <=50",
+          "hypes 1",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "94 Kelvin",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Atlantis Fantasy: Reborn",
+        "igdbId": "403610",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "AuthenTiiq",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Blood of Rations",
+        "igdbId": "408031",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Arctic Square Studio",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Borbs",
+        "igdbId": "411526",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "So Peculiar",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Made by Lisk",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Cardsharp",
+        "igdbId": "417445",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Zandbox Studio",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Castle Wars: Legacy",
+        "igdbId": "392372",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Proclive",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Corridors",
+        "igdbId": "418277",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Augustine Interactive",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Delving The Depths",
+        "igdbId": "349994",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Dragon Dropper",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Fleshborn",
+        "igdbId": "393299",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Castitatis Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Foosball Manager",
+        "igdbId": "406042",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Machnikl",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Grilluminati",
+        "igdbId": "410614",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Anaxanthia",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Godspear Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Hexistence",
+        "igdbId": "394442",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Xufa Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Innerwhy",
+        "igdbId": "374393",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Victor Potet",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Kint",
+        "igdbId": "402074",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Conor Souness",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Knightstones",
+        "igdbId": "398144",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "WillGreen Studio",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Llamero",
+        "igdbId": "404407",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Team Momoy",
+            "developer": true,
+            "publisher": true,
+            "companySize": "2-10 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Long Shadow",
+        "igdbId": "411845",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Many Riches",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Mosaic of Life",
+        "igdbId": "419154",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Divide The Plunder",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "One Last Sacrifice",
+        "igdbId": "385342",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "MegaMaw Games",
+            "developer": true,
+            "publisher": true,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Project Zarya",
+        "igdbId": "413339",
+        "confidence": "high",
+        "score": 0,
+        "hypes": 0,
+        "reasons": [
+          "developer size <=50",
+          "hypes 0",
+          "1 platform families",
+          "no major/large parent"
+        ],
+        "companies": [
+          {
+            "name": "Benzeji Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "0-1 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      }
+    ],
+    "Indie": [
+      {
+        "name": "Craftopia",
+        "igdbId": "124448",
+        "confidence": "high",
+        "score": null,
+        "hypes": 133,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "PocketPair",
+            "developer": true,
+            "publisher": true,
+            "companySize": "51-200 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Ontos",
+        "igdbId": "381219",
+        "confidence": "high",
+        "score": null,
+        "hypes": 79,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Frictional Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "11-50 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Kepler Interactive",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Cairn",
+        "igdbId": "305017",
+        "confidence": "high",
+        "score": null,
+        "hypes": 68,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "The Game Bakers",
+            "developer": true,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Squadron 42",
+        "igdbId": "19128",
+        "confidence": "high",
+        "score": null,
+        "hypes": 58,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Cloud Imperium Games Corporation",
+            "developer": true,
+            "publisher": true,
+            "companySize": "501-1000 employees",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "The Lost Wild",
+        "igdbId": "182290",
+        "confidence": "high",
+        "score": null,
+        "hypes": 47,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Annapurna Interactive",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Great Ape Games",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Neverway",
+        "igdbId": "339608",
+        "confidence": "high",
+        "score": null,
+        "hypes": 42,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Outersloth",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Coldblood",
+            "developer": true,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "DayZ",
+        "igdbId": "2117",
+        "confidence": "high",
+        "score": null,
+        "hypes": 41,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Bohemia Interactive",
+            "developer": true,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Bellum",
+        "igdbId": "372154",
+        "confidence": "high",
+        "score": null,
+        "hypes": 40,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Astarte Industries",
+            "developer": true,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "PVKK: Planetenverteidigungskanonenkommandant",
+        "igdbId": "307368",
+        "confidence": "high",
+        "score": null,
+        "hypes": 35,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Bippinbits",
+            "developer": true,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          },
+          {
+            "name": "Kepler Interactive",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      },
+      {
+        "name": "Into The Unwell",
+        "igdbId": "347663",
+        "confidence": "high",
+        "score": null,
+        "hypes": 32,
+        "reasons": [
+          "explicit Indie genre"
+        ],
+        "companies": [
+          {
+            "name": "Coffee Stain Publishing",
+            "developer": false,
+            "publisher": true,
+            "companySize": "",
+            "parent": "Coffee Stain Studios",
+            "parentCompanySize": "51-200 employees"
+          },
+          {
+            "name": "She Was Such A Good Horse",
+            "developer": true,
+            "publisher": false,
+            "companySize": "",
+            "parent": "",
+            "parentCompanySize": ""
+          }
+        ]
+      }
+    ]
   },
   "notes": [
-    "Dry run only: games.json, games-index.json and UI are untouched.",
-    "safe model changes only explicit Indie genre and preserves existing scale.",
-    "catalogHeuristic additionally marks AAA candidates from current publisher/developer, series, rating-count and platform data.",
-    "richIgdb adds hypes, company size and parent-company evidence when IGDB credentials are available.",
-    "Menší titul is intentionally not inferred without company-size evidence."
+    "Dry run only: games.json, games-index.json and UI are not modified.",
+    "Upcoming scope uses the same normalizePayload + flattenReleases + collapseDisplayRows path as the UI test.",
+    "Existing non-empty scale values are preserved.",
+    "Signals come from the deployed GameS IGDB provider using server-side IGDB credentials.",
+    "Indie requires an explicit Indie genre.",
+    "AAA requires score >=6 plus a major/large-company signal.",
+    "Menší titul requires known developer size <=50, low hype, <=2 platform families and safe parent-company evidence."
   ]
 }
