@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T05:41:31.028Z",
+  "generatedAt": "2026-10-12T06:02:01.523Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
   "today": "2026-10-12",
   "liveApiSignals": {
@@ -45,18 +45,18 @@
         "Nezařazeno": 3176
       },
       "proposed": {
-        "AAA": 82,
+        "AAA": 77,
         "Indie": 2828,
         "Menší titul": 42,
-        "Nezařazeno": 1013
+        "Nezařazeno": 1018
       },
       "movedFromUnknown": {
-        "total": 2163,
-        "coveragePct": 68.1,
-        "AAA": 82,
+        "total": 2158,
+        "coveragePct": 67.9,
+        "AAA": 77,
         "Indie": 2039,
         "Menší titul": 42,
-        "remainingUnknown": 1013
+        "remainingUnknown": 1018
       }
     }
   },
@@ -2605,162 +2605,6 @@
         ]
       },
       {
-        "name": "Dragon Ball: Xenoverse 3",
-        "igdbId": "387020",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 7,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "3 platform families"
-        ],
-        "gameType": "Main Game",
-        "companies": [
-          {
-            "name": "Bandai Namco Entertainment",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Holdings",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Dimps",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Earth Defense Force 6",
-        "igdbId": "137427",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "3 platform families"
-        ],
-        "gameType": "Main Game",
-        "companies": [
-          {
-            "name": "Sandlot",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "D3Publisher",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Entertainment",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Hasbro Games Junior Collection",
-        "igdbId": "412107",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Main Game",
-        "companies": [
-          {
-            "name": "Casual Brothers",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Outright Games",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Studios",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Melty Blood: Twi-Lumina",
-        "igdbId": "400268",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Expanded Game",
-        "companies": [
-          {
-            "name": "Tamsoft",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "French-Bread",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Aniplex of America",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Aniplex",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Aniplex",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Sony Music Entertainment Japan",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "TYPE-MOON",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Lasengle",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Nobunaga's Ambition: Hishou",
         "igdbId": "405470",
         "confidence": "medium",
@@ -2779,37 +2623,6 @@
             "publisher": true,
             "companySize": "",
             "parent": "Koei Tecmo Holdings",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "The Cat in the Hat: Rainy Day Mayhem",
-        "igdbId": "403720",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Main Game",
-        "companies": [
-          {
-            "name": "Casual Brothers",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Outright Games",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Studios",
             "parentCompanySize": ""
           }
         ]
@@ -4166,7 +3979,8 @@
     "Indie requires an explicit Indie genre.",
     "AAA requires score >=6 plus a major/large-company signal.",
     "Menší titul requires known developer size <=50, low hype, <=2 platform families and safe parent-company evidence.",
-    "Test-only content-type gate applied before AAA/small-title audit. Extras are returned to Nezařazeno for this dry run."
+    "Test-only content-type gate applied before AAA/small-title audit. Extras are returned to Nezařazeno for this dry run.",
+    "Test-only AAA evidence gate applied after content-type gate. Weak threshold-only AAA cases are returned to Nezařazeno for this dry run."
   ],
   "contentTypeGate": {
     "applied": true,
@@ -4404,5 +4218,82 @@
       ],
       "Menší titul": []
     }
+  },
+  "aaaEvidenceGate": {
+    "applied": true,
+    "rule": "Reject only threshold AAA cases with score=6, hypes<10, no direct major developer and developer size <500 or unavailable.",
+    "upcoming": {
+      "before": 82,
+      "after": 77,
+      "excluded": 5
+    },
+    "protectedChecks": {
+      "Grand Theft Auto VI": true,
+      "Fable": true,
+      "Call of Duty: Modern Warfare 4": true,
+      "Gears of War: E-Day": true
+    },
+    "excluded": [
+      {
+        "name": "Dragon Ball: Xenoverse 3",
+        "igdbId": "387020",
+        "gameType": "Main Game",
+        "previousScore": 6,
+        "previousConfidence": "medium",
+        "hypes": 7,
+        "directMajorDeveloper": false,
+        "maxDeveloperSize": 0,
+        "developerCount": 1,
+        "reason": "score 6 + hypes <10 + no direct major developer + known developer size below 500 (or unavailable)"
+      },
+      {
+        "name": "Earth Defense Force 6",
+        "igdbId": "137427",
+        "gameType": "Main Game",
+        "previousScore": 6,
+        "previousConfidence": "medium",
+        "hypes": 0,
+        "directMajorDeveloper": false,
+        "maxDeveloperSize": 0,
+        "developerCount": 1,
+        "reason": "score 6 + hypes <10 + no direct major developer + known developer size below 500 (or unavailable)"
+      },
+      {
+        "name": "Hasbro Games Junior Collection",
+        "igdbId": "412107",
+        "gameType": "Main Game",
+        "previousScore": 6,
+        "previousConfidence": "medium",
+        "hypes": 0,
+        "directMajorDeveloper": false,
+        "maxDeveloperSize": 0,
+        "developerCount": 1,
+        "reason": "score 6 + hypes <10 + no direct major developer + known developer size below 500 (or unavailable)"
+      },
+      {
+        "name": "Melty Blood: Twi-Lumina",
+        "igdbId": "400268",
+        "gameType": "Expanded Game",
+        "previousScore": 6,
+        "previousConfidence": "medium",
+        "hypes": 0,
+        "directMajorDeveloper": false,
+        "maxDeveloperSize": 0,
+        "developerCount": 1,
+        "reason": "score 6 + hypes <10 + no direct major developer + known developer size below 500 (or unavailable)"
+      },
+      {
+        "name": "The Cat in the Hat: Rainy Day Mayhem",
+        "igdbId": "403720",
+        "gameType": "Main Game",
+        "previousScore": 6,
+        "previousConfidence": "medium",
+        "hypes": 0,
+        "directMajorDeveloper": false,
+        "maxDeveloperSize": 0,
+        "developerCount": 1,
+        "reason": "score 6 + hypes <10 + no direct major developer + known developer size below 500 (or unavailable)"
+      }
+    ]
   }
 }
