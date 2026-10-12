@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T05:26:34.006Z",
+  "generatedAt": "2026-10-12T05:41:31.028Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
   "today": "2026-10-12",
   "liveApiSignals": {
@@ -45,18 +45,18 @@
         "Nezařazeno": 3176
       },
       "proposed": {
-        "AAA": 106,
+        "AAA": 82,
         "Indie": 2828,
         "Menší titul": 42,
-        "Nezařazeno": 989
+        "Nezařazeno": 1013
       },
       "movedFromUnknown": {
-        "total": 2187,
-        "coveragePct": 68.9,
-        "AAA": 106,
+        "total": 2163,
+        "coveragePct": 68.1,
+        "AAA": 82,
         "Indie": 2039,
         "Menší titul": 42,
-        "remainingUnknown": 989
+        "remainingUnknown": 1013
       }
     }
   },
@@ -591,38 +591,6 @@
         ]
       },
       {
-        "name": "The Witcher 3: Wild Hunt - Songs of the Past",
-        "igdbId": "403150",
-        "confidence": "high",
-        "score": 9,
-        "hypes": 38,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "Fool’s Theory",
-            "developer": true,
-            "publisher": false,
-            "companySize": "51-200 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "CD Projekt RED",
-            "developer": true,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "CD Projekt",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Virtua Fighter Crossroads",
         "igdbId": "325598",
         "confidence": "high",
@@ -1119,46 +1087,6 @@
         ]
       },
       {
-        "name": "Final Fantasy XIV: Evercold",
-        "igdbId": "399337",
-        "confidence": "high",
-        "score": 9,
-        "hypes": 1,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "Square Enix",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Square Enix Creative Studio 3",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "Square Enix Creative Studio 1",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          }
-        ]
-      },
-      {
         "name": "Just Dance: Decades of Hits",
         "igdbId": "409690",
         "confidence": "high",
@@ -1211,118 +1139,6 @@
             "companySize": "",
             "parent": "NetEase Games",
             "parentCompanySize": "5000+ employees"
-          }
-        ]
-      },
-      {
-        "name": "Resident Evil 4: Separate Ways",
-        "igdbId": "266717",
-        "confidence": "high",
-        "score": 9,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise",
-          "3 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "M-TWO",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Capcom",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Capcom Development Division 1",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Capcom",
-            "parentCompanySize": "1001-5000 employees"
-          }
-        ]
-      },
-      {
-        "name": "Rocket Racing",
-        "igdbId": "279690",
-        "confidence": "high",
-        "score": 9,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "Psyonix",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Epic Games",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "Epic Games",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Mediatonic",
-            "developer": false,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Epic Games",
-            "parentCompanySize": "1001-5000 employees"
-          }
-        ]
-      },
-      {
-        "name": "Sid Meier's Civilization VII: Earthrise",
-        "igdbId": "418583",
-        "confidence": "high",
-        "score": 9,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "Firaxis Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "201-500 employees",
-            "parent": "2K Games",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "2K",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
           }
         ]
       },
@@ -1646,29 +1462,6 @@
         ]
       },
       {
-        "name": "Monster Hunter Wilds: Ascendance",
-        "igdbId": "404709",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 13,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "Capcom",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Pokémon Winds",
         "igdbId": "393105",
         "confidence": "high",
@@ -1948,75 +1741,6 @@
         ]
       },
       {
-        "name": "Street Fighter 6: Year 4 - Arjun",
-        "igdbId": "404718",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 3,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Capcom",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Street Fighter 6: Year 4 - Bosch",
-        "igdbId": "404719",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 3,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Capcom",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Street Fighter 6: Year 4 - Tifa",
-        "igdbId": "404720",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 3,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Capcom",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Totopia",
         "igdbId": "399234",
         "confidence": "high",
@@ -2150,68 +1874,6 @@
         ]
       },
       {
-        "name": "Final Fantasy VII Remake Series Trilogy Edition",
-        "igdbId": "416148",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 1,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Bundle",
-        "companies": [
-          {
-            "name": "Square Enix Creative Studio 1",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "Square Enix",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Sonic Racing: CrossWorlds - Avatar Legends Pack",
-        "igdbId": "375167",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 1,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Sega",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "Sega Sammy Holdings",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Sonic Team",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Sega",
-            "parentCompanySize": "1001-5000 employees"
-          }
-        ]
-      },
-      {
         "name": "Far Cry 3: Blood Dragon - Classic Edition",
         "igdbId": "188063",
         "confidence": "high",
@@ -2243,130 +1905,6 @@
         ]
       },
       {
-        "name": "Final Fantasy VII Revelation: Premium Edition",
-        "igdbId": "416142",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Bundle",
-        "companies": [
-          {
-            "name": "Square Enix",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Square Enix Creative Studio 1",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          }
-        ]
-      },
-      {
-        "name": "Final Fantasy VII Revelation: Premium Plus Edition",
-        "igdbId": "416154",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Bundle",
-        "companies": [
-          {
-            "name": "Square Enix Creative Studio 1",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "Square Enix",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Final Fantasy VII Revelation: Story Expansion Pass",
-        "igdbId": "416141",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Bundle",
-        "companies": [
-          {
-            "name": "Square Enix Creative Studio 1",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Square Enix",
-            "parentCompanySize": "1001-5000 employees"
-          },
-          {
-            "name": "Square Enix",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Marvel Tokon: Fighting Souls - Year 1 DLC Character: Phoenix Cyclops",
-        "igdbId": "411743",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "series/franchise"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Sony Interactive Entertainment",
-            "developer": false,
-            "publisher": true,
-            "companySize": "5000+ employees",
-            "parent": "Sony",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Arc System Works",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Pikmin 4: Nintendo Switch 2 Edition + Dandori Academy",
         "igdbId": "417169",
         "confidence": "high",
@@ -2386,37 +1924,6 @@
             "companySize": "5000+ employees",
             "parent": "",
             "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Sid Meier's Civilization VII: Update 1.5.0",
-        "igdbId": "418618",
-        "confidence": "high",
-        "score": 8,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000",
-          "4 platform families"
-        ],
-        "gameType": "Update",
-        "companies": [
-          {
-            "name": "2K",
-            "developer": false,
-            "publisher": true,
-            "companySize": "1001-5000 employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Firaxis Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "201-500 employees",
-            "parent": "2K Games",
-            "parentCompanySize": "1001-5000 employees"
           }
         ]
       },
@@ -2527,38 +2034,6 @@
             "publisher": false,
             "companySize": "",
             "parent": "",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Elden Ring: Shadow of the Erdtree",
-        "igdbId": "240009",
-        "confidence": "medium",
-        "score": 7,
-        "hypes": 63,
-        "reasons": [
-          "major publisher/parent",
-          "hypes 63",
-          "series/franchise",
-          "3 platform families"
-        ],
-        "gameType": "Expansion",
-        "companies": [
-          {
-            "name": "FromSoftware",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Kadokawa Corporation",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Bandai Namco Entertainment",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Holdings",
             "parentCompanySize": ""
           }
         ]
@@ -2828,128 +2303,6 @@
             "companySize": "1001-5000 employees",
             "parent": "Tencent Holdings",
             "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Pokémon Pokopia: Part 2",
-        "igdbId": "407137",
-        "confidence": "medium",
-        "score": 7,
-        "hypes": 1,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Omega Force",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Koei Tecmo Holdings",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Game Freak",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Nintendo",
-            "developer": false,
-            "publisher": true,
-            "companySize": "5000+ employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "The Pokémon Company",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Nintendo",
-            "parentCompanySize": "5000+ employees"
-          }
-        ]
-      },
-      {
-        "name": "Saros: Zenith",
-        "igdbId": "416115",
-        "confidence": "medium",
-        "score": 7,
-        "hypes": 1,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000"
-        ],
-        "gameType": "Update",
-        "companies": [
-          {
-            "name": "Housemarque",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Sony Interactive Entertainment",
-            "parentCompanySize": "5000+ employees"
-          },
-          {
-            "name": "Sony Interactive Entertainment",
-            "developer": false,
-            "publisher": true,
-            "companySize": "5000+ employees",
-            "parent": "Sony",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Pokémon Pokopia: Part 3",
-        "igdbId": "407138",
-        "confidence": "medium",
-        "score": 7,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=1000"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Omega Force",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Koei Tecmo Holdings",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Game Freak",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Nintendo",
-            "developer": false,
-            "publisher": true,
-            "companySize": "5000+ employees",
-            "parent": "",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "The Pokémon Company",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Nintendo",
-            "parentCompanySize": "5000+ employees"
           }
         ]
       },
@@ -3314,96 +2667,6 @@
         ]
       },
       {
-        "name": "Forza Horizon 6: Treasure Map",
-        "igdbId": "401830",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=500"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Playground Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "201-500 employees",
-            "parent": "Xbox Game Studios",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Xbox Game Studios",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Microsoft",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Forza Horizon 6: VIP Membership",
-        "igdbId": "401831",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=500"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Playground Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "201-500 employees",
-            "parent": "Xbox Game Studios",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Xbox Game Studios",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Microsoft",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Forza Horizon 6: Welcome Pack",
-        "igdbId": "401829",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "company/parent size >=500"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Playground Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "201-500 employees",
-            "parent": "Xbox Game Studios",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Xbox Game Studios",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Microsoft",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
         "name": "Hasbro Games Junior Collection",
         "igdbId": "412107",
         "confidence": "medium",
@@ -3430,37 +2693,6 @@
             "publisher": true,
             "companySize": "",
             "parent": "Bandai Namco Studios",
-            "parentCompanySize": ""
-          }
-        ]
-      },
-      {
-        "name": "Little Nightmares III: Second Additional Chapter",
-        "igdbId": "375188",
-        "confidence": "medium",
-        "score": 6,
-        "hypes": 0,
-        "reasons": [
-          "major publisher/parent",
-          "series/franchise",
-          "4 platform families"
-        ],
-        "gameType": "DLC",
-        "companies": [
-          {
-            "name": "Supermassive Games",
-            "developer": true,
-            "publisher": false,
-            "companySize": "",
-            "parent": "Nordisk Film",
-            "parentCompanySize": ""
-          },
-          {
-            "name": "Bandai Namco Entertainment",
-            "developer": false,
-            "publisher": true,
-            "companySize": "",
-            "parent": "Bandai Namco Holdings",
             "parentCompanySize": ""
           }
         ]
@@ -4933,6 +4165,244 @@
     "Signals come from the deployed GameS IGDB provider using server-side IGDB credentials.",
     "Indie requires an explicit Indie genre.",
     "AAA requires score >=6 plus a major/large-company signal.",
-    "Menší titul requires known developer size <=50, low hype, <=2 platform families and safe parent-company evidence."
-  ]
+    "Menší titul requires known developer size <=50, low hype, <=2 platform families and safe parent-company evidence.",
+    "Test-only content-type gate applied before AAA/small-title audit. Extras are returned to Nezařazeno for this dry run."
+  ],
+  "contentTypeGate": {
+    "applied": true,
+    "rule": "Exclude DLC/add-on/expansion/bundle/episode/season/update/pack before production-scale classification; Standalone Expansion remains eligible.",
+    "upcoming": {
+      "AAA": {
+        "before": 106,
+        "after": 82,
+        "excluded": 24
+      },
+      "Menší titul": {
+        "before": 42,
+        "after": 42,
+        "excluded": 0
+      }
+    },
+    "excluded": {
+      "AAA": [
+        {
+          "name": "The Witcher 3: Wild Hunt - Songs of the Past",
+          "igdbId": "403150",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 9,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Final Fantasy XIV: Evercold",
+          "igdbId": "399337",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 9,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Resident Evil 4: Separate Ways",
+          "igdbId": "266717",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 9,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Rocket Racing",
+          "igdbId": "279690",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 9,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Sid Meier's Civilization VII: Earthrise",
+          "igdbId": "418583",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 9,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Monster Hunter Wilds: Ascendance",
+          "igdbId": "404709",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Street Fighter 6: Year 4 - Arjun",
+          "igdbId": "404718",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Street Fighter 6: Year 4 - Bosch",
+          "igdbId": "404719",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Street Fighter 6: Year 4 - Tifa",
+          "igdbId": "404720",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Final Fantasy VII Remake Series Trilogy Edition",
+          "igdbId": "416148",
+          "gameType": "Bundle",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Sonic Racing: CrossWorlds - Avatar Legends Pack",
+          "igdbId": "375167",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Final Fantasy VII Revelation: Premium Edition",
+          "igdbId": "416142",
+          "gameType": "Bundle",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Final Fantasy VII Revelation: Premium Plus Edition",
+          "igdbId": "416154",
+          "gameType": "Bundle",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Final Fantasy VII Revelation: Story Expansion Pass",
+          "igdbId": "416141",
+          "gameType": "Bundle",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Marvel Tokon: Fighting Souls - Year 1 DLC Character: Phoenix Cyclops",
+          "igdbId": "411743",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Sid Meier's Civilization VII: Update 1.5.0",
+          "igdbId": "418618",
+          "gameType": "Update",
+          "previousScale": "AAA",
+          "previousScore": 8,
+          "previousConfidence": "high",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Elden Ring: Shadow of the Erdtree",
+          "igdbId": "240009",
+          "gameType": "Expansion",
+          "previousScale": "AAA",
+          "previousScore": 7,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Pokémon Pokopia: Part 2",
+          "igdbId": "407137",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 7,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Saros: Zenith",
+          "igdbId": "416115",
+          "gameType": "Update",
+          "previousScale": "AAA",
+          "previousScore": 7,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Pokémon Pokopia: Part 3",
+          "igdbId": "407138",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 7,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Forza Horizon 6: Treasure Map",
+          "igdbId": "401830",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 6,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Forza Horizon 6: VIP Membership",
+          "igdbId": "401831",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 6,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Forza Horizon 6: Welcome Pack",
+          "igdbId": "401829",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 6,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        },
+        {
+          "name": "Little Nightmares III: Second Additional Chapter",
+          "igdbId": "375188",
+          "gameType": "DLC",
+          "previousScale": "AAA",
+          "previousScore": 6,
+          "previousConfidence": "medium",
+          "reason": "excluded by content-type gate before production-scale classification"
+        }
+      ],
+      "Menší titul": []
+    }
+  }
 }
