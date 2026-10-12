@@ -1,0 +1,266 @@
+{
+  "generatedAt": "2026-10-12T04:43:11.029Z",
+  "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
+  "games": 5748,
+  "igdbSignals": {
+    "available": false,
+    "reason": "IGDB secrets unavailable",
+    "gamesWithIgdbId": 5747,
+    "rowsFetched": 0,
+    "companyRows": 0,
+    "companySizeRows": 0
+  },
+  "current": {
+    "AAA": 0,
+    "Indie": 996,
+    "Menší titul": 0,
+    "Nezařazeno": 4752
+  },
+  "proposed": {
+    "AAA": 0,
+    "Indie": 3931,
+    "Menší titul": 0,
+    "Nezařazeno": 1817
+  },
+  "movedFromUnknown": {
+    "total": 2935,
+    "coveragePct": 61.8,
+    "AAA": 0,
+    "Indie": 2935,
+    "Menší titul": 0,
+    "remainingUnknown": 1817
+  },
+  "samples": {
+    "AAA": [],
+    "Indie": [
+      {
+        "id": "349124",
+        "igdbId": "349124",
+        "name": "1! 2! 3! Battle Card!",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "405999",
+        "igdbId": "405999",
+        "name": "10 Hours Before Sunrise",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "351683",
+        "igdbId": "351683",
+        "name": "100 Amsterdam Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "347755",
+        "igdbId": "347755",
+        "name": "100 Astro Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "347461",
+        "igdbId": "347461",
+        "name": "100 Barcelona Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-283041",
+        "igdbId": "283041",
+        "name": "100 Cats Greece",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-382336",
+        "igdbId": "382336",
+        "name": "100 Goldmine Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "347462",
+        "igdbId": "347462",
+        "name": "100 Lisbon Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-417750",
+        "igdbId": "417750",
+        "name": "100 Panda Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-376183",
+        "igdbId": "376183",
+        "name": "100 Tavern Cats",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "408725",
+        "igdbId": "408725",
+        "name": "100 Yen Exorcist",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "357179",
+        "igdbId": "357179",
+        "name": "10hit",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "301031",
+        "igdbId": "301031",
+        "name": "13Z",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "393460",
+        "igdbId": "393460",
+        "name": "20 More, Somehow Even Smaller, Mazes",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "403401",
+        "igdbId": "403401",
+        "name": "23:61",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-326037",
+        "igdbId": "326037",
+        "name": "3-Bit Explorer",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-272220",
+        "igdbId": "272220",
+        "name": "4:AM",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "igdb-414799",
+        "igdbId": "414799",
+        "name": "4096 Space Traders Era",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "389691",
+        "igdbId": "389691",
+        "name": "4Below",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      },
+      {
+        "id": "405042",
+        "igdbId": "405042",
+        "name": "4Mecheros",
+        "confidence": "high",
+        "score": null,
+        "hypes": 0,
+        "reasons": [
+          "IGDB/catalog genre Indie"
+        ]
+      }
+    ],
+    "Menší titul": []
+  },
+  "notes": [
+    "Dry run only: does not modify games.json, games-index.json or UI.",
+    "Existing non-empty scale values are preserved.",
+    "Indie requires an explicit Indie genre.",
+    "AAA requires score >=6 plus a major/large-company signal.",
+    "Menší titul requires known developer size <=50, no major company, hypes <50 and <=2 platform families."
+  ]
+}
