@@ -52,11 +52,21 @@ jobs:
           set -euo pipefail
           remote_script="/home/ubuntu/games-calendar/repo/.scale-classification-test-${GITHUB_RUN_ID}.js"
           remote_report="/tmp/scale-classification-report-${GITHUB_RUN_ID}.json"
-          scp -i ~/.ssh/games-deploy -o BatchMode=yes test-scale-classification.js ubuntu@130.61.49.108:"$remote_script"
+
+          base64 -w0 test-scale-classification.js | ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 \
+            "base64 -d > '$remote_script'"
+
           ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 \
             "cd /home/ubuntu/games-calendar/repo && node --env-file=games-api/.env '$remote_script' > '$remote_report'; rc=\$?; rm -f '$remote_script'; exit \$rc"
-          scp -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108:"$remote_report" scale-classification-report.json
-          ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 "rm -f '$remote_report'"
+
+          ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 \
+            "printf '__REPORT_BEGIN__\\n'; base64 -w0 '$remote_report'; printf '\\n__REPORT_END__\\n'; rm -f '$remote_report'" \
+            > /tmp/scale-report-transfer.txt
+
+          awk '/__REPORT_BEGIN__/{flag=1;next}/__REPORT_END__/{flag=0}flag' /tmp/scale-report-transfer.txt \
+            | tr -d '\r\n' | base64 -d > scale-classification-report.json
+
+          node -e "JSON.parse(require('fs').readFileSync('scale-classification-report.json','utf8')); console.log('report JSON OK')"
 
       - name: Print summary
         run: cat scale-classification-report.json
