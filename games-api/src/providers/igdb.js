@@ -160,6 +160,25 @@ function companyLists(items = []) {
   return { developers: uniq(developers), publishers: uniq(publishers) };
 }
 
+
+function companyScaleSignals(items = []) {
+  return (items || []).map(item => {
+    const company = item?.company;
+    if (!company?.name) return null;
+    const parent = company?.parent && typeof company.parent === 'object' ? company.parent : null;
+    return {
+      name: company.name,
+      developer: Boolean(item.developer),
+      publisher: Boolean(item.publisher),
+      companySize: company?.company_size?.name || '',
+      companySizeId: Number(company?.company_size?.id || company?.company_size || 0) || null,
+      parent: parent?.name || '',
+      parentId: Number(parent?.id || company?.parent || 0) || null,
+      parentCompanySize: parent?.company_size?.name || ''
+    };
+  }).filter(Boolean);
+}
+
 function releasePrecision(item = {}) {
   const human = String(item?.human || '').trim();
   const rawFormat = String(item?.date_format?.format || '').trim().toUpperCase();
@@ -201,6 +220,7 @@ function releaseWindow(item, precision) {
 function normalizeIgdb(game) {
   if (!game) return null;
   const companies = companyLists(game.involved_companies || []);
+  const scaleCompanies = companyScaleSignals(game.involved_companies || []);
   const releases = (game.release_dates || []).map(item => {
     const precision = releasePrecision(item);
     return {
@@ -249,6 +269,8 @@ function normalizeIgdb(game) {
     sourceUrl: `${API_ROOT}/games`,
     rawHints: {
       gameType: game.game_type?.type || game.game_type || null,
+      hypes: Number(game.hypes || 0) || 0,
+      involvedCompanies: scaleCompanies,
       externalIds: ids,
       aliases: (game.alternative_names || []).map(item => item?.name).filter(Boolean),
       collections: (game.collections || []).map(item => item?.name).filter(Boolean),
@@ -271,16 +293,18 @@ function normalizeIgdb(game) {
   normalized.videos = videos;
   normalized.websites = websites;
   normalized.gameType = normalized.rawHints.gameType;
+  normalized.hypes = normalized.rawHints.hypes;
+  normalized.involvedCompanies = normalized.rawHints.involvedCompanies;
   return normalized;
 }
 
 const GAME_FIELDS = [
   'id','name','slug','summary','storyline','first_release_date',
-  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count',
+  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count','hypes',
   'game_type.type','genres.name','game_modes.name','player_perspectives.name','themes.name',
   'platforms.name','platforms.abbreviation','cover.image_id','artworks.image_id','screenshots.image_id',
   'videos.video_id','videos.name','alternative_names.name','collections.name','franchises.name',
-  'involved_companies.company.name','involved_companies.developer','involved_companies.publisher',
+  'involved_companies.company.name','involved_companies.company.company_size.name','involved_companies.company.parent.name','involved_companies.company.parent.company_size.name','involved_companies.developer','involved_companies.publisher',
   'release_dates.date','release_dates.human','release_dates.m','release_dates.y','release_dates.date_format.format','release_dates.platform.name','release_dates.platform.abbreviation',
   'external_games.uid','external_games.url','external_games.category','external_games.external_game_source.name',
   'websites.url'
@@ -306,10 +330,10 @@ export async function product(id, { force = false } = {}) {
 
 const CATALOG_BATCH_FIELDS = [
   'id','name','summary','first_release_date',
-  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count',
+  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count','hypes',
   'game_type.type','genres.name','platforms.name','platforms.abbreviation',
   'alternative_names.name','collections.name','franchises.name',
-  'involved_companies.company.name','involved_companies.developer','involved_companies.publisher',
+  'involved_companies.company.name','involved_companies.company.company_size.name','involved_companies.company.parent.name','involved_companies.company.parent.company_size.name','involved_companies.developer','involved_companies.publisher',
   'release_dates.date','release_dates.human','release_dates.m','release_dates.y','release_dates.date_format.format','release_dates.platform.name','release_dates.platform.abbreviation'
 ].join(',');
 
@@ -320,7 +344,7 @@ export async function catalogBatch(ids, { force = false } = {}) {
     .slice(0, 500);
   if (!numericIds.length) return [];
 
-  const key = `igdb:catalog-batch:v2:${numericIds.slice().sort((a, b) => a - b).join(',')}`;
+  const key = `igdb:catalog-batch:v3:${numericIds.slice().sort((a, b) => a - b).join(',')}`;
   if (!force) {
     const cached = cacheGet(key);
     if (cached) return cached;
