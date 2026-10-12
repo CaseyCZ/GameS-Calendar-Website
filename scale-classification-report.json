@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T06:02:01.523Z",
+  "generatedAt": "2026-10-12T06:28:38.551Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
   "today": "2026-10-12",
   "liveApiSignals": {
@@ -23,17 +23,17 @@
       },
       "proposed": {
         "AAA": 167,
-        "Indie": 3942,
+        "Indie": 3943,
         "Menší titul": 69,
-        "Nezařazeno": 1562
+        "Nezařazeno": 1561
       },
       "movedFromUnknown": {
-        "total": 3185,
+        "total": 3186,
         "coveragePct": 67.1,
         "AAA": 167,
-        "Indie": 2949,
+        "Indie": 2950,
         "Menší titul": 69,
-        "remainingUnknown": 1562
+        "remainingUnknown": 1561
       }
     },
     "upcoming": {
@@ -46,17 +46,17 @@
       },
       "proposed": {
         "AAA": 77,
-        "Indie": 2828,
+        "Indie": 2829,
         "Menší titul": 42,
-        "Nezařazeno": 1018
+        "Nezařazeno": 1017
       },
       "movedFromUnknown": {
-        "total": 2158,
-        "coveragePct": 67.9,
+        "total": 2159,
+        "coveragePct": 68,
         "AAA": 77,
-        "Indie": 2039,
+        "Indie": 2040,
         "Menší titul": 42,
-        "remainingUnknown": 1018
+        "remainingUnknown": 1017
       }
     }
   },
