@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-12T04:43:11.029Z",
+  "generatedAt": "2026-10-12T04:45:20.280Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
-  "games": 5748,
+  "today": "2026-10-12",
   "igdbSignals": {
     "available": false,
     "reason": "IGDB secrets unavailable",
@@ -10,257 +10,629 @@
     "companyRows": 0,
     "companySizeRows": 0
   },
-  "current": {
-    "AAA": 0,
-    "Indie": 996,
-    "Menší titul": 0,
-    "Nezařazeno": 4752
+  "scopes": {
+    "all": {
+      "safe": {
+        "games": 5740,
+        "current": {
+          "AAA": 0,
+          "Indie": 993,
+          "Menší titul": 0,
+          "Nezařazeno": 4747
+        },
+        "proposed": {
+          "AAA": 0,
+          "Indie": 3923,
+          "Menší titul": 0,
+          "Nezařazeno": 1817
+        },
+        "movedFromUnknown": {
+          "total": 2930,
+          "coveragePct": 61.7,
+          "AAA": 0,
+          "Indie": 2930,
+          "Menší titul": 0,
+          "remainingUnknown": 1817
+        }
+      },
+      "catalogHeuristic": {
+        "games": 5740,
+        "current": {
+          "AAA": 0,
+          "Indie": 993,
+          "Menší titul": 0,
+          "Nezařazeno": 4747
+        },
+        "proposed": {
+          "AAA": 132,
+          "Indie": 3923,
+          "Menší titul": 0,
+          "Nezařazeno": 1685
+        },
+        "movedFromUnknown": {
+          "total": 3062,
+          "coveragePct": 64.5,
+          "AAA": 132,
+          "Indie": 2930,
+          "Menší titul": 0,
+          "remainingUnknown": 1685
+        }
+      },
+      "richIgdb": {
+        "games": 5740,
+        "current": {
+          "AAA": 0,
+          "Indie": 993,
+          "Menší titul": 0,
+          "Nezařazeno": 4747
+        },
+        "proposed": {
+          "AAA": 132,
+          "Indie": 3923,
+          "Menší titul": 0,
+          "Nezařazeno": 1685
+        },
+        "movedFromUnknown": {
+          "total": 3062,
+          "coveragePct": 64.5,
+          "AAA": 132,
+          "Indie": 2930,
+          "Menší titul": 0,
+          "remainingUnknown": 1685
+        }
+      }
+    },
+    "upcoming": {
+      "safe": {
+        "games": 3965,
+        "current": {
+          "AAA": 0,
+          "Indie": 789,
+          "Menší titul": 0,
+          "Nezařazeno": 3176
+        },
+        "proposed": {
+          "AAA": 0,
+          "Indie": 2820,
+          "Menší titul": 0,
+          "Nezařazeno": 1145
+        },
+        "movedFromUnknown": {
+          "total": 2031,
+          "coveragePct": 63.9,
+          "AAA": 0,
+          "Indie": 2031,
+          "Menší titul": 0,
+          "remainingUnknown": 1145
+        }
+      },
+      "catalogHeuristic": {
+        "games": 3965,
+        "current": {
+          "AAA": 0,
+          "Indie": 789,
+          "Menší titul": 0,
+          "Nezařazeno": 3176
+        },
+        "proposed": {
+          "AAA": 78,
+          "Indie": 2820,
+          "Menší titul": 0,
+          "Nezařazeno": 1067
+        },
+        "movedFromUnknown": {
+          "total": 2109,
+          "coveragePct": 66.4,
+          "AAA": 78,
+          "Indie": 2031,
+          "Menší titul": 0,
+          "remainingUnknown": 1067
+        }
+      },
+      "richIgdb": {
+        "games": 3965,
+        "current": {
+          "AAA": 0,
+          "Indie": 789,
+          "Menší titul": 0,
+          "Nezařazeno": 3176
+        },
+        "proposed": {
+          "AAA": 78,
+          "Indie": 2820,
+          "Menší titul": 0,
+          "Nezařazeno": 1067
+        },
+        "movedFromUnknown": {
+          "total": 2109,
+          "coveragePct": 66.4,
+          "AAA": 78,
+          "Indie": 2031,
+          "Menší titul": 0,
+          "remainingUnknown": 1067
+        }
+      }
+    }
   },
-  "proposed": {
-    "AAA": 0,
-    "Indie": 3931,
-    "Menší titul": 0,
-    "Nezařazeno": 1817
-  },
-  "movedFromUnknown": {
-    "total": 2935,
-    "coveragePct": 61.8,
-    "AAA": 0,
-    "Indie": 2935,
-    "Menší titul": 0,
-    "remainingUnknown": 1817
-  },
-  "samples": {
-    "AAA": [],
-    "Indie": [
+  "upcomingSamples": {
+    "catalogAAA": [
       {
-        "id": "349124",
-        "igdbId": "349124",
-        "name": "1! 2! 3! Battle Card!",
+        "name": "Resident Evil 2",
+        "igdbId": "19686",
         "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "score": 7,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "ratingCount 1440",
+          "series/franchise"
         ]
       },
       {
-        "id": "405999",
-        "igdbId": "405999",
-        "name": "10 Hours Before Sunrise",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Attack on Titan 3",
+        "igdbId": "404715",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "351683",
-        "igdbId": "351683",
-        "name": "100 Amsterdam Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Call of Duty: Modern Warfare 4",
+        "igdbId": "403310",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "347755",
-        "igdbId": "347755",
-        "name": "100 Astro Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Castlevania: Belmont's Curse",
+        "igdbId": "389434",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "347461",
-        "igdbId": "347461",
-        "name": "100 Barcelona Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Crazy Taxi: World Tour",
+        "igdbId": "279633",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "igdb-283041",
-        "igdbId": "283041",
-        "name": "100 Cats Greece",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Dragon Ball: Xenoverse 3",
+        "igdbId": "387020",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
         ]
       },
       {
-        "id": "igdb-382336",
-        "igdbId": "382336",
-        "name": "100 Goldmine Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Dragon Quest Monsters: The Withered World",
+        "igdbId": "403174",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "347462",
-        "igdbId": "347462",
-        "name": "100 Lisbon Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Elden Ring: Shadow of the Erdtree",
+        "igdbId": "240009",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "ratingCount 131",
+          "series/franchise"
         ]
       },
       {
-        "id": "igdb-417750",
-        "igdbId": "417750",
-        "name": "100 Panda Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Fable",
+        "igdbId": "92550",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
         ]
       },
       {
-        "id": "igdb-376183",
-        "igdbId": "376183",
-        "name": "100 Tavern Cats",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Final Fantasy Resonance",
+        "igdbId": "405454",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "408725",
-        "igdbId": "408725",
-        "name": "100 Yen Exorcist",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Final Fantasy VII Revelation",
+        "igdbId": "404721",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "357179",
-        "igdbId": "357179",
-        "name": "10hit",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Final Fantasy XIV: Evercold",
+        "igdbId": "399337",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
         ]
       },
       {
-        "id": "301031",
-        "igdbId": "301031",
-        "name": "13Z",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Forza Horizon 6",
+        "igdbId": "348330",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "ratingCount 105",
+          "series/franchise"
         ]
       },
       {
-        "id": "393460",
-        "igdbId": "393460",
-        "name": "20 More, Somehow Even Smaller, Mazes",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Gears of War: E-Day",
+        "igdbId": "305160",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
         ]
       },
       {
-        "id": "403401",
-        "igdbId": "403401",
-        "name": "23:61",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
+        "name": "Gundam Rogue Orbit",
+        "igdbId": "404690",
+        "confidence": "candidate",
+        "score": 6,
         "reasons": [
-          "IGDB/catalog genre Indie"
-        ]
-      },
-      {
-        "id": "igdb-326037",
-        "igdbId": "326037",
-        "name": "3-Bit Explorer",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
-        "reasons": [
-          "IGDB/catalog genre Indie"
-        ]
-      },
-      {
-        "id": "igdb-272220",
-        "igdbId": "272220",
-        "name": "4:AM",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
-        "reasons": [
-          "IGDB/catalog genre Indie"
-        ]
-      },
-      {
-        "id": "igdb-414799",
-        "igdbId": "414799",
-        "name": "4096 Space Traders Era",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
-        "reasons": [
-          "IGDB/catalog genre Indie"
-        ]
-      },
-      {
-        "id": "389691",
-        "igdbId": "389691",
-        "name": "4Below",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
-        "reasons": [
-          "IGDB/catalog genre Indie"
-        ]
-      },
-      {
-        "id": "405042",
-        "igdbId": "405042",
-        "name": "4Mecheros",
-        "confidence": "high",
-        "score": null,
-        "hypes": 0,
-        "reasons": [
-          "IGDB/catalog genre Indie"
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
         ]
       }
     ],
-    "Menší titul": []
+    "safeIndie": [
+      {
+        "name": "1! 2! 3! Battle Card!",
+        "igdbId": "349124",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "10 Hours Before Sunrise",
+        "igdbId": "405999",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "100 Amsterdam Cats",
+        "igdbId": "351683",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "100 Yen Exorcist",
+        "igdbId": "408725",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "10hit",
+        "igdbId": "357179",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "13Z",
+        "igdbId": "301031",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "4:AM",
+        "igdbId": "272220",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "4Below",
+        "igdbId": "389691",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "4Mecheros",
+        "igdbId": "405042",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "99 Nights In The Apocalypse",
+        "igdbId": "414522",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "A Baby CEO?!",
+        "igdbId": "391884",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "A Dark Cave",
+        "igdbId": "414272",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "A Date with Death 2: Remnants",
+        "igdbId": "380972",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "A Dogs Dream",
+        "igdbId": "378434",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      },
+      {
+        "name": "A Game About a King Saving a Dragon",
+        "igdbId": "384142",
+        "confidence": "high",
+        "score": null,
+        "reasons": [
+          "catalog genre Indie"
+        ]
+      }
+    ],
+    "richAAA": [
+      {
+        "name": "Resident Evil 2",
+        "igdbId": "19686",
+        "confidence": "high",
+        "score": 7,
+        "reasons": [
+          "major publisher",
+          "ratingCount 1440",
+          "series/franchise"
+        ]
+      },
+      {
+        "name": "Attack on Titan 3",
+        "igdbId": "404715",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Call of Duty: Modern Warfare 4",
+        "igdbId": "403310",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Castlevania: Belmont's Curse",
+        "igdbId": "389434",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Crazy Taxi: World Tour",
+        "igdbId": "279633",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Dragon Ball: Xenoverse 3",
+        "igdbId": "387020",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
+        ]
+      },
+      {
+        "name": "Dragon Quest Monsters: The Withered World",
+        "igdbId": "403174",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Elden Ring: Shadow of the Erdtree",
+        "igdbId": "240009",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "ratingCount 131",
+          "series/franchise"
+        ]
+      },
+      {
+        "name": "Fable",
+        "igdbId": "92550",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
+        ]
+      },
+      {
+        "name": "Final Fantasy Resonance",
+        "igdbId": "405454",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Final Fantasy VII Revelation",
+        "igdbId": "404721",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Final Fantasy XIV: Evercold",
+        "igdbId": "399337",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "4 platform families"
+        ]
+      },
+      {
+        "name": "Forza Horizon 6",
+        "igdbId": "348330",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "ratingCount 105",
+          "series/franchise"
+        ]
+      },
+      {
+        "name": "Gears of War: E-Day",
+        "igdbId": "305160",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
+        ]
+      },
+      {
+        "name": "Gundam Rogue Orbit",
+        "igdbId": "404690",
+        "confidence": "candidate",
+        "score": 6,
+        "reasons": [
+          "major publisher",
+          "series/franchise",
+          "3 platform families"
+        ]
+      }
+    ],
+    "richSmall": []
   },
   "notes": [
-    "Dry run only: does not modify games.json, games-index.json or UI.",
-    "Existing non-empty scale values are preserved.",
-    "Indie requires an explicit Indie genre.",
-    "AAA requires score >=6 plus a major/large-company signal.",
-    "Menší titul requires known developer size <=50, no major company, hypes <50 and <=2 platform families."
+    "Dry run only: games.json, games-index.json and UI are untouched.",
+    "safe model changes only explicit Indie genre and preserves existing scale.",
+    "catalogHeuristic additionally marks AAA candidates from current publisher/developer, series, rating-count and platform data.",
+    "richIgdb adds hypes, company size and parent-company evidence when IGDB credentials are available.",
+    "Menší titul is intentionally not inferred without company-size evidence."
   ]
 }
