@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-12T05:24:45.845Z",
-  "sourceReportGeneratedAt": "2026-10-12T05:24:45.527Z",
+  "generatedAt": "2026-10-12T05:26:34.225Z",
+  "sourceReportGeneratedAt": "2026-10-12T05:26:34.006Z",
   "today": "2026-10-12",
   "expectedCandidateCounts": {
     "AAA": 106,
@@ -16,10 +16,10 @@
   },
   "statusCounts": {
     "AAA": {
-      "keep": 56,
-      "manual_review": 20,
-      "manual_review_high": 22,
-      "likely_false_positive": 8
+      "keep": 30,
+      "manual_review": 32,
+      "manual_review_high": 17,
+      "likely_false_positive": 27
     },
     "Menší titul": {
       "keep": 41,
@@ -31,38 +31,179 @@
   "flagged": {
     "AAA": [
       {
-        "name": "Rayman Origins: Enhanced Edition",
-        "igdbId": "403490",
+        "name": "Tomb Raider: Legacy of Atlantis",
+        "igdbId": "381235",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Resident Evil Veronica",
+        "igdbId": "404673",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Persona 4 Revival",
+        "igdbId": "348210",
+        "gameType": "Remake",
         "status": "manual_review",
         "risk": 2,
         "flags": [
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Final Fantasy VII Revelation",
+        "igdbId": "404721",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Rayman Legends Retold",
+        "igdbId": "404044",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 2,
+        "flags": [
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "The Legend of Zelda: Ocarina of Time",
+        "igdbId": "405460",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Resident Evil 2",
+        "igdbId": "19686",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "The Witcher 3: Wild Hunt - Songs of the Past",
+        "igdbId": "403150",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 5,
+        "flags": [
+          "IGDB game type is non-standalone: Expansion"
+        ]
+      },
+      {
+        "name": "Final Fantasy Resonance",
+        "igdbId": "405454",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Resident Evil 4",
+        "igdbId": "132181",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Resident Evil 3",
+        "igdbId": "115115",
+        "gameType": "Remake",
+        "status": "manual_review",
+        "risk": 1,
+        "flags": [
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Rayman Origins: Enhanced Edition",
+        "igdbId": "403490",
+        "gameType": "Remaster",
+        "status": "manual_review",
+        "risk": 3,
+        "flags": [
           "very low IGDB hype signal",
-          "title explicitly looks like remake/remaster/re-release"
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Remaster"
         ]
       },
       {
         "name": "Heroes of Might and Magic III Remake",
         "igdbId": "414996",
+        "gameType": "Remake",
         "status": "manual_review",
-        "risk": 2,
+        "risk": 3,
         "flags": [
           "very low IGDB hype signal",
-          "title explicitly looks like remake/remaster/re-release"
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Remake"
         ]
       },
       {
         "name": "Tales of Eternia: Remastered",
         "igdbId": "405458",
+        "gameType": "Remaster",
+        "status": "manual_review",
+        "risk": 3,
+        "flags": [
+          "very low IGDB hype signal",
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Remaster"
+        ]
+      },
+      {
+        "name": "Romancing SaGa 3: Destinies United",
+        "igdbId": "415836",
+        "gameType": "Remake",
         "status": "manual_review",
         "risk": 2,
         "flags": [
           "very low IGDB hype signal",
-          "title explicitly looks like remake/remaster/re-release"
+          "IGDB game type is re-release variant: Remake"
+        ]
+      },
+      {
+        "name": "Final Fantasy XIV: Evercold",
+        "igdbId": "399337",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "very low IGDB hype signal",
+          "IGDB game type is non-standalone: Expansion"
         ]
       },
       {
         "name": "Just Dance: Decades of Hits",
         "igdbId": "409690",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 2,
         "flags": [
@@ -73,16 +214,63 @@
       {
         "name": "Minecraft",
         "igdbId": "135400",
+        "gameType": "Port",
         "status": "manual_review",
-        "risk": 3,
+        "risk": 4,
         "flags": [
           "no IGDB hype signal",
-          "major-company evidence comes only through a parent company"
+          "major-company evidence comes only through a parent company",
+          "IGDB game type is re-release variant: Port"
+        ]
+      },
+      {
+        "name": "Resident Evil 4: Separate Ways",
+        "igdbId": "266717",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Expansion"
+        ]
+      },
+      {
+        "name": "Rocket Racing",
+        "igdbId": "279690",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Expansion"
+        ]
+      },
+      {
+        "name": "Sid Meier's Civilization VII: Earthrise",
+        "igdbId": "418583",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Expansion"
+        ]
+      },
+      {
+        "name": "Monster Hunter Wilds: Ascendance",
+        "igdbId": "404709",
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no developer row in the IGDB company evidence",
+          "IGDB game type is non-standalone: Expansion"
         ]
       },
       {
         "name": "Exterminauts",
         "igdbId": "414975",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -93,57 +281,92 @@
       {
         "name": "Hyrule Warriors: Age of Calamity - Definitive Edition",
         "igdbId": "417167",
+        "gameType": "Expanded Game",
         "status": "manual_review",
-        "risk": 3,
+        "risk": 4,
         "flags": [
           "very low IGDB hype signal",
           "no developer row in the IGDB company evidence",
-          "title explicitly looks like remake/remaster/re-release"
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is re-release variant: Expanded Game"
         ]
       },
       {
         "name": "Humankind II",
         "igdbId": "414961",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
           "very low IGDB hype signal",
           "major-company evidence comes only through a parent company"
+        ]
+      },
+      {
+        "name": "Ratchet & Clank",
+        "igdbId": "416114",
+        "gameType": "Port",
+        "status": "manual_review",
+        "risk": 2,
+        "flags": [
+          "very low IGDB hype signal",
+          "IGDB game type is re-release variant: Port"
+        ]
+      },
+      {
+        "name": "Dino Crisis 2",
+        "igdbId": "416083",
+        "gameType": "Port",
+        "status": "manual_review",
+        "risk": 2,
+        "flags": [
+          "very low IGDB hype signal",
+          "IGDB game type is re-release variant: Port"
         ]
       },
       {
         "name": "Street Fighter 6: Year 4 - Arjun",
         "igdbId": "404718",
-        "status": "manual_review",
-        "risk": 2,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 12,
         "flags": [
           "very low IGDB hype signal",
-          "no developer row in the IGDB company evidence"
+          "no developer row in the IGDB company evidence",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Street Fighter 6: Year 4 - Bosch",
         "igdbId": "404719",
-        "status": "manual_review",
-        "risk": 2,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 12,
         "flags": [
           "very low IGDB hype signal",
-          "no developer row in the IGDB company evidence"
+          "no developer row in the IGDB company evidence",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Street Fighter 6: Year 4 - Tifa",
         "igdbId": "404720",
-        "status": "manual_review",
-        "risk": 2,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 12,
         "flags": [
           "very low IGDB hype signal",
-          "no developer row in the IGDB company evidence"
+          "no developer row in the IGDB company evidence",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Totopia",
         "igdbId": "399234",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -152,48 +375,136 @@
         ]
       },
       {
-        "name": "Final Fantasy VII Remake Series Trilogy Edition",
-        "igdbId": "416148",
+        "name": "Xenoblade Chronicles 3: Nintendo Switch 2 Edition",
+        "igdbId": "405448",
+        "gameType": "Expanded Game",
         "status": "manual_review",
         "risk": 2,
         "flags": [
           "very low IGDB hype signal",
-          "title explicitly looks like remake/remaster/re-release"
+          "IGDB game type is re-release variant: Expanded Game"
+        ]
+      },
+      {
+        "name": "Far Cry 3: Classic Edition",
+        "igdbId": "86389",
+        "gameType": "Port",
+        "status": "manual_review",
+        "risk": 2,
+        "flags": [
+          "very low IGDB hype signal",
+          "IGDB game type is re-release variant: Port"
+        ]
+      },
+      {
+        "name": "Final Fantasy VII Remake Series Trilogy Edition",
+        "igdbId": "416148",
+        "gameType": "Bundle",
+        "status": "likely_false_positive",
+        "risk": 7,
+        "flags": [
+          "very low IGDB hype signal",
+          "title explicitly looks like remake/remaster/re-release",
+          "IGDB game type is non-standalone: Bundle"
+        ]
+      },
+      {
+        "name": "Sonic Racing: CrossWorlds - Avatar Legends Pack",
+        "igdbId": "375167",
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "very low IGDB hype signal",
+          "IGDB game type is non-standalone: DLC"
+        ]
+      },
+      {
+        "name": "Far Cry 3: Blood Dragon - Classic Edition",
+        "igdbId": "188063",
+        "gameType": "Port",
+        "status": "manual_review",
+        "risk": 2,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is re-release variant: Port"
+        ]
+      },
+      {
+        "name": "Final Fantasy VII Revelation: Premium Edition",
+        "igdbId": "416142",
+        "gameType": "Bundle",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Bundle"
+        ]
+      },
+      {
+        "name": "Final Fantasy VII Revelation: Premium Plus Edition",
+        "igdbId": "416154",
+        "gameType": "Bundle",
+        "status": "likely_false_positive",
+        "risk": 6,
+        "flags": [
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Bundle"
         ]
       },
       {
         "name": "Final Fantasy VII Revelation: Story Expansion Pass",
         "igdbId": "416141",
+        "gameType": "Bundle",
         "status": "likely_false_positive",
-        "risk": 6,
+        "risk": 16,
         "flags": [
           "title looks like DLC/expansion/demo/pack rather than a standalone game",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: Bundle",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Marvel Tokon: Fighting Souls - Year 1 DLC Character: Phoenix Cyclops",
         "igdbId": "411743",
+        "gameType": "DLC",
         "status": "likely_false_positive",
-        "risk": 6,
+        "risk": 16,
         "flags": [
           "title looks like DLC/expansion/demo/pack rather than a standalone game",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Pikmin 4: Nintendo Switch 2 Edition + Dandori Academy",
         "igdbId": "417169",
+        "gameType": "Expanded Game",
+        "status": "manual_review",
+        "risk": 3,
+        "flags": [
+          "no IGDB hype signal",
+          "no developer row in the IGDB company evidence",
+          "IGDB game type is re-release variant: Expanded Game"
+        ]
+      },
+      {
+        "name": "Street Fighter Alpha: Warriors' Dreams",
+        "igdbId": "243819",
+        "gameType": "Port",
         "status": "manual_review",
         "risk": 2,
         "flags": [
           "no IGDB hype signal",
-          "no developer row in the IGDB company evidence"
+          "IGDB game type is re-release variant: Port"
         ]
       },
       {
         "name": "Gears of War: E-Day",
         "igdbId": "305160",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -204,6 +515,7 @@
       {
         "name": "Castlevania: Belmont's Curse",
         "igdbId": "389434",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -214,16 +526,19 @@
       {
         "name": "Elden Ring: Shadow of the Erdtree",
         "igdbId": "240009",
-        "status": "manual_review",
-        "risk": 3,
+        "gameType": "Expansion",
+        "status": "likely_false_positive",
+        "risk": 8,
         "flags": [
           "only medium AAA confidence",
-          "AAA score is close to the threshold"
+          "AAA score is close to the threshold",
+          "IGDB game type is non-standalone: Expansion"
         ]
       },
       {
         "name": "State of Decay 3",
         "igdbId": "135993",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -234,6 +549,7 @@
       {
         "name": "Senua",
         "igdbId": "405072",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -244,6 +560,7 @@
       {
         "name": "Call of Duty: Modern Warfare 4",
         "igdbId": "403310",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 3,
         "flags": [
@@ -254,6 +571,7 @@
       {
         "name": "Stupid Never Dies",
         "igdbId": "381212",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 5,
         "flags": [
@@ -265,6 +583,7 @@
       {
         "name": "Daba: Land of Water Scar",
         "igdbId": "259871",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -276,6 +595,7 @@
       {
         "name": "Destruction AllStars",
         "igdbId": "134587",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -287,6 +607,7 @@
       {
         "name": "Frosthaven",
         "igdbId": "336152",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 6,
         "flags": [
@@ -299,6 +620,7 @@
       {
         "name": "Squad Busters",
         "igdbId": "234344",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 6,
         "flags": [
@@ -311,6 +633,7 @@
       {
         "name": "Motorsport Manager 2",
         "igdbId": "408153",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 6,
         "flags": [
@@ -323,17 +646,20 @@
       {
         "name": "Pokémon Pokopia: Part 2",
         "igdbId": "407137",
-        "status": "manual_review_high",
-        "risk": 4,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 9,
         "flags": [
           "only medium AAA confidence",
           "AAA score is close to the threshold",
-          "very low IGDB hype signal"
+          "very low IGDB hype signal",
+          "IGDB game type is non-standalone: DLC"
         ]
       },
       {
         "name": "Saros: Zenith",
         "igdbId": "416115",
+        "gameType": "Update",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -345,17 +671,20 @@
       {
         "name": "Pokémon Pokopia: Part 3",
         "igdbId": "407138",
-        "status": "manual_review_high",
-        "risk": 4,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 9,
         "flags": [
           "only medium AAA confidence",
           "AAA score is close to the threshold",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: DLC"
         ]
       },
       {
         "name": "007 First Light",
         "igdbId": "141114",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -366,6 +695,7 @@
       {
         "name": "Kingdom Come: Deliverance II",
         "igdbId": "298526",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -376,6 +706,7 @@
       {
         "name": "Metro 2039",
         "igdbId": "398225",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -386,6 +717,7 @@
       {
         "name": "Out of Words",
         "igdbId": "347645",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -396,6 +728,7 @@
       {
         "name": "Path of Exile 2",
         "igdbId": "125642",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 6,
         "flags": [
@@ -407,6 +740,7 @@
       {
         "name": "Spyro: A Realm Beyond",
         "igdbId": "405090",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -417,6 +751,7 @@
       {
         "name": "Gundam Rogue Orbit",
         "igdbId": "404690",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -427,6 +762,7 @@
       {
         "name": "Attack on Titan 3",
         "igdbId": "404715",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 4,
         "flags": [
@@ -437,17 +773,20 @@
       {
         "name": "Fate/Extra Record",
         "igdbId": "142911",
+        "gameType": "Remake",
         "status": "manual_review_high",
-        "risk": 6,
+        "risk": 7,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
-          "major-company evidence comes only through a parent company"
+          "major-company evidence comes only through a parent company",
+          "IGDB game type is re-release variant: Remake"
         ]
       },
       {
         "name": "Dragon Ball: Xenoverse 3",
         "igdbId": "387020",
+        "gameType": "Main Game",
         "status": "likely_false_positive",
         "risk": 7,
         "flags": [
@@ -460,6 +799,7 @@
       {
         "name": "Earth Defense Force 6",
         "igdbId": "137427",
+        "gameType": "Main Game",
         "status": "likely_false_positive",
         "risk": 9,
         "flags": [
@@ -473,39 +813,49 @@
       {
         "name": "Forza Horizon 6: Treasure Map",
         "igdbId": "401830",
-        "status": "manual_review_high",
-        "risk": 5,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 15,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Forza Horizon 6: VIP Membership",
         "igdbId": "401831",
-        "status": "manual_review_high",
-        "risk": 5,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 15,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Forza Horizon 6: Welcome Pack",
         "igdbId": "401829",
-        "status": "manual_review_high",
-        "risk": 5,
+        "gameType": "DLC",
+        "status": "likely_false_positive",
+        "risk": 15,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
-          "no IGDB hype signal"
+          "no IGDB hype signal",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Hasbro Games Junior Collection",
         "igdbId": "412107",
+        "gameType": "Main Game",
         "status": "likely_false_positive",
         "risk": 10,
         "flags": [
@@ -520,31 +870,37 @@
       {
         "name": "Little Nightmares III: Second Additional Chapter",
         "igdbId": "375188",
+        "gameType": "DLC",
         "status": "likely_false_positive",
-        "risk": 7,
+        "risk": 17,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
           "no IGDB hype signal",
-          "weak threshold-only AAA case without strong developer evidence"
+          "weak threshold-only AAA case without strong developer evidence",
+          "IGDB game type is non-standalone: DLC",
+          "title pattern indicates add-on/DLC content"
         ]
       },
       {
         "name": "Melty Blood: Twi-Lumina",
         "igdbId": "400268",
+        "gameType": "Expanded Game",
         "status": "likely_false_positive",
-        "risk": 9,
+        "risk": 10,
         "flags": [
           "only medium AAA confidence",
           "AAA score is exactly at the threshold",
           "no IGDB hype signal",
           "major-company evidence comes only through a parent company",
-          "weak threshold-only AAA case without strong developer evidence"
+          "weak threshold-only AAA case without strong developer evidence",
+          "IGDB game type is re-release variant: Expanded Game"
         ]
       },
       {
         "name": "Nobunaga's Ambition: Hishou",
         "igdbId": "405470",
+        "gameType": "Main Game",
         "status": "manual_review_high",
         "risk": 5,
         "flags": [
@@ -556,6 +912,7 @@
       {
         "name": "The Cat in the Hat: Rainy Day Mayhem",
         "igdbId": "403720",
+        "gameType": "Main Game",
         "status": "likely_false_positive",
         "risk": 9,
         "flags": [
@@ -571,6 +928,7 @@
       {
         "name": "About Fishing",
         "igdbId": "380410",
+        "gameType": "Main Game",
         "status": "manual_review",
         "risk": 2,
         "flags": [
@@ -594,6 +952,7 @@
           "hypes 1092",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Rockstar Games",
@@ -661,6 +1020,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -737,6 +1097,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Crystal Dynamics",
@@ -764,9 +1125,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2027-02-12",
             "latestPast": null,
@@ -814,6 +1177,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ryu Ga Gotoku Studio",
@@ -882,6 +1246,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom",
@@ -901,9 +1266,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": null,
             "latestPast": null,
@@ -946,6 +1313,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Capcom",
@@ -1004,6 +1372,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Atlus",
@@ -1039,10 +1408,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Remake"
           ],
           "release": {
             "earliest": "2027-02-18",
@@ -1091,6 +1461,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -1110,9 +1481,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2027-04-07",
             "latestPast": null,
@@ -1160,6 +1533,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -1187,10 +1561,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Remake"
           ],
           "release": {
             "earliest": "2026-12-03",
@@ -1238,6 +1613,7 @@
           "hypes 111",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Santa Monica Studio",
@@ -1303,6 +1679,7 @@
           "hypes 97",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Krafton",
@@ -1366,6 +1743,7 @@
           "hypes 72",
           "series/franchise"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Nintendo",
@@ -1377,9 +1755,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2026-11-05",
             "latestPast": null,
@@ -1423,6 +1803,7 @@
           "hypes 61",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "AdHoc Studio",
@@ -1496,6 +1877,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom",
@@ -1531,9 +1913,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2026-10-16",
             "latestPast": null,
@@ -1577,6 +1961,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sega",
@@ -1632,6 +2017,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Fool’s Theory",
@@ -1651,9 +2037,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "likely_false_positive",
+          "risk": 5,
+          "flags": [
+            "IGDB game type is non-standalone: Expansion"
+          ],
           "release": {
             "earliest": null,
             "latestPast": null,
@@ -1695,6 +2083,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ryu Ga Gotoku Studio",
@@ -1758,6 +2147,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Lancarse",
@@ -1785,9 +2175,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2026-10-22",
             "latestPast": null,
@@ -1835,6 +2227,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Capcom",
@@ -1890,6 +2283,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom Development Division 1",
@@ -1917,9 +2311,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2026-10-16",
             "latestPast": null,
@@ -1963,6 +2359,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "NeoBards Entertainment",
@@ -2014,9 +2411,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 0,
-          "flags": [],
+          "status": "manual_review",
+          "risk": 1,
+          "flags": [
+            "IGDB game type is re-release variant: Remake"
+          ],
           "release": {
             "earliest": "2026-10-16",
             "latestPast": null,
@@ -2060,6 +2459,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ubisoft Paris",
@@ -2123,6 +2523,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remaster",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -2143,10 +2544,11 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 2,
+          "risk": 3,
           "flags": [
             "very low IGDB hype signal",
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Remaster"
           ],
           "release": {
             "earliest": "2026-12-03",
@@ -2194,6 +2596,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -2206,10 +2609,11 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 2,
+          "risk": 3,
           "flags": [
             "very low IGDB hype signal",
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Remake"
           ],
           "release": {
             "earliest": null,
@@ -2252,6 +2656,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Square Enix",
@@ -2327,6 +2732,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Square Enix",
@@ -2422,6 +2828,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sega",
@@ -2497,6 +2904,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remaster",
         "companies": [
           {
             "name": "Tose",
@@ -2517,10 +2925,11 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 2,
+          "risk": 3,
           "flags": [
             "very low IGDB hype signal",
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Remaster"
           ],
           "release": {
             "earliest": "2026-10-16",
@@ -2570,6 +2979,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Xeen",
@@ -2597,10 +3007,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is re-release variant: Remake"
           ],
           "release": {
             "earliest": "2027-02-16",
@@ -2649,6 +3060,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Square Enix",
@@ -2676,10 +3088,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": null,
@@ -2722,6 +3135,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -2784,6 +3198,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Mojang Studios",
@@ -2804,10 +3219,11 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 3,
+          "risk": 4,
           "flags": [
             "no IGDB hype signal",
-            "major-company evidence comes only through a parent company"
+            "major-company evidence comes only through a parent company",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": "2026-10-27",
@@ -2852,6 +3268,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "M-TWO",
@@ -2879,10 +3296,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": "2026-10-16",
@@ -2927,6 +3345,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Psyonix",
@@ -2954,10 +3373,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": null,
@@ -3000,6 +3420,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Firaxis Games",
@@ -3019,10 +3440,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": null,
@@ -3064,6 +3486,7 @@
           "company/parent size >=1000",
           "hypes 133"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Naughty Dog",
@@ -3127,6 +3550,7 @@
           "hypes 102",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Playground Games",
@@ -3189,6 +3613,7 @@
           "company/parent size >=1000",
           "hypes 92"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Naked Rain",
@@ -3264,6 +3689,7 @@
           "company/parent size >=1000",
           "hypes 57"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "FromSoftware",
@@ -3326,6 +3752,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "NetEase Games",
@@ -3388,6 +3815,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Atlus",
@@ -3460,6 +3888,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -3524,6 +3953,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Monolith Soft",
@@ -3586,6 +4016,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -3644,6 +4075,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -3706,6 +4138,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Capcom",
@@ -3717,10 +4150,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no developer row in the IGDB company evidence"
+            "no developer row in the IGDB company evidence",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": null,
@@ -3762,6 +4196,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Game Freak",
@@ -3832,6 +4267,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Game Freak",
@@ -3902,6 +4338,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Piccolo Studio",
@@ -3966,6 +4403,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Behaviour Interactive",
@@ -4031,6 +4469,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -4043,11 +4482,12 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 3,
+          "risk": 4,
           "flags": [
             "very low IGDB hype signal",
             "no developer row in the IGDB company evidence",
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is re-release variant: Expanded Game"
           ],
           "release": {
             "earliest": "2027-02-25",
@@ -4091,6 +4531,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Electronic Arts",
@@ -4165,6 +4606,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Amplitude Studios",
@@ -4222,6 +4664,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Insomniac Games",
@@ -4241,10 +4684,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": null,
@@ -4286,6 +4730,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Capcom",
@@ -4297,10 +4742,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": null,
@@ -4342,6 +4788,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -4353,11 +4800,13 @@
           }
         ],
         "audit": {
-          "status": "manual_review",
-          "risk": 2,
+          "status": "likely_false_positive",
+          "risk": 12,
           "flags": [
             "very low IGDB hype signal",
-            "no developer row in the IGDB company evidence"
+            "no developer row in the IGDB company evidence",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": "2026-10-13",
@@ -4405,6 +4854,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -4416,11 +4866,13 @@
           }
         ],
         "audit": {
-          "status": "manual_review",
-          "risk": 2,
+          "status": "likely_false_positive",
+          "risk": 12,
           "flags": [
             "very low IGDB hype signal",
-            "no developer row in the IGDB company evidence"
+            "no developer row in the IGDB company evidence",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -4462,6 +4914,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -4473,11 +4926,13 @@
           }
         ],
         "audit": {
-          "status": "manual_review",
-          "risk": 2,
+          "status": "likely_false_positive",
+          "risk": 12,
           "flags": [
             "very low IGDB hype signal",
-            "no developer row in the IGDB company evidence"
+            "no developer row in the IGDB company evidence",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -4519,6 +4974,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "JNG Studio",
@@ -4577,6 +5033,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Infinity Ward",
@@ -4657,6 +5114,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Monolith Soft",
@@ -4676,10 +5134,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is re-release variant: Expanded Game"
           ],
           "release": {
             "earliest": "2026-12-03",
@@ -4723,6 +5182,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -4742,10 +5202,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": null,
@@ -4787,6 +5248,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -4806,11 +5268,12 @@
           }
         ],
         "audit": {
-          "status": "manual_review",
-          "risk": 2,
+          "status": "likely_false_positive",
+          "risk": 7,
           "flags": [
             "very low IGDB hype signal",
-            "title explicitly looks like remake/remaster/re-release"
+            "title explicitly looks like remake/remaster/re-release",
+            "IGDB game type is non-standalone: Bundle"
           ],
           "release": {
             "earliest": "2027-04-08",
@@ -4857,6 +5320,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Sega",
@@ -4876,10 +5340,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is non-standalone: DLC"
           ],
           "release": {
             "earliest": null,
@@ -4921,6 +5386,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Ubisoft Pune",
@@ -4940,10 +5406,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": null,
@@ -4985,6 +5452,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix",
@@ -5004,10 +5472,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Bundle"
           ],
           "release": {
             "earliest": "2027-04-07",
@@ -5054,6 +5523,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -5073,10 +5543,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "likely_false_positive",
+          "risk": 6,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Bundle"
           ],
           "release": {
             "earliest": "2027-04-07",
@@ -5123,6 +5594,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -5143,10 +5615,12 @@
         ],
         "audit": {
           "status": "likely_false_positive",
-          "risk": 6,
+          "risk": 16,
           "flags": [
             "title looks like DLC/expansion/demo/pack rather than a standalone game",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: Bundle",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -5188,6 +5662,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Sony Interactive Entertainment",
@@ -5208,10 +5683,12 @@
         ],
         "audit": {
           "status": "likely_false_positive",
-          "risk": 6,
+          "risk": 16,
           "flags": [
             "title looks like DLC/expansion/demo/pack rather than a standalone game",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -5253,6 +5730,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -5265,10 +5743,11 @@
         ],
         "audit": {
           "status": "manual_review",
-          "risk": 2,
+          "risk": 3,
           "flags": [
             "no IGDB hype signal",
-            "no developer row in the IGDB company evidence"
+            "no developer row in the IGDB company evidence",
+            "IGDB game type is re-release variant: Expanded Game"
           ],
           "release": {
             "earliest": "2026-11-12",
@@ -5312,6 +5791,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Update",
         "companies": [
           {
             "name": "2K",
@@ -5376,6 +5856,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Capcom",
@@ -5395,10 +5876,11 @@
           }
         ],
         "audit": {
-          "status": "keep",
-          "risk": 1,
+          "status": "manual_review",
+          "risk": 2,
           "flags": [
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is re-release variant: Port"
           ],
           "release": {
             "earliest": "2026-09-21",
@@ -5441,6 +5923,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -5515,6 +5998,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Konami",
@@ -5594,6 +6078,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "FromSoftware",
@@ -5613,11 +6098,12 @@
           }
         ],
         "audit": {
-          "status": "manual_review",
-          "risk": 3,
+          "status": "likely_false_positive",
+          "risk": 8,
           "flags": [
             "only medium AAA confidence",
-            "AAA score is close to the threshold"
+            "AAA score is close to the threshold",
+            "IGDB game type is non-standalone: Expansion"
           ],
           "release": {
             "earliest": null,
@@ -5660,6 +6146,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -5726,6 +6213,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ninja Theory",
@@ -5792,6 +6280,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Infinity Ward",
@@ -5861,6 +6350,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "GPTRACK50",
@@ -5921,6 +6411,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Dark Star",
@@ -5986,6 +6477,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sony Interactive Entertainment",
@@ -6061,6 +6553,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Snapshot Games",
@@ -6129,6 +6622,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Supercell",
@@ -6187,6 +6681,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Playsport Games",
@@ -6253,6 +6748,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Omega Force",
@@ -6288,12 +6784,13 @@
           }
         ],
         "audit": {
-          "status": "manual_review_high",
-          "risk": 4,
+          "status": "likely_false_positive",
+          "risk": 9,
           "flags": [
             "only medium AAA confidence",
             "AAA score is close to the threshold",
-            "very low IGDB hype signal"
+            "very low IGDB hype signal",
+            "IGDB game type is non-standalone: DLC"
           ],
           "release": {
             "earliest": null,
@@ -6334,6 +6831,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Update",
         "companies": [
           {
             "name": "Housemarque",
@@ -6399,6 +6897,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Omega Force",
@@ -6434,12 +6933,13 @@
           }
         ],
         "audit": {
-          "status": "manual_review_high",
-          "risk": 4,
+          "status": "likely_false_positive",
+          "risk": 9,
           "flags": [
             "only medium AAA confidence",
             "AAA score is close to the threshold",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: DLC"
           ],
           "release": {
             "earliest": null,
@@ -6482,6 +6982,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "IO Interactive",
@@ -6548,6 +7049,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Deep Silver",
@@ -6614,6 +7116,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "4A Games",
@@ -6683,6 +7186,7 @@
           "hypes 79",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Epic Games Publishing",
@@ -6748,6 +7252,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Grinding Gear Games",
@@ -6819,6 +7324,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Activision",
@@ -6884,6 +7390,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bandai Namco Entertainment",
@@ -6953,6 +7460,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Omega Force",
@@ -7023,6 +7531,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "TYPE-MOON",
@@ -7059,11 +7568,12 @@
         ],
         "audit": {
           "status": "manual_review_high",
-          "risk": 6,
+          "risk": 7,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
-            "major-company evidence comes only through a parent company"
+            "major-company evidence comes only through a parent company",
+            "IGDB game type is re-release variant: Remake"
           ],
           "release": {
             "earliest": "2027-01-28",
@@ -7110,6 +7620,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bandai Namco Entertainment",
@@ -7177,6 +7688,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sandlot",
@@ -7244,6 +7756,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -7263,12 +7776,14 @@
           }
         ],
         "audit": {
-          "status": "manual_review_high",
-          "risk": 5,
+          "status": "likely_false_positive",
+          "risk": 15,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -7309,6 +7824,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -7328,12 +7844,14 @@
           }
         ],
         "audit": {
-          "status": "manual_review_high",
-          "risk": 5,
+          "status": "likely_false_positive",
+          "risk": 15,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -7374,6 +7892,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -7393,12 +7912,14 @@
           }
         ],
         "audit": {
-          "status": "manual_review_high",
-          "risk": 5,
+          "status": "likely_false_positive",
+          "risk": 15,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
-            "no IGDB hype signal"
+            "no IGDB hype signal",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -7440,6 +7961,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Casual Brothers",
@@ -7517,6 +8039,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Supermassive Games",
@@ -7537,12 +8060,14 @@
         ],
         "audit": {
           "status": "likely_false_positive",
-          "risk": 7,
+          "risk": 17,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
             "no IGDB hype signal",
-            "weak threshold-only AAA case without strong developer evidence"
+            "weak threshold-only AAA case without strong developer evidence",
+            "IGDB game type is non-standalone: DLC",
+            "title pattern indicates add-on/DLC content"
           ],
           "release": {
             "earliest": null,
@@ -7584,6 +8109,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Tamsoft",
@@ -7636,13 +8162,14 @@
         ],
         "audit": {
           "status": "likely_false_positive",
-          "risk": 9,
+          "risk": 10,
           "flags": [
             "only medium AAA confidence",
             "AAA score is exactly at the threshold",
             "no IGDB hype signal",
             "major-company evidence comes only through a parent company",
-            "weak threshold-only AAA case without strong developer evidence"
+            "weak threshold-only AAA case without strong developer evidence",
+            "IGDB game type is re-release variant: Expanded Game"
           ],
           "release": {
             "earliest": "2027-04-22",
@@ -7691,6 +8218,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Koei Tecmo Games",
@@ -7749,6 +8277,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Casual Brothers",
@@ -7825,6 +8354,7 @@
           "2 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "The Water Museum",
@@ -7892,6 +8422,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Wired Productions",
@@ -7956,6 +8487,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Twin Swans",
@@ -8014,6 +8546,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Devpetrichor",
@@ -8070,6 +8603,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "ByteRockers' Games",
@@ -8126,6 +8660,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Corgee",
@@ -8184,6 +8719,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Yboga",
@@ -8248,6 +8784,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Unison Games",
@@ -8304,6 +8841,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Witenovastudio",
@@ -8360,6 +8898,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Toplitz Productions",
@@ -8424,6 +8963,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "94 Kelvin",
@@ -8480,6 +9020,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "AuthenTiiq",
@@ -8538,6 +9079,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Arctic Square Studio",
@@ -8596,6 +9138,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "So Peculiar",
@@ -8665,6 +9208,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Zandbox Studio",
@@ -8725,6 +9269,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Proclive",
@@ -8781,6 +9326,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Augustine Interactive",
@@ -8840,6 +9386,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Dragon Dropper",
@@ -8896,6 +9443,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Castitatis Games",
@@ -8952,6 +9500,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Machnikl",
@@ -9008,6 +9557,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Anaxanthia",
@@ -9072,6 +9622,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xufa Games",
@@ -9128,6 +9679,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Victor Potet",
@@ -9184,6 +9736,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Conor Souness",
@@ -9240,6 +9793,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "WillGreen Studio",
@@ -9296,6 +9850,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Team Momoy",
@@ -9352,6 +9907,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Many Riches",
@@ -9412,6 +9968,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Divide The Plunder",
@@ -9468,6 +10025,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "MegaMaw Games",
@@ -9524,6 +10082,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Benzeji Games",
@@ -9582,6 +10141,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Polden Publishing",
@@ -9648,6 +10208,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Warning, No Pressure",
@@ -9707,6 +10268,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "3D Cube Games",
@@ -9763,6 +10325,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "ACID DROP",
@@ -9819,6 +10382,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Falling Damage Games",
@@ -9877,6 +10441,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Slopeside Games",
@@ -9933,6 +10498,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Spry Fox",
@@ -9997,6 +10563,7 @@
           "0 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Yixn.io",
@@ -10055,6 +10622,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Tiny North Games",
@@ -10111,6 +10679,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Caketown Interactive",
@@ -10175,6 +10744,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "VaporWave Interactive",
@@ -10231,6 +10801,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Everheart",
@@ -10288,6 +10859,7 @@
   "notes": [
     "Audit only; it does not change games.json, games-index.json, classification or UI.",
     "Every candidate is checked for weak threshold evidence, company/parent contradictions, re-release patterns and non-standalone title patterns.",
-    "manual_review is a risk flag, not an automatic rejection. likely_false_positive is intentionally conservative and requires a strong contradiction or non-standalone pattern."
+    "manual_review is a risk flag, not an automatic rejection. likely_false_positive is intentionally conservative and requires a strong contradiction or non-standalone pattern.",
+    "Second audit pass uses IGDB gameType. DLC/addon/expansion/bundle/episode/season rows are treated as likely false positives for the AAA/small-title filter; remake/remaster/port rows remain review items."
   ]
 }

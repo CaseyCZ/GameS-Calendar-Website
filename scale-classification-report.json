@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T05:24:45.527Z",
+  "generatedAt": "2026-10-12T05:26:34.006Z",
   "sourceGeneratedAt": "2026-10-11T10:10:25.797Z",
   "today": "2026-10-12",
   "liveApiSignals": {
@@ -74,6 +74,7 @@
           "hypes 1092",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Rockstar Games",
@@ -106,6 +107,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -146,6 +148,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Crystal Dynamics",
@@ -186,6 +189,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ryu Ga Gotoku Studio",
@@ -218,6 +222,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom",
@@ -250,6 +255,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Capcom",
@@ -274,6 +280,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Atlus",
@@ -322,6 +329,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -354,6 +362,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -393,6 +402,7 @@
           "hypes 111",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Santa Monica Studio",
@@ -424,6 +434,7 @@
           "hypes 97",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Krafton",
@@ -455,6 +466,7 @@
           "hypes 72",
           "series/franchise"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Nintendo",
@@ -478,6 +490,7 @@
           "hypes 61",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "AdHoc Studio",
@@ -517,6 +530,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom",
@@ -564,6 +578,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sega",
@@ -587,6 +602,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Fool’s Theory",
@@ -618,6 +634,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ryu Ga Gotoku Studio",
@@ -649,6 +666,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Lancarse",
@@ -688,6 +706,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Capcom",
@@ -711,6 +730,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Capcom Development Division 1",
@@ -750,6 +770,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "NeoBards Entertainment",
@@ -813,6 +834,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ubisoft Paris",
@@ -844,6 +866,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remaster",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -875,6 +898,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -898,6 +922,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Square Enix",
@@ -937,6 +962,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Square Enix",
@@ -992,6 +1018,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sega",
@@ -1031,6 +1058,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remaster",
         "companies": [
           {
             "name": "Tose",
@@ -1062,6 +1090,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "Xeen",
@@ -1101,6 +1130,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Square Enix",
@@ -1140,6 +1170,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -1163,6 +1194,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Mojang Studios",
@@ -1194,6 +1226,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "M-TWO",
@@ -1233,6 +1266,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Psyonix",
@@ -1272,6 +1306,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Firaxis Games",
@@ -1302,6 +1337,7 @@
           "company/parent size >=1000",
           "hypes 133"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Naughty Dog",
@@ -1333,6 +1369,7 @@
           "hypes 102",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Playground Games",
@@ -1363,6 +1400,7 @@
           "company/parent size >=1000",
           "hypes 92"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Naked Rain",
@@ -1401,6 +1439,7 @@
           "company/parent size >=1000",
           "hypes 57"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "FromSoftware",
@@ -1431,6 +1470,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "NetEase Games",
@@ -1461,6 +1501,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Atlus",
@@ -1499,6 +1540,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -1529,6 +1571,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Monolith Soft",
@@ -1559,6 +1602,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -1581,6 +1625,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -1611,6 +1656,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "Capcom",
@@ -1633,6 +1679,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Game Freak",
@@ -1671,6 +1718,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Game Freak",
@@ -1709,6 +1757,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Piccolo Studio",
@@ -1739,6 +1788,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Behaviour Interactive",
@@ -1769,6 +1819,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -1791,6 +1842,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Electronic Arts",
@@ -1829,6 +1881,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Amplitude Studios",
@@ -1851,6 +1904,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Insomniac Games",
@@ -1881,6 +1935,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Capcom",
@@ -1903,6 +1958,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -1925,6 +1981,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -1947,6 +2004,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Capcom",
@@ -1969,6 +2027,7 @@
           "company/parent size >=1000",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "JNG Studio",
@@ -1992,6 +2051,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Infinity Ward",
@@ -2038,6 +2098,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Monolith Soft",
@@ -2068,6 +2129,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Ubisoft Entertainment",
@@ -2098,6 +2160,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -2128,6 +2191,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Sega",
@@ -2158,6 +2222,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Ubisoft Pune",
@@ -2188,6 +2253,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix",
@@ -2218,6 +2284,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -2248,6 +2315,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Bundle",
         "companies": [
           {
             "name": "Square Enix Creative Studio 1",
@@ -2278,6 +2346,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Sony Interactive Entertainment",
@@ -2308,6 +2377,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Nintendo",
@@ -2330,6 +2400,7 @@
           "company/parent size >=1000",
           "4 platform families"
         ],
+        "gameType": "Update",
         "companies": [
           {
             "name": "2K",
@@ -2360,6 +2431,7 @@
           "company/parent size >=1000",
           "series/franchise"
         ],
+        "gameType": "Port",
         "companies": [
           {
             "name": "Capcom",
@@ -2391,6 +2463,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -2430,6 +2503,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Konami",
@@ -2469,6 +2543,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Expansion",
         "companies": [
           {
             "name": "FromSoftware",
@@ -2500,6 +2575,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xbox Game Studios",
@@ -2531,6 +2607,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Ninja Theory",
@@ -2562,6 +2639,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Infinity Ward",
@@ -2591,6 +2669,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "GPTRACK50",
@@ -2612,6 +2691,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Dark Star",
@@ -2641,6 +2721,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sony Interactive Entertainment",
@@ -2678,6 +2759,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Snapshot Games",
@@ -2707,6 +2789,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Supercell",
@@ -2728,6 +2811,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Playsport Games",
@@ -2757,6 +2841,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Omega Force",
@@ -2802,6 +2887,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "Update",
         "companies": [
           {
             "name": "Housemarque",
@@ -2831,6 +2917,7 @@
           "major publisher/parent",
           "company/parent size >=1000"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Omega Force",
@@ -2878,6 +2965,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "IO Interactive",
@@ -2909,6 +2997,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Deep Silver",
@@ -2940,6 +3029,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "4A Games",
@@ -2970,6 +3060,7 @@
           "hypes 79",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Epic Games Publishing",
@@ -3000,6 +3091,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Grinding Gear Games",
@@ -3030,6 +3122,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Activision",
@@ -3060,6 +3153,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bandai Namco Entertainment",
@@ -3090,6 +3184,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Omega Force",
@@ -3120,6 +3215,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Remake",
         "companies": [
           {
             "name": "TYPE-MOON",
@@ -3166,6 +3262,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bandai Namco Entertainment",
@@ -3196,6 +3293,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Sandlot",
@@ -3225,6 +3323,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -3254,6 +3353,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -3283,6 +3383,7 @@
           "major publisher/parent",
           "company/parent size >=500"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Playground Games",
@@ -3313,6 +3414,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Casual Brothers",
@@ -3343,6 +3445,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "DLC",
         "companies": [
           {
             "name": "Supermassive Games",
@@ -3373,6 +3476,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Expanded Game",
         "companies": [
           {
             "name": "Tamsoft",
@@ -3435,6 +3539,7 @@
           "series/franchise",
           "3 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Koei Tecmo Games",
@@ -3457,6 +3562,7 @@
           "series/franchise",
           "4 platform families"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Casual Brothers",
@@ -3490,6 +3596,7 @@
           "2 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "The Water Museum",
@@ -3521,6 +3628,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Wired Productions",
@@ -3552,6 +3660,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Twin Swans",
@@ -3575,6 +3684,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Devpetrichor",
@@ -3598,6 +3708,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "ByteRockers' Games",
@@ -3621,6 +3732,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Corgee",
@@ -3644,6 +3756,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Yboga",
@@ -3675,6 +3788,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Unison Games",
@@ -3698,6 +3812,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Witenovastudio",
@@ -3721,6 +3836,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Toplitz Productions",
@@ -3752,6 +3868,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "94 Kelvin",
@@ -3775,6 +3892,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "AuthenTiiq",
@@ -3798,6 +3916,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Arctic Square Studio",
@@ -3821,6 +3940,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "So Peculiar",
@@ -3852,6 +3972,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Zandbox Studio",
@@ -3875,6 +3996,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Proclive",
@@ -3898,6 +4020,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Augustine Interactive",
@@ -3921,6 +4044,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Dragon Dropper",
@@ -3944,6 +4068,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Castitatis Games",
@@ -3967,6 +4092,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Machnikl",
@@ -3990,6 +4116,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Anaxanthia",
@@ -4021,6 +4148,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Xufa Games",
@@ -4044,6 +4172,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Victor Potet",
@@ -4067,6 +4196,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Conor Souness",
@@ -4090,6 +4220,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "WillGreen Studio",
@@ -4113,6 +4244,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Team Momoy",
@@ -4136,6 +4268,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Many Riches",
@@ -4159,6 +4292,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Divide The Plunder",
@@ -4182,6 +4316,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "MegaMaw Games",
@@ -4205,6 +4340,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Benzeji Games",
@@ -4228,6 +4364,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Polden Publishing",
@@ -4259,6 +4396,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Warning, No Pressure",
@@ -4282,6 +4420,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "3D Cube Games",
@@ -4305,6 +4444,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "ACID DROP",
@@ -4328,6 +4468,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Falling Damage Games",
@@ -4351,6 +4492,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Slopeside Games",
@@ -4374,6 +4516,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Spry Fox",
@@ -4405,6 +4548,7 @@
           "0 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Yixn.io",
@@ -4428,6 +4572,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Tiny North Games",
@@ -4451,6 +4596,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Caketown Interactive",
@@ -4482,6 +4628,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "VaporWave Interactive",
@@ -4505,6 +4652,7 @@
           "1 platform families",
           "no major/large parent"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Everheart",
@@ -4535,6 +4683,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "PocketPair",
@@ -4555,6 +4704,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Frictional Games",
@@ -4583,6 +4733,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "The Game Bakers",
@@ -4603,6 +4754,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Cloud Imperium Games Corporation",
@@ -4623,6 +4775,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Annapurna Interactive",
@@ -4651,6 +4804,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Outersloth",
@@ -4679,6 +4833,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bohemia Interactive",
@@ -4699,6 +4854,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Astarte Industries",
@@ -4719,6 +4875,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Bippinbits",
@@ -4747,6 +4904,7 @@
         "reasons": [
           "explicit Indie genre"
         ],
+        "gameType": "Main Game",
         "companies": [
           {
             "name": "Coffee Stain Publishing",
