@@ -18,10 +18,7 @@ concurrency:
 jobs:
   dry-run:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
-      IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
+    timeout-minutes: 25
     steps:
       - name: Checkout test branch
         uses: actions/checkout@v7
@@ -29,13 +26,37 @@ jobs:
           fetch-depth: 0
           ref: test/scale-classification
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
+      - name: Configure SSH
+        env:
+          DEPLOY_KEY_B64: ${{ secrets.GAMES_DEPLOY_SSH_KEY_B64 }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$DEPLOY_KEY_B64" ]]; then
+            echo "::error::Missing GAMES_DEPLOY_SSH_KEY_B64"
+            exit 1
+          fi
+          install -d -m 700 ~/.ssh
+          printf '%s' "$DEPLOY_KEY_B64" | base64 --decode > ~/.ssh/games-deploy
+          chmod 600 ~/.ssh/games-deploy
+          ssh-keygen -y -f ~/.ssh/games-deploy >/dev/null
+          ssh-keyscan -T 10 -p 22 130.61.49.108 > /tmp/games-host-keys 2>/dev/null
+          test -s /tmp/games-host-keys
+          if ! ssh-keygen -lf /tmp/games-host-keys | awk '{print $2}' | grep -Fxq 'SHA256:SHoVgKDg5pnIiJP70GQCO90OZTECuaNlKnfLK/WZF5Y'; then
+            echo "::error::Oracle SSH host key fingerprint mismatch"
+            exit 1
+          fi
+          ssh-keyscan -T 10 -p 22 -H 130.61.49.108 >> ~/.ssh/known_hosts
 
-      - name: Run classification dry run
-        run: node test-scale-classification.js > scale-classification-report.json
+      - name: Run dry run on GameS server
+        run: |
+          set -euo pipefail
+          remote_script="/home/ubuntu/games-calendar/repo/.scale-classification-test-${GITHUB_RUN_ID}.js"
+          remote_report="/tmp/scale-classification-report-${GITHUB_RUN_ID}.json"
+          scp -i ~/.ssh/games-deploy -o BatchMode=yes test-scale-classification.js ubuntu@130.61.49.108:"$remote_script"
+          ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 \
+            "cd /home/ubuntu/games-calendar/repo && node --env-file=games-api/.env '$remote_script' > '$remote_report'; rc=\$?; rm -f '$remote_script'; exit \$rc"
+          scp -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108:"$remote_report" scale-classification-report.json
+          ssh -i ~/.ssh/games-deploy -o BatchMode=yes ubuntu@130.61.49.108 "rm -f '$remote_report'"
 
       - name: Print summary
         run: cat scale-classification-report.json
