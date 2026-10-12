@@ -5,7 +5,7 @@ on:
     branches:
       - test/scale-classification
     paths:
-      - 'test-scale-classification.js'
+      - 'test-scale-classification-live.js'
       - '.github/workflows/test-scale-classification.yml'
 
 permissions:
@@ -19,9 +19,6 @@ jobs:
   dry-run:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      IGDB_CLIENT_ID: ${{ secrets.IGDB_CLIENT_ID }}
-      IGDB_CLIENT_SECRET: ${{ secrets.IGDB_CLIENT_SECRET }}
     steps:
       - name: Checkout test branch
         uses: actions/checkout@v7
@@ -34,94 +31,18 @@ jobs:
         with:
           node-version: 22
 
-      - name: Add scale signals to IGDB provider
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
+      - name: Check dry-run syntax
+        run: node --check test-scale-classification-live.js
 
-          path = Path('games-api/src/providers/igdb.js')
-          text = path.read_text()
-
-          if 'function companyScaleSignals(' not in text:
-              marker = '\nfunction releasePrecision(item = {}) {'
-              helper = r'''
-
-          function companyScaleSignals(items = []) {
-            return (items || []).map(item => {
-              const company = item?.company;
-              if (!company?.name) return null;
-              const parent = company?.parent && typeof company.parent === 'object' ? company.parent : null;
-              return {
-                name: company.name,
-                developer: Boolean(item.developer),
-                publisher: Boolean(item.publisher),
-                companySize: company?.company_size?.name || '',
-                companySizeId: Number(company?.company_size?.id || company?.company_size || 0) || null,
-                parent: parent?.name || '',
-                parentId: Number(parent?.id || company?.parent || 0) || null,
-                parentCompanySize: parent?.company_size?.name || ''
-              };
-            }).filter(Boolean);
-          }
-          '''
-              if marker not in text:
-                  raise SystemExit('releasePrecision marker not found')
-              text = text.replace(marker, helper + marker, 1)
-
-          if 'const scaleCompanies = companyScaleSignals' not in text:
-              old = "  const companies = companyLists(game.involved_companies || []);\n"
-              new = old + "  const scaleCompanies = companyScaleSignals(game.involved_companies || []);\n"
-              if old not in text:
-                  raise SystemExit('normalizeIgdb companies marker not found')
-              text = text.replace(old, new, 1)
-
-          if 'hypes: Number(game.hypes || 0) || 0' not in text:
-              old = "      gameType: game.game_type?.type || game.game_type || null,\n"
-              new = old + "      hypes: Number(game.hypes || 0) || 0,\n      involvedCompanies: scaleCompanies,\n"
-              if old not in text:
-                  raise SystemExit('rawHints marker not found')
-              text = text.replace(old, new, 1)
-
-          if 'normalized.hypes = normalized.rawHints.hypes;' not in text:
-              old = "  normalized.gameType = normalized.rawHints.gameType;\n"
-              new = old + "  normalized.hypes = normalized.rawHints.hypes;\n  normalized.involvedCompanies = normalized.rawHints.involvedCompanies;\n"
-              if old not in text:
-                  raise SystemExit('normalized gameType marker not found')
-              text = text.replace(old, new, 1)
-
-          text = text.replace(
-              "  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count',\n",
-              "  'rating','rating_count','aggregated_rating','aggregated_rating_count','total_rating','total_rating_count','hypes',\n"
-          )
-          text = text.replace(
-              "  'involved_companies.company.name','involved_companies.developer','involved_companies.publisher',\n",
-              "  'involved_companies.company.name','involved_companies.company.company_size.name','involved_companies.company.parent.name','involved_companies.company.parent.company_size.name','involved_companies.developer','involved_companies.publisher',\n"
-          )
-          text = text.replace("const key = `igdb:catalog-batch:v2:", "const key = `igdb:catalog-batch:v3:")
-
-          path.write_text(text)
-          PY
-
-      - name: Check provider syntax
-        run: node --check games-api/src/providers/igdb.js
-
-      - name: Save provider probe on test branch
-        run: |
-          if [[ -z "$(git status --porcelain -- games-api/src/providers/igdb.js)" ]]; then
-            echo "provider already contains scale signals"
-          else
-            git config user.name "CaseyCZ"
-            git config user.email "25530709+CaseyCZ@users.noreply.github.com"
-            git add games-api/src/providers/igdb.js
-            git commit -m "test: fetch IGDB scale signals"
-            git push origin HEAD:test/scale-classification
-          fi
-
-      - name: Run classification dry run
-        run: node test-scale-classification.js > scale-classification-report.json
+      - name: Run rich classification dry run through deployed GameS API
+        run: node test-scale-classification-live.js > scale-classification-report.json
 
       - name: Print summary
-        run: cat scale-classification-report.json
+        run: |
+          node - <<'NODE'
+          const r = require('./scale-classification-report.json');
+          console.log(JSON.stringify({ liveApiSignals:r.liveApiSignals, upcoming:r.scopes.upcoming, samples:{ AAA:r.upcomingSamples.AAA.slice(0,10), small:r.upcomingSamples['Menší titul'].slice(0,10) } }, null, 2));
+          NODE
 
       - name: Save report to test branch
         run: |
@@ -133,5 +54,5 @@ jobs:
           git config user.name "CaseyCZ"
           git config user.email "25530709+CaseyCZ@users.noreply.github.com"
           git add scale-classification-report.json
-          git commit -m "test: update scale classification report"
+          git commit -m "test: update rich scale classification report"
           git push origin HEAD:test/scale-classification
