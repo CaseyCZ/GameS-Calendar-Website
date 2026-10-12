@@ -7,6 +7,7 @@ on:
     paths:
       - 'test-scale-classification-live.js'
       - 'audit-scale-candidates.js'
+      - 'audit-scale-game-types.js'
       - '.github/workflows/test-scale-classification.yml'
 
 permissions:
@@ -36,6 +37,7 @@ jobs:
         run: |
           node --check test-scale-classification-live.js
           node --check audit-scale-candidates.js
+          node --check audit-scale-game-types.js
 
       - name: Build full-candidate dry-run script
         run: |
@@ -44,11 +46,18 @@ jobs:
           from pathlib import Path
           p = Path('test-scale-classification-live-all.js')
           text = p.read_text()
-          old = 'function samples(rows, scale, limit = 30) {'
-          new = 'function samples(rows, scale, limit = 500) {'
-          if old not in text:
+          old_limit = 'function samples(rows, scale, limit = 30) {'
+          new_limit = 'function samples(rows, scale, limit = 500) {'
+          if old_limit not in text:
               raise SystemExit('samples() default limit marker not found')
-          p.write_text(text.replace(old, new, 1))
+          text = text.replace(old_limit, new_limit, 1)
+
+          old_fields = "      score:row.after.score, hypes:row.after.hypes || 0, reasons:row.after.reasons,\n      companies:"
+          new_fields = "      score:row.after.score, hypes:row.after.hypes || 0, reasons:row.after.reasons,\n      gameType:row.signal?.gameType || row.signal?.rawHints?.gameType || null,\n      companies:"
+          if old_fields not in text:
+              raise SystemExit('sample field marker not found')
+          text = text.replace(old_fields, new_fields, 1)
+          p.write_text(text)
           PY
 
       - name: Run rich classification dry run through deployed GameS API
@@ -57,7 +66,9 @@ jobs:
           rm -f test-scale-classification-live-all.js
 
       - name: Audit all AAA and small-title candidates
-        run: node audit-scale-candidates.js
+        run: |
+          node audit-scale-candidates.js
+          node audit-scale-game-types.js
 
       - name: Print audit summary
         run: |
