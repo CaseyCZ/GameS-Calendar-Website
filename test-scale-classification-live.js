@@ -2,24 +2,20 @@
 'use strict';
 
 const fs = require('node:fs/promises');
-
 const INPUT = process.env.GAMES_INPUT || 'games.json';
-const TODAY = process.env.TODAY || new Date().toISOString().slice(0, 10);
-const API_ROOTS = [
-  'https://130.61.49.108/games-api',
-  'https://130.61.49.108:8443/games-api'
-];
+const API_ROOTS = ['https://130.61.49.108/games-api', 'https://130.61.49.108:8443/games-api'];
 const BATCH_SIZE = 500;
 
 const MAJOR_COMPANIES = [
   'microsoft', 'xbox game studios', 'bethesda softworks', 'zenimax media',
   'activision', 'activision blizzard', 'blizzard entertainment',
-  'sony interactive entertainment', 'playstation studios', 'nintendo',
-  'electronic arts', 'ea sports', 'ubisoft', 'take two interactive',
-  'take two interactive software', 'rockstar games', '2k', 'sega',
-  'square enix', 'capcom', 'bandai namco entertainment', 'bandai namco studios',
+  'sony', 'sony interactive entertainment', 'playstation studios', 'nintendo',
+  'electronic arts', 'ea sports', 'ubisoft', 'ubisoft entertainment',
+  'take two interactive', 'take two interactive software', 'rockstar games', '2k',
+  'sega', 'square enix', 'capcom', 'bandai namco entertainment', 'bandai namco studios',
   'konami', 'warner bros games', 'wb games', 'koei tecmo games',
-  'cd projekt', 'cd projekt red', 'epic games', 'netease games', 'tencent games'
+  'cd projekt', 'cd projekt red', 'epic games', 'netease', 'netease games',
+  'tencent', 'tencent games', 'tencent holdings', 'amazon games', 'krafton'
 ];
 
 const normalize = value => String(value || '')
@@ -35,69 +31,10 @@ function knownScale(value = '') {
   return '';
 }
 
-function richness(game = {}) {
-  return [
-    game.cover, game.summary, Number(game.rating || 0) > 0, Number(game.ratingCount || 0) > 0,
-    (game.screenshots || []).length, game.trailerId || game.trailerUrl,
-    (game.developers || []).length, (game.publishers || []).length, game.steamId
-  ].reduce((score, value) => score + (value ? 1 : 0), 0);
-}
-
-function dedupeGames(games = []) {
-  const out = [];
-  const byIdentity = new Map();
-  for (const game of games) {
-    const identity = game.igdbId ? `igdb:${game.igdbId}` : `id:${game.id}`;
-    if (!byIdentity.has(identity)) {
-      byIdentity.set(identity, out.length);
-      out.push(game);
-      continue;
-    }
-    const index = byIdentity.get(identity);
-    if (richness(game) > richness(out[index])) out[index] = game;
-  }
-  return out;
-}
-
 function chunks(items, size) {
   const result = [];
   for (let i = 0; i < items.length; i += size) result.push(items.slice(i, i + size));
   return result;
-}
-
-function releaseUpperBound(release = {}) {
-  const precision = normalize(release.precision || release.datePrecision || (release.date || release.day ? 'day' : 'unknown'));
-  const day = String(release.date || release.day || '').slice(0, 10);
-  if (day && precision === 'day') return day;
-
-  const window = String(release.window || release.releaseWindow || release.label || '').trim();
-  const year = Number(window.match(/\b(20\d{2})\b/)?.[1] || day.slice(0, 4) || 0);
-  if (!year) return null;
-
-  if (precision === 'year') return `${year}-12-31`;
-  const q = Number((precision.match(/^q([1-4])$/) || window.match(/\bQ([1-4])\b/i))?.[1] || 0);
-  if (q) {
-    const month = q * 3;
-    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
-    return `${year}-${String(month).padStart(2, '0')}-${String(last).padStart(2, '0')}`;
-  }
-
-  const monthMatch = window.match(/\b(0?[1-9]|1[0-2])[\/. -](20\d{2})\b/);
-  const month = Number(monthMatch?.[1] || (precision === 'month' ? day.slice(5, 7) : 0) || 0);
-  if (month) {
-    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
-    return `${year}-${String(month).padStart(2, '0')}-${String(last).padStart(2, '0')}`;
-  }
-  return day || null;
-}
-
-function isUpcoming(game = {}) {
-  const releases = Array.isArray(game.releases) ? game.releases : [];
-  if (!releases.length) return false;
-  return releases.some(release => {
-    const upper = releaseUpperBound(release);
-    return !upper || upper >= TODAY;
-  });
 }
 
 function sizeRange(value = '') {
@@ -107,6 +44,11 @@ function sizeRange(value = '') {
   if (/\+|more|over|above/i.test(text)) return { min:nums[0], max:Infinity };
   if (nums.length >= 2) return { min:Math.min(nums[0], nums[1]), max:Math.max(nums[0], nums[1]) };
   return { min:nums[0], max:nums[0] };
+}
+
+function rangeMax(range) {
+  if (!range) return 0;
+  return Number.isFinite(range.max) ? range.max : 1_000_000;
 }
 
 function majorCompany(value = '') {
@@ -157,10 +99,10 @@ async function postBatch(ids) {
 async function fetchLiveSignals(games) {
   const ids = uniq(games.map(game => Number(game.igdbId)).filter(id => Number.isInteger(id) && id > 0));
   const byId = new Map();
-  let batchNumber = 0;
+  let n = 0;
   for (const batch of chunks(ids, BATCH_SIZE)) {
-    batchNumber += 1;
-    process.stderr.write(`IGDB live batch ${batchNumber}/${Math.ceil(ids.length / BATCH_SIZE)} (${batch.length})\n`);
+    n += 1;
+    process.stderr.write(`IGDB live batch ${n}/${Math.ceil(ids.length / BATCH_SIZE)} (${batch.length})\n`);
     const items = await postBatch(batch);
     for (const item of items) {
       const id = Number(item?.providerId || item?.igdbId || item?.id);
@@ -172,20 +114,20 @@ async function fetchLiveSignals(games) {
 
 function classify(game, signal) {
   const existing = knownScale(game.scale);
-  if (existing) return { scale:existing, confidence:'existing', score:null, reasons:['existing scale'] };
+  if (existing) return { scale:existing, confidence:'existing', score:null, hypes:0, reasons:['existing scale'] };
 
-  const genres = uniq([...(game.genres || []), ...(signal?.genres || [])].map(item => typeof item === 'string' ? item : item?.name));
+  const genres = uniq([...(game.genres || []), ...(signal?.genres || [])]
+    .map(item => typeof item === 'string' ? item : item?.name));
   if (genres.some(genre => normalize(genre) === 'indie')) {
-    return { scale:'Indie', confidence:'high', score:null, reasons:['explicit Indie genre'] };
+    return { scale:'Indie', confidence:'high', score:null, hypes:Number(signal?.hypes || 0) || 0, reasons:['explicit Indie genre'] };
   }
-  if (!signal) return { scale:'Nezařazeno', confidence:'low', score:0, reasons:['no live IGDB row'] };
+  if (!signal) return { scale:'Nezařazeno', confidence:'low', score:0, hypes:0, reasons:['no live IGDB row'] };
 
   const involved = Array.isArray(signal.involvedCompanies)
     ? signal.involvedCompanies
     : Array.isArray(signal.rawHints?.involvedCompanies) ? signal.rawHints.involvedCompanies : [];
   const publishers = involved.filter(item => item?.publisher);
   const developers = involved.filter(item => item?.developer);
-
   const names = involved.flatMap(item => [item?.name, item?.parent]).filter(Boolean);
   const publisherNames = publishers.flatMap(item => [item?.name, item?.parent]).filter(Boolean);
   const developerNames = developers.flatMap(item => [item?.name, item?.parent]).filter(Boolean);
@@ -195,12 +137,10 @@ function classify(game, signal) {
 
   const companyRanges = involved.flatMap(item => [sizeRange(item?.companySize), sizeRange(item?.parentCompanySize)]).filter(Boolean);
   const developerRanges = developers.map(item => sizeRange(item?.companySize)).filter(Boolean);
-  const maxCompanySize = companyRanges.reduce((best, range) => Math.max(best, Number.isFinite(range.max) ? range.max : 1_000_000), 0);
-  const largestDeveloper = developerRanges.reduce((best, range) => Math.max(best, Number.isFinite(range.max) ? range.max : 1_000_000), 0);
-
+  const maxCompanySize = companyRanges.reduce((best, range) => Math.max(best, rangeMax(range)), 0);
+  const largestDeveloper = developerRanges.reduce((best, range) => Math.max(best, rangeMax(range)), 0);
   const hypes = Number(signal.hypes || signal.rawHints?.hypes || 0) || 0;
-  const series = uniq([...(game.series || []), ...(signal.series || [])]);
-  const franchise = series.length > 0;
+  const franchise = uniq([...(game.series || []), ...(signal.series || [])]).length > 0;
   const families = new Set([
     ...catalogPlatformFamilies(game),
     ...((signal.platforms || []).map(platformFamily).filter(Boolean))
@@ -224,57 +164,58 @@ function classify(game, signal) {
     return { scale:'AAA', confidence:score >= 8 ? 'high' : 'medium', score, hypes, reasons };
   }
 
-  const hasKnownDeveloperSize = developerRanges.length > 0;
+  const parentEvidenceSafeForSmall = developers.every(item => {
+    if (!item?.parent) return true;
+    const range = sizeRange(item.parentCompanySize);
+    return Boolean(range) && rangeMax(range) <= 200 && !majorCompany(item.parent);
+  });
   const noLargeCompany = !anyMajor && maxCompanySize < 500;
-  if (hasKnownDeveloperSize && largestDeveloper <= 50 && noLargeCompany && hypes < 50 && families.size <= 2) {
+  if (developerRanges.length && largestDeveloper <= 50 && parentEvidenceSafeForSmall
+      && noLargeCompany && hypes < 50 && families.size <= 2) {
     return {
       scale:'Menší titul', confidence:'high', score, hypes,
-      reasons:[`developer size <=50`, `hypes ${hypes}`, `${families.size} platform families`, 'no major/large parent']
+      reasons:['developer size <=50', `hypes ${hypes}`, `${families.size} platform families`, 'no major/large parent']
     };
   }
 
   return { scale:'Nezařazeno', confidence:'low', score, hypes, reasons:reasons.length ? reasons : ['insufficient evidence'] };
 }
 
-function countScales(rows, key) {
+function countScales(rows, after = false) {
   const out = { AAA:0, Indie:0, 'Menší titul':0, 'Nezařazeno':0 };
   for (const row of rows) {
-    const scale = key === 'before' ? row.before : row.after.scale;
+    const scale = after ? row.after.scale : row.before;
     out[scale] = (out[scale] || 0) + 1;
   }
   return out;
 }
 
 function summarize(rows) {
-  const unknownBefore = rows.filter(row => row.before === 'Nezařazeno');
-  const moved = unknownBefore.filter(row => row.after.scale !== 'Nezařazeno');
+  const unknown = rows.filter(row => row.before === 'Nezařazeno');
+  const moved = unknown.filter(row => row.after.scale !== 'Nezařazeno');
   return {
     games:rows.length,
-    current:countScales(rows, 'before'),
-    proposed:countScales(rows, 'after'),
+    current:countScales(rows),
+    proposed:countScales(rows, true),
     movedFromUnknown:{
       total:moved.length,
-      coveragePct:Number((moved.length / Math.max(1, unknownBefore.length) * 100).toFixed(1)),
+      coveragePct:Number((moved.length / Math.max(1, unknown.length) * 100).toFixed(1)),
       AAA:moved.filter(row => row.after.scale === 'AAA').length,
       Indie:moved.filter(row => row.after.scale === 'Indie').length,
       'Menší titul':moved.filter(row => row.after.scale === 'Menší titul').length,
-      remainingUnknown:unknownBefore.filter(row => row.after.scale === 'Nezařazeno').length
+      remainingUnknown:unknown.filter(row => row.after.scale === 'Nezařazeno').length
     }
   };
 }
 
 function samples(rows, scale, limit = 30) {
-  return rows
-    .filter(row => row.before === 'Nezařazeno' && row.after.scale === scale)
-    .sort((a, b) => (b.after.score || 0) - (a.after.score || 0) || (b.after.hypes || 0) - (a.after.hypes || 0) || a.name.localeCompare(b.name))
+  return rows.filter(row => row.before === 'Nezařazeno' && row.after.scale === scale)
+    .sort((a, b) => (b.after.score || 0) - (a.after.score || 0)
+      || (b.after.hypes || 0) - (a.after.hypes || 0) || a.name.localeCompare(b.name))
     .slice(0, limit)
     .map(row => ({
-      name:row.name,
-      igdbId:row.igdbId || null,
-      confidence:row.after.confidence,
-      score:row.after.score,
-      hypes:row.after.hypes || 0,
-      reasons:row.after.reasons,
+      name:row.name, igdbId:row.igdbId || null, confidence:row.after.confidence,
+      score:row.after.score, hypes:row.after.hypes || 0, reasons:row.after.reasons,
       companies:(row.signal?.involvedCompanies || []).map(item => ({
         name:item.name || '', developer:Boolean(item.developer), publisher:Boolean(item.publisher),
         companySize:item.companySize || '', parent:item.parent || '', parentCompanySize:item.parentCompanySize || ''
@@ -283,28 +224,47 @@ function samples(rows, scale, limit = 30) {
 }
 
 async function main() {
+  const [{ normalizePayload, flattenReleases, todayLocal }, { collapseDisplayRows, preferDisplayRow }] = await Promise.all([
+    import('./js/data.js'), import('./js/search.js')
+  ]);
   const payload = JSON.parse(await fs.readFile(INPUT, 'utf8'));
-  const games = dedupeGames(Array.isArray(payload.games) ? payload.games : []);
-  const signals = await fetchLiveSignals(games);
+  const dataset = normalizePayload(payload);
+  const signals = await fetchLiveSignals(dataset.games);
 
-  const rows = games.map(game => {
+  const modelForGame = new Map();
+  for (const game of dataset.games) {
     const igdbId = Number(game.igdbId || 0);
     const signal = signals.get(igdbId) || null;
-    return {
-      id:String(game.id || ''), igdbId:igdbId ? String(igdbId) : '', name:String(game.name || ''),
+    modelForGame.set(game, {
       before:knownScale(game.scale) || 'Nezařazeno',
-      after:classify(game, signal), signal, upcoming:isUpcoming(game)
+      after:classify(game, signal),
+      signal,
+      igdbId:igdbId ? String(igdbId) : ''
+    });
+  }
+
+  const toReportRow = row => {
+    const model = modelForGame.get(row.game);
+    return {
+      id:String(row.game.id || ''), igdbId:model.igdbId, name:String(row.game.name || ''),
+      before:model.before, after:model.after, signal:model.signal
     };
-  });
+  };
+
+  const flattened = flattenReleases(dataset);
+  const allRows = collapseDisplayRows(flattened, preferDisplayRow).map(toReportRow);
+  const today = todayLocal();
+  const upcomingBaseRows = flattened.filter(row => !(row.to || row.day) || (row.to || row.day) >= today);
+  const upcomingRows = collapseDisplayRows(upcomingBaseRows, preferDisplayRow).map(toReportRow);
 
   const signalItems = [...signals.values()];
   const companyRows = signalItems.flatMap(item => item.involvedCompanies || []);
   const report = {
     generatedAt:new Date().toISOString(),
-    sourceGeneratedAt:payload.generatedAt || null,
-    today:TODAY,
+    sourceGeneratedAt:dataset.generatedAt || null,
+    today,
     liveApiSignals:{
-      requestedIgdbIds:uniq(games.map(game => Number(game.igdbId)).filter(id => Number.isInteger(id) && id > 0)).length,
+      requestedIgdbIds:uniq(dataset.games.map(game => Number(game.igdbId)).filter(id => Number.isInteger(id) && id > 0)).length,
       rowsFetched:signals.size,
       gamesWithHypes:signalItems.filter(item => Number(item.hypes || 0) > 0).length,
       companyRows:companyRows.length,
@@ -313,22 +273,20 @@ async function main() {
       parentKnown:companyRows.filter(item => item.parent).length,
       parentSizeKnown:companyRows.filter(item => item.parentCompanySize).length
     },
-    scopes:{
-      all:summarize(rows),
-      upcoming:summarize(rows.filter(row => row.upcoming))
-    },
+    scopes:{ all:summarize(allRows), upcoming:summarize(upcomingRows) },
     upcomingSamples:{
-      AAA:samples(rows.filter(row => row.upcoming), 'AAA'),
-      'Menší titul':samples(rows.filter(row => row.upcoming), 'Menší titul'),
-      Indie:samples(rows.filter(row => row.upcoming), 'Indie', 10)
+      AAA:samples(upcomingRows, 'AAA'),
+      'Menší titul':samples(upcomingRows, 'Menší titul'),
+      Indie:samples(upcomingRows, 'Indie', 10)
     },
     notes:[
       'Dry run only: games.json, games-index.json and UI are not modified.',
+      'Upcoming scope uses the same normalizePayload + flattenReleases + collapseDisplayRows path as the UI test.',
       'Existing non-empty scale values are preserved.',
-      'Signals are fetched from the deployed GameS IGDB provider, which uses server-side IGDB credentials.',
+      'Signals come from the deployed GameS IGDB provider using server-side IGDB credentials.',
       'Indie requires an explicit Indie genre.',
-      'AAA requires score >=6 and a major/large-company signal.',
-      'Menší titul requires known developer size <=50, no major/large company, hypes <50 and <=2 platform families.'
+      'AAA requires score >=6 plus a major/large-company signal.',
+      'Menší titul requires known developer size <=50, low hype, <=2 platform families and safe parent-company evidence.'
     ]
   };
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
