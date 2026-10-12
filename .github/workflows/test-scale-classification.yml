@@ -6,6 +6,7 @@ on:
       - test/scale-classification
     paths:
       - 'test-scale-classification-live.js'
+      - 'apply-scale-content-type-gate.js'
       - 'audit-scale-candidates.js'
       - 'audit-scale-game-types.js'
       - '.github/workflows/test-scale-classification.yml'
@@ -36,6 +37,7 @@ jobs:
       - name: Check audit syntax
         run: |
           node --check test-scale-classification-live.js
+          node --check apply-scale-content-type-gate.js
           node --check audit-scale-candidates.js
           node --check audit-scale-game-types.js
 
@@ -65,6 +67,9 @@ jobs:
           node test-scale-classification-live-all.js > scale-classification-report.json
           rm -f test-scale-classification-live-all.js
 
+      - name: Apply content type gate before scale audit
+        run: node apply-scale-content-type-gate.js
+
       - name: Audit all AAA and small-title candidates
         run: |
           node audit-scale-candidates.js
@@ -78,6 +83,7 @@ jobs:
           console.log(JSON.stringify({
             liveApiSignals:r.liveApiSignals,
             upcoming:r.scopes.upcoming,
+            contentTypeGate:r.contentTypeGate,
             auditComplete:a.complete,
             audited:a.auditedCandidateCounts,
             statusCounts:a.statusCounts,
@@ -94,6 +100,6 @@ jobs:
           git config user.name "CaseyCZ"
           git config user.email "25530709+CaseyCZ@users.noreply.github.com"
           git add scale-classification-report.json scale-classification-audit.json
-          git commit -m "test: audit all AAA and small-title candidates"
+          git commit -m "test: audit scale candidates after content type gate"
           git pull --rebase origin test/scale-classification
           git push origin HEAD:test/scale-classification
