@@ -32,29 +32,6 @@ function knownScale(value = '') {
   return '';
 }
 
-function richness(game = {}) {
-  return [game.cover, game.summary, Number(game.rating || 0) > 0, Number(game.ratingCount || 0) > 0,
-    (game.screenshots || []).length, game.trailerId || game.trailerUrl,
-    (game.developers || []).length, (game.publishers || []).length, game.steamId]
-    .reduce((score, value) => score + (value ? 1 : 0), 0);
-}
-
-function dedupeGames(games = []) {
-  const out = [];
-  const byIdentity = new Map();
-  for (const game of games) {
-    const identity = game.igdbId ? `igdb:${game.igdbId}` : `id:${game.id}`;
-    if (!byIdentity.has(identity)) {
-      byIdentity.set(identity, out.length);
-      out.push(game);
-      continue;
-    }
-    const index = byIdentity.get(identity);
-    if (richness(game) > richness(out[index])) out[index] = game;
-  }
-  return out;
-}
-
 function chunks(items, size) {
   const out = [];
   for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
@@ -149,6 +126,10 @@ function platformFamily(platform = {}) {
   return text || '';
 }
 
+function catalogPlatformFamilies(game = {}) {
+  return new Set((game.releases || []).flatMap(release => release.platforms || []).map(platformFamily).filter(Boolean));
+}
+
 function companyChain(companyId, companies, sizes) {
   const chain = [];
   const seen = new Set();
@@ -164,16 +145,50 @@ function companyChain(companyId, companies, sizes) {
   return chain;
 }
 
-function classify(game, signal, companies, sizes) {
+function explicitIndie(game, signal = null) {
+  const genres = uniq([...(game.genres || []), ...((signal?.genres || []).map(item => item?.name).filter(Boolean))]);
+  return genres.some(genre => normalize(genre) === 'indie');
+}
+
+function classifySafe(game) {
   const current = knownScale(game.scale);
   if (current) return { scale:current, confidence:'existing', score:null, reasons:['existing scale'] };
+  if (explicitIndie(game)) return { scale:'Indie', confidence:'high', score:null, reasons:['catalog genre Indie'] };
+  return { scale:'Nezařazeno', confidence:'low', score:0, reasons:['insufficient evidence in current catalog'] };
+}
 
-  const genres = uniq([...(game.genres || []), ...((signal?.genres || []).map(item => item?.name).filter(Boolean))]);
-  if (genres.some(genre => normalize(genre) === 'indie')) {
-    return { scale:'Indie', confidence:'high', score:null, reasons:['IGDB/catalog genre Indie'] };
+function classifyCatalogHeuristic(game) {
+  const safe = classifySafe(game);
+  if (safe.scale !== 'Nezařazeno') return safe;
+
+  const publishers = (game.publishers || []).map(normalize);
+  const developers = (game.developers || []).map(normalize);
+  const majorPublisher = publishers.some(name => MAJOR_COMPANIES.has(name));
+  const majorDeveloper = developers.some(name => MAJOR_COMPANIES.has(name));
+  const ratingCount = Number(game.ratingCount || 0) || 0;
+  const franchise = Boolean((game.series || []).length);
+  const families = catalogPlatformFamilies(game);
+
+  let score = 0;
+  const reasons = [];
+  if (majorPublisher) { score += 4; reasons.push('major publisher'); }
+  else if (majorDeveloper) { score += 3; reasons.push('major developer'); }
+  if (ratingCount >= 1000) { score += 2; reasons.push(`ratingCount ${ratingCount}`); }
+  else if (ratingCount >= 100) { score += 1; reasons.push(`ratingCount ${ratingCount}`); }
+  if (franchise) { score += 1; reasons.push('series/franchise'); }
+  if (families.size >= 3) { score += 1; reasons.push(`${families.size} platform families`); }
+
+  if ((majorPublisher || majorDeveloper) && score >= 5) {
+    return { scale:'AAA', confidence:score >= 7 ? 'high' : 'candidate', score, reasons };
   }
+  return { scale:'Nezařazeno', confidence:'low', score, reasons:reasons.length ? reasons : ['insufficient evidence'] };
+}
 
-  if (!signal) return { scale:'Nezařazeno', confidence:'low', score:0, reasons:['no IGDB signal row'] };
+function classifyRich(game, signal, companies, sizes) {
+  const current = knownScale(game.scale);
+  if (current) return { scale:current, confidence:'existing', score:null, reasons:['existing scale'] };
+  if (explicitIndie(game, signal)) return { scale:'Indie', confidence:'high', score:null, reasons:['IGDB/catalog genre Indie'] };
+  if (!signal) return classifyCatalogHeuristic(game);
 
   const involved = (signal.involved_companies || []).map(item => {
     const id = Number(typeof item.company === 'object' ? item.company?.id : item.company);
@@ -189,8 +204,7 @@ function classify(game, signal, companies, sizes) {
   const maxCompany = allCompanies.reduce((best, company) => {
     const range = company.sizeRange;
     if (!range) return best;
-    const numeric = Number.isFinite(range.max) ? range.max : 1000000;
-    return numeric > best ? numeric : best;
+    return Math.max(best, Number.isFinite(range.max) ? range.max : 1000000);
   }, 0);
   const hypes = Number(signal.hypes || 0) || 0;
   const franchise = Boolean((signal.franchises || []).length || (signal.collections || []).length || (game.series || []).length);
@@ -209,86 +223,121 @@ function classify(game, signal, companies, sizes) {
   if (families.size >= 3) { score += 1; reasons.push(`${families.size} platform families`); }
 
   const institutional = majorPublisher || majorDeveloper || maxCompany >= 500;
-  if (score >= 6 && institutional) {
-    return { scale:'AAA', confidence:score >= 8 ? 'high' : 'medium', score, reasons };
-  }
+  if (score >= 6 && institutional) return { scale:'AAA', confidence:score >= 8 ? 'high' : 'medium', score, reasons };
 
   const developerRanges = developerCompanies.map(company => company.sizeRange).filter(Boolean);
-  const hasKnownDeveloperSize = developerRanges.length > 0;
-  const largestDeveloper = developerRanges.reduce((best, range) => {
-    const numeric = Number.isFinite(range.max) ? range.max : 1000000;
-    return Math.max(best, numeric);
-  }, 0);
-  const noMajor = !majorPublisher && !majorDeveloper;
-  if (hasKnownDeveloperSize && largestDeveloper <= 50 && noMajor && hypes < 50 && families.size <= 2) {
-    return {
-      scale:'Menší titul', confidence:'high', score,
-      reasons:[`developer size <=50`, `hypes ${hypes}`, `${families.size || 0} platform families`, 'no major company']
-    };
+  const largestDeveloper = developerRanges.reduce((best, range) => Math.max(best, Number.isFinite(range.max) ? range.max : 1000000), 0);
+  if (developerRanges.length && largestDeveloper <= 50 && !majorPublisher && !majorDeveloper && hypes < 50 && families.size <= 2) {
+    return { scale:'Menší titul', confidence:'high', score, reasons:['developer size <=50', `hypes ${hypes}`, `${families.size || 0} platform families`, 'no major company'] };
   }
 
   return { scale:'Nezařazeno', confidence:'low', score, reasons:reasons.length ? reasons : ['insufficient evidence'] };
 }
 
-function countScales(items) {
+function countScales(rows, modelKey) {
   const out = { AAA:0, Indie:0, 'Menší titul':0, 'Nezařazeno':0 };
-  for (const item of items) out[item] = (out[item] || 0) + 1;
+  for (const row of rows) {
+    const value = modelKey === 'current' ? row.before : row[modelKey].scale;
+    out[value] = (out[value] || 0) + 1;
+  }
   return out;
 }
 
-function topSamples(rows, scale, limit = 20) {
-  return rows.filter(row => row.after.scale === scale && row.before === 'Nezařazeno')
-    .sort((a, b) => (b.after.score || 0) - (a.after.score || 0) || Number(b.hypes || 0) - Number(a.hypes || 0) || a.name.localeCompare(b.name))
+function summarize(rows, modelKey) {
+  const current = countScales(rows, 'current');
+  const proposed = countScales(rows, modelKey);
+  const unknownRows = rows.filter(row => row.before === 'Nezařazeno');
+  const moved = unknownRows.filter(row => row[modelKey].scale !== 'Nezařazeno');
+  return {
+    games:rows.length,
+    current,
+    proposed,
+    movedFromUnknown:{
+      total:moved.length,
+      coveragePct:Number((moved.length / Math.max(1, unknownRows.length) * 100).toFixed(1)),
+      AAA:moved.filter(row => row[modelKey].scale === 'AAA').length,
+      Indie:moved.filter(row => row[modelKey].scale === 'Indie').length,
+      'Menší titul':moved.filter(row => row[modelKey].scale === 'Menší titul').length,
+      remainingUnknown:unknownRows.filter(row => row[modelKey].scale === 'Nezařazeno').length
+    }
+  };
+}
+
+function topSamples(rows, modelKey, scale, limit = 15) {
+  return rows.filter(row => row.before === 'Nezařazeno' && row[modelKey].scale === scale)
+    .sort((a, b) => (b[modelKey].score || 0) - (a[modelKey].score || 0) || a.name.localeCompare(b.name))
     .slice(0, limit)
-    .map(row => ({ id:row.id, igdbId:row.igdbId || null, name:row.name, confidence:row.after.confidence, score:row.after.score, hypes:row.hypes || 0, reasons:row.after.reasons }));
+    .map(row => ({ name:row.name, igdbId:row.igdbId || null, confidence:row[modelKey].confidence, score:row[modelKey].score, reasons:row[modelKey].reasons }));
 }
 
 async function main() {
+  const [{ normalizePayload, flattenReleases, todayLocal }, { collapseDisplayRows, preferDisplayRow }] = await Promise.all([
+    import('./js/data.js'), import('./js/search.js')
+  ]);
   const payload = JSON.parse(await fs.readFile(INPUT, 'utf8'));
-  const games = dedupeGames(Array.isArray(payload.games) ? payload.games : []);
-  const beforeLabels = games.map(game => knownScale(game.scale) || 'Nezařazeno');
-  const signals = await fetchSignals(games);
+  const dataset = normalizePayload(payload);
+  const signals = await fetchSignals(dataset.games);
 
-  const rows = games.map(game => {
+  const modelForGame = new Map();
+  for (const game of dataset.games) {
     const signal = signals.byGame.get(Number(game.igdbId));
-    const after = classify(game, signal, signals.companies, signals.sizes);
-    return {
-      id:String(game.id || ''), igdbId:String(game.igdbId || ''), name:String(game.name || ''),
-      before:knownScale(game.scale) || 'Nezařazeno', after,
-      hypes:Number(signal?.hypes || 0) || 0
-    };
-  });
+    modelForGame.set(game, {
+      before:knownScale(game.scale) || 'Nezařazeno',
+      safe:classifySafe(game),
+      catalog:classifyCatalogHeuristic(game),
+      rich:classifyRich(game, signal, signals.companies, signals.sizes)
+    });
+  }
 
-  const afterLabels = rows.map(row => row.after.scale);
-  const movedFromUnknown = rows.filter(row => row.before === 'Nezařazeno' && row.after.scale !== 'Nezařazeno');
-  const unknownTotal = rows.filter(row => row.before === 'Nezařazeno').length;
-  const igdbRows = rows.filter(row => row.igdbId && signals.byGame.has(Number(row.igdbId))).length;
+  const toReportRow = row => {
+    const models = modelForGame.get(row.game);
+    return {
+      id:String(row.game.id || ''), igdbId:String(row.game.igdbId || ''), name:String(row.game.name || ''),
+      before:models.before, safe:models.safe, catalog:models.catalog, rich:models.rich
+    };
+  };
+
+  const allRows = collapseDisplayRows(flattenReleases(dataset), preferDisplayRow).map(toReportRow);
+  const today = todayLocal();
+  const upcomingBaseRows = flattenReleases(dataset).filter(row => !(row.to || row.day) || (row.to || row.day) >= today);
+  const upcomingRows = collapseDisplayRows(upcomingBaseRows, preferDisplayRow).map(toReportRow);
+
   const report = {
     generatedAt:new Date().toISOString(),
-    sourceGeneratedAt:payload.generatedAt || null,
-    games:games.length,
-    igdbSignals:{ available:signals.available, reason:signals.reason || null, gamesWithIgdbId:rows.filter(row => row.igdbId).length, rowsFetched:igdbRows, companyRows:signals.companies.size, companySizeRows:signals.sizes.size },
-    current:countScales(beforeLabels),
-    proposed:countScales(afterLabels),
-    movedFromUnknown:{
-      total:movedFromUnknown.length,
-      coveragePct:Number((movedFromUnknown.length / Math.max(1, unknownTotal) * 100).toFixed(1)),
-      AAA:movedFromUnknown.filter(row => row.after.scale === 'AAA').length,
-      Indie:movedFromUnknown.filter(row => row.after.scale === 'Indie').length,
-      'Menší titul':movedFromUnknown.filter(row => row.after.scale === 'Menší titul').length,
-      remainingUnknown:rows.filter(row => row.before === 'Nezařazeno' && row.after.scale === 'Nezařazeno').length
+    sourceGeneratedAt:dataset.generatedAt || null,
+    today,
+    igdbSignals:{
+      available:signals.available,
+      reason:signals.reason || null,
+      gamesWithIgdbId:dataset.games.filter(game => game.igdbId).length,
+      rowsFetched:signals.byGame.size,
+      companyRows:signals.companies.size,
+      companySizeRows:signals.sizes.size
     },
-    samples:{
-      AAA:topSamples(rows, 'AAA'),
-      Indie:topSamples(rows, 'Indie'),
-      'Menší titul':topSamples(rows, 'Menší titul')
+    scopes:{
+      all:{
+        safe:summarize(allRows, 'safe'),
+        catalogHeuristic:summarize(allRows, 'catalog'),
+        richIgdb:summarize(allRows, 'rich')
+      },
+      upcoming:{
+        safe:summarize(upcomingRows, 'safe'),
+        catalogHeuristic:summarize(upcomingRows, 'catalog'),
+        richIgdb:summarize(upcomingRows, 'rich')
+      }
+    },
+    upcomingSamples:{
+      catalogAAA:topSamples(upcomingRows, 'catalog', 'AAA'),
+      safeIndie:topSamples(upcomingRows, 'safe', 'Indie'),
+      richAAA:topSamples(upcomingRows, 'rich', 'AAA'),
+      richSmall:topSamples(upcomingRows, 'rich', 'Menší titul')
     },
     notes:[
-      'Dry run only: does not modify games.json, games-index.json or UI.',
-      'Existing non-empty scale values are preserved.',
-      'Indie requires an explicit Indie genre.',
-      'AAA requires score >=6 plus a major/large-company signal.',
-      'Menší titul requires known developer size <=50, no major company, hypes <50 and <=2 platform families.'
+      'Dry run only: games.json, games-index.json and UI are untouched.',
+      'safe model changes only explicit Indie genre and preserves existing scale.',
+      'catalogHeuristic additionally marks AAA candidates from current publisher/developer, series, rating-count and platform data.',
+      'richIgdb adds hypes, company size and parent-company evidence when IGDB credentials are available.',
+      'Menší titul is intentionally not inferred without company-size evidence.'
     ]
   };
 
