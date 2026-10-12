@@ -10,6 +10,7 @@ on:
       - 'apply-aaa-evidence-gate.js'
       - 'audit-scale-candidates.js'
       - 'audit-scale-game-types.js'
+      - 'audit-indie-classification.js'
       - '.github/workflows/test-scale-classification.yml'
 
 permissions:
@@ -42,6 +43,7 @@ jobs:
           node --check apply-aaa-evidence-gate.js
           node --check audit-scale-candidates.js
           node --check audit-scale-game-types.js
+          node --check audit-indie-classification.js
 
       - name: Build full-candidate dry-run script
         run: |
@@ -55,6 +57,12 @@ jobs:
           if old_limit not in text:
               raise SystemExit('samples() default limit marker not found')
           text = text.replace(old_limit, new_limit, 1)
+
+          old_indie = "Indie:samples(upcomingRows, 'Indie', 10)"
+          new_indie = "Indie:samples(upcomingRows, 'Indie', 5000)"
+          if old_indie not in text:
+              raise SystemExit('Indie sample limit marker not found')
+          text = text.replace(old_indie, new_indie, 1)
 
           old_fields = "      score:row.after.score, hypes:row.after.hypes || 0, reasons:row.after.reasons,\n      companies:"
           new_fields = "      score:row.after.score, hypes:row.after.hypes || 0, reasons:row.after.reasons,\n      gameType:row.signal?.gameType || row.signal?.rawHints?.gameType || null,\n      companies:"
@@ -75,16 +83,30 @@ jobs:
       - name: Apply AAA evidence gate before scale audit
         run: node apply-aaa-evidence-gate.js
 
+      - name: Audit Indie classification volume
+        run: node audit-indie-classification.js
+
       - name: Audit all AAA and small-title candidates
         run: |
           node audit-scale-candidates.js
           node audit-scale-game-types.js
+
+      - name: Trim full Indie candidate list from saved scale report
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const p = 'scale-classification-report.json';
+          const r = JSON.parse(fs.readFileSync(p, 'utf8'));
+          if (Array.isArray(r.upcomingSamples?.Indie)) r.upcomingSamples.Indie = r.upcomingSamples.Indie.slice(0, 10);
+          fs.writeFileSync(p, JSON.stringify(r, null, 2) + '\n');
+          NODE
 
       - name: Print audit summary
         run: |
           node - <<'NODE'
           const r = require('./scale-classification-report.json');
           const a = require('./scale-classification-audit.json');
+          const i = require('./indie-classification-audit.json');
           console.log(JSON.stringify({
             liveApiSignals:r.liveApiSignals,
             upcoming:r.scopes.upcoming,
@@ -93,19 +115,29 @@ jobs:
             auditComplete:a.complete,
             audited:a.auditedCandidateCounts,
             statusCounts:a.statusCounts,
-            flagged:a.flagged
+            indieAudit:{
+              complete:i.complete,
+              currentUpcomingIndie:i.currentUpcomingIndie,
+              proposedUpcomingIndie:i.proposedUpcomingIndie,
+              expectedNewIndie:i.expectedNewIndie,
+              auditedNewIndie:i.auditedNewIndie,
+              source:i.source,
+              hypes:i.hypes,
+              gameTypes:i.gameTypes,
+              company:i.company
+            }
           }, null, 2));
           NODE
 
       - name: Save reports to test branch
         run: |
-          if [[ -z "$(git status --porcelain -- scale-classification-report.json scale-classification-audit.json)" ]]; then
+          if [[ -z "$(git status --porcelain -- scale-classification-report.json scale-classification-audit.json indie-classification-audit.json)" ]]; then
             echo "reports unchanged"
             exit 0
           fi
           git config user.name "CaseyCZ"
           git config user.email "25530709+CaseyCZ@users.noreply.github.com"
-          git add scale-classification-report.json scale-classification-audit.json
-          git commit -m "test: audit scale candidates after AAA evidence gate"
+          git add scale-classification-report.json scale-classification-audit.json indie-classification-audit.json
+          git commit -m "test: audit Indie classification volume"
           git pull --rebase origin test/scale-classification
           git push origin HEAD:test/scale-classification
