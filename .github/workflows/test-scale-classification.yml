@@ -46,7 +46,6 @@ jobs:
 
       - name: Save report to test branch
         run: |
-          git pull --rebase origin test/scale-classification
           if [[ -z "$(git status --porcelain -- scale-classification-report.json)" ]]; then
             echo "report unchanged"
             exit 0
@@ -55,4 +54,5 @@ jobs:
           git config user.email "25530709+CaseyCZ@users.noreply.github.com"
           git add scale-classification-report.json
           git commit -m "test: update rich scale classification report"
+          git pull --rebase origin test/scale-classification
           git push origin HEAD:test/scale-classification
