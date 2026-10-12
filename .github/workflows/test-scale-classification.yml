@@ -6,6 +6,7 @@ on:
       - test/scale-classification
     paths:
       - 'test-scale-classification-live.js'
+      - 'audit-scale-candidates.js'
       - '.github/workflows/test-scale-classification.yml'
 
 permissions:
@@ -31,28 +32,57 @@ jobs:
         with:
           node-version: 22
 
-      - name: Check dry-run syntax
-        run: node --check test-scale-classification-live.js
+      - name: Check audit syntax
+        run: |
+          node --check test-scale-classification-live.js
+          node --check audit-scale-candidates.js
+
+      - name: Build full-candidate dry-run script
+        run: |
+          cp test-scale-classification-live.js test-scale-classification-live-all.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('test-scale-classification-live-all.js')
+          text = p.read_text()
+          old = 'function samples(rows, scale, limit = 30) {'
+          new = 'function samples(rows, scale, limit = 500) {'
+          if old not in text:
+              raise SystemExit('samples() default limit marker not found')
+          p.write_text(text.replace(old, new, 1))
+          PY
 
       - name: Run rich classification dry run through deployed GameS API
-        run: node test-scale-classification-live.js > scale-classification-report.json
+        run: |
+          node test-scale-classification-live-all.js > scale-classification-report.json
+          rm -f test-scale-classification-live-all.js
 
-      - name: Print summary
+      - name: Audit all AAA and small-title candidates
+        run: node audit-scale-candidates.js
+
+      - name: Print audit summary
         run: |
           node - <<'NODE'
           const r = require('./scale-classification-report.json');
-          console.log(JSON.stringify({ liveApiSignals:r.liveApiSignals, upcoming:r.scopes.upcoming, samples:{ AAA:r.upcomingSamples.AAA.slice(0,10), small:r.upcomingSamples['Menší titul'].slice(0,10) } }, null, 2));
+          const a = require('./scale-classification-audit.json');
+          console.log(JSON.stringify({
+            liveApiSignals:r.liveApiSignals,
+            upcoming:r.scopes.upcoming,
+            auditComplete:a.complete,
+            audited:a.auditedCandidateCounts,
+            statusCounts:a.statusCounts,
+            flagged:a.flagged
+          }, null, 2));
           NODE
 
-      - name: Save report to test branch
+      - name: Save reports to test branch
         run: |
-          if [[ -z "$(git status --porcelain -- scale-classification-report.json)" ]]; then
-            echo "report unchanged"
+          if [[ -z "$(git status --porcelain -- scale-classification-report.json scale-classification-audit.json)" ]]; then
+            echo "reports unchanged"
             exit 0
           fi
           git config user.name "CaseyCZ"
           git config user.email "25530709+CaseyCZ@users.noreply.github.com"
-          git add scale-classification-report.json
-          git commit -m "test: update rich scale classification report"
+          git add scale-classification-report.json scale-classification-audit.json
+          git commit -m "test: audit all AAA and small-title candidates"
           git pull --rebase origin test/scale-classification
           git push origin HEAD:test/scale-classification
